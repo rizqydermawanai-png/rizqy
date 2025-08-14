@@ -438,6 +438,7 @@
                 inventory: loadFromLocalStorage('kazumiInventory', []),
                 searchTerm: '',
                 selectedCategoryFilter: 'all',
+                productionRequestCategoryFilters: [], // New property for production requests
                 lowStockThreshold: 10,
                 stockHistory: loadFromLocalStorage('kazumiStockHistory', []),
                 productionRequests: loadFromLocalStorage('kazumiProductionRequests', []),
@@ -1383,10 +1384,10 @@
             }
 
             // Filter berdasarkan kategori jika ada di warehouse context
-            if (context === 'warehouse-tab' && appState.warehouse.selectedCategoryFilter && appState.warehouse.selectedCategoryFilter !== 'all') {
+            if (context === 'warehouse-tab' && appState.warehouse.productionRequestCategoryFilters.length > 0) {
                 requests = requests.filter(request => {
                     const product = appState.warehouse.inventory.find(item => item.id === request.productId);
-                    return product && product.category === appState.warehouse.selectedCategoryFilter;
+                    return product && appState.warehouse.productionRequestCategoryFilters.includes(product.category);
                 });
             }
 
@@ -1414,10 +1415,15 @@
                     <h3 class="text-xl font-bold text-gray-800">${titleText}</h3>
                     <div class="flex gap-2">
                         ${context === 'warehouse-tab' ? `
-                            <select id="productionRequestCategoryFilter" class="p-2 border rounded-md text-sm">
-                                <option value="all">Semua Kategori</option>
-                                ${garmentCategories.map(cat => `<option value="${cat.id}" ${appState.warehouse.selectedCategoryFilter === cat.id ? 'selected' : ''}>${cat.name}</option>`).join('')}
-                            </select>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 p-2 border rounded-md">
+                                <span class="text-sm font-medium text-gray-700 w-full">Filter Kategori:</span>
+                                ${garmentCategories.map(cat => `
+                                    <label class="flex items-center space-x-2 text-sm">
+                                        <input type="checkbox" class="production-request-category-checkbox rounded" value="${cat.id}" ${(appState.warehouse.productionRequestCategoryFilters || []).includes(cat.id) ? 'checked' : ''}>
+                                        <span>${cat.name}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
                         ` : ''}
                         <button id="refreshProductionRequestsBtn" class="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
@@ -3719,16 +3725,23 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
-                else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
-                else if (e.target.id === 'productionRequestCategoryFilter') {
-                    updateAppState({
-                        warehouse: {
-                            ...appState.warehouse,
-                            selectedCategoryFilter: e.target.value
+                if (e.target.classList.contains('production-request-category-checkbox')) {
+                    const category = e.target.value;
+                    const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
+                    if (e.target.checked) {
+                        if (!currentFilters.includes(category)) {
+                            currentFilters.push(category);
                         }
-                    });
+                    } else {
+                        const index = currentFilters.indexOf(category);
+                        if (index > -1) {
+                            currentFilters.splice(index, 1);
+                        }
+                    }
+                    updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
                 }
+                else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
+                else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
             }
 
             // --- Laporan ---
