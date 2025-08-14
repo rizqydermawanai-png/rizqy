@@ -912,20 +912,6 @@
                 });
             });
 
-            const revenueByCategoryCards = Object.keys(revenueByCategory).length > 0 ? `
-                <div class="lg:col-span-2">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        ${Object.entries(revenueByCategory).map(([category, revenue]) => `
-                            <div class="bg-white p-4 rounded-2xl shadow-sm border interactive-card text-center">
-                                <p class="text-sm text-gray-500">${category}</p>
-                                <p class="text-xl font-bold text-green-600">Rp ${formatRupiah(revenue)}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            ` : '';
-
             // HTML Structure
             const html = `
                 <div class="p-6 bg-gray-50 rounded-2xl">
@@ -989,7 +975,11 @@
                             </ul>
                         </div>
 
-                        ${revenueByCategoryCards}
+                        <!-- Revenue by Category Chart -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border interactive-card">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori</h3>
+                            <div style="height: 300px;"><canvas id="recapRevenueChart"></canvas></div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1036,6 +1026,21 @@
                 }]
             };
             renderChart('recapProductionChart', 'doughnut', productionChartData, 'Jumlah Produksi per Tipe Pakaian');
+
+            // Revenue by Category Chart Data
+            const revenueLabels = Object.keys(revenueByCategory);
+            const revenueData = Object.values(revenueByCategory);
+            const revenueChartData = {
+                labels: revenueLabels,
+                datasets: [{
+                    label: 'Total Pendapatan',
+                    data: revenueData,
+                    backgroundColor: '#10B981', // green-500
+                    borderColor: '#059669', // green-600
+                    borderWidth: 1
+                }]
+            };
+            renderChart('recapRevenueChart', 'bar', revenueChartData, 'Pendapatan per Kategori');
         }
 
         /**
@@ -2002,21 +2007,16 @@
             switch (order.status) {
                 case 'pending_gudang':
                     if (isWarehouse) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-green-100 text-green-700 rounded text-xs" data-id="${order.id}" data-status="approved_gudang">Setujui</button>`;
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
-                    }
-                    break;
-                case 'approved_gudang':
-                    if (isWarehouse) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-purple-100 text-purple-700 rounded text-xs ${!allItemsChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-200'}" data-id="${order.id}" data-status="siap_kirim" ${!allItemsChecked ? 'disabled' : ''}>Siap Kirim</button>`;
-                    }
-                     if (isSales) {
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-green-100 text-green-700 rounded text-xs ${!allItemsChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-200'}" data-id="${order.id}" data-status="siap_kirim" ${!allItemsChecked ? 'disabled' : ''}>Setujui & Siapkan</button>`;
                         actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
                     }
                     break;
                 case 'siap_kirim':
                     if (isSales) {
                         actions += `<button class="update-online-order-status-btn py-1 px-2 bg-blue-100 text-blue-700 rounded text-xs" data-id="${order.id}" data-status="selesai">Selesaikan</button>`;
+                    }
+                    if (isWarehouse) {
+                         actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
                     }
                     break;
                 default:
@@ -2064,7 +2064,7 @@
                         <div class="space-y-3">
                             ${order.items.map(item => `
                                 <label class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border cursor-pointer hover:bg-gray-100 transition-colors">
-                                    <input type="checkbox" class="online-order-item-checkbox h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-order-id="${order.id}" data-item-id="${item.id}" ${checklist[item.id] ? 'checked' : ''} ${order.status !== 'approved_gudang' ? 'disabled' : ''}>
+                                    <input type="checkbox" class="online-order-item-checkbox h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-order-id="${order.id}" data-item-id="${item.id}" ${checklist[item.id] ? 'checked' : ''} ${order.status !== 'pending_gudang' ? 'disabled' : ''}>
                                     <div class="flex-1">
                                         <p class="font-medium text-gray-800">${item.name}</p>
                                         <p class="text-sm text-gray-500">Jumlah: <span class="font-bold">${item.quantity}</span> pcs</p>
@@ -4702,9 +4702,8 @@
 
             let confirmationMessage = `Anda yakin ingin mengubah status pesanan #${order.id.substring(0,8).toUpperCase()} menjadi "${newStatus}"?`;
 
-            // Logic for stock deduction or return
-            if (newStatus === 'approved_gudang' && oldStatus === 'pending_gudang') {
-                // Check stock availability before approving
+            // New workflow logic
+            if (newStatus === 'siap_kirim' && oldStatus === 'pending_gudang') {
                 for (const item of order.items) {
                     const inventoryItem = appState.warehouse.inventory.find(inv => inv.id === item.id);
                     if (!inventoryItem || inventoryItem.stock < item.quantity) {
@@ -4712,16 +4711,17 @@
                         return;
                     }
                 }
-                confirmationMessage = `Menyetujui pesanan ini akan mengurangi stok dari gudang. Lanjutkan?`;
-            } else if (newStatus === 'dibatalkan' && oldStatus === 'approved_gudang') {
-                confirmationMessage = `Membatalkan pesanan ini akan mengembalikan stok ke gudang. Lanjutkan?`;
+                confirmationMessage = `Menyetujui pesanan ini akan mengurangi stok dari gudang dan mengubah status menjadi 'Siap Kirim'. Lanjutkan?`;
+            } else if (newStatus === 'dibatalkan' && oldStatus === 'siap_kirim') {
+                confirmationMessage = `Membatalkan pesanan yang siap kirim ini akan mengembalikan stok ke gudang. Lanjutkan?`;
             }
 
             showCustomConfirmation(confirmationMessage, () => {
                 let updatedInventory = [...appState.warehouse.inventory];
                 let newStockHistoryEntries = [];
 
-                if (newStatus === 'approved_gudang' && oldStatus === 'pending_gudang') {
+                // Stock deduction for the new flow
+                if (newStatus === 'siap_kirim' && oldStatus === 'pending_gudang') {
                     order.items.forEach(item => {
                         const invIndex = updatedInventory.findIndex(inv => inv.id === item.id);
                         if (invIndex !== -1) {
@@ -4739,7 +4739,9 @@
                             });
                         }
                     });
-                } else if (newStatus === 'dibatalkan' && oldStatus === 'approved_gudang') {
+                }
+                // Stock return for the new cancellation flow
+                else if (newStatus === 'dibatalkan' && oldStatus === 'siap_kirim') {
                     order.items.forEach(item => {
                         const invIndex = updatedInventory.findIndex(inv => inv.id === item.id);
                         if (invIndex !== -1) {
@@ -4749,10 +4751,10 @@
                                 timestamp: new Date().toISOString(),
                                 productId: item.id,
                                 productName: item.name,
-                                type: 'Masuk (Batal)',
+                                type: 'Masuk (Batal Kirim)',
                                 quantity: item.quantity,
                                 finalStock: updatedInventory[invIndex].stock,
-                                source: `Batal Pesanan #${order.id.substring(0,8).toUpperCase()}`,
+                                source: `Batal Kirim Pesanan #${order.id.substring(0,8).toUpperCase()}`,
                                 userId: appState.userId
                             });
                         }
