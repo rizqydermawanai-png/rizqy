@@ -850,6 +850,182 @@
         /**
          * Merender layout aplikasi utama dengan tab dan informasi pengguna.
          */
+        function renderRecapitulationContent() {
+            // Data processing
+            const totalRevenue = appState.savedSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+            const totalItemsSold = appState.savedSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            const totalItemsProduced = appState.savedReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
+            const pendingRequests = appState.warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
+
+            const totalSales = appState.savedSales.length;
+            const averageRevenue = totalSales > 0 ? totalRevenue / totalSales : 0;
+
+            const customerNames = appState.savedSales
+                .map(sale => sale.customerName.trim())
+                .filter(name => name && name.toLowerCase() !== 'umum');
+            const uniqueCustomers = new Set(customerNames).size;
+
+            const productQuantities = {};
+            appState.savedSales.forEach(sale => {
+                sale.items.forEach(item => {
+                    productQuantities[item.name] = (productQuantities[item.name] || 0) + item.quantity;
+                });
+            });
+            let bestSellingProduct = 'N/A';
+            let maxQuantity = 0;
+            for (const productName in productQuantities) {
+                if (productQuantities[productName] > maxQuantity) {
+                    maxQuantity = productQuantities[productName];
+                    bestSellingProduct = productName;
+                }
+            }
+            const bestSellingProductDisplay = maxQuantity > 0 ? `${bestSellingProduct} (${maxQuantity} pcs)` : 'N/A';
+
+            const lowStockItems = [...appState.warehouse.inventory]
+                .filter(item => item.stock > 0)
+                .sort((a, b) => a.stock - b.stock)
+                .slice(0, 5);
+
+            const recentActivities = appState.activityLogs
+                .filter(log => {
+                    const description = log.description.toLowerCase();
+                    return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
+                })
+                .slice(0, 5);
+
+            // HTML Structure
+            const html = `
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Laporan Rekapitulasi</h2>
+                        <button id="exportRecapBtn" class="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ekspor ke Excel
+                        </button>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Produksi</p><p class="text-3xl font-bold text-indigo-600">${formatRupiah(totalItemsProduced)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Rata-rata Penjualan</p><p class="text-2xl font-bold text-teal-600">Rp ${formatRupiah(averageRevenue)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Jumlah Pelanggan</p><p class="text-2xl font-bold text-cyan-600">${uniqueCustomers}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Produk Terlaris</p><p class="text-lg font-bold text-purple-600">${bestSellingProductDisplay}</p></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Sales Chart -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Tren Penjualan</h3>
+                            <div style="height: 300px;"><canvas id="recapSalesChart"></canvas></div>
+                        </div>
+
+                        <!-- Production Chart -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Volume Produksi</h3>
+                            <div style="height: 300px;"><canvas id="recapProductionChart"></canvas></div>
+                        </div>
+
+                        <!-- Low Stock -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Stok Terendah</h3>
+                            <ul class="space-y-3">
+                                ${lowStockItems.length > 0 ? lowStockItems.map(item => `
+                                    <li class="flex justify-between items-center text-sm">
+                                        <span class="font-medium text-gray-800">${item.name}</span>
+                                        <span class="font-bold text-red-500">${item.stock} pcs</span>
+                                    </li>
+                                `).join('') : '<p class="text-gray-500 text-sm">Semua stok dalam kondisi aman.</p>'}
+                            </ul>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Aktivitas Terbaru</h3>
+                            <ul class="space-y-3">
+                                ${recentActivities.map(log => `
+                                    <li class="text-sm">
+                                        <p class="font-medium text-gray-800">${log.description}</p>
+                                        <p class="text-xs text-gray-400">${new Date(log.timestamp).toLocaleString('id-ID')} - oleh ${getUsernameById(log.userId)}</p>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        <!-- Revenue by Category Chart -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori Produk</h3>
+                            <div style="height: 300px;"><canvas id="recapRevenueChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Render the HTML
+            const container = document.getElementById('recapitulationSection');
+            if(container) {
+                container.innerHTML = html;
+            }
+
+            // Prepare and render charts
+            // Sales Chart Data
+            const salesChartData = {
+                labels: appState.savedSales.map(s => new Date(s.timestamp).toLocaleDateString('id-ID')),
+                datasets: [{
+                    label: 'Total Penjualan',
+                    data: appState.savedSales.map(s => s.result.grandTotal),
+                    borderColor: '#16a34a',
+                    tension: 0.1
+                }]
+            };
+            renderChart('recapSalesChart', 'line', salesChartData, 'Total Penjualan per Transaksi');
+
+            // Production Chart Data
+            const productionData = {};
+            appState.savedReports.filter(r => !r.isSuperseded).forEach(report => {
+                const title = GARMENT_PATTERNS[report.selectedGarment].title;
+                productionData[title] = (productionData[title] || 0) + report.hppResult.garmentsProduced;
+            });
+            const productionChartData = {
+                labels: Object.keys(productionData),
+                datasets: [{
+                    label: 'Jumlah Produksi',
+                    data: Object.values(productionData),
+                    backgroundColor: ['#4f46e5', '#22c55e', '#f59e0b', '#a855f7'],
+                }]
+            };
+            renderChart('recapProductionChart', 'doughnut', productionChartData, 'Jumlah Produksi per Tipe Pakaian');
+
+            // Revenue by Category Chart Data
+            const revenueByCategory = {};
+            appState.savedSales.forEach(sale => {
+                sale.items.forEach(item => {
+                    // Find the inventory item to get its category
+                    const inventoryItem = appState.warehouse.inventory.find(invItem => invItem.id === item.id);
+                    if (inventoryItem) {
+                        const category = GARMENT_PATTERNS[inventoryItem.category]?.title || 'Lainnya';
+                        const revenue = item.price * item.quantity;
+                        revenueByCategory[category] = (revenueByCategory[category] || 0) + revenue;
+                    }
+                });
+            });
+            const revenueChartData = {
+                labels: Object.keys(revenueByCategory),
+                datasets: [{
+                    label: 'Pendapatan per Kategori',
+                    data: Object.values(revenueByCategory),
+                    backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#ef4444', '#64748b'],
+                }]
+            };
+            renderChart('recapRevenueChart', 'bar', revenueChartData, 'Pendapatan per Kategori');
+        }
+
+        /**
+         * Merender layout aplikasi utama dengan tab dan informasi pengguna.
+         */
         function renderMainAppLayout() {
             const { userRole, userDepartment } = appState;
             const isAdmin = userRole === 'admin' || userRole === 'super_admin';
@@ -3956,6 +4132,105 @@
             showNotification('Rekap stok berhasil diekspor ke Excel', 'success');
         }
 
+        function exportRecapitulationToExcel() {
+            const escapeCsvField = (field) => {
+                if (field === null || field === undefined) return '';
+                const stringField = String(field).replace(/"/g, '""');
+                if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
+                    return `"${stringField}"`;
+                }
+                return stringField;
+            };
+
+            // 1. Recalculate KPIs
+            const { savedSales, savedReports, warehouse, allUsers } = appState;
+            const totalRevenue = savedSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+            const totalItemsSold = savedSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            const totalItemsProduced = savedReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
+            const pendingRequests = warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
+            const totalSales = savedSales.length;
+            const averageRevenue = totalSales > 0 ? totalRevenue / totalSales : 0;
+            const customerNames = savedSales.map(sale => sale.customerName.trim()).filter(name => name && name.toLowerCase() !== 'umum');
+            const uniqueCustomers = new Set(customerNames).size;
+
+            const productQuantities = {};
+            savedSales.forEach(sale => {
+                sale.items.forEach(item => {
+                    productQuantities[item.name] = (productQuantities[item.name] || 0) + item.quantity;
+                });
+            });
+            let bestSellingProduct = 'N/A';
+            let maxQuantity = 0;
+            for (const productName in productQuantities) {
+                if (productQuantities[productName] > maxQuantity) {
+                    maxQuantity = productQuantities[productName];
+                    bestSellingProduct = productName;
+                }
+            }
+            const bestSellingProductDisplay = maxQuantity > 0 ? `${bestSellingProduct} (${maxQuantity} pcs)` : 'N/A';
+
+            let csvContent = "";
+
+            // 2. KPI Section
+            csvContent += "Ringkasan KPI\n";
+            csvContent += "Metrik,Nilai\n";
+            csvContent += `Total Pendapatan,"Rp ${formatRupiah(totalRevenue)}"\n`;
+            csvContent += `Total Item Terjual,${totalItemsSold}\n`;
+            csvContent += `Total Item Produksi,${totalItemsProduced}\n`;
+            csvContent += `Permintaan Produksi Aktif,${pendingRequests}\n`;
+            csvContent += `Rata-rata Penjualan,"Rp ${formatRupiah(averageRevenue)}"\n`;
+            csvContent += `Jumlah Pelanggan Unik,${uniqueCustomers}\n`;
+            csvContent += `Produk Terlaris,${escapeCsvField(bestSellingProductDisplay)}\n`;
+            csvContent += "\n\n"; // Separator
+
+            // 3. Sales Report Section
+            csvContent += "Laporan Penjualan Detail\n";
+            csvContent += "ID Penjualan,Tanggal,Pelanggan,Total,Jumlah Item,Dibuat Oleh\n";
+            appState.filteredSales.forEach(sale => {
+                const row = [
+                    sale.id,
+                    new Date(sale.timestamp).toLocaleString('id-ID'),
+                    sale.customerName || 'Umum',
+                    `Rp ${formatRupiah(sale.result.grandTotal)}`,
+                    sale.items.reduce((sum, item) => sum + item.quantity, 0),
+                    getUsernameById(sale.userId)
+                ].map(escapeCsvField).join(",");
+                csvContent += row + "\n";
+            });
+            csvContent += "\n\n";
+
+            // 4. Production Report Section
+            csvContent += "Laporan Produksi Detail\n";
+            csvContent += "ID Laporan,Tanggal,Jenis Pakaian,Jumlah Produksi,HPP per Pcs,Harga Jual per Pcs,Dibuat Oleh,Status\n";
+            appState.filteredReports.filter(r => !r.isSuperseded).forEach(report => {
+                const row = [
+                    report.id,
+                    new Date(report.timestamp).toLocaleString('id-ID'),
+                    GARMENT_PATTERNS[report.selectedGarment]?.title || report.selectedGarment,
+                    report.hppResult.garmentsProduced,
+                    `Rp ${formatRupiah(report.hppResult.totalHPP)}`,
+                    `Rp ${formatRupiah(report.hppResult.sellingPricePerGarment)}`,
+                    getUsernameById(report.userId),
+                    report.isRevised ? 'Revisi' : 'Asli'
+                ].map(escapeCsvField).join(",");
+                csvContent += row + "\n";
+            });
+
+            // 5. Trigger Download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `rekapitulasi_kazumi_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showNotification('Rekapitulasi berhasil diekspor ke Excel', 'success');
+            addActivityLog('Ekspor', 'Mengekspor data rekapitulasi ke Excel.', appState.userId);
+        }
+
         /**
          * Penanganan event klik global menggunakan delegasi.
          * @param {Event} e - Event klik.
@@ -4082,6 +4357,7 @@
                 }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
+                else if (e.target.id === 'exportRecapBtn') exportRecapitulationToExcel();
             }
 
             // --- Spesifik Tab Laporan ---
