@@ -893,6 +893,32 @@
                 })
                 .slice(0, 5);
 
+            const revenueByCategory = {};
+            appState.savedSales.forEach(sale => {
+                sale.items.forEach(item => {
+                    const inventoryItem = appState.warehouse.inventory.find(invItem => invItem.id === item.id);
+                    if (inventoryItem) {
+                        const category = GARMENT_PATTERNS[inventoryItem.category]?.title || 'Lainnya';
+                        const revenue = item.price * item.quantity;
+                        revenueByCategory[category] = (revenueByCategory[category] || 0) + revenue;
+                    }
+                });
+            });
+
+            const revenueByCategoryCards = Object.keys(revenueByCategory).length > 0 ? `
+                <div class="lg:col-span-2">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        ${Object.entries(revenueByCategory).map(([category, revenue]) => `
+                            <div class="bg-white p-4 rounded-2xl shadow-sm border interactive-card text-center">
+                                <p class="text-sm text-gray-500">${category}</p>
+                                <p class="text-xl font-bold text-green-600">Rp ${formatRupiah(revenue)}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
+
             // HTML Structure
             const html = `
                 <div class="p-6 bg-gray-50 rounded-2xl">
@@ -955,11 +981,8 @@
                                 `).join('')}
                             </ul>
                         </div>
-                        <!-- Revenue by Category Chart -->
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border interactive-card">
-                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori Produk</h3>
-                            <div style="height: 300px;"><canvas id="recapRevenueChart"></canvas></div>
-                        </div>
+
+                        ${revenueByCategoryCards}
                     </div>
                 </div>
             `;
@@ -1006,29 +1029,6 @@
                 }]
             };
             renderChart('recapProductionChart', 'doughnut', productionChartData, 'Jumlah Produksi per Tipe Pakaian');
-
-            // Revenue by Category Chart Data
-            const revenueByCategory = {};
-            appState.savedSales.forEach(sale => {
-                sale.items.forEach(item => {
-                    // Find the inventory item to get its category
-                    const inventoryItem = appState.warehouse.inventory.find(invItem => invItem.id === item.id);
-                    if (inventoryItem) {
-                        const category = GARMENT_PATTERNS[inventoryItem.category]?.title || 'Lainnya';
-                        const revenue = item.price * item.quantity;
-                        revenueByCategory[category] = (revenueByCategory[category] || 0) + revenue;
-                    }
-                });
-            });
-            const revenueChartData = {
-                labels: Object.keys(revenueByCategory),
-                datasets: [{
-                    label: 'Pendapatan per Kategori',
-                    data: Object.values(revenueByCategory),
-                    backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#ef4444', '#64748b'],
-                }]
-            };
-            renderChart('recapRevenueChart', 'doughnut', revenueChartData, 'Pendapatan per Kategori');
         }
 
         /**
