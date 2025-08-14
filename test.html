@@ -472,7 +472,8 @@
                 taxPercentage: 0,
                 result: null,
                 searchTerm: '',
-                selectedCategoryFilter: 'all'
+                selectedCategoryFilter: 'all',
+                saleType: 'offline' // Penjualan offline sebagai default
             },
             warehouse: {
                 inventory: loadFromLocalStorage('kazumiInventory', []),
@@ -858,6 +859,84 @@
         }
 
         /**
+         * Menangani persetujuan pesanan penjualan online oleh gudang.
+         * @param {string} saleId - ID penjualan yang akan disetujui.
+         */
+        function handleApproveSale(saleId) {
+            const saleIndex = appState.savedSales.findIndex(s => s.id === saleId);
+            if (saleIndex === -1) {
+                showNotification('Pesanan tidak ditemukan.', 'error');
+                return;
+            }
+
+            const updatedSales = [...appState.savedSales];
+            const sale = updatedSales[saleIndex];
+
+            if (sale.status !== 'pending_warehouse_approval') {
+                showNotification('Pesanan ini tidak lagi menunggu persetujuan.', 'info');
+                return;
+            }
+
+            showCustomConfirmation('Apakah Anda yakin ingin menyetujui dan menyelesaikan persiapan pesanan ini?', () => {
+                // 1. Update sale status
+                sale.status = 'completed';
+
+                // 2. Deduct stock
+                const updatedInventory = [...appState.warehouse.inventory];
+                const newStockHistoryEntries = [];
+                let stockDeducted = true;
+
+                sale.items.forEach(saleItem => {
+                    const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
+                    if (inventoryItemIndex !== -1) {
+                        const existingItem = updatedInventory[inventoryItemIndex];
+                        if (existingItem.stock >= saleItem.quantity) {
+                            existingItem.stock -= saleItem.quantity;
+                            newStockHistoryEntries.unshift({
+                                id: generateUniqueId(),
+                                timestamp: new Date().toISOString(),
+                                productId: saleItem.id,
+                                productName: saleItem.name,
+                                type: 'Keluar',
+                                quantity: saleItem.quantity,
+                                finalStock: existingItem.stock,
+                                source: `Penjualan Online #${sale.id.substring(0, 8).toUpperCase()}`,
+                                userId: appState.userId
+                            });
+                        } else {
+                            stockDeducted = false;
+                        }
+                    } else {
+                        stockDeducted = false;
+                    }
+                });
+
+                if (!stockDeducted) {
+                    showNotification('Gagal mengurangi stok. Stok tidak mencukupi atau item tidak ditemukan.', 'error');
+                    // Revert status change if stock deduction fails
+                    sale.status = 'pending_warehouse_approval';
+                    return;
+                }
+
+                // 3. Update state
+                updateAppState({
+                    savedSales: updatedSales,
+                    warehouse: {
+                        ...appState.warehouse,
+                        inventory: updatedInventory,
+                        stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
+                    },
+                    selectedSale: sale // to be used by printInvoice
+                });
+
+                // 4. Print note and show notification
+                showNotification('Pesanan telah disetujui dan stok telah diperbarui.', 'success');
+                printInvoice('outgoing_product');
+                addActivityLog('Gudang', `Pesanan online #${sale.id.substring(0, 8).toUpperCase()} disetujui dan disiapkan.`, appState.userId, sale.id);
+            });
+        }
+
+        /**
          * Merender bidang input bahan berdasarkan tipe input yang dipilih (panjang/berat/rol).
          */
         function renderMaterialInputFields() {
@@ -1165,6 +1244,13 @@
                                 Detail Transaksi
                             </h3>
                             <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tipe Penjualan</label>
+                                    <div class="flex gap-4 mt-1">
+                                        <button id="saleTypeOfflineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'offline' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Offline</button>
+                                        <button id="saleTypeOnlineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'online' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Online</button>
+                                    </div>
+                                </div>
                                 <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan (Opsional)</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Diskon</label>
@@ -1210,6 +1296,7 @@
                     <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
                         <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Inventaris</button>
                         <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Masuk</button>
+                        <button id="outgoingProductsTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'outgoing-products' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Keluar</button>
                         <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok</button>
                     </div>
 
@@ -1233,6 +1320,8 @@
                 warehouseSubContentContainer.innerHTML = renderStockHistory();
             } else if (appState.warehouse.activeSubTab === 'production-requests-warehouse') {
                 warehouseSubContentContainer.innerHTML = renderProductionRequests('warehouse-tab');
+            } else if (appState.warehouse.activeSubTab === 'outgoing-products') {
+                warehouseSubContentContainer.innerHTML = renderOutgoingProducts();
             }
         }
 
@@ -1539,6 +1628,56 @@
                         </table>
                     </div>
                 `}
+            `;
+        }
+
+        /**
+         * Merender daftar pesanan online yang perlu disiapkan oleh gudang.
+         * @returns {string} String HTML untuk konten produk keluar.
+         */
+        function renderOutgoingProducts() {
+            const pendingSales = appState.savedSales.filter(sale => sale.saleType === 'online' && sale.status === 'pending_warehouse_approval');
+
+            if (pendingSales.length === 0) {
+                return `<div class="text-center py-8 text-gray-500">Tidak ada pesanan online yang perlu disiapkan.</div>`;
+            }
+
+            return `
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Pesanan Online Menunggu Persiapan</h3>
+                    <div class="space-y-4">
+                        ${pendingSales.map(sale => `
+                            <div class="bg-gray-50 p-4 rounded-xl shadow-sm border interactive-card">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-semibold text-gray-800">Pesanan #${sale.id.substring(0, 8).toUpperCase()}</p>
+                                        <p class="text-sm text-gray-600">Pelanggan: <span class="font-medium">${sale.customerName || 'Umum'}</span></p>
+                                        <p class="text-xs text-gray-500">Tanggal: ${new Date(sale.timestamp).toLocaleString('id-ID')}</p>
+                                    </div>
+                                    <button class="toggle-details-btn py-1 px-3 bg-indigo-100 text-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-200" data-sale-id="${sale.id}">
+                                        Lihat Rincian
+                                    </button>
+                                </div>
+                                <div id="details-${sale.id}" class="hidden mt-4 pt-4 border-t border-gray-200">
+                                    <h4 class="font-semibold mb-2">Item yang harus disiapkan:</h4>
+                                    <ul class="space-y-2">
+                                        ${sale.items.map((item, index) => `
+                                            <li class="flex items-center">
+                                                <label class="flex items-center w-full p-2 rounded-md hover:bg-gray-100 cursor-pointer">
+                                                    <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 preparation-checkbox" data-sale-id="${sale.id}" data-item-index="${index}">
+                                                    <span class="ml-3 text-sm text-gray-700">${item.quantity}x ${item.name}</span>
+                                                </label>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    <button class="approve-sale-btn w-full mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded-xl shadow-md hover:bg-green-700 disabled:bg-gray-400" data-sale-id="${sale.id}" disabled>
+                                        Setujui & Siapkan Pesanan
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             `;
         }
 
@@ -2084,28 +2223,75 @@
          * @returns {string} String HTML untuk faktur produksi.
          */
         function generateProductionInvoiceHTML(report) {
-            const { hppResult, otherCosts, selectedGarment, timestamp } = report;
+            const { hppResult, otherCosts, selectedGarment, timestamp, userId } = report;
             const invoiceNumber = `PROD-${report.id.substring(0, 8).toUpperCase()}`;
-            const totalAdditionalItemsCost = (otherCosts && Array.isArray(otherCosts.additionalItems)) ? otherCosts.additionalItems.reduce((sum, item) => sum + (item.cost * item.quantity), 0) : 0;
             const totalPayment = hppResult.sellingPricePerGarment * hppResult.garmentsProduced;
+            const preparedBy = getUsernameById(userId);
 
             return `
                 <div class="font-sans text-gray-800">
                     <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
-                        <div class="text-2xl font-bold text-indigo-700">NOTA PRODUKSI</div>
+                        <div class="text-2xl font-bold text-indigo-700">NOTA SERAH TERIMA PRODUKSI</div>
                         <img src="${logoUrl}" alt="Logo" class="h-16 w-auto object-contain">
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
-                        <div><p class="font-semibold text-gray-700">Dari:</p><p class="font-bold text-lg">KAZUMI</p><p>Bandung, Indonesia</p></div>
-                        <div class="text-right"><p class="font-semibold text-gray-700">Nota No: <span class="font-normal">${invoiceNumber}</span></p><p class="font-semibold text-gray-700">Tanggal: <span class="font-normal">${new Date(timestamp).toLocaleDateString('id-ID')}</span></p></div>
+                        <div>
+                            <p class="font-semibold text-gray-700">No. Produksi:</p>
+                            <p class="font-mono">${invoiceNumber}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-700">Tanggal:</p>
+                            <p>${new Date(timestamp).toLocaleDateString('id-ID')}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Diserahkan oleh (Produksi):</p>
+                            <p>${preparedBy}</p>
+                        </div>
                     </div>
+                    <h4 class="font-bold text-lg mb-2">Rincian Hasil Produksi</h4>
                     <table class="min-w-full bg-white border border-gray-200">
-                        <thead class="bg-gray-100"><tr><th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">Deskripsi</th><th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Jumlah</th><th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Harga Satuan</th><th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Total</th></tr></thead>
-                        <tbody>${hppResult.garmentOrder.map(item => `<tr><td class="py-2 px-4 border-b text-sm">${GARMENT_PATTERNS[selectedGarment].title} ${item.model ? `(${item.model})` : ''} - ${item.size} ${item.color ? `(${item.color})` : ''}</td><td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment)}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment * item.quantity)}</td></tr>`).join('')}</tbody>
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">Deskripsi Produk</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Jumlah</th>
+                                <th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Nilai per Pcs</th>
+                                <th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Total Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${hppResult.garmentOrder.map(item => `
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-sm">${GARMENT_PATTERNS[selectedGarment].title} ${item.model ? `(${item.model})` : ''} - ${item.size} ${item.color ? `(${item.color})` : ''}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment)}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment * item.quantity)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="py-2 px-4 text-right font-bold text-lg">TOTAL NILAI PRODUKSI</td>
+                                <td class="py-2 px-4 text-right font-bold text-lg">Rp ${formatRupiah(totalPayment)}</td>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <div class="flex justify-end mt-4"><div class="w-full sm:w-1/2 space-y-2 text-right"><div class="flex justify-between font-semibold"><span>Total HPP:</span><span>Rp ${formatRupiah(hppResult.totalHPP * hppResult.garmentsProduced)}</span></div><div class="flex justify-between font-semibold"><span>Biaya Tambahan:</span><span>Rp ${formatRupiah(totalAdditionalItemsCost)}</span></div><div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>TOTAL NILAI PRODUKSI:</span><span>Rp ${formatRupiah(totalPayment)}</span></div></div></div>
-                    <div class="text-center text-sm text-gray-600 mt-12 pt-4 border-t">Terima kasih.</div>
-                </div>`;
+                    <div class="grid grid-cols-2 gap-8 mt-16">
+                        <div class="text-center">
+                            <p class="font-medium">Diserahkan Oleh,</p>
+                            <p class="border-b border-black py-16"></p>
+                            <p class="mt-2 font-medium">(${preparedBy})</p>
+                            <p class="text-sm">Bagian Produksi</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="font-medium">Diterima Oleh,</p>
+                            <p class="border-b border-black py-16"></p>
+                            <p class="mt-2 font-medium">(.........................)</p>
+                            <p class="text-sm">Penerima Barang (Gudang)</p>
+                        </div>
+                    </div>
+                    <div class="text-center text-sm text-gray-600 mt-12 pt-4 border-t">Dokumen ini adalah bukti serah terima barang dari bagian produksi ke gudang.</div>
+                </div>
+            `;
         }
 
         /**
@@ -2134,6 +2320,79 @@
         }
 
         /**
+         * Menghasilkan dan menampilkan HTML untuk nota keluar produk dari gudang.
+         * @param {object} sale - Data penjualan.
+         * @returns {string} String HTML untuk nota keluar produk.
+         */
+        function generateOutgoingProductNoteHTML(sale) {
+            const { id, customerName, items, timestamp } = sale;
+            const preparedBy = getUsernameById(appState.userId);
+
+            return `
+                <div class="font-sans text-gray-800">
+                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
+                        <div class="text-2xl font-bold text-indigo-700">NOTA KELUAR PRODUK</div>
+                        <img src="${logoUrl}" alt="Logo" class="h-16 w-auto object-contain">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
+                        <div>
+                            <p class="font-semibold text-gray-700">No. Pesanan:</p>
+                            <p class="font-mono">${id.substring(0, 8).toUpperCase()}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-700">Tanggal Disiapkan:</p>
+                            <p>${new Date().toLocaleString('id-ID')}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Untuk Pelanggan:</p>
+                            <p>${customerName || 'Umum'}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-700">Disiapkan Oleh:</p>
+                            <p>${preparedBy}</p>
+                        </div>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Rincian Barang</h4>
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">No.</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">Nama Produk</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Jumlah</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Cek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${items.map((item, index) => `
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-sm">${index + 1}</td>
+                                    <td class="py-2 px-4 border-b text-sm">${item.name}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-center">[ &#10003; ]</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="grid grid-cols-2 gap-8 mt-16">
+                        <div class="text-center">
+                            <p class="font-medium">Disiapkan Oleh,</p>
+                            <p class="border-b border-black py-16"></p>
+                            <p class="mt-2 font-medium">(${preparedBy})</p>
+                            <p class="text-sm">Penanggung Jawab Gudang</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="font-medium">Diterima Oleh,</p>
+                            <p class="border-b border-black py-16"></p>
+                            <p class="mt-2 font-medium">(.........................)</p>
+                            <p class="text-sm">Kurir / Pelanggan</p>
+                        </div>
+                    </div>
+                    <div class="text-center text-sm text-gray-600 mt-12 pt-4 border-t">Terima kasih.</div>
+                </div>
+            `;
+        }
+
+        /**
          * Menampilkan pratinjau cetak dan menangani pencetakan.
          * @param {'production'|'sale'} type - Tipe faktur yang akan dicetak.
          */
@@ -2153,6 +2412,10 @@
                 contentToPrint = generateSaleInvoiceHTML(appState.selectedSale);
                 relatedId = appState.selectedSale.id;
                 description = `Mencetak ulang struk penjualan #${relatedId.substring(0, 8).toUpperCase()}.`;
+            } else if (type === 'outgoing_product' && appState.selectedSale) {
+                contentToPrint = generateOutgoingProductNoteHTML(appState.selectedSale);
+                relatedId = appState.selectedSale.id;
+                description = `Mencetak nota keluar produk untuk pesanan #${relatedId.substring(0, 8).toUpperCase()}.`;
             } else {
                 showCustomMessage('Tidak ada data untuk dicetak.', 'error');
                 return;
@@ -2908,7 +3171,7 @@
          * Menyelesaikan penjualan, memperbarui inventaris, dan menyimpan laporan penjualan.
          */
         function handleFinalizeSale() {
-            const { items, customerName, result } = appState.salesCalculator;
+            const { items, customerName, result, saleType } = appState.salesCalculator;
             if (!result) {
                 showCustomMessage('Harap hitung total penjualan terlebih dahulu.', 'error');
                 return;
@@ -2918,55 +3181,72 @@
                 return;
             }
 
-            showCustomConfirmation('Apakah Anda yakin ingin menyelesaikan penjualan ini?', () => {
+            const confirmationMessage = saleType === 'online'
+                ? 'Ini akan membuat permintaan ke gudang. Lanjutkan?'
+                : 'Apakah Anda yakin ingin menyelesaikan penjualan ini?';
+
+            showCustomConfirmation(confirmationMessage, () => {
                 const newSaleId = generateUniqueId();
-                const updatedInventory = [...appState.warehouse.inventory];
-                const newStockHistoryEntries = [];
-
-                items.forEach(saleItem => {
-                    const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
-                    if (inventoryItemIndex !== -1) {
-                        const existingItem = updatedInventory[inventoryItemIndex];
-                        const oldStock = existingItem.stock;
-                        existingItem.stock -= saleItem.quantity;
-
-                        newStockHistoryEntries.unshift({
-                            id: generateUniqueId(),
-                            timestamp: new Date().toISOString(),
-                            productId: saleItem.id,
-                            productName: saleItem.name,
-                            type: 'Keluar',
-                            quantity: saleItem.quantity,
-                            finalStock: existingItem.stock,
-                            source: `Penjualan Struk #${newSaleId.substring(0, 8).toUpperCase()}`,
-                            userId: appState.userId
-                        });
-                    }
-                });
-
                 const newSale = {
                     id: newSaleId,
                     timestamp: new Date().toISOString(),
                     userId: appState.userId,
                     customerName: customerName,
                     items: JSON.parse(JSON.stringify(items)),
-                    result: JSON.parse(JSON.stringify(result))
+                    result: JSON.parse(JSON.stringify(result)),
+                    saleType: saleType,
+                    status: saleType === 'online' ? 'pending_warehouse_approval' : 'completed',
+                    preparedItems: {} // for checklist in warehouse
                 };
 
-                updateAppState({
-                    savedSales: [...appState.savedSales, newSale],
-                    warehouse: {
-                        ...appState.warehouse,
-                        inventory: updatedInventory,
-                        stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
-                    },
-                    salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all' },
-                    selectedSale: newSale
-                });
+                if (saleType === 'offline') {
+                    // Deduct stock immediately for offline sales
+                    const updatedInventory = [...appState.warehouse.inventory];
+                    const newStockHistoryEntries = [];
 
-                showCustomMessage('Penjualan berhasil disimpan!', 'success');
-                printInvoice('sale');
-                addActivityLog('Penjualan', `Penjualan baru senilai Rp ${formatRupiah(newSale.result.grandTotal)} kepada ${newSale.customerName || 'Umum'} dicatat.`, appState.userId, newSaleId);
+                    items.forEach(saleItem => {
+                        const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
+                        if (inventoryItemIndex !== -1) {
+                            const existingItem = updatedInventory[inventoryItemIndex];
+                            existingItem.stock -= saleItem.quantity;
+
+                            newStockHistoryEntries.unshift({
+                                id: generateUniqueId(),
+                                timestamp: new Date().toISOString(),
+                                productId: saleItem.id,
+                                productName: saleItem.name,
+                                type: 'Keluar',
+                                quantity: saleItem.quantity,
+                                finalStock: existingItem.stock,
+                                source: `Penjualan Offline #${newSaleId.substring(0, 8).toUpperCase()}`,
+                                userId: appState.userId
+                            });
+                        }
+                    });
+
+                    updateAppState({
+                        savedSales: [...appState.savedSales, newSale],
+                        warehouse: {
+                            ...appState.warehouse,
+                            inventory: updatedInventory,
+                            stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
+                        },
+                        salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all', saleType: 'offline' },
+                        selectedSale: newSale
+                    });
+
+                    showCustomMessage('Penjualan offline berhasil disimpan!', 'success');
+                    printInvoice('sale');
+                    addActivityLog('Penjualan', `Penjualan offline senilai Rp ${formatRupiah(newSale.result.grandTotal)} kepada ${newSale.customerName || 'Umum'} dicatat.`, appState.userId, newSaleId);
+
+                } else { // Online sale
+                    updateAppState({
+                        savedSales: [...appState.savedSales, newSale],
+                        salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all', saleType: 'offline' },
+                    });
+                    showCustomMessage('Permintaan penjualan online berhasil dibuat dan dikirim ke gudang!', 'success');
+                    addActivityLog('Penjualan', `Permintaan penjualan online senilai Rp ${formatRupiah(newSale.result.grandTotal)} dibuat.`, appState.userId, newSaleId);
+                }
             });
         }
 
@@ -3682,7 +3962,9 @@
 
             // --- Spesifik Tab Kalkulator Penjualan ---
             if (appState.activeTab === 'salesCalculator') {
-                if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
+                if (e.target.id === 'saleTypeOfflineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'offline' } });
+                else if (e.target.id === 'saleTypeOnlineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'online' } });
+                else if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
                 else if (e.target.id === 'calculateSaleBtn') handleCalculateSale();
                 else if (e.target.id === 'finalizeSaleBtn') handleFinalizeSale();
                 else if (e.target.classList.contains('remove-sale-item-btn')) handleRemoveSaleItem(parseInt(e.target.dataset.index));
@@ -3692,9 +3974,20 @@
             if (appState.activeTab === 'warehouse') {
                 if (e.target.id === 'inventoryListTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'inventory-list' } });
                 else if (e.target.id === 'productionRequestsWarehouseTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'production-requests-warehouse' } });
+                else if (e.target.id === 'outgoingProductsTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'outgoing-products' } });
                 else if (e.target.id === 'stockHistoryTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'stock-history' } });
                 // Tombol "Minta Produksi" di tab Inventaris Gudang
                 else if (e.target.classList.contains('request-production-btn')) requestProduction(e.target.dataset.id);
+                else if (e.target.classList.contains('toggle-details-btn')) {
+                    const saleId = e.target.dataset.saleId;
+                    const detailsDiv = document.getElementById(`details-${saleId}`);
+                    if (detailsDiv) {
+                        detailsDiv.classList.toggle('hidden');
+                        e.target.textContent = detailsDiv.classList.contains('hidden') ? 'Lihat Rincian' : 'Sembunyikan';
+                    }
+                } else if (e.target.classList.contains('approve-sale-btn')) {
+                    handleApproveSale(e.target.dataset.saleId);
+                }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
             }
@@ -3769,7 +4062,40 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
+                if (e.target.classList.contains('production-request-category-checkbox')) {
+                    const category = e.target.value;
+                    const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
+                    if (e.target.checked) {
+                        if (!currentFilters.includes(category)) {
+                            currentFilters.push(category);
+                        }
+                    } else {
+                        const index = currentFilters.indexOf(category);
+                        if (index > -1) {
+                            currentFilters.splice(index, 1);
+                        }
+                    }
+                    updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
+                } else if (e.target.classList.contains('preparation-checkbox')) {
+                    const { saleId, itemIndex } = e.target.dataset;
+                    const sale = appState.savedSales.find(s => s.id === saleId);
+                    if (sale) {
+                        if (!sale.preparedItems) {
+                            sale.preparedItems = {};
+                        }
+                        sale.preparedItems[itemIndex] = e.target.checked;
+
+                        // Check if all items are prepared
+                        const allPrepared = sale.items.every((item, index) => sale.preparedItems[index]);
+                        const approveBtn = document.querySelector(`.approve-sale-btn[data-sale-id="${saleId}"]`);
+                        if (approveBtn) {
+                            approveBtn.disabled = !allPrepared;
+                        }
+                        // No full render, just update state
+                        updateAppState({ savedSales: [...appState.savedSales] }, false);
+                    }
+                }
+                else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
             }
 
