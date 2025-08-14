@@ -548,7 +548,8 @@
                 taxPercentage: 0,
                 result: null,
                 searchTerm: '',
-                selectedCategoryFilter: 'all'
+                selectedCategoryFilter: 'all',
+                saleType: 'offline' // 'offline' or 'online'
             },
             warehouse: {
                 inventory: loadFromLocalStorage('kazumiInventory', []),
@@ -1599,7 +1600,14 @@
                                 Detail Transaksi
                             </h3>
                             <div class="space-y-4">
-                                <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan (Opsional)</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tipe Penjualan</label>
+                                    <div class="flex gap-2 mt-1">
+                                        <button id="saleTypeOfflineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'offline' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Offline</button>
+                                        <button id="saleTypeOnlineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'online' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Online</button>
+                                    </div>
+                                </div>
+                                <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan / Tujuan</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Diskon</label>
                                     <div class="flex gap-2 mt-1">
@@ -1625,15 +1633,17 @@
                                 <div class="flex justify-between text-sm"><span class="text-gray-600">Diskon:</span><span class="font-medium text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
                                 <div class="flex justify-between text-sm"><span class="text-gray-600">Pajak (${result.taxPercentage}%):</span><span class="font-medium">+ Rp ${formatRupiah(result.taxAmount)}</span></div>
                                 <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2"><span class="text-green-700">Total Akhir:</span><span class="text-green-700">Rp ${formatRupiah(result.grandTotal)}</span></div>
-                                <div class="flex gap-4 mt-4">
-                                    <button id="processOfflineSaleBtn" class="w-1/2 bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 flex items-center justify-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7"/></svg>
-                                        Proses Offline
-                                    </button>
-                                    <button id="createOnlineOrderFromSaleBtn" class="w-1/2 bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-purple-700 flex items-center justify-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-plus"><path d="M16.5 9.4a4 4 0 1 1 0 5.2"/><path d="M12 12h10"/><path d="M12 12v10M12 12L2 22"/><path d="M7 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><path d="M12 2v10"/></svg>
-                                        Buat Pesanan Online
-                                    </button>
+                                <div class="mt-4">
+                                    ${appState.salesCalculator.saleType === 'offline' ?
+                                        `<button id="processOfflineSaleBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 flex items-center justify-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7"/></svg>
+                                            Proses Offline
+                                        </button>` :
+                                        `<button id="createOnlineOrderFromSaleBtn" class="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-purple-700 flex items-center justify-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-plus"><path d="M16.5 9.4a4 4 0 1 1 0 5.2"/><path d="M12 12h10"/><path d="M12 12v10M12 12L2 22"/><path d="M7 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><path d="M12 2v10"/></svg>
+                                            Buat Pesanan Online
+                                        </button>`
+                                    }
                                 </div>
                             </div>
                         ` : ''}
@@ -4900,7 +4910,9 @@
 
             // --- Spesifik Tab Kalkulator Penjualan ---
             if (appState.activeTab === 'salesCalculator') {
-                if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
+                if (e.target.id === 'saleTypeOfflineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'offline' } });
+                else if (e.target.id === 'saleTypeOnlineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'online' } });
+                else if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
                 else if (e.target.id === 'calculateSaleBtn') handleCalculateSale();
                 else if (e.target.id === 'processOfflineSaleBtn') handleProcessOfflineSale();
                 else if (e.target.id === 'createOnlineOrderFromSaleBtn') handleCreateOnlineOrderFromSale();
