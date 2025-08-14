@@ -33,8 +33,8 @@
         }
         /* Transisi untuk perpindahan tab yang lebih mulus */
         .tab-content {
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-            transform: translateY(15px);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(10px);
             /* Tambahkan ini untuk memastikan konten tidak terlihat saat tidak aktif */
             position: absolute; /* Mengatasi masalah tinggi 0 */
             width: 100%;
@@ -91,121 +91,23 @@
             overflow-y: auto;
             padding: 2rem;
         }
-
-        /* Animasi dan Transisi Baru */
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slide-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.5s ease-out forwards;
-        }
-        .animate-slide-in-up {
-            opacity: 0; /* Mulai dari tidak terlihat */
-            animation: slide-in-up 0.4s ease-out forwards;
-        }
-
-        /* Efek Hover yang Disempurnakan */
-        .interactive-card {
-            transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
-        }
-        .interactive-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Transisi untuk Tombol */
-        button, .button {
-            transition: all 0.2s ease-in-out;
-        }
-        button:hover, .button:hover {
-            filter: brightness(1.05);
-            transform: scale(1.03);
-        }
-        button:active, .button:active {
-            transform: scale(0.98);
-            filter: brightness(0.95);
-        }
-
-        /* Efek untuk Ikon di dalam Tombol */
-        button > svg {
-            transition: transform 0.2s ease-in-out;
-        }
-        button:hover > svg {
-            transform: scale(1.1);
-        }
-
-        /* Animasi untuk Tab */
-        .tab-button {
-            position: relative;
-        }
-        .tab-button::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; /* Align with the container's border-b */
-            left: 0.5rem;
-            right: 0.5rem;
-            height: 2px;
-            background-color: #3B82F6; /* blue-500 */
-            transform: scaleX(0);
-            transform-origin: center;
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        .tab-button.active::after {
-            transform: scaleX(1);
-        }
-
-
-        /* Transisi untuk Input Form */
-        input[type="text"],
-        input[type="number"],
-        input[type="password"],
-        input[type="email"],
-        input[type="tel"],
-        select,
-        textarea {
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: 2px solid transparent;
-            outline-offset: 2px;
-            --tw-ring-color: rgba(59, 130, 246, 0.5); /* blue-500 with 50% opacity */
-            box-shadow: 0 0 0 3px var(--tw-ring-color);
-            border-color: #3B82F6; /* blue-500 */
-        }
     </style>
 </head>
-<body class="min-h-screen bg-slate-100 p-4 sm:p-8 flex flex-col items-center">
+<body class="min-h-screen bg-gray-100 p-4 sm:p-8 flex flex-col items-center">
     <!-- Kontainer utama aplikasi -->
     <div id="app-container" class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl-custom w-full max-w-6xl relative">
         <!-- Konten aplikasi akan dirender oleh JavaScript di sini -->
     </div>
 
     <!-- Modal untuk Catatan Revisi -->
-    <div id="revisionModal" class="hidden fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300 backdrop-blur-sm">
-        <div id="revisionModalPanel" class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform scale-95 transition-all duration-300">
+    <div id="revisionModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
             <h3 class="text-xl font-bold mb-4">Revisi Laporan</h3>
-            <p class="text-slate-800 mb-4">Tambahkan catatan revisi:</p>
+            <p class="text-gray-700 mb-4">Tambahkan catatan revisi:</p>
             <textarea id="revisionNotesInput" class="w-full p-2 border rounded-md mb-4 h-24 resize-y" placeholder="Contoh: Perbaikan jumlah bahan..."></textarea>
             <div class="flex justify-end gap-3">
-                <button id="cancelRevisionBtn" class="py-2 px-4 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300">Batal</button>
-                <button id="confirmRevisionBtn" class="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">Kirim Revisi</button>
+                <button id="cancelRevisionBtn" class="py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                <button id="confirmRevisionBtn" class="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Kirim Revisi</button>
             </div>
         </div>
     </div>
@@ -225,10 +127,10 @@
 
         // Data Pengguna Awal (digunakan jika localStorage kosong)
         const DEFAULT_INITIAL_USERS = [
-            { uid: 'kazumisp_uid', username: 'kazumisp', password: 'kazumisp', role: 'super_admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'superadmin@example.com', whatsapp: '6281234567890' },
-            { uid: 'kazumiad_uid', username: 'kazumiad', password: 'kazumiad', role: 'admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'admin@example.example.com', whatsapp: '6281234567891' },
-            { uid: 'kazumiproduksi_uid', username: 'produksi', password: 'produksi', role: 'member', department: 'produksi', isApproved: true, createdAt: new Date().toISOString(), email: 'produksi@example.com', whatsapp: '6281234567892' },
-            { uid: 'kazumigudang_uid', username: 'gudang', password: 'gudang', role: 'member', department: 'gudang', isApproved: true, createdAt: new Date().toISOString(), email: 'gudang@example.com', whatsapp: '6281234567893' }
+            { uid: 'kazumisp_uid', username: 'kazumisp', password: 'kazumisp', role: 'super_admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'superadmin@example.com', whatsapp: '6281234567890', fullName: 'Super Admin', bio: 'CEO of Kazumi.', profilePictureUrl: 'https://placehold.co/100x100/4338ca/ffffff?text=SP' },
+            { uid: 'kazumiad_uid', username: 'kazumiad', password: 'kazumiad', role: 'admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'admin@example.com', whatsapp: '6281234567891', fullName: 'Admin', bio: 'Wakil CEO.', profilePictureUrl: 'https://placehold.co/100x100/10b981/ffffff?text=AD' },
+            { uid: 'kazumiproduksi_uid', username: 'produksi', password: 'produksi', role: 'member', department: 'produksi', isApproved: true, createdAt: new Date().toISOString(), email: 'produksi@example.com', whatsapp: '6281234567892', fullName: 'Tim Produksi', bio: 'Anggota tim produksi.', profilePictureUrl: 'https://placehold.co/100x100/f59e0b/ffffff?text=PR' },
+            { uid: 'kazumigudang_uid', username: 'gudang', password: 'gudang', role: 'member', department: 'gudang', isApproved: true, createdAt: new Date().toISOString(), email: 'gudang@example.com', whatsapp: '6281234567893', fullName: 'Tim Gudang', bio: 'Anggota tim gudang.', profilePictureUrl: 'https://placehold.co/100x100/6366f1/ffffff?text=GD' }
         ];
 
         // Ukuran Pakaian
@@ -365,7 +267,6 @@
         const formatRole = (role) => ({
             'super_admin': 'CEO',
             'admin': 'Wakil CEO',
-            'penanggung_jawab': 'Penanggung Jawab',
             'user': 'Pengguna',
             'member': 'Anggota',
             'pending': 'Menunggu Persetujuan'
@@ -406,9 +307,7 @@
          */
         function showCustomMessage(message, type) {
             const messageBox = document.createElement('div');
-            const bgColor = type === 'success' ? 'bg-green-500' : (type === 'info' ? 'bg-blue-500' : 'bg-red-500');
-            messageBox.className = `fixed top-4 right-0 p-4 rounded-l-lg shadow-lg text-white z-[10000] flex items-center gap-2 transform translate-x-full transition-transform duration-300 ease-in-out ${bgColor}`;
-
+            messageBox.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white z-[10000] flex items-center gap-2 ${type === 'success' ? 'bg-green-500' : (type === 'info' ? 'bg-blue-500' : 'bg-red-500')}`;
             let iconSvg = '';
             if (type === 'success') {
                 iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>`;
@@ -419,17 +318,7 @@
             }
             messageBox.innerHTML = `${iconSvg}<span>${message}</span>`;
             document.body.appendChild(messageBox);
-
-            // Slide in
-            setTimeout(() => {
-                messageBox.style.transform = 'translateX(0)';
-            }, 10);
-
-            // Slide out and remove
-            setTimeout(() => {
-                messageBox.style.transform = 'translateX(100%)';
-                messageBox.addEventListener('transitionend', () => messageBox.remove(), { once: true });
-            }, 3000);
+            setTimeout(() => messageBox.remove(), 3000);
         }
 
         /**
@@ -439,32 +328,22 @@
          */
         function showCustomConfirmation(message, onConfirm) {
             const modalOverlay = document.createElement('div');
-            modalOverlay.className = `fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-[10000] opacity-0 transition-opacity duration-300 backdrop-blur-sm`;
+            modalOverlay.className = `fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000]`;
             modalOverlay.innerHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center transform scale-95 transition-all duration-300">
+                <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
                     <p class="text-lg font-semibold mb-4">${message}</p>
                     <div class="flex justify-center gap-4">
                         <button id="confirmYesBtn" class="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600">Ya</button>
-                        <button id="confirmNoBtn" class="py-2 px-4 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300">Tidak</button>
+                        <button id="confirmNoBtn" class="py-2 px-4 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Tidak</button>
                     </div>
                 </div>
             `;
             document.body.appendChild(modalOverlay);
-            const modalPanel = modalOverlay.querySelector('div');
-
-            setTimeout(() => {
-                modalOverlay.classList.remove('opacity-0');
-                if (modalPanel) modalPanel.classList.remove('scale-95');
-            }, 10);
-
-            const cleanup = () => {
-                modalOverlay.classList.add('opacity-0');
-                if (modalPanel) modalPanel.classList.add('scale-95');
-                modalOverlay.addEventListener('transitionend', () => modalOverlay.remove(), { once: true });
-            };
 
             const confirmYesBtn = document.getElementById('confirmYesBtn');
             const confirmNoBtn = document.getElementById('confirmNoBtn');
+
+            const cleanup = () => modalOverlay.remove();
 
             confirmYesBtn?.addEventListener('click', () => {
                 onConfirm();
@@ -489,12 +368,12 @@
          */
         function showModal(title, content) {
             const modalOverlay = document.createElement('div');
-            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-[10000] opacity-0 transition-opacity duration-300 backdrop-blur-sm';
+            modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000]';
             modalOverlay.innerHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full transform scale-95 transition-all duration-300">
+                <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">${title}</h3>
-                        <button id="closeModalBtn" class="text-slate-500 hover:text-slate-800">
+                        <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                         </button>
                     </div>
@@ -502,20 +381,7 @@
                 </div>
             `;
             document.body.appendChild(modalOverlay);
-            const modalPanel = modalOverlay.querySelector('div');
-
-            setTimeout(() => {
-                modalOverlay.classList.remove('opacity-0');
-                if (modalPanel) modalPanel.classList.remove('scale-95');
-            }, 10);
-
-            const cleanup = () => {
-                modalOverlay.classList.add('opacity-0');
-                if (modalPanel) modalPanel.classList.add('scale-95');
-                modalOverlay.addEventListener('transitionend', () => modalOverlay.remove(), { once: true });
-            };
-
-            document.getElementById('closeModalBtn')?.addEventListener('click', cleanup);
+            document.getElementById('closeModalBtn')?.addEventListener('click', () => modalOverlay.remove());
         }
 
         /**
@@ -565,14 +431,12 @@
                 taxPercentage: 0,
                 result: null,
                 searchTerm: '',
-                selectedCategoryFilter: 'all',
-                saleType: 'offline' // Penjualan offline sebagai default
+                selectedCategoryFilter: 'all'
             },
             warehouse: {
                 inventory: loadFromLocalStorage('kazumiInventory', []),
                 searchTerm: '',
                 selectedCategoryFilter: 'all',
-                productionRequestCategoryFilters: [], // New property for production requests
                 lowStockThreshold: 10,
                 stockHistory: loadFromLocalStorage('kazumiStockHistory', []),
                 productionRequests: loadFromLocalStorage('kazumiProductionRequests', []),
@@ -595,6 +459,7 @@
             revisionNotesForNewReport: '',
             lastLoggedInUsers: loadFromLocalStorage('kazumiLastLoggedInUsers', []),
             activityLogs: loadFromLocalStorage('kazumiActivityLogs', []),
+            messages: loadFromLocalStorage('kazumiMessages', []),
             currentProductionRequestId: null
         };
 
@@ -630,6 +495,7 @@
             saveToLocalStorage('kazumiStockHistory', appState.warehouse.stockHistory);
             saveToLocalStorage('kazumiProductionRequests', appState.warehouse.productionRequests);
             saveToLocalStorage('kazumiActivityLogs', appState.activityLogs);
+            saveToLocalStorage('kazumiMessages', appState.messages);
             saveToLocalStorage('kazumiLocalUsers', appState.allUsers);
             saveToLocalStorage('kazumiLastLoggedInUsers', appState.lastLoggedInUsers);
             saveToLocalStorage('kazumiMaterialSettings', appState.material);
@@ -710,43 +576,95 @@
         function renderAuthScreen() {
             appContainer.innerHTML = `
                 <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-lg-custom w-full max-w-md mx-auto">
-                    <h1 class="text-3xl sm:text-4xl font-bold text-center text-slate-900 mb-6">${appState.loginView === 'login' ? 'Login KAZUMI' : 'Daftar Akun Baru'}</h1>
-                    <p class="text-center text-slate-500 mb-8 mt-2">${appState.loginView === 'login' ? 'Silakan login untuk melanjutkan.' : 'Daftar untuk membuat akun baru.'}</p>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-6">${appState.loginView === 'login' ? 'Login KAZUMI' : 'Daftar Akun Baru'}</h1>
+                    <p class="text-center text-gray-600 mb-8">${appState.loginView === 'login' ? 'Silakan login untuk melanjutkan.' : 'Daftar untuk membuat akun baru.'}</p>
                     <div id="authForm" class="space-y-6">
                         ${appState.loginView === 'login' ? `
                             <div>
-                                <label for="usernameInput" class="block text-sm font-medium text-slate-800 mb-1">User ID</label>
-                                <input type="text" id="usernameInput" placeholder="Masukkan User ID Anda" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" />
+                                <label for="usernameInput" class="block text-sm font-medium text-gray-700 mb-1">User ID</label>
+                                <input type="text" id="usernameInput" placeholder="Masukkan User ID Anda" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" />
                             </div>
                             <div>
-                                <label for="passwordInput" class="block text-sm font-medium text-slate-800 mb-1">Password</label>
-                                <input type="password" id="passwordInput" placeholder="********" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" />
+                                <label for="passwordInput" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" id="passwordInput" placeholder="********" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" />
                             </div>
                             ${appState.lastLoggedInUsers.length > 0 ? `
                                 <div class="mt-4">
-                                    <label class="block text-sm font-medium text-slate-800 mb-1">Akun Terakhir Digunakan:</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Akun Terakhir Digunakan:</label>
                                     <div class="flex flex-wrap gap-2">
                                         ${appState.lastLoggedInUsers.map(user => `
-                                            <button class="last-user-btn py-1 px-3 bg-slate-100 text-slate-800 rounded-md text-sm hover:bg-slate-200" data-username="${user.username}">${user.username}</button>
+                                            <button class="last-user-btn py-1 px-3 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200" data-username="${user.username}">${user.username}</button>
                                         `).join('')}
                                     </div>
                                 </div>
                             ` : ''}
                         ` : `
-                            <div><label for="regUsernameInput" class="block text-sm font-medium text-slate-800 mb-1">User ID</label><input type="text" id="regUsernameInput" placeholder="Pilih User ID" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" /></div>
-                            <div><label for="regPasswordInput" class="block text-sm font-medium text-slate-800 mb-1">Password</label><input type="password" id="regPasswordInput" placeholder="Minimal 6 karakter" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" /></div>
-                            <div><label for="regEmailInput" class="block text-sm font-medium text-slate-800 mb-1">Email</label><input type="email" id="regEmailInput" placeholder="contoh@domain.com" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" /></div>
-                            <div><label for="regWhatsappInput" class="block text-sm font-medium text-slate-800 mb-1">Nomor WhatsApp</label><input type="tel" id="regWhatsappInput" placeholder="contoh: 628123456789" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border" /></div>
-                            <div><label for="regDepartmentInput" class="block text-sm font-medium text-slate-800 mb-1">Departemen</label><select id="regDepartmentInput" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-3 border"><option value="produksi">Produksi</option><option value="gudang">Gudang</option><option value="penjualan">Penjualan</option></select></div>
+                            <div><label for="regUsernameInput" class="block text-sm font-medium text-gray-700 mb-1">User ID</label><input type="text" id="regUsernameInput" placeholder="Pilih User ID" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" /></div>
+                            <div><label for="regPasswordInput" class="block text-sm font-medium text-gray-700 mb-1">Password</label><input type="password" id="regPasswordInput" placeholder="Minimal 6 karakter" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" /></div>
+                            <div><label for="regEmailInput" class="block text-sm font-medium text-gray-700 mb-1">Email</label><input type="email" id="regEmailInput" placeholder="contoh@domain.com" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" /></div>
+                            <div><label for="regWhatsappInput" class="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp</label><input type="tel" id="regWhatsappInput" placeholder="contoh: 628123456789" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border" /></div>
+                            <div><label for="regDepartmentInput" class="block text-sm font-medium text-gray-700 mb-1">Departemen</label><select id="regDepartmentInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"><option value="produksi">Produksi</option><option value="gudang">Gudang</option><option value="penjualan">Penjualan</option></select></div>
                         `}
                         <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative" role="alert"><strong class="font-bold">Error!</strong> <span class="block sm:inline"></span></div>
                         ${appState.loginView === 'login' ? `
-                            <button id="loginBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-blue-700">Login</button>
-                            <button id="switchToRegisterBtn" class="w-full mt-4 bg-slate-200 text-slate-900 font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-slate-300">Daftar Akun Baru</button>
+                            <button id="loginBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-indigo-700">Login</button>
+                            <button id="switchToRegisterBtn" class="w-full mt-4 bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-gray-300">Daftar Akun Baru</button>
                         ` : `
                             <button id="registerBtn" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-green-700">Daftar</button>
-                            <button id="switchToLoginBtn" class="w-full mt-4 bg-slate-200 text-slate-900 font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-slate-300">Kembali ke Login</button>
+                            <button id="switchToLoginBtn" class="w-full mt-4 bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-gray-300">Kembali ke Login</button>
                         `}
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Merender konten untuk tab Message Board.
+         * @returns {string} String HTML untuk konten message board.
+         */
+        function renderMessageBoardContent() {
+            const container = document.getElementById('messageBoardSection');
+            if (!container) return;
+
+            const sortedMessages = [...appState.messages].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const currentUser = appState.allUsers.find(u => u.uid === appState.userId);
+
+            container.innerHTML = `
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
+                        Papan Pesan Antar Departemen
+                    </h2>
+
+                    <!-- Message Input Form -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
+                        <textarea id="newMessageInput" class="w-full p-2 border rounded-md h-24 resize-y" placeholder="Tulis pesan Anda di sini..."></textarea>
+                        <button id="sendMessageBtn" class="mt-2 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 w-full sm:w-auto">Kirim Pesan</button>
+                    </div>
+
+                    <!-- Messages List -->
+                    <div class="space-y-4">
+                        ${sortedMessages.length > 0 ? sortedMessages.map(msg => {
+                            const sender = appState.allUsers.find(u => u.uid === msg.userId);
+                            const isCurrentUser = msg.userId === appState.userId;
+                            const senderName = sender ? sender.fullName || sender.username : 'Pengguna Tidak Dikenal';
+                            const senderDept = sender ? formatDepartment(sender.department) || formatRole(sender.role) : '';
+                            const senderPic = sender ? sender.profilePictureUrl : 'https://placehold.co/100x100/cccccc/ffffff?text=?';
+
+                            return `
+                                <div class="flex items-start gap-4 p-4 rounded-lg ${isCurrentUser ? 'bg-indigo-50' : 'bg-gray-50'}">
+                                    <img src="${senderPic}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
+                                    <div class="flex-1">
+                                        <div class="flex items-baseline gap-2">
+                                            <p class="font-bold text-gray-900">${senderName}</p>
+                                            <p class="text-xs text-gray-500">${senderDept}</p>
+                                        </div>
+                                        <p class="text-gray-700 mt-1">${msg.text.replace(/\n/g, '<br>')}</p>
+                                        <p class="text-xs text-gray-400 mt-2">${new Date(msg.timestamp).toLocaleString('id-ID')}</p>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('') : '<p class="text-center text-gray-500">Belum ada pesan. Jadilah yang pertama!</p>'}
                     </div>
                 </div>
             `;
@@ -761,11 +679,11 @@
             const isSuperAdmin = userRole === 'super_admin';
 
             const visibleTabs = {
-                recapitulation: isSuperAdmin,
                 production: isAdmin || userDepartment === 'produksi',
                 salesCalculator: isAdmin || userDepartment === 'penjualan',
                 report: isAdmin || userDepartment === 'produksi' || userDepartment === 'penjualan' || userDepartment === 'gudang',
                 warehouse: isAdmin || userDepartment === 'gudang',
+                messageBoard: true, // Visible to all logged-in users
                 accountManagement: isAdmin,
                 activityLogs: isSuperAdmin,
             };
@@ -778,49 +696,49 @@
                 tabOrder = ['production', 'report', 'warehouse', 'salesCalculator', 'accountManagement'];
             } else if (userDepartment === 'penjualan') {
                 tabOrder = ['salesCalculator', 'report', 'production', 'warehouse', 'accountManagement'];
-            } else if (isSuperAdmin) {
-                tabOrder = ['recapitulation', 'production', 'salesCalculator', 'report', 'warehouse', 'accountManagement', 'activityLogs'];
-            } else if (isAdmin) { // Urutan default Admin
+            } else if (isAdmin) { // Urutan default Admin/Super Admin
                 tabOrder = ['production', 'salesCalculator', 'report', 'warehouse', 'accountManagement'];
+            }
+            if (isSuperAdmin) {
+                tabOrder.push('activityLogs');
             }
 
             const tabButtonsHtml = tabOrder.map(tabKey => {
                 if (visibleTabs[tabKey]) {
                     const tabTitleMap = {
-                        recapitulation: 'Rekapitulasi',
                         production: 'Produksi',
                         salesCalculator: 'Kalkulator Penjualan',
                         report: 'Laporan',
                         warehouse: 'Gudang',
+                        messageBoard: 'Papan Pesan',
                         accountManagement: 'Manajemen Akun',
                         activityLogs: 'Aktivitas Kerja'
                     };
-                    const isActive = appState.activeTab === tabKey;
-                    return `<button id="${tabKey}TabBtn" class="tab-button py-2 px-4 font-semibold ${isActive ? 'active text-blue-600' : 'text-slate-500 hover:text-blue-600'}">${tabTitleMap[tabKey]}</button>`;
+                    return `<button id="${tabKey}TabBtn" class="py-2 px-4 font-semibold ${appState.activeTab === tabKey ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">${tabTitleMap[tabKey]}</button>`;
                 }
                 return '';
             }).join('');
 
             appContainer.innerHTML = `
-                <h1 class="text-4xl font-extrabold tracking-tight text-center text-slate-900 mb-2">Dasbor KAZUMI</h1>
-                <p class="text-center text-slate-500 mb-8 mt-2">Manajemen Produksi, Penjualan, dan Inventaris Anda.</p>
-                <div class="mb-4 text-center text-slate-500 text-sm flex items-center justify-center gap-2">
+                <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">Dasbor KAZUMI</h1>
+                <p class="text-center text-gray-600 mb-8">Manajemen Produksi, Penjualan, dan Inventaris Anda.</p>
+                <div class="mb-4 text-center text-gray-500 text-sm flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    User ID: <span class="font-mono text-slate-800">${appState.username}</span> |
-                    <span class="font-semibold text-blue-600">${formatRole(userRole) || formatDepartment(userDepartment)}</span>
+                    User ID: <span class="font-mono text-gray-700">${appState.username}</span> |
+                    <span class="font-semibold text-indigo-600">${formatRole(userRole) || formatDepartment(userDepartment)}</span>
                     <button id="logoutBtn" class="ml-4 py-1 px-3 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200">Logout</button>
                 </div>
 
-                <div class="flex flex-wrap justify-center border-b border-slate-200 mb-8">
+                <div class="flex flex-wrap justify-center border-b border-gray-200 mb-8">
                     ${tabButtonsHtml}
                 </div>
 
                 <div class="relative min-h-[600px]"> <!-- Tambahkan min-h untuk mencegah layout bergeser -->
-                    <div id="recapitulationSection" class="tab-content ${appState.activeTab === 'recapitulation' ? 'active' : ''}"></div>
                     <div id="productionSection" class="tab-content ${appState.activeTab === 'production' ? 'active' : ''}">${visibleTabs.production ? renderProductionContent() : ''}</div>
                     <div id="salesCalculatorSection" class="tab-content ${appState.activeTab === 'salesCalculator' ? 'active' : ''}">${visibleTabs.salesCalculator ? renderSalesCalculatorContent() : ''}</div>
                     <div id="warehouseSection" class="tab-content ${appState.activeTab === 'warehouse' ? 'active' : ''}">${visibleTabs.warehouse ? renderWarehouseContent() : ''}</div>
                     <div id="reportSection" class="tab-content ${appState.activeTab === 'report' ? 'active' : ''}">${visibleTabs.report ? renderReportContent() : ''}</div>
+                    <div id="messageBoardSection" class="tab-content ${appState.activeTab === 'messageBoard' ? 'active' : ''}"></div>
                     <div id="accountManagementSection" class="tab-content ${appState.activeTab === 'accountManagement' ? 'active' : ''}">${visibleTabs.accountManagement ? renderAccountManagementContent() : ''}</div>
                     <div id="activityLogsSection" class="tab-content ${appState.activeTab === 'activityLogs' ? 'active' : ''}">${visibleTabs.activityLogs ? renderActivityLogsContent() : ''}</div>
                 </div>
@@ -833,8 +751,8 @@
                 renderReportSubContent();
             } else if (appState.activeTab === 'warehouse' && visibleTabs.warehouse) {
                 renderWarehouseSubContent();
-            } else if (appState.activeTab === 'recapitulation' && visibleTabs.recapitulation) {
-                renderRecapitulationContent();
+            } else if (appState.activeTab === 'messageBoard') {
+                renderMessageBoardContent();
             }
         }
 
@@ -844,11 +762,11 @@
          */
         function renderProductionContent() {
             return `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Manajemen Produksi</h2>
-                    <div class="flex flex-wrap space-x-2 border-b border-slate-300 mb-6">
-                        <button id="hppCalculatorSubTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeProductionSubTab === 'hpp-calculator' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Kalkulator HPP</button>
-                        <button id="productionRequestsSubTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeProductionSubTab === 'production-requests' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Permintaan Gudang</button>
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Produksi</h2>
+                    <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
+                        <button id="hppCalculatorSubTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeProductionSubTab === 'hpp-calculator' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Kalkulator HPP</button>
+                        <button id="productionRequestsSubTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeProductionSubTab === 'production-requests' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Permintaan Gudang</button>
                     </div>
                     <div id="productionSubContent">
                         <!-- Sub-konten akan dirender di sini oleh renderProductionSubContent() -->
@@ -883,54 +801,54 @@
         function renderHPPCalculatorContent() {
             return `
                 ${appState.isCurrentlyRevising ? `<div class="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded-xl mb-6 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit-3"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m15 5-3 3"/></svg><span class="font-semibold">Anda sedang merevisi laporan. Catatan: "${appState.revisionNotesForNewReport}"</span></div>` : ''}
-                <div class="p-6 bg-slate-50 rounded-2xl mb-8 flex flex-col items-center">
-                    <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shirt mx-auto"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>Pilih Jenis Pakaian</h2>
+                <div class="p-6 bg-gray-50 rounded-2xl mb-8 flex flex-col items-center">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shirt mx-auto"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>Pilih Jenis Pakaian</h2>
                     <div id="garmentSelection" class="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-2xl"></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ruler"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>Detail Bahan</h3>
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ruler"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>Detail Bahan</h3>
                             <div class="space-y-4">
-                                <div><label for="materialWidth" class="block text-sm font-medium text-slate-800">Lebar Bahan (inch)</label><input type="number" id="materialWidth" value="${appState.material.width}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"/></div>
-                                <div><label for="wasteFactor" class="block text-sm font-medium text-slate-800">Faktor Limbah (%)</label><input type="number" min="0" max="100" id="wasteFactor" value="${appState.material.wasteFactor}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"/></div>
-                                <div><label class="block text-sm font-medium text-slate-800">Bentuk Bahan</label><div class="flex gap-4 mt-1"><button id="shapeTubularBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.material.shape === 'tubular' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Tubular (Sarung)</button><button id="shapeOpenWideBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.material.shape === 'open-wide' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Open-Wide (Lembaran)</button></div></div>
-                                <div><label class="block text-sm font-medium text-slate-800">Metode Input Bahan</label><div class="flex gap-4 mt-1"><button id="inputLengthBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'length' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Panjang (m)</button><button id="inputWeightBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'weight' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Berat (kg)</button><button id="inputRollBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'roll' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Rol Bahan</button></div></div>
+                                <div><label for="materialWidth" class="block text-sm font-medium text-gray-700">Lebar Bahan (inch)</label><input type="number" id="materialWidth" value="${appState.material.width}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"/></div>
+                                <div><label for="wasteFactor" class="block text-sm font-medium text-gray-700">Faktor Limbah (%)</label><input type="number" min="0" max="100" id="wasteFactor" value="${appState.material.wasteFactor}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"/></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Bentuk Bahan</label><div class="flex gap-4 mt-1"><button id="shapeTubularBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.material.shape === 'tubular' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Tubular (Sarung)</button><button id="shapeOpenWideBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.material.shape === 'open-wide' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Open-Wide (Lembaran)</button></div></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Metode Input Bahan</label><div class="flex gap-4 mt-1"><button id="inputLengthBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'length' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Panjang (m)</button><button id="inputWeightBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'weight' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Berat (kg)</button><button id="inputRollBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.materialInputType === 'roll' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Rol Bahan</button></div></div>
                                 <div id="materialInputFields"></div>
                             </div>
                         </div>
-                        <div class="p-4 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-semibold flex items-center gap-2 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>Detail Pesanan</h3><button id="addGarmentItemBtn" class="py-1 px-2 bg-blue-100 text-blue-600 rounded-md text-xs font-medium hover:bg-blue-200 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>Tambah Item</button></div>
+                        <div class="p-4 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-semibold flex items-center gap-2 text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>Detail Pesanan</h3><button id="addGarmentItemBtn" class="py-1 px-2 bg-indigo-100 text-indigo-600 rounded-md text-xs font-medium hover:bg-indigo-200 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>Tambah Item</button></div>
                             <div id="garmentOrderList" class="space-y-3"></div>
                         </div>
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-factory"><path d="M2 20a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2H2v-2Z"/><path d="M6 15V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1Z"/><path d="M14 15V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1Z"/></svg>Biaya Lain-lain</h3>
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-factory"><path d="M2 20a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2H2v-2Z"/><path d="M6 15V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1Z"/><path d="M14 15V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1Z"/></svg>Biaya Lain-lain</h3>
                             <div class="space-y-4">
-                                <div><label for="laborCost" class="block text-sm font-medium text-slate-800">Biaya Tenaga Kerja per Pcs (Rp)</label><input type="number" id="laborCost" value="${appState.otherCosts.laborCost}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"/></div>
-                                <div><label for="overheadCost" class="block text-sm font-medium text-slate-800">Biaya Overhead per Pcs (Rp)</label><input type="number" id="overheadCost" value="${appState.otherCosts.overheadCost}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"/></div>
-                                <div class="pt-4 border-t border-slate-200"><div class="flex justify-between items-center mb-2"><h4 class="text-sm font-semibold text-slate-800">Biaya Tambahan</h4><button id="addAdditionalItemBtn" class="py-1 px-2 bg-blue-100 text-blue-600 rounded-md text-xs font-medium hover:bg-blue-200 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>Tambah</button></div><div id="additionalItemsList" class="space-y-3"></div></div>
+                                <div><label for="laborCost" class="block text-sm font-medium text-gray-700">Biaya Tenaga Kerja per Pcs (Rp)</label><input type="number" id="laborCost" value="${appState.otherCosts.laborCost}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"/></div>
+                                <div><label for="overheadCost" class="block text-sm font-medium text-gray-700">Biaya Overhead per Pcs (Rp)</label><input type="number" id="overheadCost" value="${appState.otherCosts.overheadCost}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"/></div>
+                                <div class="pt-4 border-t border-gray-200"><div class="flex justify-between items-center mb-2"><h4 class="text-sm font-semibold text-gray-700">Biaya Tambahan</h4><button id="addAdditionalItemBtn" class="py-1 px-2 bg-indigo-100 text-indigo-600 rounded-md text-xs font-medium hover:bg-indigo-200 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>Tambah</button></div><div id="additionalItemsList" class="space-y-3"></div></div>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Proyeksi Keuntungan</h3>
-                            <div><label for="profitPercentage" class="block text-sm font-medium text-slate-800">Persentase Keuntungan (%)</label><input type="number" id="profitPercentage" value="${appState.profitPercentage}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"/></div>
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Proyeksi Keuntungan</h3>
+                            <div><label for="profitPercentage" class="block text-sm font-medium text-gray-700">Persentase Keuntungan (%)</label><input type="number" id="profitPercentage" value="${appState.profitPercentage}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"/></div>
                         </div>
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 6c0 1.8.7 3.3 1.5 4.5C9.2 12.2 12 14 12 14"/><path d="M12 18.5V22H4l2-2.5C7 18 9 16.5 9 16c0-1.4-.5-2.8-1.5-3.5M2 14h2"/><path d="M20 14h2"/><path d="M9.5 17.5 12 22"/><path d="M14.5 17.5 12 22"/></svg>Rekomendasi Proyeksi Keuntungan</h3>
-                            <div class="space-y-4 text-sm text-slate-800">
-                                <div><h4 class="font-bold text-slate-900">1. Rendah (1% - 15%)</h4><p class="mt-1 text-slate-600">Cocok untuk strategi harga terendah dengan volume penjualan besar.</p></div>
-                                <div><h4 class="font-bold text-slate-900">2. Sedang (16% - 40%)</h4><p class="mt-1 text-slate-600">Rentang ideal untuk merek lokal yang menyeimbangkan harga dan kualitas.</p></div>
-                                <div><h4 class="font-bold text-slate-900">3. Tinggi (41% - 70%)</h4><p class="mt-1 text-slate-600">Untuk brand premium, kualitas tinggi, atau desain yang unik dan eksklusif.</p></div>
-                                <div><h4 class="font-bold text-slate-900">4. Sangat Tinggi (71% - 100%)</h4><p class="mt-1 text-slate-600">Berlaku untuk produk sangat kustom, barang mewah, atau karya desainer dengan nilai seni tinggi.</p></div>
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-indigo-600"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lightbulb"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 6c0 1.8.7 3.3 1.5 4.5C9.2 12.2 12 14 12 14"/><path d="M12 18.5V22H4l2-2.5C7 18 9 16.5 9 16c0-1.4-.5-2.8-1.5-3.5M2 14h2"/><path d="M20 14h2"/><path d="M9.5 17.5 12 22"/><path d="M14.5 17.5 12 22"/></svg>Rekomendasi Proyeksi Keuntungan</h3>
+                            <div class="space-y-4 text-sm text-gray-700">
+                                <div><h4 class="font-bold text-gray-800">1. Rendah (1% - 15%)</h4><p class="mt-1 text-gray-600">Cocok untuk strategi harga terendah dengan volume penjualan besar.</p></div>
+                                <div><h4 class="font-bold text-gray-800">2. Sedang (16% - 40%)</h4><p class="mt-1 text-gray-600">Rentang ideal untuk merek lokal yang menyeimbangkan harga dan kualitas.</p></div>
+                                <div><h4 class="font-bold text-gray-800">3. Tinggi (41% - 70%)</h4><p class="mt-1 text-gray-600">Untuk brand premium, kualitas tinggi, atau desain yang unik dan eksklusif.</p></div>
+                                <div><h4 class="font-bold text-gray-800">4. Sangat Tinggi (71% - 100%)</h4><p class="mt-1 text-gray-600">Berlaku untuk produk sangat kustom, barang mewah, atau karya desainer dengan nilai seni tinggi.</p></div>
                             </div>
                         </div>
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                            <button id="calculateHPPBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-blue-700 transition-all transform hover:scale-105">Hitung HPP</button>
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                            <button id="calculateHPPBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-indigo-700 transition-all transform hover:scale-105">Hitung HPP</button>
                             <div id="errorMessage" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 text-sm rounded-xl items-start gap-2 ${appState.showError ? 'flex' : 'hidden'}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle mt-0.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><p>Mohon lengkapi semua input dengan nilai yang valid (lebih dari 0).</p></div>
                         </div>
-                        <div id="hppResultSection" class="p-6 bg-white rounded-2xl shadow-lg-custom border border-slate-200 ${appState.hppResult ? '' : 'hidden'}"></div>
+                        <div id="hppResultSection" class="p-6 bg-white rounded-2xl shadow-lg-custom border border-gray-200 ${appState.hppResult ? '' : 'hidden'}"></div>
                     </div>
                 </div>
             `;
@@ -945,88 +863,10 @@
             container.innerHTML = '';
             Object.entries(GARMENT_PATTERNS).forEach(([id, { title, icon }]) => {
                 const button = document.createElement('button');
-                button.className = `flex flex-col items-center justify-center p-6 rounded-2xl interactive-card ${appState.selectedGarment === id ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-slate-800'}`;
+                button.className = `flex flex-col items-center justify-center p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-md ${appState.selectedGarment === id ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`;
                 button.innerHTML = `${icon}<span class="mt-3 font-semibold text-lg">${title}</span>`;
                 button.dataset.garmentId = id;
                 container.appendChild(button);
-            });
-        }
-
-        /**
-         * Menangani persetujuan pesanan penjualan online oleh gudang.
-         * @param {string} saleId - ID penjualan yang akan disetujui.
-         */
-        function handleApproveSale(saleId) {
-            const saleIndex = appState.savedSales.findIndex(s => s.id === saleId);
-            if (saleIndex === -1) {
-                showNotification('Pesanan tidak ditemukan.', 'error');
-                return;
-            }
-
-            const updatedSales = [...appState.savedSales];
-            const sale = updatedSales[saleIndex];
-
-            if (sale.status !== 'pending_warehouse_approval') {
-                showNotification('Pesanan ini tidak lagi menunggu persetujuan.', 'info');
-                return;
-            }
-
-            showCustomConfirmation('Apakah Anda yakin ingin menyetujui dan menyelesaikan persiapan pesanan ini?', () => {
-                // 1. Update sale status
-                sale.status = 'completed';
-
-                // 2. Deduct stock
-                const updatedInventory = [...appState.warehouse.inventory];
-                const newStockHistoryEntries = [];
-                let stockDeducted = true;
-
-                sale.items.forEach(saleItem => {
-                    const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
-                    if (inventoryItemIndex !== -1) {
-                        const existingItem = updatedInventory[inventoryItemIndex];
-                        if (existingItem.stock >= saleItem.quantity) {
-                            existingItem.stock -= saleItem.quantity;
-                            newStockHistoryEntries.unshift({
-                                id: generateUniqueId(),
-                                timestamp: new Date().toISOString(),
-                                productId: saleItem.id,
-                                productName: saleItem.name,
-                                type: 'Keluar',
-                                quantity: saleItem.quantity,
-                                finalStock: existingItem.stock,
-                                source: `Penjualan Online #${sale.id.substring(0, 8).toUpperCase()}`,
-                                userId: appState.userId
-                            });
-                        } else {
-                            stockDeducted = false;
-                        }
-                    } else {
-                        stockDeducted = false;
-                    }
-                });
-
-                if (!stockDeducted) {
-                    showNotification('Gagal mengurangi stok. Stok tidak mencukupi atau item tidak ditemukan.', 'error');
-                    // Revert status change if stock deduction fails
-                    sale.status = 'pending_warehouse_approval';
-                    return;
-                }
-
-                // 3. Update state
-                updateAppState({
-                    savedSales: updatedSales,
-                    warehouse: {
-                        ...appState.warehouse,
-                        inventory: updatedInventory,
-                        stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
-                    },
-                    selectedSale: sale // to be used by printInvoice
-                });
-
-                // 4. Print note and show notification
-                showNotification('Pesanan telah disetujui dan stok telah diperbarui.', 'success');
-                printInvoice('outgoing_product');
-                addActivityLog('Gudang', `Pesanan online #${sale.id.substring(0, 8).toUpperCase()} disetujui dan disiapkan.`, appState.userId, sale.id);
             });
         }
 
@@ -1039,7 +879,7 @@
             container.innerHTML = '';
             const createInputGroup = (labelText, inputId, value, placeholder = '') => {
                 const div = document.createElement('div');
-                div.innerHTML = `<label for="${inputId}" class="block text-sm font-medium text-slate-800">${labelText}</label><input type="number" id="${inputId}" value="${value}" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border" ${placeholder ? `placeholder="${placeholder}"` : ''}/>`;
+                div.innerHTML = `<label for="${inputId}" class="block text-sm font-medium text-gray-700">${labelText}</label><input type="number" id="${inputId}" value="${value}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border" ${placeholder ? `placeholder="${placeholder}"` : ''}/>`;
                 return div;
             };
             if (appState.materialInputType === 'length') {
@@ -1069,12 +909,12 @@
 
             appState.garmentOrder.forEach((item, index) => {
                 const itemDiv = document.createElement('div');
-                itemDiv.className = "bg-slate-50 p-3 rounded-xl shadow-sm border border-slate-200";
+                itemDiv.className = "bg-gray-50 p-3 rounded-xl shadow-sm border border-gray-200";
 
                 const modelSelectHTML = currentPattern.models ? `
                     <div class="mb-2">
-                        <label class="block text-xs font-medium text-slate-600">Model</label>
-                        <select class="model-select mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
+                        <label class="block text-xs font-medium text-gray-600">Model</label>
+                        <select class="model-select mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
                             ${currentPattern.models.map(model => `<option value="${model}" ${item.model === model ? 'selected' : ''}>${model}</option>`).join('')}
                         </select>
                     </div>` : '';
@@ -1082,7 +922,7 @@
                 const selectedModelForSize = item.model || (currentPattern.models && currentPattern.models.length > 0 ? currentPattern.models[0] : undefined);
                 const sizeOptions = GARMENT_SIZES[appState.selectedGarment]?.[selectedModelForSize] || GARMENT_SIZES[appState.selectedGarment] || {};
                 const sizeSelectHTML = `
-                    <select class="size-select mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
+                    <select class="size-select mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
                         ${Object.keys(sizeOptions).map(size => `<option value="${size}" ${item.size === size ? 'selected' : ''}>${size}</option>`).join('')}
                     </select>`;
 
@@ -1090,8 +930,8 @@
                     const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
                     return `
                         <div>
-                            <label class="block text-xs font-medium text-slate-600 truncate">${label} (cm)</label>
-                            <input type="number" value="${value}" class="detail-input mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}" data-detail-id="${key}"/>
+                            <label class="block text-xs font-medium text-gray-600 truncate">${label} (cm)</label>
+                            <input type="number" value="${value}" class="detail-input mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}" data-detail-id="${key}"/>
                         </div>`;
                 }).join('');
 
@@ -1101,34 +941,34 @@
 
                 const colorInputHTML = `
                     <div>
-                        <label class="block text-xs font-medium text-slate-600">Warna</label>
-                        <select class="color-select mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
+                        <label class="block text-xs font-medium text-gray-600">Warna</label>
+                        <select class="color-select mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}">
                             ${colorOptionsHTML}
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-600">Kode Warna (HEX)</label>
-                        <input type="text" value="${item.colorHex || ''}" placeholder="#RRGGBB" class="color-hex-input mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}"/>
+                        <label class="block text-xs font-medium text-gray-600">Kode Warna (HEX)</label>
+                        <input type="text" value="${item.colorHex || ''}" placeholder="#RRGGBB" class="color-hex-input mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}"/>
                     </div>
                 `;
 
                 itemDiv.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
-                        <p class="font-semibold text-sm text-slate-900">Item #${index + 1}</p>
+                        <p class="font-semibold text-sm text-gray-800">Item #${index + 1}</p>
                         <button class="remove-item-btn text-red-500 hover:text-red-700 transition-colors" title="Hapus item" data-id="${item.id}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                         </button>
                     </div>
                     ${modelSelectHTML}
                     <div class="grid grid-cols-2 gap-2 mb-2">
-                        <div><label class="block text-xs font-medium text-slate-600">Ukuran</label>${sizeSelectHTML}</div>
-                        <div><label class="block text-xs font-medium text-slate-600">Jumlah (pcs)</label><input type="number" min="1" value="${item.quantity}" class="quantity-input mt-1 block w-full rounded-md border-slate-300 shadow-sm p-1.5 text-xs" data-id="${item.id}"/></div>
+                        <div><label class="block text-xs font-medium text-gray-600">Ukuran</label>${sizeSelectHTML}</div>
+                        <div><label class="block text-xs font-medium text-gray-600">Jumlah (pcs)</label><input type="number" min="1" value="${item.quantity}" class="quantity-input mt-1 block w-full rounded-md border-gray-300 shadow-sm p-1.5 text-xs" data-id="${item.id}"/></div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mb-2">
                         ${colorInputHTML}
                     </div>
-                    <div class="mt-2 border-t border-slate-200 pt-2">
-                        <p class="text-sm font-medium text-slate-800 mb-1">Detail Ukuran (cm)</p>
+                    <div class="mt-2 border-t border-gray-200 pt-2">
+                        <p class="text-sm font-medium text-gray-700 mb-1">Detail Ukuran (cm)</p>
                         <div class="grid grid-cols-2 gap-2">${detailInputsHTML}</div>
                     </div>
                 `;
@@ -1147,9 +987,9 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "flex gap-2 items-center";
                 itemDiv.innerHTML = `
-                    <input type="text" placeholder="Nama Item" value="${item.name}" class="item-name-input w-1/2 rounded-md border-slate-300 shadow-sm p-2 border text-sm" data-index="${index}"/>
-                    <input type="number" placeholder="Biaya" value="${item.cost}" class="item-cost-input w-1/4 rounded-md border-slate-300 shadow-sm p-2 border text-sm" data-index="${index}"/>
-                    <input type="number" placeholder="Jumlah" value="${item.quantity}" class="item-quantity-input w-1/4 rounded-md border-slate-300 shadow-sm p-1.5 text-sm" data-index="${index}"/>
+                    <input type="text" placeholder="Nama Item" value="${item.name}" class="item-name-input w-1/2 rounded-md border-gray-300 shadow-sm p-2 border text-sm" data-index="${index}"/>
+                    <input type="number" placeholder="Biaya" value="${item.cost}" class="item-cost-input w-1/4 rounded-md border-gray-300 shadow-sm p-2 border text-sm" data-index="${index}"/>
+                    <input type="number" placeholder="Jumlah" value="${item.quantity}" class="item-quantity-input w-1/4 rounded-md border-gray-300 shadow-sm p-1.5 text-sm" data-index="${index}"/>
                     <button class="remove-additional-item-btn text-red-500 hover:text-red-700" title="Hapus item" data-index="${index}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                     </button>`;
@@ -1167,40 +1007,40 @@
             const { totalHPP, sellingPricePerGarment, profitPerGarment, garmentsProduced, materialCost, materialNeededPerGarmentCm } = appState.hppResult;
 
             container.innerHTML = `
-                <h3 class="text-xl font-bold mb-4 text-slate-900">Hasil Perhitungan</h3>
+                <h3 class="text-xl font-bold mb-4 text-gray-800">Hasil Perhitungan</h3>
                 <div id="warningMessage" class="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-700 text-sm rounded-xl items-start gap-2 ${appState.showWarning ? 'flex' : 'hidden'}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle mt-0.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                     <p>Perhatian: Bahan yang tersedia tidak cukup. Perhitungan tetap ditampilkan berdasarkan kebutuhan.</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-blue-50 p-4 rounded-xl shadow-sm interactive-card">
-                        <p class="text-sm text-slate-600">HPP per Pcs</p>
-                        <p class="text-xl font-bold text-blue-700">Rp ${formatRupiah(totalHPP)}</p>
+                    <div class="bg-indigo-50 p-4 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600">HPP per Pcs</p>
+                        <p class="text-xl font-bold text-indigo-700">Rp ${formatRupiah(totalHPP)}</p>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-xl shadow-sm interactive-card">
-                        <p class="text-sm text-slate-600">Harga Jual per Pcs</p>
+                    <div class="bg-green-50 p-4 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600">Harga Jual per Pcs</p>
                         <p class="text-xl font-bold text-green-700">Rp ${formatRupiah(sellingPricePerGarment)}</p>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-xl shadow-sm interactive-card">
-                        <p class="text-sm text-slate-600">Keuntungan per Pcs</p>
+                    <div class="bg-green-50 p-4 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600">Keuntungan per Pcs</p>
                         <p class="text-xl font-bold text-green-700">Rp ${formatRupiah(profitPerGarment)}</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="p-4 bg-slate-50 rounded-xl shadow-sm">
-                        <p class="text-sm text-slate-600">Jumlah Produksi</p>
-                        <p class="text-xl font-bold text-slate-800">${garmentsProduced} pcs</p>
+                    <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600">Jumlah Produksi</p>
+                        <p class="text-xl font-bold text-gray-700">${garmentsProduced} pcs</p>
                     </div>
-                    <div class="p-4 bg-slate-50 rounded-xl shadow-sm">
-                        <p class="text-sm text-slate-600">Total Biaya Bahan</p>
-                        <p class="text-xl font-bold text-slate-800">Rp ${formatRupiah(materialCost)}</p>
+                    <div class="p-4 bg-gray-50 rounded-xl shadow-sm">
+                        <p class="text-sm text-gray-600">Total Biaya Bahan</p>
+                        <p class="text-xl font-bold text-gray-700">Rp ${formatRupiah(materialCost)}</p>
                     </div>
-                    <div class="p-4 bg-slate-50 rounded-xl shadow-sm col-span-full">
-                        <p class="text-sm text-slate-600">Kebutuhan Bahan per Pcs</p>
-                        <p class="text-xl font-bold text-slate-800">${materialNeededPerGarmentCm.toFixed(2)} cm</p>
+                    <div class="p-4 bg-gray-50 rounded-xl shadow-sm col-span-full">
+                        <p class="text-sm text-gray-600">Kebutuhan Bahan per Pcs</p>
+                        <p class="text-xl font-bold text-gray-700">${materialNeededPerGarmentCm.toFixed(2)} cm</p>
                     </div>
                 </div>
-                <div id="materialVisualizer" class="mt-4 p-4 bg-slate-50 rounded-xl shadow-inner">${renderMaterialVisualizer()}</div>
+                <div id="materialVisualizer" class="mt-4 p-4 bg-gray-50 rounded-xl shadow-inner">${renderMaterialVisualizer()}</div>
                 <button id="saveReportBtn" class="w-full mt-6 bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                     ${appState.isCurrentlyRevising ? 'Simpan Revisi' : 'Simpan Laporan'}
@@ -1239,24 +1079,24 @@
             const surplusAmount = (totalMaterialAvailable - totalMaterialNeededLength).toFixed(2);
 
             return `
-                <h4 class="text-sm font-semibold text-slate-800 flex items-center gap-1">
+                <h4 class="text-sm font-semibold text-gray-700 flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scissors"><circle cx="6" cy="7" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><line x1="14.47" x2="20" y1="14.47" y2="20"/><circle cx="6" cy="17" r="3"/><path d="M8.12 15.88 12 12"/></svg>
                     Visualisasi Penggunaan Bahan
                 </h4>
                 <div class="space-y-4 my-4">
                     <div>
-                        <div class="flex justify-between items-center text-xs font-medium text-slate-800">
+                        <div class="flex justify-between items-center text-xs font-medium text-gray-700">
                             <span>Bahan Tersedia:</span><span>${totalMaterialAvailable.toFixed(2)} m</span>
                         </div>
-                        <div class="w-full bg-slate-200 rounded-full h-4">
+                        <div class="w-full bg-gray-200 rounded-full h-4">
                             <div class="bg-green-500 h-full rounded-full" style="width: ${availablePercentage}%;"></div>
                         </div>
                     </div>
                     <div>
-                        <div class="flex justify-between items-center text-xs font-medium text-slate-800">
+                        <div class="flex justify-between items-center text-xs font-medium text-gray-700">
                             <span>Bahan Dibutuhkan:</span><span>${totalMaterialNeededLength.toFixed(2)} m</span>
                         </div>
-                        <div class="w-full h-4 rounded-full ${appState.showWarning ? 'bg-red-500' : 'bg-blue-500'}" style="width: ${neededPercentage}%;"></div>
+                        <div class="w-full h-4 rounded-full ${appState.showWarning ? 'bg-red-500' : 'bg-indigo-500'}" style="width: ${neededPercentage}%;"></div>
                     </div>
                 </div>
                 ${appState.showWarning ? `
@@ -1289,7 +1129,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Kolom Kiri: Input Penjualan -->
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
                             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.16"/></svg>
                                 Item Penjualan
@@ -1305,8 +1145,8 @@
                             <!-- Pemilihan Produk dari Gudang -->
                             <div class="flex gap-2 items-end">
                                 <div class="flex-1">
-                                    <label for="productSelect" class="block text-sm font-medium text-slate-800">Pilih Produk dari Gudang</label>
-                                    <select id="productSelect" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
+                                    <label for="productSelect" class="block text-sm font-medium text-gray-700">Pilih Produk dari Gudang</label>
+                                    <select id="productSelect" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
                                         ${filteredInventory.length > 0 ? filteredInventory.map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock}) - Rp ${formatRupiah(item.sellingPrice)}</option>`).join('') : '<option disabled>Tidak ada produk yang cocok</option>'}
                                     </select>
                                 </div>
@@ -1315,10 +1155,10 @@
                             <!-- Daftar Item yang Akan Dijual -->
                             <div id="saleItemsList" class="mt-4 space-y-2">
                                 ${items.map((item, index) => `
-                                    <div class="p-3 bg-slate-50 rounded-lg flex justify-between items-center">
+                                    <div class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
                                         <div>
                                             <p class="font-semibold">${item.name}</p>
-                                            <p class="text-xs text-slate-500">Harga: Rp ${formatRupiah(item.price)}</p>
+                                            <p class="text-xs text-gray-500">Harga: Rp ${formatRupiah(item.price)}</p>
                                         </div>
                                         <div class="flex items-center gap-2">
                                             <input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" class="sale-item-quantity w-16 p-1 border rounded-md text-center" data-index="${index}">
@@ -1332,22 +1172,15 @@
 
                     <!-- Kolom Kanan: Detail & Hasil Penjualan -->
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
                              <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M12 16H8"/></svg>
                                 Detail Transaksi
                             </h3>
                             <div class="space-y-4">
+                                <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan (Opsional)</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-800">Tipe Penjualan</label>
-                                    <div class="flex gap-4 mt-1">
-                                        <button id="saleTypeOfflineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'offline' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Offline</button>
-                                        <button id="saleTypeOnlineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'online' ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-800 hover:bg-slate-300'}">Online</button>
-                                    </div>
-                                </div>
-                                <div><label for="customerName" class="block text-sm font-medium text-slate-800">Nama Pelanggan (Opsional)</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-slate-300 p-2 border"/></div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-800">Diskon</label>
+                                    <label class="block text-sm font-medium text-gray-700">Diskon</label>
                                     <div class="flex gap-2 mt-1">
                                         <select id="discountType" class="w-1/3 p-2 border rounded-md">
                                             <option value="percentage" ${discountType === 'percentage' ? 'selected' : ''}>%</option>
@@ -1356,20 +1189,20 @@
                                         <input type="number" id="discountValue" value="${discountValue}" class="flex-1 p-2 border rounded-md"/>
                                     </div>
                                 </div>
-                                <div><label for="taxPercentage" class="block text-sm font-medium text-slate-800">Pajak (%)</label><input type="number" id="taxPercentage" value="${taxPercentage}" class="mt-1 block w-full rounded-md border-slate-300 p-2 border"/></div>
+                                <div><label for="taxPercentage" class="block text-sm font-medium text-gray-700">Pajak (%)</label><input type="number" id="taxPercentage" value="${taxPercentage}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
                             </div>
                         </div>
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
                             <button id="calculateSaleBtn" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-green-700 transition-all">
                                 Hitung Total Penjualan
                             </button>
                         </div>
                         ${result ? `
                             <div class="p-6 bg-green-50 rounded-2xl shadow-lg-custom border border-green-200 space-y-3">
-                                <h3 class="text-xl font-bold text-slate-900">Ringkasan Penjualan</h3>
-                                <div class="flex justify-between text-sm"><span class="text-slate-600">Subtotal:</span><span class="font-medium">Rp ${formatRupiah(result.subtotal)}</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-600">Diskon:</span><span class="font-medium text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-slate-600">Pajak (${result.taxPercentage}%):</span><span class="font-medium">+ Rp ${formatRupiah(result.taxAmount)}</span></div>
+                                <h3 class="text-xl font-bold text-gray-800">Ringkasan Penjualan</h3>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Subtotal:</span><span class="font-medium">Rp ${formatRupiah(result.subtotal)}</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Diskon:</span><span class="font-medium text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-gray-600">Pajak (${result.taxPercentage}%):</span><span class="font-medium">+ Rp ${formatRupiah(result.taxAmount)}</span></div>
                                 <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2"><span class="text-green-700">Total Akhir:</span><span class="text-green-700">Rp ${formatRupiah(result.grandTotal)}</span></div>
                                 <button id="finalizeSaleBtn" class="w-full mt-4 bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700">Finalisasi & Cetak Struk</button>
                             </div>
@@ -1385,13 +1218,12 @@
          */
         function renderWarehouseContent() {
             return `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Manajemen Gudang</h2>
-                    <div class="flex flex-wrap space-x-2 border-b border-slate-300 mb-6">
-                        <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Inventaris</button>
-                        <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Produk Masuk</button>
-                        <button id="outgoingProductsTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'outgoing-products' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Produk Keluar</button>
-                        <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Rekap Stok</button>
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Gudang</h2>
+                    <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
+                        <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Inventaris</button>
+                        <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Masuk</button>
+                        <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok</button>
                     </div>
 
                     <div id="warehouseSubContent">
@@ -1414,8 +1246,6 @@
                 warehouseSubContentContainer.innerHTML = renderStockHistory();
             } else if (appState.warehouse.activeSubTab === 'production-requests-warehouse') {
                 warehouseSubContentContainer.innerHTML = renderProductionRequests('warehouse-tab');
-            } else if (appState.warehouse.activeSubTab === 'outgoing-products') {
-                warehouseSubContentContainer.innerHTML = renderOutgoingProducts();
             }
         }
 
@@ -1440,7 +1270,7 @@
 
             return `
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                    <h3 class="text-xl font-bold text-slate-900">Inventaris Saat Ini</h3>
+                    <h3 class="text-xl font-bold text-gray-800">Inventaris Saat Ini</h3>
                     <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-2/3">
                         <input type="text" id="warehouseSearch" placeholder="Cari nama produk..." value="${searchTerm}" class="p-2 border rounded-md flex-1">
                         <select id="categoryFilter" class="p-2 border rounded-md">
@@ -1456,25 +1286,25 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    ${filteredInventory.length > 0 ? filteredInventory.map((item, index) => {
+                    ${filteredInventory.length > 0 ? filteredInventory.map(item => {
                         const statusClass = item.stock === 0 ? 'bg-red-100 text-red-800' : (item.stock <= lowStockThreshold ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800');
                         const statusText = item.stock === 0 ? 'Habis' : (item.stock <= lowStockThreshold ? 'Hampir Habis' : 'Aman');
                         return `
-                            <div class="bg-slate-50 p-4 rounded-xl shadow-sm border flex flex-col interactive-card animate-slide-in-up" style="animation-delay: ${index * 50}ms;">
+                            <div class="bg-gray-50 p-4 rounded-xl shadow-sm border flex flex-col">
                                 <div class="flex justify-between items-center mb-2">
                                     <h4 class="font-bold text-gray-900">${item.name}</h4>
                                     <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${statusText}</span>
                                 </div>
-                                <p class="text-sm text-slate-600">Kategori: <span class="font-mono text-slate-900">${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</span></p>
-                                <p class="text-sm text-slate-600">Stok: <span class="font-mono text-slate-900">${item.stock} pcs</span></p>
-                                <p class="text-sm text-slate-600">HPP: <span class="font-medium">Rp ${formatRupiah(item.hpp)}</span></p>
-                                <p class="text-sm text-slate-600">Harga Jual: <span class="font-semibold text-green-700">Rp ${formatRupiah(item.sellingPrice)}</span></p>
+                                <p class="text-sm text-gray-600">Kategori: <span class="font-mono text-gray-800">${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</span></p>
+                                <p class="text-sm text-gray-600">Stok: <span class="font-mono text-gray-800">${item.stock} pcs</span></p>
+                                <p class="text-sm text-gray-600">HPP: <span class="font-medium">Rp ${formatRupiah(item.hpp)}</span></p>
+                                <p class="text-sm text-gray-600">Harga Jual: <span class="font-semibold text-green-700">Rp ${formatRupiah(item.sellingPrice)}</span></p>
                                 <div class="mt-4 flex items-center gap-2">
                                     <button class="request-production-btn py-1 px-3 bg-blue-100 text-blue-700 rounded-md text-sm hover:bg-blue-200" data-id="${item.id}">Minta Produksi</button>
                                 </div>
                             </div>
                         `;
-                    }).join('') : `<div class="col-span-full text-center py-4 text-slate-500">Tidak ada item di gudang.</div>`}
+                    }).join('') : `<div class="col-span-full text-center py-4 text-gray-500">Tidak ada item di gudang.</div>`}
                 </div>
             `;
         }
@@ -1496,7 +1326,7 @@
                     if (inventoryItem.stock === 0) {
                         status = 'Habis';
                         statusClass = 'bg-red-100 text-red-800';
-                    } else if (inventoryItem.stock <= appState.warehouse.lowStockThreshold) {
+                    } else if (inventoryItem.stock <= 10) {
                         status = 'Hampir Habis';
                         statusClass = 'bg-yellow-100 text-yellow-800';
                     }
@@ -1513,7 +1343,7 @@
             
             return `
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-slate-900">Rekap Stok</h3>
+                    <h3 class="text-xl font-bold text-gray-800">Rekap Keluar Masuk Stok</h3>
                     <button id="exportStockHistoryBtn" class="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Ekspor ke Excel
@@ -1521,22 +1351,22 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full bg-white">
-                        <thead class="bg-slate-50">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Tanggal</th>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Produk</th>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Kategori</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-500 uppercase">Jenis</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-500 uppercase">Jumlah</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-500 uppercase">Stok Akhir</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-500 uppercase">Status</th>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Sumber</th>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Oleh</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Jenis</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Jumlah</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Stok Akhir</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Sumber</th>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Oleh</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            ${stockWithStatus.map((entry, index) => `
-                                <tr class="animate-slide-in-up" style="animation-delay: ${index * 50}ms;">
+                            ${stockWithStatus.map(entry => `
+                                <tr>
                                     <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(entry.timestamp).toLocaleString('id-ID')}</td>
                                    ,
 >5="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${entry.productName}</td>
@@ -1547,15 +1377,15 @@
                                     <td class="py-3 px-4 whitespace-nowrap text-center">
                                         <span class="px-2 py-1 text-xs font-medium rounded-full ${entry.statusClass}">${entry.status}</span>
                                     </td>
-                                    <td class="py-3 px-4 whitespace-nowrap text-xs text-slate-500">${entry.source}</td>
-                                    <td class="py-3 px-4 whitespace-nowrap text-xs text-slate-500">${getUsernameById(entry.userId)}</td>
+                                    <td class="py-3 px-4 whitespace-nowrap text-xs text-gray-500">${entry.source}</td>
+                                    <td class="py-3 px-4 whitespace-nowrap text-xs text-gray-500">${getUsernameById(entry.userId)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h4 class="text-lg font-semibold text-slate-900 mb-4">TTD Penanggung Jawab</h4>
+                <div class="mt-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">TTD Penanggung Jawab</h4>
                     <div class="grid grid-cols-3 gap-8">
                         <div class="text-center">
                             <p class="border-b border-black py-16"></p>
@@ -1608,10 +1438,10 @@
             }
 
             // Filter berdasarkan kategori jika ada di warehouse context
-            if (context === 'warehouse-tab' && appState.warehouse.productionRequestCategoryFilters.length > 0) {
+            if (context === 'warehouse-tab' && appState.warehouse.selectedCategoryFilter && appState.warehouse.selectedCategoryFilter !== 'all') {
                 requests = requests.filter(request => {
                     const product = appState.warehouse.inventory.find(item => item.id === request.productId);
-                    return product && appState.warehouse.productionRequestCategoryFilters.includes(product.category);
+                    return product && product.category === appState.warehouse.selectedCategoryFilter;
                 });
             }
 
@@ -1630,26 +1460,21 @@
                     case 'rejected':
                         return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Ditolak</span>';
                     default:
-                        return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-slate-100 text-slate-900">' + status + '</span>';
+                        return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">' + status + '</span>';
                 }
             };
 
             return `
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-slate-900">${titleText}</h3>
+                    <h3 class="text-xl font-bold text-gray-800">${titleText}</h3>
                     <div class="flex gap-2">
                         ${context === 'warehouse-tab' ? `
-                            <div class="flex flex-wrap gap-x-4 gap-y-2 p-2 border rounded-md">
-                                <span class="text-sm font-medium text-slate-800 w-full">Filter Kategori:</span>
-                                ${garmentCategories.map(cat => `
-                                    <label class="flex items-center space-x-2 text-sm">
-                                        <input type="checkbox" class="production-request-category-checkbox rounded" value="${cat.id}" ${(appState.warehouse.productionRequestCategoryFilters || []).includes(cat.id) ? 'checked' : ''}>
-                                        <span>${cat.name}</span>
-                                    </label>
-                                `).join('')}
-                            </div>
+                            <select id="productionRequestCategoryFilter" class="p-2 border rounded-md text-sm">
+                                <option value="all">Semua Kategori</option>
+                                ${garmentCategories.map(cat => `<option value="${cat.id}" ${appState.warehouse.selectedCategoryFilter === cat.id ? 'selected' : ''}>${cat.name}</option>`).join('')}
+                            </select>
                         ` : ''}
-                        <button id="refreshProductionRequestsBtn" class="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800">
+                        <button id="refreshProductionRequestsBtn" class="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
                             Refresh
                         </button>
@@ -1657,40 +1482,40 @@
                 </div>
 
                 ${requests.length === 0 ? `
-                    <div class="p-6 bg-white rounded-2xl text-center text-slate-500">
+                    <div class="p-6 bg-white rounded-2xl text-center text-gray-500">
                         <p>Tidak ada permintaan yang perlu ditindaklanjuti atau ditampilkan.</p>
                         ${userDepartment === 'gudang' && context === 'warehouse-tab' ? `<p class="mt-2">Gunakan tombol "Minta Produksi" di tab Inventaris untuk membuat permintaan baru.</p>` : ''}
                     </div>
                 ` : `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-slate-50">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tanggal</th>
-                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Produk</th>
-                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Jumlah</th>
-                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">Diminta Oleh</th>
-                                    <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Aksi</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Diminta Oleh</th>
+                                    <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                ${requests.map((request, index) => `
-                                    <tr class="hover:bg-slate-50 animate-slide-in-up" style="animation-delay: ${index * 50}ms;">
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-500">${new Date(request.timestamp).toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                                ${requests.map(request => `
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">${new Date(request.timestamp).toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${request.productName}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm text-center">${request.requestedQuantity} pcs</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm text-center">${getStatusBadge(request.status)}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-center text-slate-500">${getUsernameById(request.requestedBy)}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-center text-gray-500">${getUsernameById(request.requestedBy)}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex justify-end gap-2">
-                                                <button class="view-request-notes-btn text-blue-600 hover:text-blue-900" data-id="${request.id}" title="Lihat Catatan">
+                                                <button class="view-request-notes-btn text-indigo-600 hover:text-indigo-900" data-id="${request.id}" title="Lihat Catatan">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
                                                 </button>
 
                                                 ${(userDepartment === 'produksi' || isAdmin) && request.status === 'pending' ? `
-                                                    <button class="update-request-status-btn py-1 px-3 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200" data-id="${request.id}" data-status="approved_by_production" title="Setujui">
-                                                        Setuju
+                                                    <button class="update-request-status-btn py-1 px-3 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200" data-id="${request.id}" data-status="approved_by_production" title="Setujui Produksi">
+                                                        Setujui Produksi
                                                     </button>
                                                     <button class="update-request-status-btn py-1 px-3 bg-red-100 text-red-700 rounded-md text-sm hover:bg-red-200" data-id="${request.id}" data-status="rejected" title="Tolak">
                                                         Tolak
@@ -1726,56 +1551,6 @@
         }
 
         /**
-         * Merender daftar pesanan online yang perlu disiapkan oleh gudang.
-         * @returns {string} String HTML untuk konten produk keluar.
-         */
-        function renderOutgoingProducts() {
-            const pendingSales = appState.savedSales.filter(sale => sale.saleType === 'online' && sale.status === 'pending_warehouse_approval');
-
-            if (pendingSales.length === 0) {
-                return `<div class="text-center py-8 text-slate-500">Tidak ada pesanan online yang perlu disiapkan.</div>`;
-            }
-
-            return `
-                <div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-4">Pesanan Online Menunggu Persiapan</h3>
-                    <div class="space-y-4">
-                        ${pendingSales.map(sale => `
-                            <div class="bg-slate-50 p-4 rounded-xl shadow-sm border interactive-card">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="font-semibold text-slate-900">Pesanan #${sale.id.substring(0, 8).toUpperCase()}</p>
-                                        <p class="text-sm text-slate-600">Pelanggan: <span class="font-medium">${sale.customerName || 'Umum'}</span></p>
-                                        <p class="text-xs text-slate-500">Tanggal: ${new Date(sale.timestamp).toLocaleString('id-ID')}</p>
-                                    </div>
-                                    <button class="toggle-details-btn py-1 px-3 bg-blue-100 text-blue-600 rounded-md text-sm font-medium hover:bg-blue-200" data-sale-id="${sale.id}">
-                                        Lihat Rincian
-                                    </button>
-                                </div>
-                                <div id="details-${sale.id}" class="hidden mt-4 pt-4 border-t border-slate-200">
-                                    <h4 class="font-semibold mb-2">Item yang harus disiapkan:</h4>
-                                    <ul class="space-y-2">
-                                        ${sale.items.map((item, index) => `
-                                            <li class="flex items-center">
-                                                <label class="flex items-center w-full p-2 rounded-md hover:bg-slate-100 cursor-pointer">
-                                                    <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 preparation-checkbox" data-sale-id="${sale.id}" data-item-index="${index}">
-                                                    <span class="ml-3 text-sm text-slate-800">${item.quantity}x ${item.name}</span>
-                                                </label>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
-                                    <button class="approve-sale-btn w-full mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded-xl shadow-md hover:bg-green-700 disabled:bg-gray-400" data-sale-id="${sale.id}" disabled>
-                                        Setujui & Siapkan Pesanan
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        /**
          * Merender konten untuk tab Manajemen Akun.
          * @returns {string} String HTML untuk konten manajemen akun.
          */
@@ -1783,25 +1558,25 @@
             if (appState.userRole !== 'admin' && appState.userRole !== 'super_admin') {
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
             }
-            const pendingUsersHtml = appState.pendingUsers.length > 0 ? `<h3 class="text-xl font-bold text-slate-900 mb-4">Akun Menunggu Persetujuan (${appState.pendingUsers.length})</h3><div class="space-y-4">${appState.pendingUsers.map((user, index) => `<div class="p-4 bg-yellow-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card animate-slide-in-up" style="animation-delay: ${index * 50}ms;"><div class="flex-1"><p class="font-semibold text-slate-900">${user.username}</p><p class="text-sm text-slate-600">Departemen: <span class="font-medium">${formatDepartment(user.department)}</span></p><p class="text-xs text-slate-400 mt-1">Terdaftar: ${new Date(user.createdAt).toLocaleString('id-ID')}</p></div><div class="flex items-center gap-2 self-end sm:self-center"><button class="approve-user-btn py-1 px-3 bg-green-100 text-green-600 rounded-md text-sm font-medium hover:bg-green-200" data-uid="${user.uid}">Setujui</button><button class="reject-user-btn py-1 px-3 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200" data-uid="${user.uid}">Tolak</button></div></div>`).join('')}</div>` : `<div class="p-6 bg-white rounded-2xl text-center text-slate-500"><p>Tidak ada akun yang menunggu persetujuan.</p></div>`;
-            const allUsersHtml = `<h3 class="text-xl font-bold text-slate-900 mb-4 mt-8 border-t pt-4">Semua Akun Pengguna (${appState.allUsers.length})</h3><div class="space-y-4">${appState.allUsers.map((user, index) => {
+            const pendingUsersHtml = appState.pendingUsers.length > 0 ? `<h3 class="text-xl font-bold text-gray-800 mb-4">Akun Menunggu Persetujuan (${appState.pendingUsers.length})</h3><div class="space-y-4">${appState.pendingUsers.map(user => `<div class="p-4 bg-yellow-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Departemen: <span class="font-medium">${formatDepartment(user.department)}</span></p><p class="text-xs text-gray-400 mt-1">Terdaftar: ${new Date(user.createdAt).toLocaleString('id-ID')}</p></div><div class="flex items-center gap-2 self-end sm:self-center"><button class="approve-user-btn py-1 px-3 bg-green-100 text-green-600 rounded-md text-sm font-medium hover:bg-green-200" data-uid="${user.uid}">Setujui</button><button class="reject-user-btn py-1 px-3 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200" data-uid="${user.uid}">Tolak</button></div></div>`).join('')}</div>` : `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada akun yang menunggu persetujuan.</p></div>`;
+            const allUsersHtml = `<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8 border-t pt-4">Semua Akun Pengguna (${appState.allUsers.length})</h3><div class="space-y-4">${appState.allUsers.map(user => {
                 let departmentDropdown = '';
                 let roleDisplay = formatRole(user.role);
                 if (appState.userRole === 'super_admin' && user.role !== 'super_admin') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
-                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="penanggung_jawab" ${user.role === 'penanggung_jawab' ? 'selected' : ''}>Penanggung Jawab</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
+                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
                 } else if (appState.userRole === 'admin' && user.role === 'member') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
                 } else {
-                    departmentDropdown = `<span class="text-sm text-slate-500">${formatDepartment(user.department) || ''}</span>`;
+                    departmentDropdown = `<span class="text-sm text-gray-500">${formatDepartment(user.department) || ''}</span>`;
                 }
                 let deleteButton = '';
                 if (appState.userRole === 'super_admin' && user.uid !== appState.userId) {
                     deleteButton = `<button class="delete-user-btn text-red-500 hover:text-red-700" title="Hapus pengguna" data-uid="${user.uid}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>`;
                 }
-                return `<div class="p-4 bg-slate-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card animate-slide-in-up" style="animation-delay: ${index * 50}ms;"><div class="flex-1"><p class="font-semibold text-slate-900">${user.username}</p><p class="text-sm text-slate-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-slate-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${deleteButton}</div></div>`;
+                return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${deleteButton}</div></div>`;
             }).join('')}</div>`;
-            return `<div class="p-6 bg-white rounded-2xl shadow-sm border"><h2 class="text-2xl font-bold text-slate-900 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}</div>`;
+            return `<div class="p-6 bg-white rounded-2xl shadow-sm border"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}</div>`;
         }
 
         /**
@@ -1820,22 +1595,22 @@
             };
 
             return `
-                <div class="p-6 bg-slate-50 rounded-2xl">
-                    <div class="flex flex-wrap space-x-2 border-b border-slate-300 mb-6">
-                        ${visibleSubTabs.production ? `<button id="reportsListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'reports-list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Laporan Produksi</button>` : ''}
-                        ${visibleSubTabs.sales ? `<button id="salesReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'sales-report' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Laporan Penjualan</button>` : ''}
-                        ${visibleSubTabs.finance ? `<button id="financialRecapTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'financial-recap' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Rekap Keuangan</button>` : ''}
-                        ${visibleSubTabs.product ? `<button id="productVisTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'product-vis' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-slate-500 hover:text-blue-600'}">Rekap Produk</button>` : ''}
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
+                        ${visibleSubTabs.production ? `<button id="reportsListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'reports-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Produksi</button>` : ''}
+                        ${visibleSubTabs.sales ? `<button id="salesReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'sales-report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Penjualan</button>` : ''}
+                        ${visibleSubTabs.finance ? `<button id="financialRecapTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'financial-recap' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Keuangan</button>` : ''}
+                        ${visibleSubTabs.product ? `<button id="productVisTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'product-vis' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Produk</button>` : ''}
                     </div>
-                    <div class="p-4 bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
-                        <h4 class="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>Filter Berdasarkan Tanggal</h4>
+                    <div class="p-4 bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 flex items-center gap-2 mb-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>Filter Berdasarkan Tanggal</h4>
                         <div class="flex flex-col sm:flex-row items-center gap-4">
-                            <input type="date" id="startDate" value="${appState.startDate}" class="w-full sm:w-1/2 p-2 border border-slate-300 rounded-md shadow-sm text-sm"/>
-                            <span class="text-slate-500">sampai</span>
-                            <input type="date" id="endDate" value="${appState.endDate}" class="w-full sm:w-1/2 p-2 border border-slate-300 rounded-md shadow-sm text-sm"/>
+                            <input type="date" id="startDate" value="${appState.startDate}" class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm"/>
+                            <span class="text-gray-500">sampai</span>
+                            <input type="date" id="endDate" value="${appState.endDate}" class="w-full sm:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm text-sm"/>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 mt-4">
-                            <button id="resetFilterBtn" class="flex-1 py-2 px-4 bg-slate-50 text-slate-800 rounded-md text-sm font-medium hover:bg-slate-100">Reset Filter</button>
+                            <button id="resetFilterBtn" class="flex-1 py-2 px-4 bg-gray-50 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-100">Reset Filter</button>
                         </div>
                     </div>
                     <div id="reportContentContainer"></div>
@@ -1874,26 +1649,26 @@
             if (!container) return;
             const displayReports = appState.filteredReports.filter(report => !report.isSuperseded);
             if (displayReports.length === 0) {
-                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-slate-500"><p>Tidak ada laporan produksi yang cocok dengan filter saat ini.</p></div>`;
+                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada laporan produksi yang cocok dengan filter saat ini.</p></div>`;
                 return;
             }
             container.innerHTML = `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Daftar Laporan Produksi (HPP)</h3>
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Daftar Laporan Produksi (HPP)</h3>
                     <div class="space-y-4" id="reportsList">
-                        ${displayReports.map((report, index) => {
+                        ${displayReports.map(report => {
                             const canDelete = appState.userRole === 'super_admin' || appState.userRole === 'admin' ||
                                 (appState.userRole === 'member' && report.userId === appState.userId);
                             return `
-                                <div class="p-4 bg-slate-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card animate-slide-in-up" style="animation-delay: ${index * 50}ms;">
+                                <div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                     <div class="flex-1">
-                                        <p class="font-semibold text-slate-900">Laporan ${GARMENT_PATTERNS[report.selectedGarment].title} (${report.hppResult.garmentsProduced} pcs) ${report.isRevised ? '<span class="text-xs text-blue-500 font-medium ml-2">(Revisi)</span>' : ''}</p>
-                                        <p class="text-sm text-slate-600">HPP Rata-rata: <span class="font-medium">Rp ${formatRupiah(report.hppResult.totalHPP)}</span></p>
-                                        ${(appState.userRole === 'admin' || appState.userRole === 'super_admin') ? `<p class="text-xs text-slate-400 mt-1">Dibuat oleh: <span class="font-medium">${getUsernameById(report.userId)}</span> pada ${new Date(report.timestamp).toLocaleString('id-ID')}</p>` : `<p class="text-xs text-slate-400 mt-1">Dibuat pada ${new Date(report.timestamp).toLocaleString('id-ID')}</p>`}
-                                        ${report.productionRequestId ? `<p class="text-xs text-slate-400 mt-1">Terkait Permintaan Produksi: #${report.productionRequestId.substring(0, 8).toUpperCase()}</p>` : ''}
+                                        <p class="font-semibold text-gray-800">Laporan ${GARMENT_PATTERNS[report.selectedGarment].title} (${report.hppResult.garmentsProduced} pcs) ${report.isRevised ? '<span class="text-xs text-blue-500 font-medium ml-2">(Revisi)</span>' : ''}</p>
+                                        <p class="text-sm text-gray-600">HPP Rata-rata: <span class="font-medium">Rp ${formatRupiah(report.hppResult.totalHPP)}</span></p>
+                                        ${(appState.userRole === 'admin' || appState.userRole === 'super_admin') ? `<p class="text-xs text-gray-400 mt-1">Dibuat oleh: <span class="font-medium">${getUsernameById(report.userId)}</span> pada ${new Date(report.timestamp).toLocaleString('id-ID')}</p>` : `<p class="text-xs text-gray-400 mt-1">Dibuat pada ${new Date(report.timestamp).toLocaleString('id-ID')}</p>`}
+                                        ${report.productionRequestId ? `<p class="text-xs text-gray-400 mt-1">Terkait Permintaan Produksi: #${report.productionRequestId.substring(0, 8).toUpperCase()}</p>` : ''}
                                     </div>
                                     <div class="flex items-center gap-2 self-end sm:self-center">
-                                        <button class="view-detail-btn py-1 px-3 bg-blue-100 text-blue-600 rounded-md text-sm font-medium hover:bg-blue-200" data-id="${report.id}">Lihat Detail</button>
+                                        <button class="view-detail-btn py-1 px-3 bg-indigo-100 text-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-200" data-id="${report.id}">Lihat Detail</button>
                                         ${canDelete ? `
                                             <button class="remove-report-btn text-red-500 hover:text-red-700" title="Hapus laporan" data-id="${report.id}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -1919,21 +1694,21 @@
             const displaySales = appState.filteredSales;
 
             if (displaySales.length === 0) {
-                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-slate-500"><p>Tidak ada laporan penjualan yang cocok dengan filter saat ini.</p></div>`;
+                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada laporan penjualan yang cocok dengan filter saat ini.</p></div>`;
                 return;
             }
 
             container.innerHTML = `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Daftar Laporan Penjualan</h3>
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Daftar Laporan Penjualan</h3>
                     <div class="space-y-4" id="salesReportsList">
-                        ${displaySales.map((sale, index) => `
-                            <div class="p-4 bg-slate-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card animate-slide-in-up" style="animation-delay: ${index * 50}ms;">
+                        ${displaySales.map(sale => `
+                            <div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div class="flex-1">
-                                    <p class="font-semibold text-slate-900">Struk No: ${sale.id}</p>
-                                    <p class="text-sm text-slate-600">Pelanggan: <span class="font-medium">${sale.customerName || 'Umum'}</span></p>
-                                    <p class="text-sm text-slate-600">Total Penjualan: <span class="font-medium text-green-700">Rp ${formatRupiah(sale.result.grandTotal)}</span></p>
-                                    <p class="text-xs text-slate-400 mt-1">Dibuat oleh: <span class="font-medium">${getUsernameById(sale.userId)}</span> pada ${new Date(sale.timestamp).toLocaleString('id-ID')}</p>
+                                    <p class="font-semibold text-gray-800">Struk No: ${sale.id}</p>
+                                    <p class="text-sm text-gray-600">Pelanggan: <span class="font-medium">${sale.customerName || 'Umum'}</span></p>
+                                    <p class="text-sm text-gray-600">Total Penjualan: <span class="font-medium text-green-700">Rp ${formatRupiah(sale.result.grandTotal)}</span></p>
+                                    <p class="text-xs text-gray-400 mt-1">Dibuat oleh: <span class="font-medium">${getUsernameById(sale.userId)}</span> pada ${new Date(sale.timestamp).toLocaleString('id-ID')}</p>
                                 </div>
                                 <div class="flex items-center gap-2 self-end sm:self-center">
                                     <button class="view-sale-detail-btn py-1 px-3 bg-green-100 text-green-600 rounded-md text-sm font-medium hover:bg-green-200" data-id="${sale.id}">Lihat Detail</button>
@@ -1962,12 +1737,12 @@
 
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border">
-                    <button id="backToReportListBtn" class="text-blue-600 hover:text-blue-800 font-semibold mb-4 flex items-center gap-2">
+                    <button id="backToReportListBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold mb-4 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                         Kembali ke Daftar
                     </button>
-                    <h3 class="text-2xl font-bold text-slate-900">Laporan HPP - ${GARMENT_PATTERNS[reportGarment].title}</h3>
-                    <p class="text-sm text-slate-500 mb-6">Dibuat pada: ${date}</p>
+                    <h3 class="text-2xl font-bold text-gray-800">Laporan HPP - ${GARMENT_PATTERNS[reportGarment].title}</h3>
+                    <p class="text-sm text-gray-500 mb-6">Dibuat pada: ${date}</p>
                     ${isRevised ? `
                         <div class="p-3 bg-blue-100 text-blue-800 rounded-md mb-4 flex items-start gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
@@ -1982,16 +1757,16 @@
                             <p class="font-semibold text-sm">Stok dari laporan ini sudah diterima gudang.</p>
                         </div>` : ''}
                     ${productionRequestId ? `
-                        <div class="p-3 bg-slate-100 text-slate-900 rounded-md mb-4 flex items-start gap-2">
+                        <div class="p-3 bg-gray-100 text-gray-800 rounded-md mb-4 flex items-start gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07L9.4 9.4"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07L14.6 14.6"/></svg>
                             <p class="font-semibold text-sm">Terkait Permintaan Produksi: #${productionRequestId.substring(0, 8).toUpperCase()}</p>
                         </div>` : ''}
-                    <h4 class="text-lg font-semibold text-slate-800 mt-4 pt-4 border-t">Rincian Pesanan</h4>
+                    <h4 class="text-lg font-semibold text-gray-700 mt-4 pt-4 border-t">Rincian Pesanan</h4>
                     <div class="space-y-3 mt-4">
                         ${hppResult.garmentOrder.map(item => `
-                            <div class="p-3 bg-slate-50 rounded-lg border">
-                                <p class="font-bold text-slate-900">${GARMENT_PATTERNS[reportGarment].title} ${item.model ? `(${item.model})` : ''} - Ukuran ${item.size} ${item.color ? `(${item.color})` : ''}</p>
-                                <p class="text-sm text-slate-600">Jumlah: <span class="font-medium">${item.quantity} pcs</span></p>
+                            <div class="p-3 bg-gray-50 rounded-lg border">
+                                <p class="font-bold text-gray-800">${GARMENT_PATTERNS[reportGarment].title} ${item.model ? `(${item.model})` : ''} - Ukuran ${item.size} ${item.color ? `(${item.color})` : ''}</p>
+                                <p class="text-sm text-gray-600">Jumlah: <span class="font-medium">${item.quantity} pcs</span></p>
                             </div>
                         `).join('')}
                     </div>
@@ -2025,31 +1800,31 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
                         Kembali ke Daftar
                     </button>
-                    <h3 class="text-2xl font-bold text-slate-900">Detail Penjualan - Struk #${sale.id}</h3>
-                    <p class="text-sm text-slate-500 mb-2">Tanggal: ${date}</p>
-                    <p class="text-sm text-slate-500 mb-6">Pelanggan: ${sale.customerName || 'Umum'}</p>
+                    <h3 class="text-2xl font-bold text-gray-800">Detail Penjualan - Struk #${sale.id}</h3>
+                    <p class="text-sm text-gray-500 mb-2">Tanggal: ${date}</p>
+                    <p class="text-sm text-gray-500 mb-6">Pelanggan: ${sale.customerName || 'Umum'}</p>
 
-                    <h4 class="text-lg font-semibold text-slate-800 mt-4 pt-4 border-t">Item Terjual</h4>
+                    <h4 class="text-lg font-semibold text-gray-700 mt-4 pt-4 border-t">Item Terjual</h4>
                     <div class="space-y-3 mt-4">
                         ${sale.items.map(item => `
-                            <div class="p-3 bg-slate-50 rounded-lg border flex justify-between">
+                            <div class="p-3 bg-gray-50 rounded-lg border flex justify-between">
                                 <div>
-                                    <p class="font-bold text-slate-900">${item.name}</p>
-                                    <p class="text-sm text-slate-600">Jumlah: <span class="font-medium">${item.quantity} pcs</span></p>
+                                    <p class="font-bold text-gray-800">${item.name}</p>
+                                    <p class="text-sm text-gray-600">Jumlah: <span class="font-medium">${item.quantity} pcs</span></p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-sm text-slate-600">@ Rp ${formatRupiah(item.price)}</p>
+                                    <p class="text-sm text-gray-600">@ Rp ${formatRupiah(item.price)}</p>
                                     <p class="font-semibold">Rp ${formatRupiah(item.price * item.quantity)}</p>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
 
-                    <h4 class="text-lg font-semibold text-slate-800 mt-6 pt-4 border-t">Ringkasan Pembayaran</h4>
+                    <h4 class="text-lg font-semibold text-gray-700 mt-6 pt-4 border-t">Ringkasan Pembayaran</h4>
                     <div class="mt-4 space-y-2">
-                        <div class="flex justify-between"><span class="text-slate-600">Subtotal</span><span>Rp ${formatRupiah(result.subtotal)}</p></div>
-                        <div class="flex justify-between"><span class="text-slate-600">Diskon</span><span class="text-red-600">- Rp ${formatRupiah(result.discountAmount)}</p></div>
-                        <div class="flex justify-between"><span class="text-slate-600">Pajak</span><p>Rp ${formatRupiah(result.taxAmount)}</p></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Subtotal</span><span>Rp ${formatRupiah(result.subtotal)}</p></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Diskon</span><span class="text-red-600">- Rp ${formatRupiah(result.discountAmount)}</p></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Pajak</span><p>Rp ${formatRupiah(result.taxAmount)}</p></div>
                     </div>
                     <div class="border-t-2 border-dashed border-gray-400 mt-2 pt-2 font-bold text-lg flex justify-between"><p>TOTAL</p><p>Rp ${formatRupiah(result.grandTotal)}</p></div>
 
@@ -2070,7 +1845,7 @@
             if (!container) return;
             const displayReports = appState.filteredReports;
             if (displayReports.length === 0) {
-                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-slate-500"><p>Tidak ada data untuk ditampilkan.</p></div>`;
+                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada data untuk ditampilkan.</p></div>`;
                 return;
             }
             const totalRevenue = displayReports.reduce((sum, r) => sum + (r.hppResult.sellingPricePerGarment * r.hppResult.garmentsProduced), 0);
@@ -2078,18 +1853,18 @@
             const totalProfit = totalRevenue - totalCOGS;
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border">
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Rekap Laporan Keuangan</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Rekap Laporan Keuangan</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                         <div class="bg-green-50 p-4 rounded-xl text-center">
-                            <p class="text-sm text-slate-600">Total Pendapatan</p>
+                            <p class="text-sm text-gray-600">Total Pendapatan</p>
                             <p class="text-xl font-bold text-green-700">Rp ${formatRupiah(totalRevenue)}</p>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-xl text-center">
-                            <p class="text-sm text-slate-600">Total HPP (COGS)</p>
-                            <p class="text-xl font-bold text-blue-700">Rp ${formatRupiah(totalCOGS)}</p>
+                        <div class="bg-indigo-50 p-4 rounded-xl text-center">
+                            <p class="text-sm text-gray-600">Total HPP (COGS)</p>
+                            <p class="text-xl font-bold text-indigo-700">Rp ${formatRupiah(totalCOGS)}</p>
                         </div>
                         <div class="p-4 rounded-xl text-center ${totalProfit >= 0 ? 'bg-green-100' : 'bg-red-100'}">
-                            <p class="text-sm text-slate-600">Total Keuntungan</p>
+                            <p class="text-sm text-gray-600">Total Keuntungan</p>
                             <p class="text-xl font-bold ${totalProfit >= 0 ? 'text-green-700' : 'text-red-700'}">Rp ${formatRupiah(totalProfit)}</p>
                         </div>
                     </div>
@@ -2135,12 +1910,12 @@
             if (!container) return;
             const displayReports = appState.filteredReports;
             if (displayReports.length === 0) {
-                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-slate-500"><p>Tidak ada data untuk ditampilkan.</p></div>`;
+                container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada data untuk ditampilkan.</p></div>`;
                 return;
             }
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border">
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Rekap Produk</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Rekap Produk</h3>
                     <div style="height: 300px;"><canvas id="productChart"></canvas></div>
                 </div>`;
             let timeUnitFormatter;
@@ -2196,32 +1971,29 @@
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
             }
 
-            const logs = appState.activityLogs.filter(log => {
-                const description = log.description.toLowerCase();
-                return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
-            });
+            const logs = appState.activityLogs;
 
             if (logs.length === 0) {
                 return `
-                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Aktivitas Kerja</h3>
-                        <div class="text-center text-slate-500">Tidak ada aktivitas yang tercatat.</div>
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Aktivitas Kerja</h3>
+                        <div class="text-center text-gray-500">Tidak ada aktivitas yang tercatat.</div>
                     </div>
                 `;
             }
 
             return `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Aktivitas Kerja</h3>
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Aktivitas Kerja</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white">
-                            <thead class="bg-slate-50">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Waktu</th>
-                                    <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Tipe</th>
-                                    <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Deskripsi</th>
-                                    <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">Oleh</th>
-                                    <th class="py-2 px-4 text-left text-xs font-medium text-slate-500 uppercase">ID Terkait</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tipe</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Oleh</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">ID Terkait</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
@@ -2229,9 +2001,9 @@
                                     <tr>
                                         <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(log.timestamp).toLocaleString('id-ID')}</td>
                                         <td class="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.type}</td>
-                                        <td class="py-3 px-4 text-sm text-slate-800">${log.description}</td>
-                                        <td class="py-3 px-4 whitespace-nowrap text-xs text-slate-500">${getUsernameById(log.userId)}</td>
-                                        <td class="py-3 px-4 whitespace-nowrap text-xs text-slate-500">${log.relatedId ? log.relatedId.substring(0, 8) + '...' : '-'}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-700">${log.description}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap text-xs text-gray-500">${getUsernameById(log.userId)}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap text-xs text-gray-500">${log.relatedId ? log.relatedId.substring(0, 8) + '...' : '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -2317,75 +2089,28 @@
          * @returns {string} String HTML untuk faktur produksi.
          */
         function generateProductionInvoiceHTML(report) {
-            const { hppResult, otherCosts, selectedGarment, timestamp, userId } = report;
+            const { hppResult, otherCosts, selectedGarment, timestamp } = report;
             const invoiceNumber = `PROD-${report.id.substring(0, 8).toUpperCase()}`;
+            const totalAdditionalItemsCost = (otherCosts && Array.isArray(otherCosts.additionalItems)) ? otherCosts.additionalItems.reduce((sum, item) => sum + (item.cost * item.quantity), 0) : 0;
             const totalPayment = hppResult.sellingPricePerGarment * hppResult.garmentsProduced;
-            const preparedBy = getUsernameById(userId);
 
             return `
-                <div class="font-sans text-slate-900">
-                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-300">
-                        <div class="text-2xl font-bold text-blue-700">NOTA SERAH TERIMA PRODUKSI</div>
+                <div class="font-sans text-gray-800">
+                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
+                        <div class="text-2xl font-bold text-indigo-700">NOTA PRODUKSI</div>
                         <img src="${logoUrl}" alt="Logo" class="h-16 w-auto object-contain">
                     </div>
                     <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
-                        <div>
-                            <p class="font-semibold text-slate-800">No. Produksi:</p>
-                            <p class="font-mono">${invoiceNumber}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-slate-800">Tanggal:</p>
-                            <p>${new Date(timestamp).toLocaleDateString('id-ID')}</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-slate-800">Diserahkan oleh (Produksi):</p>
-                            <p>${preparedBy}</p>
-                        </div>
+                        <div><p class="font-semibold text-gray-700">Dari:</p><p class="font-bold text-lg">KAZUMI</p><p>Bandung, Indonesia</p></div>
+                        <div class="text-right"><p class="font-semibold text-gray-700">Nota No: <span class="font-normal">${invoiceNumber}</span></p><p class="font-semibold text-gray-700">Tanggal: <span class="font-normal">${new Date(timestamp).toLocaleDateString('id-ID')}</span></p></div>
                     </div>
-                    <h4 class="font-bold text-lg mb-2">Rincian Hasil Produksi</h4>
-                    <table class="min-w-full bg-white border border-slate-200">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-600 uppercase">Deskripsi Produk</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-600 uppercase">Jumlah</th>
-                                <th class="py-2 px-4 text-right text-xs font-medium text-slate-600 uppercase">Nilai per Pcs</th>
-                                <th class="py-2 px-4 text-right text-xs font-medium text-slate-600 uppercase">Total Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${hppResult.garmentOrder.map(item => `
-                                <tr>
-                                    <td class="py-2 px-4 border-b text-sm">${GARMENT_PATTERNS[selectedGarment].title} ${item.model ? `(${item.model})` : ''} - ${item.size} ${item.color ? `(${item.color})` : ''}</td>
-                                    <td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td>
-                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment)}</td>
-                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment * item.quantity)}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="py-2 px-4 text-right font-bold text-lg">TOTAL NILAI PRODUKSI</td>
-                                <td class="py-2 px-4 text-right font-bold text-lg">Rp ${formatRupiah(totalPayment)}</td>
-                            </tr>
-                        </tfoot>
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100"><tr><th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">Deskripsi</th><th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Jumlah</th><th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Harga Satuan</th><th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Total</th></tr></thead>
+                        <tbody>${hppResult.garmentOrder.map(item => `<tr><td class="py-2 px-4 border-b text-sm">${GARMENT_PATTERNS[selectedGarment].title} ${item.model ? `(${item.model})` : ''} - ${item.size} ${item.color ? `(${item.color})` : ''}</td><td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment)}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment * item.quantity)}</td></tr>`).join('')}</tbody>
                     </table>
-                    <div class="grid grid-cols-2 gap-8 mt-16">
-                        <div class="text-center">
-                            <p class="font-medium">Diserahkan Oleh,</p>
-                            <p class="border-b border-black py-16"></p>
-                            <p class="mt-2 font-medium">(${preparedBy})</p>
-                            <p class="text-sm">Bagian Produksi</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="font-medium">Diterima Oleh,</p>
-                            <p class="border-b border-black py-16"></p>
-                            <p class="mt-2 font-medium">(.........................)</p>
-                            <p class="text-sm">Penerima Barang (Gudang)</p>
-                        </div>
-                    </div>
-                    <div class="text-center text-sm text-slate-600 mt-12 pt-4 border-t">Dokumen ini adalah bukti serah terima barang dari bagian produksi ke gudang.</div>
-                </div>
-            `;
+                    <div class="flex justify-end mt-4"><div class="w-full sm:w-1/2 space-y-2 text-right"><div class="flex justify-between font-semibold"><span>Total HPP:</span><span>Rp ${formatRupiah(hppResult.totalHPP * hppResult.garmentsProduced)}</span></div><div class="flex justify-between font-semibold"><span>Biaya Tambahan:</span><span>Rp ${formatRupiah(totalAdditionalItemsCost)}</span></div><div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>TOTAL NILAI PRODUKSI:</span><span>Rp ${formatRupiah(totalPayment)}</span></div></div></div>
+                    <div class="text-center text-sm text-gray-600 mt-12 pt-4 border-t">Terima kasih.</div>
+                </div>`;
         }
 
         /**
@@ -2396,7 +2121,7 @@
         function generateSaleInvoiceHTML(sale) {
             const { id, customerName, items, result, timestamp } = sale;
             return `
-                <div class="font-sans text-slate-900">
+                <div class="font-sans text-gray-800">
                     <div class="text-center mb-6"><h2 class="text-2xl font-bold">KAZUMI</h2><p class="text-sm">Bandung, Indonesia</p></div>
                     <div class="text-sm mb-4"><p>No: ${id}</p><p>Tgl: ${new Date(timestamp).toLocaleString('id-ID')}</p><p>Kasir: ${getUsernameById(sale.userId)}</p><p>Pelanggan: ${customerName || 'Umum'}</p></div>
                     <div class="border-t-2 border-dashed border-gray-400 pt-2">
@@ -2411,79 +2136,6 @@
 
                     <div class="text-center text-sm mt-6">** Terima Kasih **</div>
                 </div>`;
-        }
-
-        /**
-         * Menghasilkan dan menampilkan HTML untuk nota keluar produk dari gudang.
-         * @param {object} sale - Data penjualan.
-         * @returns {string} String HTML untuk nota keluar produk.
-         */
-        function generateOutgoingProductNoteHTML(sale) {
-            const { id, customerName, items, timestamp } = sale;
-            const preparedBy = getUsernameById(appState.userId);
-
-            return `
-                <div class="font-sans text-slate-900">
-                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-300">
-                        <div class="text-2xl font-bold text-blue-700">NOTA KELUAR PRODUK</div>
-                        <img src="${logoUrl}" alt="Logo" class="h-16 w-auto object-contain">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
-                        <div>
-                            <p class="font-semibold text-slate-800">No. Pesanan:</p>
-                            <p class="font-mono">${id.substring(0, 8).toUpperCase()}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-slate-800">Tanggal Disiapkan:</p>
-                            <p>${new Date().toLocaleString('id-ID')}</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-slate-800">Untuk Pelanggan:</p>
-                            <p>${customerName || 'Umum'}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-semibold text-slate-800">Disiapkan Oleh:</p>
-                            <p>${preparedBy}</p>
-                        </div>
-                    </div>
-                    <h4 class="font-bold text-lg mb-2">Rincian Barang</h4>
-                    <table class="min-w-full bg-white border border-slate-200">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-600 uppercase">No.</th>
-                                <th class="py-2 px-4 text-left text-xs font-medium text-slate-600 uppercase">Nama Produk</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-600 uppercase">Jumlah</th>
-                                <th class="py-2 px-4 text-center text-xs font-medium text-slate-600 uppercase">Cek</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${items.map((item, index) => `
-                                <tr>
-                                    <td class="py-2 px-4 border-b text-sm">${index + 1}</td>
-                                    <td class="py-2 px-4 border-b text-sm">${item.name}</td>
-                                    <td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td>
-                                    <td class="py-2 px-4 border-b text-sm text-center">[ &#10003; ]</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div class="grid grid-cols-2 gap-8 mt-16">
-                        <div class="text-center">
-                            <p class="font-medium">Disiapkan Oleh,</p>
-                            <p class="border-b border-black py-16"></p>
-                            <p class="mt-2 font-medium">(${preparedBy})</p>
-                            <p class="text-sm">Penanggung Jawab Gudang</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="font-medium">Diterima Oleh,</p>
-                            <p class="border-b border-black py-16"></p>
-                            <p class="mt-2 font-medium">(.........................)</p>
-                            <p class="text-sm">Kurir / Pelanggan</p>
-                        </div>
-                    </div>
-                    <div class="text-center text-sm text-slate-600 mt-12 pt-4 border-t">Terima kasih.</div>
-                </div>
-            `;
         }
 
         /**
@@ -2506,10 +2158,6 @@
                 contentToPrint = generateSaleInvoiceHTML(appState.selectedSale);
                 relatedId = appState.selectedSale.id;
                 description = `Mencetak ulang struk penjualan #${relatedId.substring(0, 8).toUpperCase()}.`;
-            } else if (type === 'outgoing_product' && appState.selectedSale) {
-                contentToPrint = generateOutgoingProductNoteHTML(appState.selectedSale);
-                relatedId = appState.selectedSale.id;
-                description = `Mencetak nota keluar produk untuk pesanan #${relatedId.substring(0, 8).toUpperCase()}.`;
             } else {
                 showCustomMessage('Tidak ada data untuk dicetak.', 'error');
                 return;
@@ -2580,9 +2228,7 @@
                     let initialWarehouseSubTab = 'inventory-list';
                     let initialReportTab = 'reports-list';
 
-                    if (user.role === 'super_admin') {
-                        initialActiveTab = 'recapitulation';
-                    } else if (user.role === 'admin') {
+                    if (user.role === 'admin' || user.role === 'super_admin') {
                         initialActiveTab = 'production';
                     } else if (user.department === 'produksi') {
                         initialActiveTab = 'production';
@@ -3102,23 +2748,8 @@
             if (revisionModal && revisionNotesInput) {
                 revisionNotesInput.value = '';
                 revisionModal.classList.remove('hidden');
-                const modalPanel = document.getElementById('revisionModalPanel');
-
-                setTimeout(() => {
-                    revisionModal.classList.remove('opacity-0');
-                    if (modalPanel) modalPanel.classList.remove('scale-95');
-                }, 10);
-
                 const confirmBtn = document.getElementById('confirmRevisionBtn');
                 const cancelBtn = document.getElementById('cancelRevisionBtn');
-
-                const cleanup = () => {
-                    revisionModal.classList.add('opacity-0');
-                    if (modalPanel) modalPanel.classList.add('scale-95');
-                    revisionModal.addEventListener('transitionend', () => {
-                        revisionModal.classList.add('hidden');
-                    }, { once: true });
-                };
 
                 const handleConfirmRevision = () => {
                     const notes = revisionNotesInput.value.trim();
@@ -3143,15 +2774,19 @@
                         activeProductionSubTab: 'hpp-calculator',
                     });
 
-                    cleanup();
+                    revisionModal.classList.add('hidden');
+                    confirmBtn.removeEventListener('click', handleConfirmRevision);
+                    cancelBtn.removeEventListener('click', handleCancelRevision);
                 };
 
                 const handleCancelRevision = () => {
-                    cleanup();
+                    revisionModal.classList.add('hidden');
+                    confirmBtn.removeEventListener('click', handleConfirmRevision);
+                    cancelBtn.removeEventListener('click', handleCancelRevision);
                 };
 
-                confirmBtn.addEventListener('click', handleConfirmRevision, { once: true });
-                cancelBtn.addEventListener('click', handleCancelRevision, { once: true });
+                confirmBtn.addEventListener('click', handleConfirmRevision);
+                cancelBtn.addEventListener('click', handleCancelRevision);
             }
         }
 
@@ -3276,7 +2911,7 @@
          * Menyelesaikan penjualan, memperbarui inventaris, dan menyimpan laporan penjualan.
          */
         function handleFinalizeSale() {
-            const { items, customerName, result, saleType } = appState.salesCalculator;
+            const { items, customerName, result } = appState.salesCalculator;
             if (!result) {
                 showCustomMessage('Harap hitung total penjualan terlebih dahulu.', 'error');
                 return;
@@ -3286,72 +2921,55 @@
                 return;
             }
 
-            const confirmationMessage = saleType === 'online'
-                ? 'Ini akan membuat permintaan ke gudang. Lanjutkan?'
-                : 'Apakah Anda yakin ingin menyelesaikan penjualan ini?';
-
-            showCustomConfirmation(confirmationMessage, () => {
+            showCustomConfirmation('Apakah Anda yakin ingin menyelesaikan penjualan ini?', () => {
                 const newSaleId = generateUniqueId();
+                const updatedInventory = [...appState.warehouse.inventory];
+                const newStockHistoryEntries = [];
+
+                items.forEach(saleItem => {
+                    const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
+                    if (inventoryItemIndex !== -1) {
+                        const existingItem = updatedInventory[inventoryItemIndex];
+                        const oldStock = existingItem.stock;
+                        existingItem.stock -= saleItem.quantity;
+
+                        newStockHistoryEntries.unshift({
+                            id: generateUniqueId(),
+                            timestamp: new Date().toISOString(),
+                            productId: saleItem.id,
+                            productName: saleItem.name,
+                            type: 'Keluar',
+                            quantity: saleItem.quantity,
+                            finalStock: existingItem.stock,
+                            source: `Penjualan Struk #${newSaleId.substring(0, 8).toUpperCase()}`,
+                            userId: appState.userId
+                        });
+                    }
+                });
+
                 const newSale = {
                     id: newSaleId,
                     timestamp: new Date().toISOString(),
                     userId: appState.userId,
                     customerName: customerName,
                     items: JSON.parse(JSON.stringify(items)),
-                    result: JSON.parse(JSON.stringify(result)),
-                    saleType: saleType,
-                    status: saleType === 'online' ? 'pending_warehouse_approval' : 'completed',
-                    preparedItems: {} // for checklist in warehouse
+                    result: JSON.parse(JSON.stringify(result))
                 };
 
-                if (saleType === 'offline') {
-                    // Deduct stock immediately for offline sales
-                    const updatedInventory = [...appState.warehouse.inventory];
-                    const newStockHistoryEntries = [];
+                updateAppState({
+                    savedSales: [...appState.savedSales, newSale],
+                    warehouse: {
+                        ...appState.warehouse,
+                        inventory: updatedInventory,
+                        stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
+                    },
+                    salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all' },
+                    selectedSale: newSale
+                });
 
-                    items.forEach(saleItem => {
-                        const inventoryItemIndex = updatedInventory.findIndex(inv => inv.id === saleItem.id);
-                        if (inventoryItemIndex !== -1) {
-                            const existingItem = updatedInventory[inventoryItemIndex];
-                            existingItem.stock -= saleItem.quantity;
-
-                            newStockHistoryEntries.unshift({
-                                id: generateUniqueId(),
-                                timestamp: new Date().toISOString(),
-                                productId: saleItem.id,
-                                productName: saleItem.name,
-                                type: 'Keluar',
-                                quantity: saleItem.quantity,
-                                finalStock: existingItem.stock,
-                                source: `Penjualan Offline #${newSaleId.substring(0, 8).toUpperCase()}`,
-                                userId: appState.userId
-                            });
-                        }
-                    });
-
-                    updateAppState({
-                        savedSales: [...appState.savedSales, newSale],
-                        warehouse: {
-                            ...appState.warehouse,
-                            inventory: updatedInventory,
-                            stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
-                        },
-                        salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all', saleType: 'offline' },
-                        selectedSale: newSale
-                    });
-
-                    showCustomMessage('Penjualan offline berhasil disimpan!', 'success');
-                    printInvoice('sale');
-                    addActivityLog('Penjualan', `Penjualan offline senilai Rp ${formatRupiah(newSale.result.grandTotal)} kepada ${newSale.customerName || 'Umum'} dicatat.`, appState.userId, newSaleId);
-
-                } else { // Online sale
-                    updateAppState({
-                        savedSales: [...appState.savedSales, newSale],
-                        salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all', saleType: 'offline' },
-                    });
-                    showCustomMessage('Permintaan penjualan online berhasil dibuat dan dikirim ke gudang!', 'success');
-                    addActivityLog('Penjualan', `Permintaan penjualan online senilai Rp ${formatRupiah(newSale.result.grandTotal)} dibuat.`, appState.userId, newSaleId);
-                }
+                showCustomMessage('Penjualan berhasil disimpan!', 'success');
+                printInvoice('sale');
+                addActivityLog('Penjualan', `Penjualan baru senilai Rp ${formatRupiah(newSale.result.grandTotal)} kepada ${newSale.customerName || 'Umum'} dicatat.`, appState.userId, newSaleId);
             });
         }
 
@@ -3369,16 +2987,16 @@
             showModal(`Minta Produksi: ${product.name}`, `
                 <div class="space-y-4">
                     <div>
-                        <label for="requestQuantity" class="block text-sm font-medium text-slate-800">Jumlah yang Diminta (pcs)</label>
-                        <input type="number" id="requestQuantity" min="1" value="10" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-2 border"/>
+                        <label for="requestQuantity" class="block text-sm font-medium text-gray-700">Jumlah yang Diminta (pcs)</label>
+                        <input type="number" id="requestQuantity" min="1" value="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"/>
                     </div>
                     <div>
-                        <label for="requestNotes" class="block text-sm font-medium text-slate-800">Catatan (Opsional)</label>
-                        <textarea id="requestNotes" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-2 border h-24 resize-y" placeholder="Contoh: Untuk stok akhir tahun..."></textarea>
+                        <label for="requestNotes" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label>
+                        <textarea id="requestNotes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border h-24 resize-y" placeholder="Contoh: Untuk stok akhir tahun..."></textarea>
                     </div>
                     <div class="flex justify-end gap-3">
-                        <button id="cancelRequestBtn" class="py-2 px-4 bg-slate-200 text-slate-900 rounded-md hover:bg-slate-300">Batal</button>
-                        <button id="confirmRequestBtn" class="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">Kirim Permintaan</button>
+                        <button id="cancelRequestBtn" class="py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                        <button id="confirmRequestBtn" class="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Kirim Permintaan</button>
                     </div>
                 </div>
             `);
@@ -3776,114 +3394,28 @@
             });
         }
 
-        function renderRecapitulationContent() {
-            // Data processing
-            const totalRevenue = appState.savedSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
-            const totalItemsSold = appState.savedSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
-            const totalItemsProduced = appState.savedReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
-            const pendingRequests = appState.warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
+        /**
+         * Menangani pengiriman pesan baru di message board.
+         */
+        function handleSendMessage() {
+            const messageInput = document.getElementById('newMessageInput');
+            if (!messageInput) return;
+            const messageText = messageInput.value.trim();
 
-            const lowStockItems = [...appState.warehouse.inventory]
-                .filter(item => item.stock > 0)
-                .sort((a, b) => a.stock - b.stock)
-                .slice(0, 5);
-
-            const recentActivities = appState.activityLogs
-                .filter(log => {
-                    const description = log.description.toLowerCase();
-                    return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
-                })
-                .slice(0, 5);
-
-            // HTML Structure
-            const html = `
-                <div class="p-6 bg-slate-50 rounded-2xl">
-                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Laporan Rekapitulasi</h2>
-
-                    <!-- KPIs -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">Total Item Produksi</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsProduced)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-slate-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Sales Chart -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-4">Tren Penjualan</h3>
-                            <div style="height: 300px;"><canvas id="recapSalesChart"></canvas></div>
-                        </div>
-
-                        <!-- Production Chart -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-4">Volume Produksi</h3>
-                            <div style="height: 300px;"><canvas id="recapProductionChart"></canvas></div>
-                        </div>
-
-                        <!-- Low Stock -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-4">Stok Terendah</h3>
-                            <ul class="space-y-3">
-                                ${lowStockItems.length > 0 ? lowStockItems.map(item => `
-                                    <li class="flex justify-between items-center text-sm">
-                                        <span class="font-medium text-slate-900">${item.name}</span>
-                                        <span class="font-bold text-red-500">${item.stock} pcs</span>
-                                    </li>
-                                `).join('') : '<p class="text-slate-500 text-sm">Semua stok dalam kondisi aman.</p>'}
-                            </ul>
-                        </div>
-
-                        <!-- Recent Activity -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-4">Aktivitas Terbaru</h3>
-                            <ul class="space-y-3">
-                                ${recentActivities.map(log => `
-                                    <li class="text-sm">
-                                        <p class="font-medium text-slate-900">${log.description}</p>
-                                        <p class="text-xs text-slate-400">${new Date(log.timestamp).toLocaleString('id-ID')} - oleh ${getUsernameById(log.userId)}</p>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Render the HTML
-            const container = document.getElementById('recapitulationSection');
-            if(container) {
-                container.innerHTML = html;
+            if (messageText === '') {
+                showCustomMessage('Pesan tidak boleh kosong.', 'error');
+                return;
             }
 
-            // Prepare and render charts
-            // Sales Chart Data
-            const salesChartData = {
-                labels: appState.savedSales.map(s => new Date(s.timestamp).toLocaleDateString('id-ID')),
-                datasets: [{
-                    label: 'Total Penjualan',
-                    data: appState.savedSales.map(s => s.result.grandTotal),
-                    borderColor: '#16a34a',
-                    tension: 0.1
-                }]
+            const newMessage = {
+                id: generateUniqueId(),
+                userId: appState.userId,
+                text: messageText,
+                timestamp: new Date().toISOString()
             };
-            renderChart('recapSalesChart', 'line', salesChartData, 'Total Penjualan per Transaksi');
 
-            // Production Chart Data
-            const productionData = {};
-            appState.savedReports.filter(r => !r.isSuperseded).forEach(report => {
-                const title = GARMENT_PATTERNS[report.selectedGarment].title;
-                productionData[title] = (productionData[title] || 0) + report.hppResult.garmentsProduced;
-            });
-            const productionChartData = {
-                labels: Object.keys(productionData),
-                datasets: [{
-                    label: 'Jumlah Produksi',
-                    data: Object.values(productionData),
-                    backgroundColor: ['#4f46e5', '#22c55e', '#f59e0b', '#a855f7'],
-                }]
-            };
-            renderChart('recapProductionChart', 'doughnut', productionChartData, 'Jumlah Produksi per Tipe Pakaian');
+            updateAppState({ messages: [...appState.messages, newMessage] });
+            addActivityLog('Papan Pesan', `Mengirim pesan baru: "${messageText.substring(0, 30)}..."`, appState.userId, newMessage.id);
         }
 
         // =====================================================================================================
@@ -3939,7 +3471,7 @@
                 if (inventoryItem) {
                     if (inventoryItem.stock === 0) {
                         status = 'Habis';
-                    } else if (inventoryItem.stock <= appState.warehouse.lowStockThreshold) {
+                    } else if (inventoryItem.stock <= 10) {
                         status = 'Hampir Habis';
                     }
                 }
@@ -3956,21 +3488,20 @@
             let csvContent = "data:text/csv;charset=utf-8,";
             
             // Header
-            const headers = ["Tanggal", "Produk", "Kategori", "Jenis", "Jumlah", "Stok Akhir", "Status", "Sumber", "Oleh"];
-            csvContent += headers.map(escapeCsvField).join(",") + "\n";
+            csvContent += "Tanggal,Produk,Kategori,Jenis,Jumlah,Stok Akhir,Status,Sumber,Oleh\n";
             
             // Data
             stockWithStatus.forEach(entry => {
                 const row = [
-                    escapeCsvField(new Date(entry.timestamp).toLocaleString('id-ID')),
-                    escapeCsvField(entry.productName),
-                    escapeCsvField(formatDepartment(entry.category)),
-                    escapeCsvField(entry.type),
-                    escapeCsvField(entry.quantity),
-                    escapeCsvField(entry.finalStock),
-                    escapeCsvField(entry.status),
-                    escapeCsvField(entry.source),
-                    escapeCsvField(getUsernameById(entry.userId))
+                    `"${new Date(entry.timestamp).toLocaleString('id-ID')}"`,
+                    `"${entry.productName}"`,
+                    `"${formatDepartment(entry.category)}"`,
+                    `"${entry.type}"`,
+                    entry.quantity,
+                    entry.finalStock,
+                    `"${entry.status}"`,
+                    `"${entry.source}"`,
+                    `"${getUsernameById(entry.userId)}"`
                 ].join(",");
                 csvContent += row + "\n";
             });
@@ -4015,11 +3546,11 @@
 
             // --- Navigasi Tab Utama ---
             const tabButtons = {
-                'recapitulation': 'recapitulationTabBtn',
                 'production': 'productionTabBtn',
                 'salesCalculator': 'salesCalculatorTabBtn',
                 'warehouse': 'warehouseTabBtn',
                 'report': 'reportTabBtn',
+                'messageBoard': 'messageBoardTabBtn',
                 'accountManagement': 'accountManagementTabBtn',
                 'activityLogs': 'activityLogsTabBtn'
             };
@@ -4067,31 +3598,32 @@
 
             // --- Spesifik Tab Kalkulator Penjualan ---
             if (appState.activeTab === 'salesCalculator') {
-                if (e.target.id === 'saleTypeOfflineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'offline' } });
-                else if (e.target.id === 'saleTypeOnlineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'online' } });
-                else if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
+                if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
                 else if (e.target.id === 'calculateSaleBtn') handleCalculateSale();
                 else if (e.target.id === 'finalizeSaleBtn') handleFinalizeSale();
                 else if (e.target.classList.contains('remove-sale-item-btn')) handleRemoveSaleItem(parseInt(e.target.dataset.index));
+            }
+
+            // --- Spesifik Tab Papan Pesan ---
+            if (appState.activeTab === 'messageBoard') {
+                if (e.target.id === 'sendMessageBtn') handleSendMessage();
             }
 
             // --- Spesifik Tab Gudang ---
             if (appState.activeTab === 'warehouse') {
                 if (e.target.id === 'inventoryListTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'inventory-list' } });
                 else if (e.target.id === 'productionRequestsWarehouseTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'production-requests-warehouse' } });
-                else if (e.target.id === 'outgoingProductsTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'outgoing-products' } });
                 else if (e.target.id === 'stockHistoryTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'stock-history' } });
                 // Tombol "Minta Produksi" di tab Inventaris Gudang
                 else if (e.target.classList.contains('request-production-btn')) requestProduction(e.target.dataset.id);
-                else if (e.target.classList.contains('toggle-details-btn')) {
-                    const saleId = e.target.dataset.saleId;
-                    const detailsDiv = document.getElementById(`details-${saleId}`);
-                    if (detailsDiv) {
-                        detailsDiv.classList.toggle('hidden');
-                        e.target.textContent = detailsDiv.classList.contains('hidden') ? 'Lihat Rincian' : 'Sembunyikan';
-                    }
-                } else if (e.target.classList.contains('approve-sale-btn')) {
-                    handleApproveSale(e.target.dataset.saleId);
+                // Filter kategori untuk permintaan produksi di gudang
+                else if (e.target.id === 'productionRequestCategoryFilter') {
+                    updateAppState({
+                        warehouse: {
+                            ...appState.warehouse,
+                            selectedCategoryFilter: e.target.value
+                        }
+                    });
                 }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
@@ -4134,10 +3666,10 @@
                 if (request) {
                     const notes = request.notes || 'Tidak ada catatan';
                     showModal(`Catatan Permintaan: ${request.productName}`, `
-                        <div class="p-4 bg-slate-50 rounded-lg mb-4">
-                            <p class="text-slate-800">${notes}</p>
+                        <div class="p-4 bg-gray-50 rounded-lg mb-4">
+                            <p class="text-gray-700">${notes}</p>
                         </div>
-                        <div class="mt-2 text-sm text-slate-500">
+                        <div class="mt-2 text-sm text-gray-500">
                             <p>Diminta pada: ${new Date(request.timestamp).toLocaleString('id-ID')}</p>
                             <p>Status: ${request.status}</p>
                         </div>
@@ -4167,40 +3699,7 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.classList.contains('production-request-category-checkbox')) {
-                    const category = e.target.value;
-                    const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
-                    if (e.target.checked) {
-                        if (!currentFilters.includes(category)) {
-                            currentFilters.push(category);
-                        }
-                    } else {
-                        const index = currentFilters.indexOf(category);
-                        if (index > -1) {
-                            currentFilters.splice(index, 1);
-                        }
-                    }
-                    updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
-                } else if (e.target.classList.contains('preparation-checkbox')) {
-                    const { saleId, itemIndex } = e.target.dataset;
-                    const sale = appState.savedSales.find(s => s.id === saleId);
-                    if (sale) {
-                        if (!sale.preparedItems) {
-                            sale.preparedItems = {};
-                        }
-                        sale.preparedItems[itemIndex] = e.target.checked;
-
-                        // Check if all items are prepared
-                        const allPrepared = sale.items.every((item, index) => sale.preparedItems[index]);
-                        const approveBtn = document.querySelector(`.approve-sale-btn[data-sale-id="${saleId}"]`);
-                        if (approveBtn) {
-                            approveBtn.disabled = !allPrepared;
-                        }
-                        // No full render, just update state
-                        updateAppState({ savedSales: [...appState.savedSales] }, false);
-                    }
-                }
-                else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
+                if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
             }
 
