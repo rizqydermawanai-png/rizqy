@@ -267,6 +267,7 @@
         const formatRole = (role) => ({
             'super_admin': 'CEO',
             'admin': 'Wakil CEO',
+            'penanggung_jawab': 'Penanggung Jawab',
             'user': 'Pengguna',
             'member': 'Anggota',
             'pending': 'Menunggu Persetujuan'
@@ -625,6 +626,7 @@
             const isSuperAdmin = userRole === 'super_admin';
 
             const visibleTabs = {
+                recapitulation: isSuperAdmin,
                 production: isAdmin || userDepartment === 'produksi',
                 salesCalculator: isAdmin || userDepartment === 'penjualan',
                 report: isAdmin || userDepartment === 'produksi' || userDepartment === 'penjualan' || userDepartment === 'gudang',
@@ -641,16 +643,16 @@
                 tabOrder = ['production', 'report', 'warehouse', 'salesCalculator', 'accountManagement'];
             } else if (userDepartment === 'penjualan') {
                 tabOrder = ['salesCalculator', 'report', 'production', 'warehouse', 'accountManagement'];
-            } else if (isAdmin) { // Urutan default Admin/Super Admin
+            } else if (isSuperAdmin) {
+                tabOrder = ['recapitulation', 'production', 'salesCalculator', 'report', 'warehouse', 'accountManagement', 'activityLogs'];
+            } else if (isAdmin) { // Urutan default Admin
                 tabOrder = ['production', 'salesCalculator', 'report', 'warehouse', 'accountManagement'];
-            }
-            if (isSuperAdmin) {
-                tabOrder.push('activityLogs');
             }
 
             const tabButtonsHtml = tabOrder.map(tabKey => {
                 if (visibleTabs[tabKey]) {
                     const tabTitleMap = {
+                        recapitulation: 'Rekapitulasi',
                         production: 'Produksi',
                         salesCalculator: 'Kalkulator Penjualan',
                         report: 'Laporan',
@@ -678,6 +680,7 @@
                 </div>
 
                 <div class="relative min-h-[600px]"> <!-- Tambahkan min-h untuk mencegah layout bergeser -->
+                    <div id="recapitulationSection" class="tab-content ${appState.activeTab === 'recapitulation' ? 'active' : ''}"></div>
                     <div id="productionSection" class="tab-content ${appState.activeTab === 'production' ? 'active' : ''}">${visibleTabs.production ? renderProductionContent() : ''}</div>
                     <div id="salesCalculatorSection" class="tab-content ${appState.activeTab === 'salesCalculator' ? 'active' : ''}">${visibleTabs.salesCalculator ? renderSalesCalculatorContent() : ''}</div>
                     <div id="warehouseSection" class="tab-content ${appState.activeTab === 'warehouse' ? 'active' : ''}">${visibleTabs.warehouse ? renderWarehouseContent() : ''}</div>
@@ -694,6 +697,8 @@
                 renderReportSubContent();
             } else if (appState.activeTab === 'warehouse' && visibleTabs.warehouse) {
                 renderWarehouseSubContent();
+            } else if (appState.activeTab === 'recapitulation' && visibleTabs.recapitulation) {
+                renderRecapitulationContent();
             }
         }
 
@@ -1284,7 +1289,7 @@
             
             return `
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-gray-800">Rekap Keluar Masuk Stok</h3>
+                    <h3 class="text-xl font-bold text-gray-800">Rekap Stok</h3>
                     <button id="exportStockHistoryBtn" class="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Ekspor ke Excel
@@ -1454,8 +1459,8 @@
                                                 </button>
 
                                                 ${(userDepartment === 'produksi' || isAdmin) && request.status === 'pending' ? `
-                                                    <button class="update-request-status-btn py-1 px-3 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200" data-id="${request.id}" data-status="approved_by_production" title="Setujui Produksi">
-                                                        Setujui Produksi
+                                                    <button class="update-request-status-btn py-1 px-3 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200" data-id="${request.id}" data-status="approved_by_production" title="Setujui">
+                                                        Setuju
                                                     </button>
                                                     <button class="update-request-status-btn py-1 px-3 bg-red-100 text-red-700 rounded-md text-sm hover:bg-red-200" data-id="${request.id}" data-status="rejected" title="Tolak">
                                                         Tolak
@@ -1504,7 +1509,7 @@
                 let roleDisplay = formatRole(user.role);
                 if (appState.userRole === 'super_admin' && user.role !== 'super_admin') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
-                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
+                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="penanggung_jawab" ${user.role === 'penanggung_jawab' ? 'selected' : ''}>Penanggung Jawab</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
                 } else if (appState.userRole === 'admin' && user.role === 'member') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
                 } else {
@@ -1911,7 +1916,10 @@
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
             }
 
-            const logs = appState.activityLogs;
+            const logs = appState.activityLogs.filter(log => {
+                const description = log.description.toLowerCase();
+                return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
+            });
 
             if (logs.length === 0) {
                 return `
@@ -3334,6 +3342,116 @@
             });
         }
 
+        function renderRecapitulationContent() {
+            // Data processing
+            const totalRevenue = appState.savedSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+            const totalItemsSold = appState.savedSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            const totalItemsProduced = appState.savedReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
+            const pendingRequests = appState.warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
+
+            const lowStockItems = [...appState.warehouse.inventory]
+                .filter(item => item.stock > 0)
+                .sort((a, b) => a.stock - b.stock)
+                .slice(0, 5);
+
+            const recentActivities = appState.activityLogs
+                .filter(log => {
+                    const description = log.description.toLowerCase();
+                    return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
+                })
+                .slice(0, 5);
+
+            // HTML Structure
+            const html = `
+                <div class="p-6 bg-gray-50 rounded-2xl">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Laporan Rekapitulasi</h2>
+
+                    <!-- KPIs -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Produksi</p><p class="text-3xl font-bold text-indigo-600">${formatRupiah(totalItemsProduced)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Sales Chart -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Tren Penjualan</h3>
+                            <div style="height: 300px;"><canvas id="recapSalesChart"></canvas></div>
+                        </div>
+
+                        <!-- Production Chart -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Volume Produksi</h3>
+                            <div style="height: 300px;"><canvas id="recapProductionChart"></canvas></div>
+                        </div>
+
+                        <!-- Low Stock -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Stok Terendah</h3>
+                            <ul class="space-y-3">
+                                ${lowStockItems.length > 0 ? lowStockItems.map(item => `
+                                    <li class="flex justify-between items-center text-sm">
+                                        <span class="font-medium text-gray-800">${item.name}</span>
+                                        <span class="font-bold text-red-500">${item.stock} pcs</span>
+                                    </li>
+                                `).join('') : '<p class="text-gray-500 text-sm">Semua stok dalam kondisi aman.</p>'}
+                            </ul>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-4">Aktivitas Terbaru</h3>
+                            <ul class="space-y-3">
+                                ${recentActivities.map(log => `
+                                    <li class="text-sm">
+                                        <p class="font-medium text-gray-800">${log.description}</p>
+                                        <p class="text-xs text-gray-400">${new Date(log.timestamp).toLocaleString('id-ID')} - oleh ${getUsernameById(log.userId)}</p>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Render the HTML
+            const container = document.getElementById('recapitulationSection');
+            if(container) {
+                container.innerHTML = html;
+            }
+
+            // Prepare and render charts
+            // Sales Chart Data
+            const salesChartData = {
+                labels: appState.savedSales.map(s => new Date(s.timestamp).toLocaleDateString('id-ID')),
+                datasets: [{
+                    label: 'Total Penjualan',
+                    data: appState.savedSales.map(s => s.result.grandTotal),
+                    borderColor: '#16a34a',
+                    tension: 0.1
+                }]
+            };
+            renderChart('recapSalesChart', 'line', salesChartData, 'Total Penjualan per Transaksi');
+
+            // Production Chart Data
+            const productionData = {};
+            appState.savedReports.filter(r => !r.isSuperseded).forEach(report => {
+                const title = GARMENT_PATTERNS[report.selectedGarment].title;
+                productionData[title] = (productionData[title] || 0) + report.hppResult.garmentsProduced;
+            });
+            const productionChartData = {
+                labels: Object.keys(productionData),
+                datasets: [{
+                    label: 'Jumlah Produksi',
+                    data: Object.values(productionData),
+                    backgroundColor: ['#4f46e5', '#22c55e', '#f59e0b', '#a855f7'],
+                }]
+            };
+            renderChart('recapProductionChart', 'doughnut', productionChartData, 'Jumlah Produksi per Tipe Pakaian');
+        }
+
         // =====================================================================================================
         // BAGIAN 7: EVENT LISTENER DELEGATION (Pusat Penanganan Event)
         // =====================================================================================================
@@ -3462,6 +3580,7 @@
 
             // --- Navigasi Tab Utama ---
             const tabButtons = {
+                'recapitulation': 'recapitulationTabBtn',
                 'production': 'productionTabBtn',
                 'salesCalculator': 'salesCalculatorTabBtn',
                 'warehouse': 'warehouseTabBtn',
@@ -3526,15 +3645,6 @@
                 else if (e.target.id === 'stockHistoryTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'stock-history' } });
                 // Tombol "Minta Produksi" di tab Inventaris Gudang
                 else if (e.target.classList.contains('request-production-btn')) requestProduction(e.target.dataset.id);
-                // Filter kategori untuk permintaan produksi di gudang
-                else if (e.target.id === 'productionRequestCategoryFilter') {
-                    updateAppState({ 
-                        warehouse: { 
-                            ...appState.warehouse, 
-                            selectedCategoryFilter: e.target.value 
-                        } 
-                    });
-                }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
             }
@@ -3611,6 +3721,14 @@
             if (appState.activeTab === 'warehouse') {
                 if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
+                else if (e.target.id === 'productionRequestCategoryFilter') {
+                    updateAppState({
+                        warehouse: {
+                            ...appState.warehouse,
+                            selectedCategoryFilter: e.target.value
+                        }
+                    });
+                }
             }
 
             // --- Laporan ---
