@@ -3533,7 +3533,7 @@
                 if (inventoryItem) {
                     if (inventoryItem.stock === 0) {
                         status = 'Habis';
-                    } else if (inventoryItem.stock <= 10) {
+                    } else if (inventoryItem.stock <= appState.warehouse.lowStockThreshold) {
                         status = 'Hampir Habis';
                     }
                 }
@@ -3550,7 +3550,8 @@
             let csvContent = "data:text/csv;charset=utf-8,";
             
             // Header
-            csvContent += "Tanggal,Produk,Kategori,Jenis,Jumlah,Stok Akhir,Status,Sumber,Oleh\n";
+            const headers = ["Tanggal", "Produk", "Kategori", "Jenis", "Jumlah", "Stok Akhir", "Status", "Sumber", "Oleh"];
+            csvContent += headers.map(escapeCsvField).join(",") + "\n";
             
             // Data
             stockWithStatus.forEach(entry => {
@@ -3608,7 +3609,6 @@
 
             // --- Navigasi Tab Utama ---
             const tabButtons = {
-                'recapitulation': 'recapitulationTabBtn',
                 'production': 'productionTabBtn',
                 'salesCalculator': 'salesCalculatorTabBtn',
                 'warehouse': 'warehouseTabBtn',
@@ -3673,15 +3673,6 @@
                 else if (e.target.id === 'stockHistoryTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'stock-history' } });
                 // Tombol "Minta Produksi" di tab Inventaris Gudang
                 else if (e.target.classList.contains('request-production-btn')) requestProduction(e.target.dataset.id);
-                // Filter kategori untuk permintaan produksi di gudang
-                else if (e.target.id === 'productionRequestCategoryFilter') {
-                    updateAppState({ 
-                        warehouse: { 
-                            ...appState.warehouse, 
-                            selectedCategoryFilter: e.target.value 
-                        } 
-                    });
-                }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
             }
@@ -3756,22 +3747,7 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.classList.contains('production-request-category-checkbox')) {
-                    const category = e.target.value;
-                    const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
-                    if (e.target.checked) {
-                        if (!currentFilters.includes(category)) {
-                            currentFilters.push(category);
-                        }
-                    } else {
-                        const index = currentFilters.indexOf(category);
-                        if (index > -1) {
-                            currentFilters.splice(index, 1);
-                        }
-                    }
-                    updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
-                }
-                else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
+                if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
             }
 
@@ -3806,4 +3782,68 @@
                else if (e.target.id === 'materialLengthPerRoll') updateAppState({ material: { ...appState.material, lengthPerRoll: parseFloat(e.target.value) || 0 } }, false);
                else if (e.target.id === 'pricePerRoll') updateAppState({ material: { ...appState.material, pricePerRoll: parseFloat(e.target.value) || 0 } }, false);
                else if (e.target.classList.contains('quantity-input')) handleGarmentOrderChange(e.target.dataset.id, 'quantity', e.target.value);
-                else if (e.target.classList.contains('detail-input')) handleGarmentOrderChange(
+                else if (e.target.classList.contains('detail-input')) handleGarmentOrderChange(e.target.dataset.id, e.target.dataset.detailId, e.target.value, true);
+                else if (e.target.classList.contains('color-hex-input')) handleColorHexChange(e.target.dataset.id, e.target.value);
+                else if (e.target.id === 'laborCost') updateAppState({ otherCosts: { ...appState.otherCosts, laborCost: parseFloat(e.target.value) || 0 } }, false);
+                else if (e.target.id === 'overheadCost') updateAppState({ otherCosts: { ...appState.otherCosts, overheadCost: parseFloat(e.target.value) || 0 } }, false);
+                else if (e.target.classList.contains('item-name-input')) handleAdditionalItemChange(parseInt(e.target.dataset.index), 'name', e.target.value);
+                else if (e.target.classList.contains('item-cost-input')) handleAdditionalItemChange(parseInt(e.target.dataset.index), 'cost', e.target.value);
+                else if (e.target.classList.contains('item-quantity-input')) handleAdditionalItemChange(parseInt(e.target.dataset.index), 'quantity', e.target.value);
+                else if (e.target.id === 'profitPercentage') updateAppState({ profitPercentage: parseFloat(e.target.value) || 0 }, false);
+            }
+
+            // --- Penjualan ---
+            if (appState.activeTab === 'salesCalculator') {
+                if (e.target.id === 'salesProductSearch') updateAppState({ salesCalculator: { ...appState.salesCalculator, searchTerm: e.target.value } });
+                else if (e.target.id === 'customerName') updateAppState({ salesCalculator: { ...appState.salesCalculator, customerName: e.target.value } }, false);
+                else if (e.target.id === 'discountValue') updateAppState({ salesCalculator: { ...appState.salesCalculator, discountValue: parseFloat(e.target.value) || 0, result: null } }, false);
+                else if (e.target.id === 'taxPercentage') updateAppState({ salesCalculator: { ...appState.salesCalculator, taxPercentage: parseFloat(e.target.value) || 0, result: null } }, false);
+            }
+
+            // --- Gudang ---
+            if (appState.activeTab === 'warehouse') {
+                if (e.target.id === 'warehouseSearch') updateAppState({ warehouse: { ...appState.warehouse, searchTerm: e.target.value } });
+            }
+
+            // --- Modal Revisi ---
+            if (e.target.id === 'revisionNotesInput') updateAppState({ revisionNotesForNewReport: e.target.value }, false);
+        }
+
+        /**
+         * Penanganan event keydown global (misal untuk Enter di input).
+         * @param {Event} e - Event keydown.
+         */
+        function handleGlobalKeydown(e) {
+            if (!appState.isAuthReady && e.key === 'Enter') {
+                if (e.target.id === 'usernameInput' || e.target.id === 'passwordInput') {
+                    handleLogin();
+                } else if (e.target.id === 'regUsernameInput' || e.target.id === 'regPasswordInput' || e.target.id === 'regEmailInput' || e.target.id === 'regWhatsappInput') {
+                    handleRegister();
+                }
+            }
+        }
+
+        // =====================================================================================================
+        // BAGIAN 8: INISIALISASI APLIKASI
+        // =====================================================================================================
+
+        /**
+         * Menginisialisasi aplikasi saat DOM siap.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inisialisasi garmentOrder untuk kalkulator jika belum diatur
+            if (!appState.garmentOrder || appState.garmentOrder.length === 0) {
+                const currentPattern = GARMENT_PATTERNS[appState.selectedGarment];
+                const hasModels = !!currentPattern.models;
+                const defaultModel = hasModels ? currentPattern.models[0] : null;
+                const defaultSize = 'L';
+                const defaultDetails = hasModels ? GARMENT_SIZES[appState.selectedGarment]?.[defaultModel]?.[defaultSize] : GARMENT_SIZES[appState.selectedGarment]?.[defaultSize];
+                updateAppState({ garmentOrder: [{ id: generateUniqueId(), model: defaultModel, size: defaultSize, quantity: 1, details: defaultDetails || {}, color: '', colorHex: '' }] }, false);
+            }
+
+            filterReports(); // Filter laporan awal
+            window.renderApp(); // Panggil render utama untuk pertama kali
+        });
+    </script>
+</body>
+</html>
