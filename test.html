@@ -578,7 +578,7 @@
             lastLoggedInUsers: loadFromLocalStorage('kazumiLastLoggedInUsers', []),
             activityLogs: loadFromLocalStorage('kazumiActivityLogs', []),
             currentProductionRequestId: null,
-            manualDispatches: loadFromLocalStorage('kazumiManualDispatches', []),
+            onlineOrders: loadFromLocalStorage('kazumiOnlineOrders', []),
             isEditingProfile: false,
             notifications: loadFromLocalStorage('kazumiNotifications', []),
             messages: loadFromLocalStorage('kazumiMessages', []),
@@ -621,7 +621,7 @@
             saveToLocalStorage('kazumiActivityLogs', appState.activityLogs);
             saveToLocalStorage('kazumiLocalUsers', appState.allUsers);
             saveToLocalStorage('kazumiLastLoggedInUsers', appState.lastLoggedInUsers);
-            saveToLocalStorage('kazumiManualDispatches', appState.manualDispatches);
+            saveToLocalStorage('kazumiOnlineOrders', appState.onlineOrders);
             saveToLocalStorage('kazumiNotifications', appState.notifications);
             saveToLocalStorage('kazumiMessages', appState.messages);
             saveToLocalStorage('kazumiMaterialSettings', appState.material);
@@ -1635,8 +1635,8 @@
                     <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
                         <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Inventaris</button>
                         <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Masuk</button>
-                        <button id="manualStockOutTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'manual-stock-out' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Stok Keluar Manual</button>
-                        <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok</button>
+                        <button id="onlineOrdersTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'online-orders' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Pesanan Online</button>
+                        <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok Keluar</button>
                     </div>
 
                     <div id="warehouseSubContent">
@@ -1659,8 +1659,8 @@
                 warehouseSubContentContainer.innerHTML = renderStockHistory();
             } else if (appState.warehouse.activeSubTab === 'production-requests-warehouse') {
                 warehouseSubContentContainer.innerHTML = renderProductionRequests('warehouse-tab');
-            } else if (appState.warehouse.activeSubTab === 'manual-stock-out') {
-                warehouseSubContentContainer.innerHTML = renderManualStockOut();
+            } else if (appState.warehouse.activeSubTab === 'online-orders') {
+                warehouseSubContentContainer.innerHTML = renderOnlineOrders();
             }
         }
 
@@ -1731,8 +1731,11 @@
         function renderStockHistory() {
             const { stockHistory, inventory } = appState;
             
+            // Filter for outgoing stock only
+            const outgoingStockHistory = stockHistory.filter(entry => entry.type.includes('Keluar'));
+
             // Gabungkan data stok dengan informasi inventaris
-            const stockWithStatus = stockHistory.map(entry => {
+            const stockWithStatus = outgoingStockHistory.map(entry => {
                 const inventoryItem = inventory.find(item => item.id === entry.productId);
                 let status = 'Aman';
                 let statusClass = 'bg-green-100 text-green-800';
@@ -1974,52 +1977,79 @@
          * Merender konten untuk tab Manajemen Akun.
          * @returns {string} String HTML untuk konten manajemen akun.
          */
-        function renderManualStockOut() {
-            const { inventory, searchTerm } = appState.warehouse;
-            const filteredInventory = inventory.filter(item => item.stock > 0 && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        function renderOnlineOrderActions(order) {
+            const { userRole, userDepartment } = appState;
+            const isWarehouse = userRole === 'super_admin' || userRole === 'admin' || userDepartment === 'gudang';
+            const isSales = userRole === 'super_admin' || userRole === 'admin' || userDepartment === 'penjualan';
+
+            let actions = '';
+
+            switch (order.status) {
+                case 'pending_gudang':
+                    if (isWarehouse) {
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-green-100 text-green-700 rounded text-xs" data-id="${order.id}" data-status="approved_gudang">Setujui</button>`;
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
+                    }
+                    break;
+                case 'approved_gudang':
+                    if (isWarehouse) {
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-purple-100 text-purple-700 rounded text-xs" data-id="${order.id}" data-status="siap_kirim">Siap Kirim</button>`;
+                    }
+                     if (isSales) {
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
+                    }
+                    break;
+                case 'siap_kirim':
+                    if (isSales) {
+                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-blue-100 text-blue-700 rounded text-xs" data-id="${order.id}" data-status="selesai">Selesaikan</button>`;
+                    }
+                    break;
+                default:
+                    actions = ''; // No actions for 'selesai' or 'dibatalkan'
+            }
+            return actions;
+        }
+
+        function renderOnlineOrders() {
+             const { userRole, userDepartment } = appState;
+             const canCreateOrder = userRole === 'super_admin' || userRole === 'admin' || userDepartment === 'penjualan';
+
+             const getStatusBadge = (status) => {
+                switch (status) {
+                    case 'pending_gudang': return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Menunggu Gudang</span>';
+                    case 'approved_gudang': return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Disetujui Gudang</span>';
+                    case 'siap_kirim': return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">Siap Kirim</span>';
+                    case 'selesai': return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Selesai</span>';
+                    case 'dibatalkan': return '<span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Dibatalkan</span>';
+                    default: return `<span class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800">${status}</span>`;
+                }
+            };
 
             return `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Kolom Kiri: Form Pengeluaran Stok -->
-                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Formulir Stok Keluar Manual</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="manualStockOutProduct" class="block text-sm font-medium text-gray-700">Pilih Produk</label>
-                                <select id="manualStockOutProduct" class="mt-1 block w-full p-2 border rounded-md">
-                                    ${filteredInventory.map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock})</option>`).join('')}
-                                </select>
-                            </div>
-                            <div>
-                                <label for="manualStockOutQty" class="block text-sm font-medium text-gray-700">Jumlah Keluar</label>
-                                <input type="number" id="manualStockOutQty" min="1" class="mt-1 block w-full p-2 border rounded-md" placeholder="0">
-                            </div>
-                            <div>
-                                <label for="manualStockOutNotes" class="block text-sm font-medium text-gray-700">Catatan/Alasan</label>
-                                <textarea id="manualStockOutNotes" rows="3" class="mt-1 block w-full p-2 border rounded-md" placeholder="Contoh: Sampel untuk pameran, barang rusak, dll."></textarea>
-                            </div>
-                            <button id="submitManualStockOutBtn" class="w-full py-2 px-4 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700">Keluarkan Stok</button>
-                        </div>
+                <div class="interactive-card bg-white rounded-2xl shadow-sm border p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">Daftar Pesanan Online</h3>
+                        ${canCreateOrder ? '<button id="createOnlineOrderBtn" class="py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700">Buat Pesanan Baru</button>' : ''}
                     </div>
-
-                    <!-- Kolom Kanan: Riwayat Pengeluaran Manual -->
-                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Riwayat Pengeluaran Manual</h3>
-                        <div class="space-y-3 max-h-[400px] overflow-y-auto">
-                            ${appState.manualDispatches.length > 0 ? appState.manualDispatches.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(dispatch => `
-                                <div class="p-3 bg-gray-50 rounded-lg border">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <p class="font-semibold">${dispatch.productName}</p>
-                                            <p class="text-sm text-gray-600">Jumlah: <span class="font-bold">${dispatch.quantity} pcs</span></p>
-                                            <p class="text-sm text-gray-600">Alasan: ${dispatch.notes || '-'}</p>
-                                            <p class="text-xs text-gray-400 mt-1">Oleh: ${getUsernameById(dispatch.userId)} pada ${new Date(dispatch.timestamp).toLocaleDateString('id-ID')}</p>
-                                        </div>
-                                        <button class="print-dispatch-btn py-1 px-2 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300" data-id="${dispatch.id}">Cetak</button>
+                    <div class="space-y-4">
+                        ${appState.onlineOrders.length > 0 ? appState.onlineOrders.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(order => `
+                            <div class="p-4 bg-gray-50 rounded-xl border">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-gray-800">Pesanan #${order.id.substring(0, 8).toUpperCase()}</p>
+                                        <p class="text-sm">Tujuan: ${order.destination || '-'}</p>
+                                        <p class="text-xs text-gray-500">Dibuat oleh: ${getUsernameById(order.createdBy)} pada ${new Date(order.timestamp).toLocaleString('id-ID')}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        ${getStatusBadge(order.status)}
+                                        <p class="text-sm font-semibold mt-1">${order.items.reduce((sum, item) => sum + item.quantity, 0)} item</p>
                                     </div>
                                 </div>
-                            `).join('') : '<p class="text-center text-gray-500">Belum ada riwayat pengeluaran manual.</p>'}
-                        </div>
+                                <div class="mt-2 pt-2 border-t flex justify-end gap-2">
+                                    ${renderOnlineOrderActions(order)}
+                                </div>
+                            </div>
+                        `).join('') : '<p class="text-center text-gray-500 py-4">Belum ada pesanan online.</p>'}
                     </div>
                 </div>
             `;
@@ -2701,6 +2731,20 @@
                         <tbody>${hppResult.garmentOrder.map(item => `<tr><td class="py-2 px-4 border-b text-sm">${GARMENT_PATTERNS[selectedGarment].title} ${item.model ? `(${item.model})` : ''} - ${item.size} ${item.color ? `(${item.color})` : ''}</td><td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment)}</td><td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(hppResult.sellingPricePerGarment * item.quantity)}</td></tr>`).join('')}</tbody>
                     </table>
                     <div class="flex justify-end mt-4"><div class="w-full sm:w-1/2 space-y-2 text-right"><div class="flex justify-between font-semibold"><span>Total HPP:</span><span>Rp ${formatRupiah(hppResult.totalHPP * hppResult.garmentsProduced)}</span></div><div class="flex justify-between font-semibold"><span>Biaya Tambahan:</span><span>Rp ${formatRupiah(totalAdditionalItemsCost)}</span></div><div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>TOTAL NILAI PRODUKSI:</span><span>Rp ${formatRupiah(totalPayment)}</span></div></div></div>
+
+                    <div class="grid grid-cols-2 gap-8 mt-16 pt-8 text-center text-sm">
+                        <div>
+                            <p class="mb-16">Pihak Gudang,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                        <div>
+                            <p class="mb-16">Penanggung Jawab,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                    </div>
+
                     <div class="text-center text-sm text-gray-600 mt-12 pt-4 border-t">Terima kasih.</div>
                 </div>`;
         }
@@ -4266,8 +4310,11 @@
         function exportStockHistoryToExcel() {
             const { stockHistory, inventory } = appState;
             
+            // Filter for outgoing stock only
+            const outgoingStockHistory = stockHistory.filter(entry => entry.type.includes('Keluar'));
+
             // Gabungkan data stok dengan informasi inventaris
-            const stockWithStatus = stockHistory.map(entry => {
+            const stockWithStatus = outgoingStockHistory.map(entry => {
                 const inventoryItem = inventory.find(item => item.id === entry.productId);
                 let status = 'Aman';
                 
@@ -4418,6 +4465,215 @@
 
             showNotification('Rekapitulasi berhasil diekspor ke Excel', 'success');
             addActivityLog('Ekspor', 'Mengekspor data rekapitulasi ke Excel.', appState.userId);
+        }
+
+        /**
+         * Menangani pengeluaran stok manual.
+         */
+        function handleUpdateOnlineOrderStatus(orderId, newStatus) {
+            const orderIndex = appState.onlineOrders.findIndex(o => o.id === orderId);
+            if (orderIndex === -1) {
+                showNotification('Pesanan tidak ditemukan.', 'error');
+                return;
+            }
+
+            const updatedOrders = [...appState.onlineOrders];
+            const order = updatedOrders[orderIndex];
+            const oldStatus = order.status;
+
+            let confirmationMessage = `Anda yakin ingin mengubah status pesanan #${order.id.substring(0,8).toUpperCase()} menjadi "${newStatus}"?`;
+
+            // Logic for stock deduction or return
+            if (newStatus === 'approved_gudang' && oldStatus === 'pending_gudang') {
+                // Check stock availability before approving
+                for (const item of order.items) {
+                    const inventoryItem = appState.warehouse.inventory.find(inv => inv.id === item.id);
+                    if (!inventoryItem || inventoryItem.stock < item.quantity) {
+                        showNotification(`Stok untuk ${item.name} tidak mencukupi.`, 'error');
+                        return;
+                    }
+                }
+                confirmationMessage = `Menyetujui pesanan ini akan mengurangi stok dari gudang. Lanjutkan?`;
+            } else if (newStatus === 'dibatalkan' && oldStatus === 'approved_gudang') {
+                confirmationMessage = `Membatalkan pesanan ini akan mengembalikan stok ke gudang. Lanjutkan?`;
+            }
+
+            showCustomConfirmation(confirmationMessage, () => {
+                let updatedInventory = [...appState.warehouse.inventory];
+                let newStockHistoryEntries = [];
+
+                if (newStatus === 'approved_gudang' && oldStatus === 'pending_gudang') {
+                    order.items.forEach(item => {
+                        const invIndex = updatedInventory.findIndex(inv => inv.id === item.id);
+                        if (invIndex !== -1) {
+                            updatedInventory[invIndex].stock -= item.quantity;
+                            newStockHistoryEntries.push({
+                                id: generateUniqueId(),
+                                timestamp: new Date().toISOString(),
+                                productId: item.id,
+                                productName: item.name,
+                                type: 'Keluar (Online)',
+                                quantity: item.quantity,
+                                finalStock: updatedInventory[invIndex].stock,
+                                source: `Pesanan Online #${order.id.substring(0,8).toUpperCase()}`,
+                                userId: appState.userId
+                            });
+                        }
+                    });
+                } else if (newStatus === 'dibatalkan' && oldStatus === 'approved_gudang') {
+                    order.items.forEach(item => {
+                        const invIndex = updatedInventory.findIndex(inv => inv.id === item.id);
+                        if (invIndex !== -1) {
+                            updatedInventory[invIndex].stock += item.quantity;
+                             newStockHistoryEntries.push({
+                                id: generateUniqueId(),
+                                timestamp: new Date().toISOString(),
+                                productId: item.id,
+                                productName: item.name,
+                                type: 'Masuk (Batal)',
+                                quantity: item.quantity,
+                                finalStock: updatedInventory[invIndex].stock,
+                                source: `Batal Pesanan #${order.id.substring(0,8).toUpperCase()}`,
+                                userId: appState.userId
+                            });
+                        }
+                    });
+                }
+
+                order.status = newStatus;
+                order.history.push({ status: newStatus, timestamp: new Date().toISOString(), userId: appState.userId });
+
+                updateAppState({
+                    onlineOrders: updatedOrders,
+                    warehouse: {
+                        ...appState.warehouse,
+                        inventory: updatedInventory,
+                        stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
+                    }
+                });
+
+                showNotification('Status pesanan berhasil diperbarui.', 'success');
+                addActivityLog('Pesanan Online', `Status pesanan #${order.id.substring(0,8).toUpperCase()} diubah menjadi ${newStatus}.`, appState.userId, order.id);
+            });
+        }
+
+        function handleCreateOnlineOrder() {
+            // This function will be more complex. For now, it's a placeholder.
+            // It will open a modal to build an order.
+            const { inventory } = appState.warehouse;
+
+            let currentOrderItems = [];
+
+            const updateModalContent = () => {
+                const productOptions = inventory
+                    .filter(item => item.stock > 0 && !currentOrderItems.find(oi => oi.id === item.id))
+                    .map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock})</option>`).join('');
+
+                const itemsHTML = currentOrderItems.map((item, index) => `
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="flex-1">${item.name}</span>
+                        <input type="number" class="w-20 p-1 border rounded modal-item-qty" value="${item.quantity}" min="1" max="${item.maxStock}" data-index="${index}">
+                        <button class="text-red-500 hover:text-red-700 modal-remove-item" data-index="${index}">&times;</button>
+                    </div>
+                `).join('');
+
+                const content = `
+                    <div class="space-y-4">
+                        <div>
+                            <label for="onlineOrderDestination" class="block text-sm font-medium text-gray-700">Tujuan/Nama Pelanggan</label>
+                            <input type="text" id="onlineOrderDestination" class="mt-1 block w-full p-2 border rounded-md" placeholder="Contoh: Marketplace ABC, John Doe">
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-semibold mb-2">Item Pesanan</h4>
+                            <div id="modalOrderItems" class="space-y-2 mb-4">${itemsHTML}</div>
+                            <div class="flex gap-2 items-end">
+                                <select id="modalProductSelect" class="flex-1 p-2 border rounded-md text-sm">${productOptions}</select>
+                                <button id="modalAddItemBtn" class="py-2 px-3 bg-gray-200 rounded-md hover:bg-gray-300">Tambah</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="onlineOrderNotes" class="block text-sm font-medium text-gray-700">Catatan</label>
+                            <textarea id="onlineOrderNotes" rows="2" class="mt-1 block w-full p-2 border rounded-md"></textarea>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button id="cancelOnlineOrderBtn" class="py-2 px-4 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Batal</button>
+                            <button id="submitOnlineOrderBtn" class="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">Buat Pesanan</button>
+                        </div>
+                    </div>
+                `;
+                return content;
+            };
+
+            showModal('Buat Pesanan Online Baru', updateModalContent());
+
+            const modal = document.querySelector('.modal-content');
+            if (!modal) return;
+
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'modalAddItemBtn') {
+                    const productSelect = document.getElementById('modalProductSelect');
+                    const selectedId = productSelect.value;
+                    if (!selectedId) return;
+
+                    const inventoryItem = inventory.find(i => i.id === selectedId);
+                    if (inventoryItem && !currentOrderItems.find(oi => oi.id === selectedId)) {
+                        currentOrderItems.push({
+                            id: inventoryItem.id,
+                            name: inventoryItem.name,
+                            quantity: 1,
+                            maxStock: inventoryItem.stock,
+                            price: inventoryItem.sellingPrice // Store price for reference
+                        });
+                        modal.innerHTML = updateModalContent(); // Re-render modal content
+                    }
+                } else if (e.target.classList.contains('modal-remove-item')) {
+                    const index = parseInt(e.target.dataset.index);
+                    currentOrderItems.splice(index, 1);
+                    modal.innerHTML = updateModalContent();
+                }
+            });
+
+            modal.addEventListener('change', (e) => {
+                if (e.target.classList.contains('modal-item-qty')) {
+                    const index = parseInt(e.target.dataset.index);
+                    let newQty = parseInt(e.target.value);
+                    if (isNaN(newQty) || newQty < 1) newQty = 1;
+                    if (newQty > currentOrderItems[index].maxStock) {
+                        newQty = currentOrderItems[index].maxStock;
+                        showNotification('Kuantitas melebihi stok yang tersedia.', 'error');
+                    }
+                    currentOrderItems[index].quantity = newQty;
+                    e.target.value = newQty; // Correct the input field if needed
+                }
+            });
+
+            document.getElementById('cancelOnlineOrderBtn')?.addEventListener('click', () => document.getElementById('closeModalBtn')?.click());
+
+            document.getElementById('submitOnlineOrderBtn')?.addEventListener('click', () => {
+                const destination = document.getElementById('onlineOrderDestination')?.value.trim();
+                const notes = document.getElementById('onlineOrderNotes')?.value.trim();
+
+                if (currentOrderItems.length === 0) {
+                    showNotification('Harap tambahkan setidaknya satu item ke pesanan.', 'error');
+                    return;
+                }
+
+                const newOrder = {
+                    id: generateUniqueId(),
+                    timestamp: new Date().toISOString(),
+                    createdBy: appState.userId,
+                    destination: destination,
+                    notes: notes,
+                    status: 'pending_gudang', // Initial status
+                    items: currentOrderItems,
+                    history: [{ status: 'pending_gudang', timestamp: new Date().toISOString(), userId: appState.userId }]
+                };
+
+                updateAppState({ onlineOrders: [newOrder, ...appState.onlineOrders] });
+                document.getElementById('closeModalBtn')?.click();
+                showNotification('Pesanan online baru berhasil dibuat.', 'success');
+                addActivityLog('Pesanan Online', `Membuat pesanan baru #${newOrder.id.substring(0,8).toUpperCase()} tujuan ${destination || 'N/A'}.`, appState.userId, newOrder.id);
+            });
         }
 
         /**
@@ -4579,7 +4835,7 @@
                    else if (e.target.id === 'inputWeightBtn') updateAppState({ materialInputType: 'weight' });
                    else if (e.target.id === 'inputRollBtn') updateAppState({ materialInputType: 'roll' });
                    else if (e.target.id === 'addGarmentItemBtn') addGarmentItem();
-                else if (e.target.classList.contains('remove-item-btn')) removeGarmentItem(e.target.dataset.id);
+                else if (e.target.closest('.remove-item-btn')) removeGarmentItem(e.target.closest('.remove-item-btn').dataset.id);
                 else if (e.target.id === 'addAdditionalItemBtn') addAdditionalItem();
                 else if (e.target.classList.contains('remove-additional-item-btn')) removeAdditionalItem(parseInt(e.target.dataset.index));
                 else if (e.target.id === 'calculateHPPBtn') handleCalculateHPP();
@@ -4615,9 +4871,7 @@
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
                 else if (e.target.id === 'exportRecapBtn') exportRecapitulationToExcel();
-                else if (e.target.id === 'manualStockOutTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'manual-stock-out' } });
-                else if (e.target.id === 'submitManualStockOutBtn') handleManualStockOut();
-                else if (e.target.classList.contains('print-dispatch-btn')) printManualDispatchNote(e.target.dataset.id);
+                else if (e.target.id === 'onlineOrdersTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'online-orders' } });
             }
 
             // --- Spesifik Tab Laporan ---
@@ -4670,6 +4924,9 @@
             // `renderProductionRequests` dipanggil (Produksi atau Gudang)
             if (e.target.classList.contains('update-request-status-btn')) {
                 updateProductionRequestStatus(e.target.dataset.id, e.target.dataset.status);
+            }
+            if (e.target.classList.contains('update-online-order-status-btn')) {
+                handleUpdateOnlineOrderStatus(e.target.dataset.id, e.target.dataset.status);
             }
             if (e.target.classList.contains('delete-request-btn')) {
                 deleteProductionRequest(e.target.dataset.id);
