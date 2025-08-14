@@ -91,9 +91,107 @@
             overflow-y: auto;
             padding: 2rem;
         }
+
+        /* Animasi dan Transisi Baru */
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slide-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+        }
+        .animate-slide-in-up {
+            opacity: 0; /* Mulai dari tidak terlihat */
+            animation: slide-in-up 0.4s ease-out forwards;
+        }
+
+        /* Efek Hover yang Disempurnakan */
+        .interactive-card {
+            transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+        }
+        .interactive-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Transisi untuk Tombol */
+        button, .button {
+            transition: all 0.2s ease-in-out;
+        }
+        button:hover, .button:hover {
+            filter: brightness(1.05);
+            transform: scale(1.03);
+        }
+        button:active, .button:active {
+            transform: scale(0.98);
+            filter: brightness(0.95);
+        }
+
+        /* Efek untuk Ikon di dalam Tombol */
+        button > svg {
+            transition: transform 0.2s ease-in-out;
+        }
+        button:hover > svg {
+            transform: scale(1.1);
+        }
+
+        /* Animasi untuk Tab */
+        .tab-button {
+            position: relative;
+        }
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; /* Align with the container's border-b */
+            left: 0.5rem;
+            right: 0.5rem;
+            height: 2px;
+            background-color: #3B82F6; /* blue-500 */
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .tab-button.active::after {
+            transform: scaleX(1);
+        }
+
+
+        /* Transisi untuk Input Form */
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            --tw-ring-color: rgba(59, 130, 246, 0.5); /* blue-500 with 50% opacity */
+            box-shadow: 0 0 0 3px var(--tw-ring-color);
+            border-color: #3B82F6; /* blue-500 */
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-100 p-4 sm:p-8 flex flex-col items-center">
+<body class="min-h-screen bg-slate-100 p-4 sm:p-8 flex flex-col items-center">
     <!-- Kontainer utama aplikasi -->
     <div id="app-container" class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl-custom w-full max-w-6xl relative">
         <!-- Konten aplikasi akan dirender oleh JavaScript di sini -->
@@ -127,10 +225,10 @@
 
         // Data Pengguna Awal (digunakan jika localStorage kosong)
         const DEFAULT_INITIAL_USERS = [
-            { uid: 'kazumisp_uid', username: 'kazumisp', password: 'kazumisp', role: 'super_admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'superadmin@example.com', whatsapp: '6281234567890', fullName: 'Super Admin', bio: 'CEO of Kazumi.', profilePictureUrl: 'https://placehold.co/100x100/4338ca/ffffff?text=SP' },
-            { uid: 'kazumiad_uid', username: 'kazumiad', password: 'kazumiad', role: 'admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'admin@example.com', whatsapp: '6281234567891', fullName: 'Admin', bio: 'Wakil CEO.', profilePictureUrl: 'https://placehold.co/100x100/10b981/ffffff?text=AD' },
-            { uid: 'kazumiproduksi_uid', username: 'produksi', password: 'produksi', role: 'member', department: 'produksi', isApproved: true, createdAt: new Date().toISOString(), email: 'produksi@example.com', whatsapp: '6281234567892', fullName: 'Tim Produksi', bio: 'Anggota tim produksi.', profilePictureUrl: 'https://placehold.co/100x100/f59e0b/ffffff?text=PR' },
-            { uid: 'kazumigudang_uid', username: 'gudang', password: 'gudang', role: 'member', department: 'gudang', isApproved: true, createdAt: new Date().toISOString(), email: 'gudang@example.com', whatsapp: '6281234567893', fullName: 'Tim Gudang', bio: 'Anggota tim gudang.', profilePictureUrl: 'https://placehold.co/100x100/6366f1/ffffff?text=GD' }
+            { uid: 'kazumisp_uid', username: 'kazumisp', password: 'kazumisp', role: 'super_admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'superadmin@example.com', whatsapp: '6281234567890', fullName: 'Kazumi Super Admin', bio: 'CEO of Kazumi', profilePictureUrl: 'https://placehold.co/100x100/4F46E5/FFFFFF?text=SP' },
+            { uid: 'kazumiad_uid', username: 'kazumiad', password: 'kazumiad', role: 'admin', department: null, isApproved: true, createdAt: new Date().toISOString(), email: 'admin@example.com', whatsapp: '6281234567891', fullName: 'Kazumi Admin', bio: 'Wakil CEO Kazumi', profilePictureUrl: 'https://placehold.co/100x100/10B981/FFFFFF?text=AD' },
+            { uid: 'kazumiproduksi_uid', username: 'produksi', password: 'produksi', role: 'member', department: 'produksi', isApproved: true, createdAt: new Date().toISOString(), email: 'produksi@example.com', whatsapp: '6281234567892', fullName: 'Anggota Produksi', bio: 'Staff Produksi', profilePictureUrl: 'https://placehold.co/100x100/F59E0B/FFFFFF?text=PR' },
+            { uid: 'kazumigudang_uid', username: 'gudang', password: 'gudang', role: 'member', department: 'gudang', isApproved: true, createdAt: new Date().toISOString(), email: 'gudang@example.com', whatsapp: '6281234567893', fullName: 'Anggota Gudang', bio: 'Staff Gudang', profilePictureUrl: 'https://placehold.co/100x100/6366F1/FFFFFF?text=GD' }
         ];
 
         // Ukuran Pakaian
@@ -267,6 +365,7 @@
         const formatRole = (role) => ({
             'super_admin': 'CEO',
             'admin': 'Wakil CEO',
+            'penanggung_jawab': 'Penanggung Jawab',
             'user': 'Pengguna',
             'member': 'Anggota',
             'pending': 'Menunggu Persetujuan'
@@ -294,6 +393,24 @@
             if (!uid) return 'Tidak diketahui';
             const user = appState.allUsers.find(u => u.uid === uid);
             return user ? user.username : uid.substring(0, 8) + '...';
+        }
+
+        /**
+         * Membuat notifikasi baru.
+         * @param {string} message - Pesan notifikasi.
+         * @param {string|null} recipientUid - UID penerima, atau null untuk global.
+         * @param {string} type - Tipe notifikasi ('workflow', 'announcement').
+         */
+        function createNotification(message, recipientUid, type = 'workflow') {
+            const newNotification = {
+                id: generateUniqueId(),
+                timestamp: new Date().toISOString(),
+                message,
+                type,
+                isRead: false,
+                recipientUid, // can be null for global announcements
+            };
+            updateAppState({ notifications: [newNotification, ...appState.notifications] }, false);
         }
 
         // =====================================================================================================
@@ -459,8 +576,13 @@
             revisionNotesForNewReport: '',
             lastLoggedInUsers: loadFromLocalStorage('kazumiLastLoggedInUsers', []),
             activityLogs: loadFromLocalStorage('kazumiActivityLogs', []),
+            currentProductionRequestId: null,
+            isEditingProfile: false,
+            notifications: loadFromLocalStorage('kazumiNotifications', []),
             messages: loadFromLocalStorage('kazumiMessages', []),
-            currentProductionRequestId: null
+            ui: {
+                isNotificationsOpen: false,
+            }
         };
 
         // Inisialisasi daftar pengguna yang menunggu persetujuan
@@ -495,9 +617,10 @@
             saveToLocalStorage('kazumiStockHistory', appState.warehouse.stockHistory);
             saveToLocalStorage('kazumiProductionRequests', appState.warehouse.productionRequests);
             saveToLocalStorage('kazumiActivityLogs', appState.activityLogs);
-            saveToLocalStorage('kazumiMessages', appState.messages);
             saveToLocalStorage('kazumiLocalUsers', appState.allUsers);
             saveToLocalStorage('kazumiLastLoggedInUsers', appState.lastLoggedInUsers);
+            saveToLocalStorage('kazumiNotifications', appState.notifications);
+            saveToLocalStorage('kazumiMessages', appState.messages);
             saveToLocalStorage('kazumiMaterialSettings', appState.material);
             saveToLocalStorage('kazumiOtherCostsSettings', appState.otherCosts);
             saveToLocalStorage('kazumiProfitPercentage', appState.profitPercentage);
@@ -619,55 +742,109 @@
         }
 
         /**
-         * Merender konten untuk tab Message Board.
-         * @returns {string} String HTML untuk konten message board.
+         * Merender konten untuk tab Papan Pesan.
          */
         function renderMessageBoardContent() {
             const container = document.getElementById('messageBoardSection');
             if (!container) return;
 
-            const sortedMessages = [...appState.messages].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            const currentUser = appState.allUsers.find(u => u.uid === appState.userId);
+            const { userRole, messages } = appState;
+            const isAdmin = userRole === 'admin' || userRole === 'super_admin';
 
-            container.innerHTML = `
-                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/></svg>
-                        Papan Pesan Antar Departemen
-                    </h2>
-
-                    <!-- Message Input Form -->
-                    <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
-                        <textarea id="newMessageInput" class="w-full p-2 border rounded-md h-24 resize-y" placeholder="Tulis pesan Anda di sini..."></textarea>
-                        <button id="sendMessageBtn" class="mt-2 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 w-full sm:w-auto">Kirim Pesan</button>
-                    </div>
-
-                    <!-- Messages List -->
+            const adminForm = isAdmin ? `
+                <div class="p-6 bg-gray-50 rounded-2xl shadow-sm border mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Buat Pengumuman Baru</h3>
                     <div class="space-y-4">
-                        ${sortedMessages.length > 0 ? sortedMessages.map(msg => {
-                            const sender = appState.allUsers.find(u => u.uid === msg.userId);
-                            const isCurrentUser = msg.userId === appState.userId;
-                            const senderName = sender ? sender.fullName || sender.username : 'Pengguna Tidak Dikenal';
-                            const senderDept = sender ? formatDepartment(sender.department) || formatRole(sender.role) : '';
-                            const senderPic = sender ? sender.profilePictureUrl : 'https://placehold.co/100x100/cccccc/ffffff?text=?';
-
-                            return `
-                                <div class="flex items-start gap-4 p-4 rounded-lg ${isCurrentUser ? 'bg-indigo-50' : 'bg-gray-50'}">
-                                    <img src="${senderPic}" alt="Avatar" class="w-10 h-10 rounded-full object-cover">
-                                    <div class="flex-1">
-                                        <div class="flex items-baseline gap-2">
-                                            <p class="font-bold text-gray-900">${senderName}</p>
-                                            <p class="text-xs text-gray-500">${senderDept}</p>
-                                        </div>
-                                        <p class="text-gray-700 mt-1">${msg.text.replace(/\n/g, '<br>')}</p>
-                                        <p class="text-xs text-gray-400 mt-2">${new Date(msg.timestamp).toLocaleString('id-ID')}</p>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('') : '<p class="text-center text-gray-500">Belum ada pesan. Jadilah yang pertama!</p>'}
+                        <div>
+                            <label for="announcementTitleInput" class="block text-sm font-medium text-gray-700">Judul</label>
+                            <input type="text" id="announcementTitleInput" placeholder="Judul Pengumuman" class="mt-1 block w-full p-2 border rounded-md">
+                        </div>
+                        <div>
+                            <label for="announcementContentInput" class="block text-sm font-medium text-gray-700">Isi Pesan</label>
+                            <textarea id="announcementContentInput" rows="4" placeholder="Tulis pesan Anda di sini..." class="mt-1 block w-full p-2 border rounded-md"></textarea>
+                        </div>
+                        <button id="createAnnouncementBtn" class="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700">Kirim Pengumuman</button>
                     </div>
                 </div>
+            ` : '';
+
+            const messageList = messages.length > 0 ? `
+                <div class="space-y-6">
+                    ${messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).map(msg => `
+                        <div class="p-6 bg-white rounded-2xl shadow-md border relative">
+                            ${isAdmin ? `
+                                <button class="delete-announcement-btn absolute top-3 right-3 text-gray-400 hover:text-red-500" data-id="${msg.id}" title="Hapus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                </button>
+                            ` : ''}
+                            <h4 class="text-lg font-bold text-gray-900 mb-2">${msg.title}</h4>
+                            <p class="text-gray-700 whitespace-pre-wrap mb-4">${msg.content}</p>
+                            <div class="text-xs text-gray-400 border-t pt-2">
+                                <span>Diposting oleh: <strong>${getUsernameById(msg.authorId)}</strong></span> |
+                                <span>${new Date(msg.timestamp).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : `
+                <div class="text-center p-8 bg-white rounded-2xl shadow-sm border">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox mx-auto text-gray-400 mb-4"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                    <p class="text-gray-500">Tidak ada pengumuman saat ini.</p>
+                </div>
             `;
+
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Papan Pesan</h2>
+                    ${adminForm}
+                    ${messageList}
+                </div>
+            `;
+        }
+
+        /**
+         * Merender dropdown notifikasi.
+         */
+        function renderNotificationsDropdown() {
+            const bellBtn = document.getElementById('notificationBellBtn');
+            const dropdown = document.getElementById('notificationDropdown');
+            if (!bellBtn || !dropdown) return;
+
+            const userNotifications = appState.notifications
+                .filter(n => n.recipientUid === appState.userId || n.recipientUid === null)
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 15); // Tampilkan 15 notifikasi terbaru
+
+            const unreadCount = userNotifications.filter(n => !n.isRead).length;
+
+            // Update badge
+            bellBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                ${unreadCount > 0 ? `<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">${unreadCount}</span>` : ''}
+            `;
+
+            // Update dropdown content
+            dropdown.innerHTML = `
+                <div class="p-3 font-semibold border-b flex justify-between items-center">
+                    <span>Notifikasi</span>
+                    ${unreadCount > 0 ? `<button id="markAllAsReadBtn" class="text-xs text-blue-600 hover:underline">Tandai semua dibaca</button>` : ''}
+                </div>
+                <div class="max-h-80 overflow-y-auto">
+                    ${userNotifications.length > 0 ? userNotifications.map(n => `
+                        <div class="p-3 border-b hover:bg-gray-50 ${!n.isRead ? 'bg-blue-50' : ''}">
+                            <p class="text-sm text-gray-700">${n.message}</p>
+                            <p class="text-xs text-gray-400 mt-1">${new Date(n.timestamp).toLocaleString('id-ID')}</p>
+                        </div>
+                    `).join('') : '<p class="p-4 text-sm text-center text-gray-500">Tidak ada notifikasi baru.</p>'}
+                </div>
+            `;
+
+            // Show/hide dropdown
+            if (appState.ui.isNotificationsOpen) {
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
         }
 
         /**
@@ -679,11 +856,13 @@
             const isSuperAdmin = userRole === 'super_admin';
 
             const visibleTabs = {
+                recapitulation: isSuperAdmin,
+                messageBoard: true, // Semua pengguna bisa lihat
                 production: isAdmin || userDepartment === 'produksi',
                 salesCalculator: isAdmin || userDepartment === 'penjualan',
                 report: isAdmin || userDepartment === 'produksi' || userDepartment === 'penjualan' || userDepartment === 'gudang',
                 warehouse: isAdmin || userDepartment === 'gudang',
-                messageBoard: true, // Visible to all logged-in users
+                myProfile: true, // Semua pengguna yang login bisa lihat
                 accountManagement: isAdmin,
                 activityLogs: isSuperAdmin,
             };
@@ -691,26 +870,29 @@
             // Definisikan urutan tab berdasarkan departemen
             let tabOrder = [];
             if (userDepartment === 'gudang') {
-                tabOrder = ['warehouse', 'report', 'production', 'salesCalculator', 'accountManagement'];
+                tabOrder = ['warehouse', 'report', 'production', 'salesCalculator', 'messageBoard', 'myProfile', 'accountManagement'];
             } else if (userDepartment === 'produksi') {
-                tabOrder = ['production', 'report', 'warehouse', 'salesCalculator', 'accountManagement'];
+                tabOrder = ['production', 'report', 'warehouse', 'salesCalculator', 'messageBoard', 'myProfile', 'accountManagement'];
             } else if (userDepartment === 'penjualan') {
-                tabOrder = ['salesCalculator', 'report', 'production', 'warehouse', 'accountManagement'];
-            } else if (isAdmin) { // Urutan default Admin/Super Admin
-                tabOrder = ['production', 'salesCalculator', 'report', 'warehouse', 'accountManagement'];
-            }
-            if (isSuperAdmin) {
-                tabOrder.push('activityLogs');
+                tabOrder = ['salesCalculator', 'report', 'production', 'warehouse', 'messageBoard', 'myProfile', 'accountManagement'];
+            } else if (isSuperAdmin) {
+                tabOrder = ['recapitulation', 'production', 'salesCalculator', 'report', 'warehouse', 'messageBoard', 'myProfile', 'accountManagement', 'activityLogs'];
+            } else if (isAdmin) { // Urutan default Admin
+                tabOrder = ['production', 'salesCalculator', 'report', 'warehouse', 'messageBoard', 'myProfile', 'accountManagement'];
+            } else { // Fallback untuk member tanpa departemen spesifik
+                tabOrder = ['messageBoard', 'myProfile'];
             }
 
             const tabButtonsHtml = tabOrder.map(tabKey => {
                 if (visibleTabs[tabKey]) {
                     const tabTitleMap = {
+                        recapitulation: 'Rekapitulasi',
+                        messageBoard: 'Papan Pesan',
                         production: 'Produksi',
                         salesCalculator: 'Kalkulator Penjualan',
                         report: 'Laporan',
                         warehouse: 'Gudang',
-                        messageBoard: 'Papan Pesan',
+                        myProfile: 'Profil Saya',
                         accountManagement: 'Manajemen Akun',
                         activityLogs: 'Aktivitas Kerja'
                     };
@@ -722,11 +904,25 @@
             appContainer.innerHTML = `
                 <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">Dasbor KAZUMI</h1>
                 <p class="text-center text-gray-600 mb-8">Manajemen Produksi, Penjualan, dan Inventaris Anda.</p>
-                <div class="mb-4 text-center text-gray-500 text-sm flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    User ID: <span class="font-mono text-gray-700">${appState.username}</span> |
-                    <span class="font-semibold text-indigo-600">${formatRole(userRole) || formatDepartment(userDepartment)}</span>
-                    <button id="logoutBtn" class="ml-4 py-1 px-3 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200">Logout</button>
+                <div class="mb-4 text-center text-gray-500 text-sm flex items-center justify-center gap-4 relative">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        User ID: <span class="font-mono text-gray-700">${appState.username}</span> |
+                        <span class="font-semibold text-indigo-600">${formatRole(userRole) || formatDepartment(userDepartment)}</span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                         <div class="relative">
+                            <button id="notificationBellBtn" class="relative text-gray-600 hover:text-indigo-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                                <!-- Unread count badge will be inserted here by renderNotificationsDropdown -->
+                            </button>
+                            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border z-20">
+                                <!-- Notification content will be rendered here -->
+                            </div>
+                        </div>
+                        <button id="logoutBtn" class="py-1 px-3 bg-red-100 text-red-600 rounded-md text-sm font-medium hover:bg-red-200">Logout</button>
+                    </div>
                 </div>
 
                 <div class="flex flex-wrap justify-center border-b border-gray-200 mb-8">
@@ -734,11 +930,13 @@
                 </div>
 
                 <div class="relative min-h-[600px]"> <!-- Tambahkan min-h untuk mencegah layout bergeser -->
+                    <div id="recapitulationSection" class="tab-content ${appState.activeTab === 'recapitulation' ? 'active' : ''}"></div>
                     <div id="productionSection" class="tab-content ${appState.activeTab === 'production' ? 'active' : ''}">${visibleTabs.production ? renderProductionContent() : ''}</div>
                     <div id="salesCalculatorSection" class="tab-content ${appState.activeTab === 'salesCalculator' ? 'active' : ''}">${visibleTabs.salesCalculator ? renderSalesCalculatorContent() : ''}</div>
                     <div id="warehouseSection" class="tab-content ${appState.activeTab === 'warehouse' ? 'active' : ''}">${visibleTabs.warehouse ? renderWarehouseContent() : ''}</div>
                     <div id="reportSection" class="tab-content ${appState.activeTab === 'report' ? 'active' : ''}">${visibleTabs.report ? renderReportContent() : ''}</div>
                     <div id="messageBoardSection" class="tab-content ${appState.activeTab === 'messageBoard' ? 'active' : ''}"></div>
+                    <div id="myProfileSection" class="tab-content ${appState.activeTab === 'myProfile' ? 'active' : ''}"></div>
                     <div id="accountManagementSection" class="tab-content ${appState.activeTab === 'accountManagement' ? 'active' : ''}">${visibleTabs.accountManagement ? renderAccountManagementContent() : ''}</div>
                     <div id="activityLogsSection" class="tab-content ${appState.activeTab === 'activityLogs' ? 'active' : ''}">${visibleTabs.activityLogs ? renderActivityLogsContent() : ''}</div>
                 </div>
@@ -751,9 +949,36 @@
                 renderReportSubContent();
             } else if (appState.activeTab === 'warehouse' && visibleTabs.warehouse) {
                 renderWarehouseSubContent();
-            } else if (appState.activeTab === 'messageBoard') {
+            } else if (appState.activeTab === 'recapitulation' && visibleTabs.recapitulation) {
+                renderRecapitulationContent();
+            } else if (appState.activeTab === 'myProfile' && visibleTabs.myProfile) {
+                renderMyProfileContent();
+            } else if (appState.activeTab === 'messageBoard' && visibleTabs.messageBoard) {
                 renderMessageBoardContent();
             }
+
+            renderNotificationsDropdown();
+        }
+
+        /**
+         * Menangani reset password oleh admin.
+         * @param {string} uid - UID pengguna yang passwordnya akan direset.
+         * @param {string} username - Username pengguna.
+         */
+        function handleResetPassword(uid, username) {
+            const newPassword = 'password123';
+            showCustomConfirmation(`Apakah Anda yakin ingin mereset password untuk pengguna "${username}"? Password baru akan menjadi "${newPassword}".`, () => {
+                const updatedUsers = appState.allUsers.map(user => {
+                    if (user.uid === uid) {
+                        return { ...user, password: newPassword };
+                    }
+                    return user;
+                });
+
+                addActivityLog('Manajemen Akun', `Password untuk pengguna "${username}" telah direset oleh admin.`, appState.userId, uid);
+                updateAppState({ allUsers: updatedUsers }, false); // Hanya simpan state, tidak perlu render ulang penuh
+                showNotification(`Password untuk ${username} telah direset menjadi "${newPassword}".`, 'success');
+            });
         }
 
         /**
@@ -1438,10 +1663,10 @@
             }
 
             // Filter berdasarkan kategori jika ada di warehouse context
-            if (context === 'warehouse-tab' && appState.warehouse.selectedCategoryFilter && appState.warehouse.selectedCategoryFilter !== 'all') {
+            if (context === 'warehouse-tab' && appState.warehouse.productionRequestCategoryFilters && appState.warehouse.productionRequestCategoryFilters.length > 0) {
                 requests = requests.filter(request => {
                     const product = appState.warehouse.inventory.find(item => item.id === request.productId);
-                    return product && product.category === appState.warehouse.selectedCategoryFilter;
+                    return product && appState.warehouse.productionRequestCategoryFilters.includes(product.category);
                 });
             }
 
@@ -1469,10 +1694,15 @@
                     <h3 class="text-xl font-bold text-gray-800">${titleText}</h3>
                     <div class="flex gap-2">
                         ${context === 'warehouse-tab' ? `
-                            <select id="productionRequestCategoryFilter" class="p-2 border rounded-md text-sm">
-                                <option value="all">Semua Kategori</option>
-                                ${garmentCategories.map(cat => `<option value="${cat.id}" ${appState.warehouse.selectedCategoryFilter === cat.id ? 'selected' : ''}>${cat.name}</option>`).join('')}
-                            </select>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 p-2 border rounded-md">
+                                <span class="text-sm font-medium text-gray-700 w-full">Filter Kategori:</span>
+                                ${garmentCategories.map(cat => `
+                                    <label class="flex items-center space-x-2 text-sm">
+                                        <input type="checkbox" class="production-request-category-checkbox rounded" value="${cat.id}" ${(appState.warehouse.productionRequestCategoryFilters || []).includes(cat.id) ? 'checked' : ''}>
+                                        <span>${cat.name}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
                         ` : ''}
                         <button id="refreshProductionRequestsBtn" class="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
@@ -1564,19 +1794,115 @@
                 let roleDisplay = formatRole(user.role);
                 if (appState.userRole === 'super_admin' && user.role !== 'super_admin') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
-                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
+                    roleDisplay = `<select class="change-role-select py-1 px-2 border rounded-md text-sm ml-2" data-uid="${user.uid}"><option value="member" ${user.role === 'member' ? 'selected' : ''}>Anggota</option><option value="penanggung_jawab" ${user.role === 'penanggung_jawab' ? 'selected' : ''}>Penanggung Jawab</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Wakil CEO</option></select>`;
                 } else if (appState.userRole === 'admin' && user.role === 'member') {
                     departmentDropdown = `<select class="change-department-select py-1 px-2 border rounded-md text-sm" data-uid="${user.uid}"><option value="produksi" ${user.department === 'produksi' ? 'selected' : ''}>Produksi</option><option value="gudang" ${user.department === 'gudang' ? 'selected' : ''}>Gudang</option><option value="penjualan" ${user.department === 'penjualan' ? 'selected' : ''}>Penjualan</option></select>`;
                 } else {
                     departmentDropdown = `<span class="text-sm text-gray-500">${formatDepartment(user.department) || ''}</span>`;
                 }
-                let deleteButton = '';
+                let actionButtons = '';
                 if (appState.userRole === 'super_admin' && user.uid !== appState.userId) {
-                    deleteButton = `<button class="delete-user-btn text-red-500 hover:text-red-700" title="Hapus pengguna" data-uid="${user.uid}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>`;
+                    actionButtons += `<button class="reset-password-btn text-blue-500 hover:text-blue-700" title="Reset Password" data-uid="${user.uid}" data-username="${user.username}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/><circle cx="16.5" cy="7.5" r=".5"/></svg></button>`;
+                    actionButtons += `<button class="delete-user-btn text-red-500 hover:text-red-700" title="Hapus pengguna" data-uid="${user.uid}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>`;
                 }
-                return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${deleteButton}</div></div>`;
+                return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${actionButtons}</div></div>`;
             }).join('')}</div>`;
             return `<div class="p-6 bg-white rounded-2xl shadow-sm border"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}</div>`;
+        }
+
+        /**
+         * Merender konten untuk tab Profil Saya.
+         */
+        function renderMyProfileContent() {
+            const container = document.getElementById('myProfileSection');
+            if (!container) return;
+
+            const currentUser = appState.allUsers.find(u => u.uid === appState.userId);
+            if (!currentUser) {
+                container.innerHTML = '<p>Gagal memuat profil pengguna.</p>';
+                return;
+            }
+
+            const isEditing = appState.isEditingProfile;
+
+            container.innerHTML = `
+                <div class="p-6 bg-white rounded-2xl shadow-sm border max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b">
+                        <h2 class="text-2xl font-bold text-gray-800">Profil Saya</h2>
+                        <button id="toggleEditProfileBtn" class="py-2 px-4 rounded-md text-sm font-semibold ${isEditing ? 'bg-gray-200 text-gray-800' : 'bg-indigo-600 text-white'}">
+                            ${isEditing ? 'Batal' : 'Edit Profil'}
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Kolom Kiri: Foto & Info Dasar -->
+                        <div class="md:col-span-1 text-center">
+                            <img src="${currentUser.profilePictureUrl || 'https://placehold.co/100x100/7F7F7F/FFFFFF?text=??'}" alt="Foto Profil" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-gray-200">
+                            ${isEditing ? `
+                                <div>
+                                    <label for="profilePictureUrlInput" class="block text-sm font-medium text-gray-700 mb-1">URL Foto Profil</label>
+                                    <input type="text" id="profilePictureUrlInput" class="w-full p-2 border rounded-md text-sm" value="${currentUser.profilePictureUrl || ''}">
+                                </div>
+                            ` : `
+                                <h3 class="text-xl font-bold text-gray-900">${currentUser.fullName || currentUser.username}</h3>
+                                <p class="text-sm text-gray-500">@${currentUser.username}</p>
+                            `}
+                        </div>
+
+                        <!-- Kolom Kanan: Detail & Form Edit -->
+                        <div class="md:col-span-2">
+                            ${isEditing ? `
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="fullNameInput" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                                        <input type="text" id="fullNameInput" class="mt-1 block w-full p-2 border rounded-md" value="${currentUser.fullName || ''}">
+                                    </div>
+                                    <div>
+                                        <label for="bioInput" class="block text-sm font-medium text-gray-700">Bio</label>
+                                        <textarea id="bioInput" rows="3" class="mt-1 block w-full p-2 border rounded-md">${currentUser.bio || ''}</textarea>
+                                    </div>
+                                     <div>
+                                        <label for="emailInput" class="block text-sm font-medium text-gray-700">Email</label>
+                                        <input type="email" id="emailInput" class="mt-1 block w-full p-2 border rounded-md" value="${currentUser.email || ''}">
+                                    </div>
+                                    <div>
+                                        <label for="whatsappInput" class="block text-sm font-medium text-gray-700">WhatsApp</label>
+                                        <input type="tel" id="whatsappInput" class="mt-1 block w-full p-2 border rounded-md" value="${currentUser.whatsapp || ''}">
+                                    </div>
+                                    <button id="saveProfileBtn" class="w-full py-2 px-4 bg-green-600 text-white font-bold rounded-md hover:bg-green-700">Simpan Perubahan</button>
+                                </div>
+                            ` : `
+                                <div class="space-y-4">
+                                    <div><p class="text-sm text-gray-500">Nama Lengkap</p><p class="font-semibold text-gray-800">${currentUser.fullName || '-'}</p></div>
+                                    <div><p class="text-sm text-gray-500">Bio</p><p class="text-gray-800">${currentUser.bio || '-'}</p></div>
+                                    <div><p class="text-sm text-gray-500">Email</p><p class="text-gray-800">${currentUser.email || '-'}</p></div>
+                                    <div><p class="text-sm text-gray-500">WhatsApp</p><p class="text-gray-800">${currentUser.whatsapp || '-'}</p></div>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+
+                    <!-- Bagian Ganti Password -->
+                    <div class="mt-8 pt-6 border-t">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Ganti Password</h3>
+                        <div class="space-y-4 max-w-sm">
+                             <div>
+                                <label for="currentPasswordInput" class="block text-sm font-medium text-gray-700">Password Saat Ini</label>
+                                <input type="password" id="currentPasswordInput" class="mt-1 block w-full p-2 border rounded-md">
+                            </div>
+                            <div>
+                                <label for="newPasswordInput" class="block text-sm font-medium text-gray-700">Password Baru</label>
+                                <input type="password" id="newPasswordInput" class="mt-1 block w-full p-2 border rounded-md">
+                            </div>
+                             <div>
+                                <label for="confirmPasswordInput" class="block text-sm font-medium text-gray-700">Konfirmasi Password Baru</label>
+                                <input type="password" id="confirmPasswordInput" class="mt-1 block w-full p-2 border rounded-md">
+                            </div>
+                            <button id="changePasswordBtn" class="w-full py-2 px-4 bg-red-600 text-white font-bold rounded-md hover:bg-red-700">Ganti Password</button>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         /**
@@ -2309,7 +2635,10 @@
                 department,
                 role: 'pending',
                 isApproved: false,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                fullName: '',
+                bio: '',
+                profilePictureUrl: 'https://placehold.co/100x100/7F7F7F/FFFFFF?text=??'
             };
 
             updateAppState({
@@ -3395,27 +3724,136 @@
         }
 
         /**
-         * Menangani pengiriman pesan baru di message board.
+         * Menangani pembuatan pengumuman baru.
          */
-        function handleSendMessage() {
-            const messageInput = document.getElementById('newMessageInput');
-            if (!messageInput) return;
-            const messageText = messageInput.value.trim();
+        function handleCreateAnnouncement() {
+            const titleInput = document.getElementById('announcementTitleInput');
+            const contentInput = document.getElementById('announcementContentInput');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
 
-            if (messageText === '') {
-                showCustomMessage('Pesan tidak boleh kosong.', 'error');
+            if (!title || !content) {
+                showNotification('Judul dan isi pengumuman tidak boleh kosong.', 'error');
                 return;
             }
 
             const newMessage = {
                 id: generateUniqueId(),
-                userId: appState.userId,
-                text: messageText,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                authorId: appState.userId,
+                title,
+                content,
             };
 
-            updateAppState({ messages: [...appState.messages, newMessage] });
-            addActivityLog('Papan Pesan', `Mengirim pesan baru: "${messageText.substring(0, 30)}..."`, appState.userId, newMessage.id);
+            // Notifikasi untuk semua pengguna kecuali pembuat
+            appState.allUsers.forEach(user => {
+                if (user.uid !== appState.userId) {
+                    createNotification(`Pengumuman baru: "${title}"`, user.uid, 'announcement');
+                }
+            });
+
+            addActivityLog('Papan Pesan', `Membuat pengumuman baru: "${title}"`, appState.userId, newMessage.id);
+            updateAppState({ messages: [newMessage, ...appState.messages] });
+
+            titleInput.value = '';
+            contentInput.value = '';
+            showNotification('Pengumuman berhasil diposting!', 'success');
+        }
+
+        /**
+         * Menangani penghapusan pengumuman.
+         * @param {string} messageId - ID pesan yang akan dihapus.
+         */
+        function handleDeleteAnnouncement(messageId) {
+            showCustomConfirmation('Apakah Anda yakin ingin menghapus pengumuman ini?', () => {
+                const messageToDelete = appState.messages.find(m => m.id === messageId);
+                if (!messageToDelete) return;
+
+                const updatedMessages = appState.messages.filter(m => m.id !== messageId);
+                addActivityLog('Papan Pesan', `Menghapus pengumuman: "${messageToDelete.title}"`, appState.userId, messageId);
+                updateAppState({ messages: updatedMessages });
+                showNotification('Pengumuman berhasil dihapus.', 'success');
+            });
+        }
+
+        // =====================================================================================================
+        // BAGIAN 6: EVENT HANDLERS (Logika Bisnis & Modifikasi State)
+        // =====================================================================================================
+
+        /**
+         * Menangani penyimpanan perubahan profil pengguna.
+         */
+        function handleSaveProfile() {
+            const fullName = document.getElementById('fullNameInput')?.value;
+            const bio = document.getElementById('bioInput')?.value;
+            const profilePictureUrl = document.getElementById('profilePictureUrlInput')?.value;
+            const email = document.getElementById('emailInput')?.value;
+            const whatsapp = document.getElementById('whatsappInput')?.value;
+
+            const updatedUsers = appState.allUsers.map(user => {
+                if (user.uid === appState.userId) {
+                    return {
+                        ...user,
+                        fullName: fullName !== undefined ? fullName : user.fullName,
+                        bio: bio !== undefined ? bio : user.bio,
+                        profilePictureUrl: profilePictureUrl !== undefined ? profilePictureUrl : user.profilePictureUrl,
+                        email: email !== undefined ? email : user.email,
+                        whatsapp: whatsapp !== undefined ? whatsapp : user.whatsapp,
+                    };
+                }
+                return user;
+            });
+
+            addActivityLog('Manajemen Akun', 'Profil diperbarui.', appState.userId);
+            updateAppState({ allUsers: updatedUsers, isEditingProfile: false });
+            showNotification('Profil berhasil disimpan!', 'success');
+        }
+
+        /**
+         * Menangani perubahan password oleh pengguna.
+         */
+        function handleChangePassword() {
+            const currentPassword = document.getElementById('currentPasswordInput')?.value;
+            const newPassword = document.getElementById('newPasswordInput')?.value;
+            const confirmPassword = document.getElementById('confirmPasswordInput')?.value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('Semua kolom password harus diisi.', 'error');
+                return;
+            }
+
+            const currentUser = appState.allUsers.find(u => u.uid === appState.userId);
+            if (currentUser.password !== currentPassword) {
+                showNotification('Password saat ini salah.', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Password baru harus minimal 6 karakter.', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showNotification('Password baru dan konfirmasi tidak cocok.', 'error');
+                return;
+            }
+
+            const updatedUsers = appState.allUsers.map(user => {
+                if (user.uid === appState.userId) {
+                    return { ...user, password: newPassword };
+                }
+                return user;
+            });
+
+            addActivityLog('Manajemen Akun', 'Password berhasil diubah oleh pengguna.', appState.userId);
+            updateAppState({ allUsers: updatedUsers }, false); // Don't re-render the whole app, just save state
+
+            // Clear fields
+            document.getElementById('currentPasswordInput').value = '';
+            document.getElementById('newPasswordInput').value = '';
+            document.getElementById('confirmPasswordInput').value = '';
+
+            showNotification('Password berhasil diubah!', 'success');
         }
 
         // =====================================================================================================
@@ -3545,12 +3983,34 @@
             if (e.target.id === 'logoutBtn') handleLogout();
 
             // --- Navigasi Tab Utama ---
+            // --- Notifikasi ---
+            if (e.target.closest('#notificationBellBtn')) {
+                updateAppState({ ui: { ...appState.ui, isNotificationsOpen: !appState.ui.isNotificationsOpen } });
+                return; // Stop further processing
+            }
+            if (e.target.id === 'markAllAsReadBtn') {
+                const updatedNotifications = appState.notifications.map(n => {
+                    if (n.recipientUid === appState.userId || n.recipientUid === null) {
+                        return { ...n, isRead: true };
+                    }
+                    return n;
+                });
+                updateAppState({ notifications: updatedNotifications });
+                return;
+            }
+            if (appState.ui.isNotificationsOpen && !e.target.closest('#notificationDropdown')) {
+                updateAppState({ ui: { ...appState.ui, isNotificationsOpen: false } });
+            }
+
+            // --- Navigasi Tab Utama ---
             const tabButtons = {
+                'recapitulation': 'recapitulationTabBtn',
+                'messageBoard': 'messageBoardTabBtn',
                 'production': 'productionTabBtn',
                 'salesCalculator': 'salesCalculatorTabBtn',
                 'warehouse': 'warehouseTabBtn',
                 'report': 'reportTabBtn',
-                'messageBoard': 'messageBoardTabBtn',
+                'myProfile': 'myProfileTabBtn',
                 'accountManagement': 'accountManagementTabBtn',
                 'activityLogs': 'activityLogsTabBtn'
             };
@@ -3604,11 +4064,6 @@
                 else if (e.target.classList.contains('remove-sale-item-btn')) handleRemoveSaleItem(parseInt(e.target.dataset.index));
             }
 
-            // --- Spesifik Tab Papan Pesan ---
-            if (appState.activeTab === 'messageBoard') {
-                if (e.target.id === 'sendMessageBtn') handleSendMessage();
-            }
-
             // --- Spesifik Tab Gudang ---
             if (appState.activeTab === 'warehouse') {
                 if (e.target.id === 'inventoryListTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'inventory-list' } });
@@ -3644,11 +4099,34 @@
                 else if (e.target.id === 'resetFilterBtn') updateAppState({ startDate: '', endDate: '' });
             }
 
+            // --- Spesifik Tab Papan Pesan ---
+            if (appState.activeTab === 'messageBoard') {
+                if (e.target.id === 'createAnnouncementBtn') handleCreateAnnouncement();
+                else if (e.target.closest('.delete-announcement-btn')) {
+                    handleDeleteAnnouncement(e.target.closest('.delete-announcement-btn').dataset.id);
+                }
+            }
+
+            // --- Spesifik Tab Profil Saya ---
+            if (appState.activeTab === 'myProfile') {
+                if (e.target.id === 'toggleEditProfileBtn') {
+                    updateAppState({ isEditingProfile: !appState.isEditingProfile });
+                } else if (e.target.id === 'saveProfileBtn') {
+                    handleSaveProfile();
+                } else if (e.target.id === 'changePasswordBtn') {
+                    handleChangePassword();
+                }
+            }
+
             // --- Spesifik Tab Manajemen Akun ---
             if (appState.activeTab === 'accountManagement' && (appState.userRole === 'admin' || appState.userRole === 'super_admin')) {
                 if (e.target.classList.contains('approve-user-btn')) approveUser(e.target.dataset.uid);
                 else if (e.target.classList.contains('reject-user-btn')) rejectUser(e.target.dataset.uid);
                 else if (e.target.classList.contains('delete-user-btn')) rejectUser(e.target.dataset.uid);
+                else if (e.target.closest('.reset-password-btn')) {
+                    const button = e.target.closest('.reset-password-btn');
+                    handleResetPassword(button.dataset.uid, button.dataset.username);
+                }
             }
 
             // --- Penanganan Aksi Permintaan Produksi (Global) ---
@@ -3699,7 +4177,22 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
+                if (e.target.classList.contains('production-request-category-checkbox')) {
+                    const category = e.target.value;
+                    const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
+                    if (e.target.checked) {
+                        if (!currentFilters.includes(category)) {
+                            currentFilters.push(category);
+                        }
+                    } else {
+                        const index = currentFilters.indexOf(category);
+                        if (index > -1) {
+                            currentFilters.splice(index, 1);
+                        }
+                    }
+                    updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
+                }
+                else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
             }
 
