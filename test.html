@@ -554,6 +554,7 @@
                 inventory: loadFromLocalStorage('kazumiInventory', []),
                 searchTerm: '',
                 selectedCategoryFilter: 'all',
+                productionRequestCategoryFilters: [], // New property for production requests
                 lowStockThreshold: 10,
                 stockHistory: loadFromLocalStorage('kazumiStockHistory', []),
                 productionRequests: loadFromLocalStorage('kazumiProductionRequests', []),
@@ -577,6 +578,7 @@
             lastLoggedInUsers: loadFromLocalStorage('kazumiLastLoggedInUsers', []),
             activityLogs: loadFromLocalStorage('kazumiActivityLogs', []),
             currentProductionRequestId: null,
+            manualDispatches: loadFromLocalStorage('kazumiManualDispatches', []),
             isEditingProfile: false,
             notifications: loadFromLocalStorage('kazumiNotifications', []),
             messages: loadFromLocalStorage('kazumiMessages', []),
@@ -619,6 +621,7 @@
             saveToLocalStorage('kazumiActivityLogs', appState.activityLogs);
             saveToLocalStorage('kazumiLocalUsers', appState.allUsers);
             saveToLocalStorage('kazumiLastLoggedInUsers', appState.lastLoggedInUsers);
+            saveToLocalStorage('kazumiManualDispatches', appState.manualDispatches);
             saveToLocalStorage('kazumiNotifications', appState.notifications);
             saveToLocalStorage('kazumiMessages', appState.messages);
             saveToLocalStorage('kazumiMaterialSettings', appState.material);
@@ -1632,6 +1635,7 @@
                     <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
                         <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Inventaris</button>
                         <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Masuk</button>
+                        <button id="manualStockOutTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'manual-stock-out' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Stok Keluar Manual</button>
                         <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok</button>
                     </div>
 
@@ -1655,6 +1659,8 @@
                 warehouseSubContentContainer.innerHTML = renderStockHistory();
             } else if (appState.warehouse.activeSubTab === 'production-requests-warehouse') {
                 warehouseSubContentContainer.innerHTML = renderProductionRequests('warehouse-tab');
+            } else if (appState.warehouse.activeSubTab === 'manual-stock-out') {
+                warehouseSubContentContainer.innerHTML = renderManualStockOut();
             }
         }
 
@@ -1968,6 +1974,57 @@
          * Merender konten untuk tab Manajemen Akun.
          * @returns {string} String HTML untuk konten manajemen akun.
          */
+        function renderManualStockOut() {
+            const { inventory, searchTerm } = appState.warehouse;
+            const filteredInventory = inventory.filter(item => item.stock > 0 && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Kolom Kiri: Form Pengeluaran Stok -->
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Formulir Stok Keluar Manual</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="manualStockOutProduct" class="block text-sm font-medium text-gray-700">Pilih Produk</label>
+                                <select id="manualStockOutProduct" class="mt-1 block w-full p-2 border rounded-md">
+                                    ${filteredInventory.map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="manualStockOutQty" class="block text-sm font-medium text-gray-700">Jumlah Keluar</label>
+                                <input type="number" id="manualStockOutQty" min="1" class="mt-1 block w-full p-2 border rounded-md" placeholder="0">
+                            </div>
+                            <div>
+                                <label for="manualStockOutNotes" class="block text-sm font-medium text-gray-700">Catatan/Alasan</label>
+                                <textarea id="manualStockOutNotes" rows="3" class="mt-1 block w-full p-2 border rounded-md" placeholder="Contoh: Sampel untuk pameran, barang rusak, dll."></textarea>
+                            </div>
+                            <button id="submitManualStockOutBtn" class="w-full py-2 px-4 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700">Keluarkan Stok</button>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Riwayat Pengeluaran Manual -->
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Riwayat Pengeluaran Manual</h3>
+                        <div class="space-y-3 max-h-[400px] overflow-y-auto">
+                            ${appState.manualDispatches.length > 0 ? appState.manualDispatches.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(dispatch => `
+                                <div class="p-3 bg-gray-50 rounded-lg border">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="font-semibold">${dispatch.productName}</p>
+                                            <p class="text-sm text-gray-600">Jumlah: <span class="font-bold">${dispatch.quantity} pcs</span></p>
+                                            <p class="text-sm text-gray-600">Alasan: ${dispatch.notes || '-'}</p>
+                                            <p class="text-xs text-gray-400 mt-1">Oleh: ${getUsernameById(dispatch.userId)} pada ${new Date(dispatch.timestamp).toLocaleDateString('id-ID')}</p>
+                                        </div>
+                                        <button class="print-dispatch-btn py-1 px-2 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300" data-id="${dispatch.id}">Cetak</button>
+                                    </div>
+                                </div>
+                            `).join('') : '<p class="text-center text-gray-500">Belum ada riwayat pengeluaran manual.</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderAccountManagementContent() {
             if (appState.userRole !== 'admin' && appState.userRole !== 'super_admin') {
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
@@ -2677,6 +2734,105 @@
          * Menampilkan pratinjau cetak dan menangani pencetakan.
          * @param {'production'|'sale'} type - Tipe faktur yang akan dicetak.
          */
+        function generateManualDispatchNoteHTML(dispatch) {
+            const noteNumber = `KLR-${dispatch.id.substring(3, 10).toUpperCase()}`;
+            return `
+                <div class="font-sans text-gray-800 p-8">
+                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Nota Pengeluaran Barang</h2>
+                            <p class="text-sm text-gray-500">Manual Stock Dispatch Note</p>
+                        </div>
+                        <img src="${logoUrl}" alt="Logo" class="h-12 w-auto object-contain">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
+                        <div>
+                            <p><strong>No. Nota:</strong> ${noteNumber}</p>
+                            <p><strong>Tanggal:</strong> ${new Date(dispatch.timestamp).toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="text-right">
+                            <p><strong>Dikeluarkan oleh:</strong></p>
+                            <p>${getUsernameById(dispatch.userId)}</p>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Detail Barang:</h3>
+                    <table class="min-w-full bg-white border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left">Nama Produk</th>
+                                <th class="py-2 px-4 text-center">Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-t">${dispatch.productName}</td>
+                                <td class="py-2 px-4 border-t text-center">${dispatch.quantity} pcs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-6">
+                        <h4 class="font-semibold">Alasan/Catatan:</h4>
+                        <p class="p-2 border rounded-md mt-1 bg-gray-50 min-h-[50px]">${dispatch.notes || 'Tidak ada catatan.'}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 mt-16 pt-8 text-center text-sm">
+                        <div>
+                            <p class="mb-16">Penerima,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                        <div>
+                            <p class="mb-16">Penanggung Jawab Gudang,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                    </div>
+                    <div class="text-center text-xs text-gray-400 mt-12 pt-4 border-t">Dokumen ini dicetak melalui sistem KAZUMI.</div>
+                </div>
+            `;
+        }
+
+        function printManualDispatchNote(dispatchId) {
+            const printArea = document.getElementById('print-area');
+            if (!printArea) return;
+
+            const dispatch = appState.manualDispatches.find(d => d.id === dispatchId);
+            if (!dispatch) {
+                showCustomMessage('Data pengeluaran tidak ditemukan.', 'error');
+                return;
+            }
+
+            const contentToPrint = generateManualDispatchNoteHTML(dispatch);
+            const printWrapper = document.createElement('div');
+            printWrapper.className = "bg-white p-8 max-w-4xl mx-auto my-8 rounded-lg shadow-lg";
+            printWrapper.innerHTML = contentToPrint;
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = "absolute top-4 right-4 flex gap-2";
+
+            const closeButton = document.createElement('button');
+            closeButton.innerText = 'Tutup Pratinjau';
+            closeButton.className = "py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600";
+            closeButton.onclick = () => {
+                printArea.style.display = 'none';
+                printArea.innerHTML = '';
+            };
+
+            const printButton = document.createElement('button');
+            printButton.innerText = 'Cetak';
+            printButton.className = "py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600";
+            printButton.onclick = () => {
+                window.print();
+                addActivityLog('Cetak', `Mencetak nota keluar manual #${dispatch.id.substring(3, 10).toUpperCase()}.`, appState.userId, dispatch.id);
+            };
+
+            printArea.innerHTML = '';
+            printArea.appendChild(printWrapper);
+            printArea.appendChild(buttonContainer);
+            buttonContainer.appendChild(printButton);
+            buttonContainer.appendChild(closeButton);
+            printArea.style.display = 'block';
+        }
+
         function printInvoice(type) {
             const printArea = document.getElementById('print-area');
             if (!printArea) return;
@@ -4175,19 +4331,19 @@
                 return stringField;
             };
 
-            // 1. Recalculate KPIs
-            const { savedSales, savedReports, warehouse, allUsers } = appState;
-            const totalRevenue = savedSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
-            const totalItemsSold = savedSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
-            const totalItemsProduced = savedReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
-            const pendingRequests = warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
-            const totalSales = savedSales.length;
+            // 1. Recalculate KPIs using FILTERED data for consistency
+            const { filteredSales, filteredReports, warehouse } = appState;
+            const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+            const totalItemsSold = filteredSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            const totalItemsProduced = filteredReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
+            const pendingRequests = warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length; // This is global, not filtered by date, which is ok.
+            const totalSales = filteredSales.length;
             const averageRevenue = totalSales > 0 ? totalRevenue / totalSales : 0;
-            const customerNames = savedSales.map(sale => sale.customerName.trim()).filter(name => name && name.toLowerCase() !== 'umum');
+            const customerNames = filteredSales.map(sale => sale.customerName.trim()).filter(name => name && name.toLowerCase() !== 'umum');
             const uniqueCustomers = new Set(customerNames).size;
 
             const productQuantities = {};
-            savedSales.forEach(sale => {
+            filteredSales.forEach(sale => {
                 sale.items.forEach(item => {
                     productQuantities[item.name] = (productQuantities[item.name] || 0) + item.quantity;
                 });
@@ -4262,6 +4418,74 @@
 
             showNotification('Rekapitulasi berhasil diekspor ke Excel', 'success');
             addActivityLog('Ekspor', 'Mengekspor data rekapitulasi ke Excel.', appState.userId);
+        }
+
+        /**
+         * Menangani pengeluaran stok manual.
+         */
+        function handleManualStockOut() {
+            const productId = document.getElementById('manualStockOutProduct')?.value;
+            const quantity = parseInt(document.getElementById('manualStockOutQty')?.value);
+            const notes = document.getElementById('manualStockOutNotes')?.value.trim();
+
+            if (!productId || !quantity || quantity <= 0) {
+                showNotification('Mohon pilih produk dan masukkan jumlah yang valid.', 'error');
+                return;
+            }
+
+            const inventoryItemIndex = appState.warehouse.inventory.findIndex(item => item.id === productId);
+            if (inventoryItemIndex === -1) {
+                showNotification('Produk tidak ditemukan di inventaris.', 'error');
+                return;
+            }
+
+            const item = appState.warehouse.inventory[inventoryItemIndex];
+            if (quantity > item.stock) {
+                showNotification(`Stok tidak mencukupi. Stok ${item.name} hanya tersisa ${item.stock}.`, 'error');
+                return;
+            }
+
+            showCustomConfirmation(`Keluarkan ${quantity} pcs ${item.name} dari stok?`, () => {
+                // 1. Update inventory
+                const updatedInventory = [...appState.warehouse.inventory];
+                updatedInventory[inventoryItemIndex].stock -= quantity;
+
+                // 2. Create stock history entry
+                const newStockHistoryEntry = {
+                    id: generateUniqueId(),
+                    timestamp: new Date().toISOString(),
+                    productId: item.id,
+                    productName: item.name,
+                    type: 'Keluar (Manual)',
+                    quantity: quantity,
+                    finalStock: updatedInventory[inventoryItemIndex].stock,
+                    source: `Manual: ${notes || 'Tanpa catatan'}`,
+                    userId: appState.userId
+                };
+
+                // 3. Create manual dispatch entry
+                const newDispatch = {
+                    id: generateUniqueId(),
+                    timestamp: new Date().toISOString(),
+                    productId: item.id,
+                    productName: item.name,
+                    quantity: quantity,
+                    notes: notes,
+                    userId: appState.userId
+                };
+
+                updateAppState({
+                    warehouse: {
+                        ...appState.warehouse,
+                        inventory: updatedInventory,
+                        stockHistory: [newStockHistoryEntry, ...appState.warehouse.stockHistory]
+                    },
+                    manualDispatches: [newDispatch, ...appState.manualDispatches]
+                });
+
+                showNotification('Stok berhasil dikeluarkan.', 'success');
+                addActivityLog('Gudang', `Stok keluar manual: ${quantity} pcs ${item.name}. Alasan: ${notes || '-'}`, appState.userId, newDispatch.id);
+            });
         }
 
         /**
@@ -4391,6 +4615,9 @@
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
                 else if (e.target.id === 'exportRecapBtn') exportRecapitulationToExcel();
+                else if (e.target.id === 'manualStockOutTabBtn') updateAppState({ warehouse: { ...appState.warehouse, activeSubTab: 'manual-stock-out' } });
+                else if (e.target.id === 'submitManualStockOutBtn') handleManualStockOut();
+                else if (e.target.classList.contains('print-dispatch-btn')) printManualDispatchNote(e.target.dataset.id);
             }
 
             // --- Spesifik Tab Laporan ---
