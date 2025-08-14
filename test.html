@@ -906,32 +906,32 @@
 
                     <!-- KPIs -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Total Item Produksi</p><p class="text-3xl font-bold text-indigo-600">${formatRupiah(totalItemsProduced)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Item Produksi</p><p class="text-3xl font-bold text-indigo-600">${formatRupiah(totalItemsProduced)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Rata-rata Penjualan</p><p class="text-2xl font-bold text-teal-600">Rp ${formatRupiah(averageRevenue)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Jumlah Pelanggan</p><p class="text-2xl font-bold text-cyan-600">${uniqueCustomers}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border"><p class="text-sm text-gray-500">Produk Terlaris</p><p class="text-lg font-bold text-purple-600">${bestSellingProductDisplay}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Rata-rata Penjualan</p><p class="text-2xl font-bold text-teal-600">Rp ${formatRupiah(averageRevenue)}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Jumlah Pelanggan</p><p class="text-2xl font-bold text-cyan-600">${uniqueCustomers}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Produk Terlaris</p><p class="text-lg font-bold text-purple-600">${bestSellingProductDisplay}</p></div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <!-- Sales Chart -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Tren Penjualan</h3>
                             <div style="height: 300px;"><canvas id="recapSalesChart"></canvas></div>
                         </div>
 
                         <!-- Production Chart -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Volume Produksi</h3>
                             <div style="height: 300px;"><canvas id="recapProductionChart"></canvas></div>
                         </div>
 
                         <!-- Low Stock -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Stok Terendah</h3>
                             <ul class="space-y-3">
                                 ${lowStockItems.length > 0 ? lowStockItems.map(item => `
@@ -944,7 +944,7 @@
                         </div>
 
                         <!-- Recent Activity -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Aktivitas Terbaru</h3>
                             <ul class="space-y-3">
                                 ${recentActivities.map(log => `
@@ -956,7 +956,7 @@
                             </ul>
                         </div>
                         <!-- Revenue by Category Chart -->
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border">
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border interactive-card">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4">Pendapatan per Kategori Produk</h3>
                             <div style="height: 300px;"><canvas id="recapRevenueChart"></canvas></div>
                         </div>
@@ -1020,7 +1020,7 @@
                     backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#ef4444', '#64748b'],
                 }]
             };
-            renderChart('recapRevenueChart', 'bar', revenueChartData, 'Pendapatan per Kategori');
+            renderChart('recapRevenueChart', 'doughnut', revenueChartData, 'Pendapatan per Kategori');
         }
 
         /**
