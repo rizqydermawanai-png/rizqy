@@ -2090,7 +2090,7 @@
                     <div class="mt-6 pt-6 border-t flex justify-between items-center">
                         <div>
                             ${(order.status === 'siap_kirim' || order.status === 'selesai') ? `
-                                <button class="printDocumentBtn py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_product_note" data-id="${order.id}">
+                                <button id="printOnlineProductNoteBtn" class="py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_product_note" data-id="${order.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
                                     Cetak Nota Produk Online
                                 </button>
@@ -3601,6 +3601,7 @@
 
             const isRevision = appState.isCurrentlyRevising;
             const newReportId = generateUniqueId();
+            let updatedProductionRequests = [...appState.warehouse.productionRequests];
 
             const newReport = {
                 id: newReportId,
@@ -3619,6 +3620,23 @@
                 productionRequestId: appState.currentProductionRequestId || null
             };
 
+            // If this is a new production (not from an existing request), create a new request for the warehouse
+            if (!newReport.productionRequestId) {
+                const productionRequest = {
+                    id: generateUniqueId(),
+                    timestamp: new Date().toISOString(),
+                    productId: `hpp_report_${newReport.id}`, // Special ID to link to the report
+                    productName: `Hasil Produksi: ${GARMENT_PATTERNS[newReport.selectedGarment].title} (${newReport.hppResult.garmentsProduced} pcs)`,
+                    requestedQuantity: newReport.hppResult.garmentsProduced,
+                    status: 'completed_production',
+                    requestedBy: appState.userId, // The user who created the HPP report
+                    notes: `Produksi selesai berdasarkan laporan HPP #${newReport.id.substring(0, 8).toUpperCase()}`,
+                    // Link the HPP report back to this request
+                };
+                newReport.productionRequestId = productionRequest.id;
+                updatedProductionRequests.unshift(productionRequest);
+            }
+
             const updatedSavedReports = [...appState.savedReports, newReport];
             let logDescription = '';
 
@@ -3629,7 +3647,7 @@
                     logDescription = `Laporan HPP #${appState.originalReportIdForRevision.substring(0, 8).toUpperCase()} direvisi menjadi laporan #${newReportId.substring(0, 8).toUpperCase()}. Catatan: "${appState.revisionNotesForNewReport}"`;
                 }
             } else {
-                logDescription = `Laporan HPP baru untuk ${GARMENT_PATTERNS[newReport.selectedGarment].title} (${newReport.hppResult.garmentsProduced} pcs) dibuat.`;
+                logDescription = `Laporan HPP baru untuk ${GARMENT_PATTERNS[newReport.selectedGarment].title} (${newReport.hppResult.garmentsProduced} pcs) dibuat dan dikirim ke gudang.`;
                 if (newReport.productionRequestId) {
                     logDescription += ` (Terkait permintaan produksi #${newReport.productionRequestId.substring(0, 8).toUpperCase()})`;
                 }
@@ -3637,6 +3655,10 @@
 
             updateAppState({
                 savedReports: updatedSavedReports,
+                warehouse: {
+                    ...appState.warehouse,
+                    productionRequests: updatedProductionRequests
+                },
                 hppResult: null,
                 isCurrentlyRevising: false,
                 originalReportIdForRevision: null,
@@ -3646,7 +3668,7 @@
                 activeReportTab: 'reports-list'
             });
 
-            showCustomMessage('Laporan produksi berhasil disimpan!', 'success');
+            showCustomMessage('Laporan produksi berhasil disimpan dan dikirim ke gudang!', 'success');
             addActivityLog('Produksi', logDescription, appState.userId, newReportId);
         }
 
@@ -5064,7 +5086,7 @@
                 else if (e.target.classList.contains('remove-report-btn')) removeReport(e.target.dataset.id);
                 else if (e.target.id === 'backToReportListBtn') updateAppState({ selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'reviseReportBtn') handleReviseReport();
-                else if (e.target.classList.contains('printDocumentBtn') || e.target.id === 'printOnlineOrderNoteBtn') {
+                else if (e.target.classList.contains('printDocumentBtn') || e.target.id === 'printOnlineProductNoteBtn') {
                     printDocument(e.target.dataset.type, e.target.dataset.id);
                 }
                 else if (e.target.id === 'resetFilterBtn') updateAppState({ startDate: '', endDate: '' });
