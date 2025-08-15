@@ -5067,7 +5067,10 @@
                 updateProductionRequestStatus(e.target.dataset.id, e.target.dataset.status);
             }
             if (e.target.classList.contains('update-online-order-status-btn')) {
-                handleUpdateOnlineOrderStatus(e.target.dataset.id, e.target.dataset.status);
+                const status = e.target.dataset.status;
+                if (status) {
+                    handleUpdateOnlineOrderStatus(e.target.dataset.id, status);
+                }
             }
             if (e.target.classList.contains('delete-request-btn')) {
                 deleteProductionRequest(e.target.dataset.id);
