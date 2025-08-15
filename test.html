@@ -2037,7 +2037,10 @@
 
         function renderSingleOnlineOrderDetail() {
             const order = appState.selectedOnlineOrder;
-            if (!order) return '';
+            if (!order) return;
+
+            const container = document.getElementById('warehouseSubContent');
+            if (!container) return;
 
             const checklist = appState.onlineOrderChecklist[order.id] || {};
 
@@ -2052,7 +2055,7 @@
                 }
             };
 
-            return `
+            const html = `
                 <div class="interactive-card bg-white rounded-2xl shadow-sm border p-6">
                     <button id="backToOrderListBtn" class="text-indigo-600 hover:text-indigo-800 font-semibold mb-4 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
@@ -2102,11 +2105,49 @@
                     </div>
                 </div>
             `;
+
+            container.innerHTML = html;
+
+            // --- Direct Event Listener Attachment ---
+            document.getElementById('backToOrderListBtn')?.addEventListener('click', () => {
+                updateAppState({ selectedOnlineOrder: null });
+            });
+
+            const printBtn = document.getElementById('printOnlineProductNoteBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', (e) => {
+                    console.log('Print button clicked! Attempting to print document.', e.currentTarget.dataset.id);
+                    printDocument('online_product_note', e.currentTarget.dataset.id);
+                });
+            }
+
+            container.querySelectorAll('.update-online-order-status-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const { id, status } = e.currentTarget.dataset;
+                    handleUpdateOnlineOrderStatus(id, status);
+                });
+            });
+
+            container.querySelectorAll('.online-order-item-checkbox').forEach(box => {
+                box.addEventListener('change', (e) => {
+                    const { orderId, itemId } = e.currentTarget.dataset;
+                    const isChecked = e.currentTarget.checked;
+                    const updatedChecklist = {
+                        ...appState.onlineOrderChecklist,
+                        [orderId]: {
+                            ...appState.onlineOrderChecklist[orderId],
+                            [itemId]: isChecked
+                        }
+                    };
+                    updateAppState({ onlineOrderChecklist: updatedChecklist });
+                });
+            });
         }
 
         function renderOnlineOrders() {
              if (appState.selectedOnlineOrder) {
-                return renderSingleOnlineOrderDetail();
+                renderSingleOnlineOrderDetail();
+                return;
             }
 
              const getStatusBadge = (status) => {
@@ -2151,48 +2192,6 @@
             `;
         }
 
-        function renderUserActivityReport() {
-            const loginLogs = appState.activityLogs.filter(log =>
-                log.type === 'Manajemen Akun' && log.description.toLowerCase().includes('berhasil login')
-            );
-
-            const loginsByDate = loginLogs.reduce((acc, log) => {
-                const date = new Date(log.timestamp).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-                if (!acc[date]) {
-                    acc[date] = [];
-                }
-                acc[date].push(log);
-                return acc;
-            }, {});
-
-            const sortedDates = Object.keys(loginsByDate).sort((a, b) => new Date(b) - new Date(a));
-
-            if (sortedDates.length === 0) {
-                return '<p class="text-center text-gray-500 mt-4">Tidak ada aktivitas login yang tercatat.</p>';
-            }
-
-            return `
-                <div class="space-y-6">
-                    ${sortedDates.map(date => `
-                        <div class="p-4 bg-gray-50 rounded-xl border">
-                            <h4 class="font-bold text-gray-800 mb-2">${date}</h4>
-                            <ul class="divide-y divide-gray-200">
-                                ${loginsByDate[date].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(log => `
-                                    <li class="py-2 flex justify-between items-center text-sm">
-                                        <div>
-                                            <span class="font-semibold text-indigo-600">${getUsernameById(log.userId)}</span>
-                                            <span class="text-gray-500">login pada</span>
-                                        </div>
-                                        <span class="font-mono text-gray-700">${new Date(log.timestamp).toLocaleTimeString('id-ID')}</span>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
         function renderAccountManagementContent() {
             if (appState.userRole !== 'admin' && appState.userRole !== 'super_admin') {
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
@@ -2216,7 +2215,7 @@
                 }
                 return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${actionButtons}</div></div>`;
             }).join('')}</div>`;
-            return `<div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8 border-t pt-4">Laporan Login Harian</h3>${renderUserActivityReport()}</div>`;
+            return `<div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}</div>`;
         }
 
         /**
@@ -2706,12 +2705,23 @@
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
             }
 
-            const logs = appState.activityLogs.filter(log => {
+            const filteredLogs = appState.activityLogs.filter(log => {
                 const description = log.description.toLowerCase();
                 return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
             });
 
-            if (logs.length === 0) {
+            const totalActivities = filteredLogs.length;
+
+            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+            const recentLoginLogs = appState.activityLogs.filter(log =>
+                log.type === 'Manajemen Akun' &&
+                log.description.toLowerCase().includes('berhasil login') &&
+                new Date(log.timestamp) > twentyFourHoursAgo
+            );
+            const activeUserIds = [...new Set(recentLoginLogs.map(log => log.userId))];
+            const activeUsernames = activeUserIds.map(uid => getUsernameById(uid)).join(', ') || 'Tidak ada';
+
+            if (filteredLogs.length === 0) {
                 return `
                     <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
                         <h3 class="text-2xl font-bold text-gray-800 mb-4">Aktivitas Kerja</h3>
@@ -2723,6 +2733,16 @@
             return `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Aktivitas Kerja</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-blue-50 p-4 rounded-xl shadow-sm border border-blue-200">
+                            <p class="text-sm text-blue-800 font-semibold">Total Aktivitas Tercatat</p>
+                            <p class="text-3xl font-bold text-blue-900">${totalActivities}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-xl shadow-sm border border-green-200">
+                            <p class="text-sm text-green-800 font-semibold">Pengguna Aktif (24 Jam Terakhir)</p>
+                            <p class="text-lg font-bold text-green-900 truncate" title="${activeUsernames}">${activeUsernames}</p>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white">
                             <thead class="bg-gray-50">
@@ -2735,7 +2755,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                ${logs.map(log => `
+                                ${filteredLogs.map(log => `
                                     <tr>
                                         <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(log.timestamp).toLocaleString('id-ID')}</td>
                                         <td class="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.type}</td>
@@ -5070,9 +5090,6 @@
                         });
                     }
                 }
-                else if (e.target.id === 'backToOrderListBtn') {
-                    updateAppState({ selectedOnlineOrder: null });
-                }
             }
 
             // --- Spesifik Tab Laporan ---
@@ -5086,7 +5103,7 @@
                 else if (e.target.classList.contains('remove-report-btn')) removeReport(e.target.dataset.id);
                 else if (e.target.id === 'backToReportListBtn') updateAppState({ selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'reviseReportBtn') handleReviseReport();
-                else if (e.target.classList.contains('printDocumentBtn') || e.target.id === 'printOnlineProductNoteBtn') {
+                else if (e.target.classList.contains('printDocumentBtn')) {
                     printDocument(e.target.dataset.type, e.target.dataset.id);
                 }
                 else if (e.target.id === 'resetFilterBtn') updateAppState({ startDate: '', endDate: '' });
@@ -5187,20 +5204,6 @@
                         }
                     }
                     updateAppState({ warehouse: { ...appState.warehouse, productionRequestCategoryFilters: currentFilters } });
-                }
-                else if (e.target.classList.contains('online-order-item-checkbox')) {
-                    const orderId = e.target.dataset.orderId;
-                    const itemId = e.target.dataset.itemId;
-                    const isChecked = e.target.checked;
-
-                    const updatedChecklist = {
-                        ...appState.onlineOrderChecklist,
-                        [orderId]: {
-                            ...appState.onlineOrderChecklist[orderId],
-                            [itemId]: isChecked
-                        }
-                    };
-                    updateAppState({ onlineOrderChecklist: updatedChecklist });
                 }
                 else if (e.target.id === 'categoryFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedCategoryFilter: e.target.value } });
                 else if (e.target.id === 'stockStatusFilter') updateAppState({ warehouse: { ...appState.warehouse, selectedStockStatusFilter: e.target.value } });
