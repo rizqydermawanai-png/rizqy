@@ -2085,8 +2085,7 @@
                                     </div>
                                 </div>
 
-                                ${order.status === 'approved_gudang' ? `
-                                <div class="mt-4 pt-4 border-t">
+                                <div id="checklist-container-${order.id}" class="mt-4 pt-4 border-t" style="display: none;">
                                     <h4 class="text-sm font-semibold text-gray-700 mb-2">Checklist Penyiapan Barang:</h4>
                                     <div class="space-y-2">
                                     ${order.items.map(item => `
@@ -2097,7 +2096,6 @@
                                     `).join('')}
                                     </div>
                                 </div>
-                                ` : ''}
 
                                 <div class="mt-4 pt-4 border-t flex justify-center items-center gap-4">
                                     ${renderOnlineOrderActions(order)}
@@ -3120,22 +3118,21 @@
                     lastUsers.unshift({ uid: user.uid, username: user.username });
                     if (lastUsers.length > 5) lastUsers = lastUsers.slice(0, 5);
 
+                    // Simpan data login ke localStorage
+                    saveToLocalStorage('loggedInUser', user);
+
                     // Atur tab aktif berdasarkan peran/departemen pengguna
                     let initialActiveTab = 'production';
-                    let initialActiveProductionSubTab = 'hpp-calculator';
-                    let initialWarehouseSubTab = 'inventory-list';
-                    let initialReportTab = 'reports-list';
-
-                    if (user.role === 'admin' || user.role === 'super_admin') {
+                    if (user.role === 'super_admin') {
+                        initialActiveTab = 'recapitulation';
+                    } else if (user.role === 'admin') {
                         initialActiveTab = 'production';
                     } else if (user.department === 'produksi') {
                         initialActiveTab = 'production';
                     } else if (user.department === 'gudang') {
                         initialActiveTab = 'warehouse';
-                        initialWarehouseSubTab = 'inventory-list';
                     } else if (user.department === 'penjualan') {
                         initialActiveTab = 'salesCalculator';
-                        initialReportTab = 'sales-report';
                     }
 
                     updateAppState({
@@ -3146,9 +3143,6 @@
                         isAuthReady: true,
                         lastLoggedInUsers: lastUsers,
                         activeTab: initialActiveTab,
-                        activeProductionSubTab: initialActiveProductionSubTab,
-                        warehouse: { ...appState.warehouse, activeSubTab: initialWarehouseSubTab },
-                        activeReportTab: initialReportTab,
                     });
 
                     const motivationalMessages = [
@@ -4788,7 +4782,16 @@
                         inventory: updatedInventory,
                         stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
                     }
-                });
+                }, false); // Dont re-render immediately
+
+                if (newStatus === 'approved_gudang') {
+                    const checklistContainer = document.getElementById(`checklist-container-${orderId}`);
+                    if (checklistContainer) {
+                        checklistContainer.style.display = 'block';
+                    }
+                }
+
+                window.renderApp(); // Now render the app
 
                 showNotification('Status pesanan berhasil diperbarui.', 'success');
                 addActivityLog('Pesanan Online', `Status pesanan #${order.id.substring(0,8).toUpperCase()} diubah menjadi ${newStatus}.`, appState.userId, order.id);
@@ -4943,7 +4946,9 @@
                             warehouse: { ...appState.warehouse, activeSubTab: tabName === 'warehouse' ? 'inventory-list' : appState.warehouse.activeSubTab },
                             selectedReport: null,
                             selectedSale: null,
-                        });
+                        }, false);
+                        saveToLocalStorage('activeTab', tabName); // Save active tab
+                        window.renderApp();
                     }, 150);
                     return;
                 }
@@ -5214,6 +5219,11 @@
          * Menginisialisasi aplikasi saat DOM siap.
          */
         document.addEventListener('DOMContentLoaded', () => {
+            const savedActiveTab = loadFromLocalStorage('activeTab', null);
+            if (savedActiveTab && appState.isAuthReady) {
+                appState.activeTab = savedActiveTab;
+            }
+
             // Inisialisasi garmentOrder untuk kalkulator jika belum diatur
             if (!appState.garmentOrder || appState.garmentOrder.length === 0) {
                 const currentPattern = GARMENT_PATTERNS[appState.selectedGarment];
