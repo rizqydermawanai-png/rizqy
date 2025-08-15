@@ -1664,7 +1664,6 @@
                         <button id="inventoryListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'inventory-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Inventaris</button>
                         <button id="productionRequestsWarehouseTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'production-requests-warehouse' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Masuk</button>
                         <button id="onlineOrdersTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'online-orders' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Produk Keluar</button>
-                        <button id="stockHistoryTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.warehouse.activeSubTab === 'stock-history' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Stok Keluar</button>
                     </div>
 
                     <div id="warehouseSubContent">
@@ -1683,8 +1682,6 @@
 
             if (appState.warehouse.activeSubTab === 'inventory-list') {
                 warehouseSubContentContainer.innerHTML = renderInventoryList();
-            } else if (appState.warehouse.activeSubTab === 'stock-history') {
-                warehouseSubContentContainer.innerHTML = renderStockHistory();
             } else if (appState.warehouse.activeSubTab === 'production-requests-warehouse') {
                 warehouseSubContentContainer.innerHTML = renderProductionRequests('warehouse-tab');
             } else if (appState.warehouse.activeSubTab === 'online-orders') {
@@ -2016,17 +2013,13 @@
                 case 'pending_gudang':
                     if (isWarehouse) {
                         actions = `
-                            <div class="flex-1 flex justify-center">
-                                <button class="update-online-order-status-btn py-2 px-6 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600" data-id="${order.id}" data-status="approved_gudang">Setujui & Siapkan</button>
-                            </div>
-                            <button class="update-online-order-status-btn text-red-500 hover:text-red-700" data-id="${order.id}" data-status="dibatalkan" title="Batalkan">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                            </button>
+                            <button class="update-online-order-status-btn py-2 px-4 bg-red-500 text-white font-bold rounded-lg shadow-md hover:bg-red-600" data-id="${order.id}" data-status="dibatalkan">Tidak Setuju</button>
+                            <button class="update-online-order-status-btn py-2 px-4 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600" data-id="${order.id}" data-status="approved_gudang">Setujui & Siapkan</button>
                         `;
                     }
                     break;
                 case 'approved_gudang':
-                     if (isWarehouse) {
+                    if (isWarehouse) {
                         const checklist = appState.onlineOrderChecklist[order.id] || {};
                         const allItemsChecked = order.items.every(item => checklist[item.id]);
                         actions = `
@@ -2035,8 +2028,13 @@
                     }
                     break;
                 case 'siap_kirim':
-                    if (isSales) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-3 bg-blue-100 text-blue-700 rounded-md text-sm" data-id="${order.id}" data-status="selesai">Selesaikan Pesanan</button>`;
+                    if (isWarehouse) {
+                        actions = `<button class="update-online-order-status-btn py-2 px-4 bg-purple-600 text-white font-bold rounded-lg shadow-md hover:bg-purple-700" data-id="${order.id}" data-status="diterima_kurir">Diterima Kurir</button>`;
+                    }
+                    break;
+                case 'diterima_kurir':
+                     if (isSales) {
+                        actions = `<button class="update-online-order-status-btn py-2 px-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700" data-id="${order.id}" data-status="selesai">Selesaikan Pesanan</button>`;
                     }
                     break;
                 default:
@@ -2443,6 +2441,7 @@
             const sale = appState.selectedSale;
             const date = new Date(sale.timestamp).toLocaleString('id-ID');
             const result = sale.result;
+            const isOnlineSale = sale.type === 'online';
 
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
@@ -2453,6 +2452,7 @@
                     <h3 class="text-2xl font-bold text-gray-800">Detail Penjualan - Struk #${sale.id}</h3>
                     <p class="text-sm text-gray-500 mb-2">Tanggal: ${date}</p>
                     <p class="text-sm text-gray-500 mb-6">Pelanggan: ${sale.customerName || 'Umum'}</p>
+                    ${isOnlineSale ? '<p class="text-sm text-blue-500 font-semibold mb-4">Jenis: Pesanan Online</p>' : ''}
 
                     <h4 class="text-lg font-semibold text-gray-700 mt-4 pt-4 border-t">Item Terjual</h4>
                     <div class="space-y-3 mt-4">
@@ -2479,9 +2479,9 @@
                     <div class="border-t-2 border-dashed border-gray-400 mt-2 pt-2 font-bold text-lg flex justify-between"><p>TOTAL</p><p>Rp ${formatRupiah(result.grandTotal)}</p></div>
 
                     <div class="text-center text-sm mt-6">** Terima Kasih **</div>
-                    <button class="printDocumentBtn w-full mt-4 bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2" data-type="sale" data-id="${sale.id}">
+                    <button class="printDocumentBtn w-full mt-4 bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2" data-type="${isOnlineSale ? 'online_sale_note' : 'sale'}" data-id="${sale.id}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-                        Cetak Ulang Struk
+                        Cetak Nota Pembelian
                     </button>
                 </div>
             `;
@@ -2851,6 +2851,66 @@
                 </div>`;
         }
 
+        function generateOnlineSaleNoteHTML(sale) {
+            const { id, customerName, items, result, timestamp, shippingAddress, shippingMethod } = sale;
+            return `
+                <div class="font-sans text-gray-800">
+                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
+                        <div>
+                            <h2 class="text-2xl font-bold text-indigo-700">NOTA PEMBELIAN ONLINE</h2>
+                            <p class="text-sm">No. Pesanan: ${id}</p>
+                        </div>
+                        <img src="${logoUrl}" alt="Logo" class="h-16 w-auto object-contain">
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 mb-8 text-sm">
+                        <div>
+                            <p class="font-semibold text-gray-700">Tanggal:</p>
+                            <p>${new Date(timestamp).toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="text-right">
+                             <p class="font-semibold text-gray-700">Ditagih Kepada:</p>
+                            <p class="font-bold">${customerName || 'Pelanggan Online'}</p>
+                            <p>${shippingAddress || 'Alamat tidak tersedia'}</p>
+                        </div>
+                    </div>
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-xs font-medium text-gray-600 uppercase">Produk</th>
+                                <th class="py-2 px-4 text-center text-xs font-medium text-gray-600 uppercase">Jumlah</th>
+                                <th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Harga</th>
+                                <th class="py-2 px-4 text-right text-xs font-medium text-gray-600 uppercase">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${items.map(item => `
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-sm">${item.name}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-center">${item.quantity}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(item.price)}</td>
+                                    <td class="py-2 px-4 border-b text-sm text-right">Rp ${formatRupiah(item.price * item.quantity)}</td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                     <div class="flex justify-end mt-4">
+                        <div class="w-full sm:w-1/2 space-y-2 text-right text-sm">
+                            <div class="flex justify-between"><span>Subtotal:</span><span>Rp ${formatRupiah(result.subtotal)}</span></div>
+                            <div class="flex justify-between"><span>Diskon:</span><span class="text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
+                            <div class="flex justify-between"><span>Pajak:</span><span>Rp ${formatRupiah(result.taxAmount)}</span></div>
+                            <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2"><span>TOTAL PEMBAYARAN:</span><span>Rp ${formatRupiah(result.grandTotal)}</span></div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-sm">
+                        <p class="font-semibold">Metode Pengiriman:</p>
+                        <p>${shippingMethod || 'Standar'}</p>
+                    </div>
+                    <div class="text-center text-xs text-gray-500 mt-12 pt-4 border-t">
+                        Terima kasih telah berbelanja di KAZUMI.
+                    </div>
+                </div>
+            `;
+        }
+
         /**
          * Menampilkan pratinjau cetak dan menangani pencetakan.
          * @param {'production'|'sale'} type - Tipe faktur yang akan dicetak.
@@ -2959,6 +3019,7 @@
             const noteNumber = `PACK-${order.id.substring(0, 8).toUpperCase()}`;
             const warehouseUser = appState.allUsers.find(u => u.uid === appState.userId);
             const preparedBy = warehouseUser ? warehouseUser.fullName || warehouseUser.username : getUsernameById(appState.userId);
+            const checklist = appState.onlineOrderChecklist[order.id] || {};
 
             return `
                 <div class="font-sans text-gray-800 p-8">
@@ -2994,7 +3055,7 @@
                         <tbody>
                             ${order.items.map(item => `
                                 <tr>
-                                    <td class="py-3 px-4 border-t text-center"><div class="w-5 h-5 border-2 border-black mx-auto"></div></td>
+                                    <td class="py-3 px-4 border-t text-center">${checklist[item.id] ? '<span class="text-green-500 font-bold">✔</span>' : '<div class="w-5 h-5 border-2 border-black mx-auto"></div>'}</td>
                                     <td class="py-3 px-4 border-t font-mono text-xs">${item.id}</td>
                                     <td class="py-3 px-4 border-t">${item.name}</td>
                                     <td class="py-3 px-4 border-t text-center font-bold text-lg">${item.quantity}</td>
@@ -3008,13 +3069,13 @@
                     </div>
                     <div class="grid grid-cols-2 gap-8 mt-16 pt-8 text-center text-sm">
                         <div>
-                            <p class="mb-16">Kurir,</p>
-                            <p class="border-t pt-1">(_________________________)</p>
+                            <p class="mb-16">Staff Gudang,</p>
+                            <p class="border-t pt-1">${preparedBy}</p>
                             <p>Nama Jelas & TTD</p>
                         </div>
                         <div>
-                            <p class="mb-16">Staff Gudang,</p>
-                            <p class="border-t pt-1">${preparedBy}</p>
+                            <p class="mb-16">Kurir,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
                             <p>Nama Jelas & TTD</p>
                         </div>
                     </div>
@@ -3049,6 +3110,12 @@
                 if (dataObject) {
                     contentToPrint = generateOnlineProductNoteHTML(dataObject);
                     description = `Mencetak nota produk online #${relatedId.substring(0, 8).toUpperCase()}.`;
+                }
+            } else if (type === 'online_sale_note') {
+                dataObject = appState.savedSales.find(s => s.id === id);
+                if (dataObject) {
+                    contentToPrint = generateOnlineSaleNoteHTML(dataObject);
+                    description = `Mencetak nota pembelian online untuk pesanan #${relatedId.substring(0, 8).toUpperCase()}.`;
                 }
             } else {
                 showCustomMessage('Tipe dokumen untuk dicetak tidak valid.', 'error');
@@ -3921,8 +3988,19 @@
                     history: [{ status: 'pending_gudang', timestamp: new Date().toISOString(), userId: appState.userId }]
                 };
 
+                const newSale = {
+                    id: newOrder.id, // Use the same ID for linking
+                    timestamp: new Date().toISOString(),
+                    userId: appState.userId,
+                    customerName: customerName,
+                    items: JSON.parse(JSON.stringify(items)),
+                    result: JSON.parse(JSON.stringify(result)),
+                    type: 'online'
+                };
+
                 updateAppState({
                     onlineOrders: [newOrder, ...appState.onlineOrders],
+                    savedSales: [...appState.savedSales, newSale],
                     // Reset sales calculator
                     salesCalculator: {
                         items: [],
