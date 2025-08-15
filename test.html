@@ -2090,7 +2090,7 @@
                     <div class="mt-6 pt-6 border-t flex justify-between items-center">
                         <div>
                             ${(order.status === 'siap_kirim' || order.status === 'selesai') ? `
-                                <button class="printDocumentBtn py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_purchase_note" data-id="${order.id}">
+                                <button id="printOnlineOrderNoteBtn" class="printDocumentBtn py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_purchase_note" data-id="${order.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
                                     Cetak Nota Pembelian
                                 </button>
@@ -2151,6 +2151,48 @@
             `;
         }
 
+        function renderUserActivityReport() {
+            const loginLogs = appState.activityLogs.filter(log =>
+                log.type === 'Manajemen Akun' && log.description.toLowerCase().includes('berhasil login')
+            );
+
+            const loginsByDate = loginLogs.reduce((acc, log) => {
+                const date = new Date(log.timestamp).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+                if (!acc[date]) {
+                    acc[date] = [];
+                }
+                acc[date].push(log);
+                return acc;
+            }, {});
+
+            const sortedDates = Object.keys(loginsByDate).sort((a, b) => new Date(b) - new Date(a));
+
+            if (sortedDates.length === 0) {
+                return '<p class="text-center text-gray-500 mt-4">Tidak ada aktivitas login yang tercatat.</p>';
+            }
+
+            return `
+                <div class="space-y-6">
+                    ${sortedDates.map(date => `
+                        <div class="p-4 bg-gray-50 rounded-xl border">
+                            <h4 class="font-bold text-gray-800 mb-2">${date}</h4>
+                            <ul class="divide-y divide-gray-200">
+                                ${loginsByDate[date].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(log => `
+                                    <li class="py-2 flex justify-between items-center text-sm">
+                                        <div>
+                                            <span class="font-semibold text-indigo-600">${getUsernameById(log.userId)}</span>
+                                            <span class="text-gray-500">login pada</span>
+                                        </div>
+                                        <span class="font-mono text-gray-700">${new Date(log.timestamp).toLocaleTimeString('id-ID')}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
         function renderAccountManagementContent() {
             if (appState.userRole !== 'admin' && appState.userRole !== 'super_admin') {
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
@@ -2174,7 +2216,7 @@
                 }
                 return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 interactive-card"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${actionButtons}</div></div>`;
             }).join('')}</div>`;
-            return `<div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}</div>`;
+            return `<div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card"><h2 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Akun Pengguna</h2>${pendingUsersHtml}${allUsersHtml}<h3 class="text-xl font-bold text-gray-800 mb-4 mt-8 border-t pt-4">Laporan Login Harian</h3>${renderUserActivityReport()}</div>`;
         }
 
         /**
@@ -2664,7 +2706,10 @@
                 return `<div class="p-6 bg-white rounded-2xl text-center text-red-500">Anda tidak memiliki izin untuk mengakses halaman ini.</div>`;
             }
 
-            const logs = appState.activityLogs;
+            const logs = appState.activityLogs.filter(log => {
+                const description = log.description.toLowerCase();
+                return !(log.type === 'Manajemen Akun' && (description.includes('login') || description.includes('logout')));
+            });
 
             if (logs.length === 0) {
                 return `
@@ -3832,10 +3877,17 @@
                         inventory: updatedInventory,
                         stockHistory: [...newStockHistoryEntries, ...appState.warehouse.stockHistory]
                     },
-                    salesCalculator: { items: [], customerName: '', discountType: 'percentage', discountValue: 0, taxPercentage: 0, result: null, searchTerm: '', selectedCategoryFilter: 'all' },
-                    activeTab: 'report',
-                    activeReportTab: 'sales-report',
-                    selectedSale: newSale,
+                    salesCalculator: {
+                        items: [],
+                        customerName: '',
+                        discountType: 'percentage',
+                        discountValue: 0,
+                        taxPercentage: 0,
+                        result: null,
+                        searchTerm: '',
+                        selectedCategoryFilter: 'all',
+                        saleType: 'offline'
+                    }
                 });
 
                 showCustomMessage('Penjualan offline berhasil disimpan!', 'success');
@@ -3877,11 +3929,9 @@
                         taxPercentage: 0,
                         result: null,
                         searchTerm: '',
-                        selectedCategoryFilter: 'all'
-                    },
-                    // Switch to warehouse tab
-                    activeTab: 'warehouse',
-                    warehouse: { ...appState.warehouse, activeSubTab: 'online-orders' }
+                        selectedCategoryFilter: 'all',
+                        saleType: 'offline'
+                    }
                 });
 
                 showNotification('Pesanan online berhasil dibuat dan dikirim ke gudang.', 'success');
@@ -4547,102 +4597,101 @@
         }
 
         function exportRecapitulationToExcel() {
-            const escapeCsvField = (field) => {
-                if (field === null || field === undefined) return '';
-                const stringField = String(field).replace(/"/g, '""');
-                if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
-                    return `"${stringField}"`;
-                }
-                return stringField;
-            };
+            try {
+                const escapeCsvField = (field) => {
+                    if (field === null || field === undefined) return '';
+                    const stringField = String(field).replace(/"/g, '""');
+                    if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
+                        return `"${stringField}"`;
+                    }
+                    return stringField;
+                };
 
-            // 1. Recalculate KPIs using FILTERED data for consistency
-            const { filteredSales, filteredReports, warehouse } = appState;
-            const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
-            const totalItemsSold = filteredSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
-            const totalItemsProduced = filteredReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
-            const pendingRequests = warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length; // This is global, not filtered by date, which is ok.
-            const totalSales = filteredSales.length;
-            const averageRevenue = totalSales > 0 ? totalRevenue / totalSales : 0;
-            const customerNames = filteredSales.map(sale => sale.customerName.trim()).filter(name => name && name.toLowerCase() !== 'umum');
-            const uniqueCustomers = new Set(customerNames).size;
+                const { filteredSales, filteredReports, warehouse } = appState;
+                const totalRevenue = filteredSales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+                const totalItemsSold = filteredSales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+                const totalItemsProduced = filteredReports.filter(r => !r.isSuperseded).reduce((sum, report) => sum + report.hppResult.garmentsProduced, 0);
+                const pendingRequests = warehouse.productionRequests.filter(r => r.status === 'pending' || r.status === 'approved_by_production').length;
+                const totalSales = filteredSales.length;
+                const averageRevenue = totalSales > 0 ? totalRevenue / totalSales : 0;
+                const customerNames = filteredSales.map(sale => sale.customerName.trim()).filter(name => name && name.toLowerCase() !== 'umum');
+                const uniqueCustomers = new Set(customerNames).size;
 
-            const productQuantities = {};
-            filteredSales.forEach(sale => {
-                sale.items.forEach(item => {
-                    productQuantities[item.name] = (productQuantities[item.name] || 0) + item.quantity;
+                const productQuantities = {};
+                filteredSales.forEach(sale => {
+                    sale.items.forEach(item => {
+                        productQuantities[item.name] = (productQuantities[item.name] || 0) + item.quantity;
+                    });
                 });
-            });
-            let bestSellingProduct = 'N/A';
-            let maxQuantity = 0;
-            for (const productName in productQuantities) {
-                if (productQuantities[productName] > maxQuantity) {
-                    maxQuantity = productQuantities[productName];
-                    bestSellingProduct = productName;
+                let bestSellingProduct = 'N/A';
+                let maxQuantity = 0;
+                for (const productName in productQuantities) {
+                    if (productQuantities[productName] > maxQuantity) {
+                        maxQuantity = productQuantities[productName];
+                        bestSellingProduct = productName;
+                    }
                 }
+                const bestSellingProductDisplay = maxQuantity > 0 ? `${bestSellingProduct} (${maxQuantity} pcs)` : 'N/A';
+
+                let csvContent = "Laporan Rekapitulasi KAZUMI\n";
+                csvContent += `Tanggal Ekspor: ${new Date().toLocaleString('id-ID')}\n\n`;
+
+                csvContent += "RINGKASAN UTAMA (KPI)\n";
+                csvContent += "Metrik,Nilai\n";
+                csvContent += `Total Pendapatan,"${formatRupiah(totalRevenue)}"\n`;
+                csvContent += `Total Item Terjual,${totalItemsSold}\n`;
+                csvContent += `Total Item Produksi,${totalItemsProduced}\n`;
+                csvContent += `Permintaan Produksi Aktif,${pendingRequests}\n`;
+                csvContent += `Rata-rata Penjualan,"${formatRupiah(averageRevenue)}"\n`;
+                csvContent += `Jumlah Pelanggan Unik,${uniqueCustomers}\n`;
+                csvContent += `Produk Terlaris,${escapeCsvField(bestSellingProductDisplay)}\n\n\n`;
+
+                csvContent += "LAPORAN PENJUALAN\n";
+                csvContent += "ID Penjualan,Tanggal,Pelanggan,Total,Jumlah Item,Dibuat Oleh\n";
+                filteredSales.forEach(sale => {
+                    const row = [
+                        sale.id,
+                        new Date(sale.timestamp).toLocaleString('id-ID'),
+                        sale.customerName || 'Umum',
+                        formatRupiah(sale.result.grandTotal),
+                        sale.items.reduce((sum, item) => sum + item.quantity, 0),
+                        getUsernameById(sale.userId)
+                    ].map(escapeCsvField).join(",");
+                    csvContent += row + "\n";
+                });
+                csvContent += "\n\n";
+
+                csvContent += "LAPORAN PRODUKSI\n";
+                csvContent += "ID Laporan,Tanggal,Jenis Pakaian,Jumlah Produksi,HPP per Pcs,Harga Jual per Pcs,Dibuat Oleh,Status\n";
+                filteredReports.filter(r => !r.isSuperseded).forEach(report => {
+                    const row = [
+                        report.id,
+                        new Date(report.timestamp).toLocaleString('id-ID'),
+                        GARMENT_PATTERNS[report.selectedGarment]?.title || report.selectedGarment,
+                        report.hppResult.garmentsProduced,
+                        formatRupiah(report.hppResult.totalHPP),
+                        formatRupiah(report.hppResult.sellingPricePerGarment),
+                        getUsernameById(report.userId),
+                        report.isRevised ? 'Revisi' : 'Asli'
+                    ].map(escapeCsvField).join(",");
+                    csvContent += row + "\n";
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `rekapitulasi_kazumi_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showNotification('Rekapitulasi berhasil diekspor ke Excel', 'success');
+                addActivityLog('Ekspor', 'Mengekspor data rekapitulasi ke Excel.', appState.userId);
+            } catch (error) {
+                console.error("Gagal mengekspor rekapitulasi:", error);
+                showNotification("Terjadi kesalahan saat membuat file ekspor.", "error");
             }
-            const bestSellingProductDisplay = maxQuantity > 0 ? `${bestSellingProduct} (${maxQuantity} pcs)` : 'N/A';
-
-            let csvContent = "";
-
-            // 2. KPI Section
-            csvContent += "Ringkasan KPI\n";
-            csvContent += "Metrik,Nilai\n";
-            csvContent += `Total Pendapatan,"Rp ${formatRupiah(totalRevenue)}"\n`;
-            csvContent += `Total Item Terjual,${totalItemsSold}\n`;
-            csvContent += `Total Item Produksi,${totalItemsProduced}\n`;
-            csvContent += `Permintaan Produksi Aktif,${pendingRequests}\n`;
-            csvContent += `Rata-rata Penjualan,"Rp ${formatRupiah(averageRevenue)}"\n`;
-            csvContent += `Jumlah Pelanggan Unik,${uniqueCustomers}\n`;
-            csvContent += `Produk Terlaris,${escapeCsvField(bestSellingProductDisplay)}\n`;
-            csvContent += "\n\n"; // Separator
-
-            // 3. Sales Report Section
-            csvContent += "Laporan Penjualan Detail\n";
-            csvContent += "ID Penjualan,Tanggal,Pelanggan,Total,Jumlah Item,Dibuat Oleh\n";
-            appState.filteredSales.forEach(sale => {
-                const row = [
-                    sale.id,
-                    new Date(sale.timestamp).toLocaleString('id-ID'),
-                    sale.customerName || 'Umum',
-                    `Rp ${formatRupiah(sale.result.grandTotal)}`,
-                    sale.items.reduce((sum, item) => sum + item.quantity, 0),
-                    getUsernameById(sale.userId)
-                ].map(escapeCsvField).join(",");
-                csvContent += row + "\n";
-            });
-            csvContent += "\n\n";
-
-            // 4. Production Report Section
-            csvContent += "Laporan Produksi Detail\n";
-            csvContent += "ID Laporan,Tanggal,Jenis Pakaian,Jumlah Produksi,HPP per Pcs,Harga Jual per Pcs,Dibuat Oleh,Status\n";
-            appState.filteredReports.filter(r => !r.isSuperseded).forEach(report => {
-                const row = [
-                    report.id,
-                    new Date(report.timestamp).toLocaleString('id-ID'),
-                    GARMENT_PATTERNS[report.selectedGarment]?.title || report.selectedGarment,
-                    report.hppResult.garmentsProduced,
-                    `Rp ${formatRupiah(report.hppResult.totalHPP)}`,
-                    `Rp ${formatRupiah(report.hppResult.sellingPricePerGarment)}`,
-                    getUsernameById(report.userId),
-                    report.isRevised ? 'Revisi' : 'Asli'
-                ].map(escapeCsvField).join(",");
-                csvContent += row + "\n";
-            });
-
-            // 5. Trigger Download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `rekapitulasi_kazumi_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            showNotification('Rekapitulasi berhasil diekspor ke Excel', 'success');
-            addActivityLog('Ekspor', 'Mengekspor data rekapitulasi ke Excel.', appState.userId);
         }
 
         /**
@@ -4968,7 +5017,7 @@
                 else if (e.target.classList.contains('remove-report-btn')) removeReport(e.target.dataset.id);
                 else if (e.target.id === 'backToReportListBtn') updateAppState({ selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'reviseReportBtn') handleReviseReport();
-                else if (e.target.classList.contains('printDocumentBtn')) {
+                else if (e.target.classList.contains('printDocumentBtn') || e.target.id === 'printOnlineOrderNoteBtn') {
                     printDocument(e.target.dataset.type, e.target.dataset.id);
                 }
                 else if (e.target.id === 'resetFilterBtn') updateAppState({ startDate: '', endDate: '' });
