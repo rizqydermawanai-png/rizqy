@@ -549,7 +549,8 @@
                 result: null,
                 searchTerm: '',
                 selectedCategoryFilter: 'all',
-                saleType: 'offline' // 'offline' or 'online'
+                saleType: 'offline', // 'offline' or 'online'
+                activeSubTab: 'calculator' // 'calculator' or 'report'
             },
             warehouse: {
                 inventory: loadFromLocalStorage('kazumiInventory', []),
@@ -889,6 +890,8 @@
             }
             const bestSellingProductDisplay = maxQuantity > 0 ? `${bestSellingProduct} (${maxQuantity} pcs)` : 'N/A';
 
+            const totalWarehouseStock = appState.warehouse.inventory.reduce((sum, item) => sum + item.stock, 0);
+
             const lowStockItems = [...appState.warehouse.inventory]
                 .filter(item => item.stock > 0)
                 .sort((a, b) => a.stock - b.stock)
@@ -929,9 +932,10 @@
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Pendapatan</p><p class="text-3xl font-bold text-green-600">Rp ${formatRupiah(totalRevenue)}</p></div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Item Terjual</p><p class="text-3xl font-bold text-blue-600">${formatRupiah(totalItemsSold)}</p></div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Item Produksi</p><p class="text-3xl font-bold text-indigo-600">${formatRupiah(totalItemsProduced)}</p></div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-3xl font-bold text-yellow-600">${pendingRequests}</p></div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Total Stok Gudang</p><p class="text-3xl font-bold text-orange-600">${formatRupiah(totalWarehouseStock)}</p></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Permintaan Produksi</p><p class="text-2xl font-bold text-yellow-600">${pendingRequests}</p></div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Rata-rata Penjualan</p><p class="text-2xl font-bold text-teal-600">Rp ${formatRupiah(averageRevenue)}</p></div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Jumlah Pelanggan</p><p class="text-2xl font-bold text-cyan-600">${uniqueCustomers}</p></div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border interactive-card"><p class="text-sm text-gray-500">Produk Terlaris</p><p class="text-lg font-bold text-purple-600">${bestSellingProductDisplay}</p></div>
@@ -1538,25 +1542,34 @@
          * @returns {string} String HTML untuk konten kalkulator penjualan.
          */
         function renderSalesCalculatorContent() {
+            const { activeSubTab } = appState.salesCalculator;
+            return `
+                <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Penjualan</h2>
+                    <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
+                        <button id="salesCalculatorSubTabBtn" class="py-2 px-4 text-sm font-semibold ${activeSubTab === 'calculator' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Kalkulator</button>
+                        <button id="salesReportSubTabBtn" class="py-2 px-4 text-sm font-semibold ${activeSubTab === 'report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Penjualan</button>
+                    </div>
+                    <div id="salesSubContent">
+                        ${activeSubTab === 'calculator' ? renderActualSalesCalculator() : renderDetailedSalesReport()}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActualSalesCalculator() {
             const { items, customerName, discountType, discountValue, taxPercentage, result, searchTerm, selectedCategoryFilter } = appState.salesCalculator;
             const filteredInventory = appState.warehouse.inventory.filter(item =>
                 item.stock > 0 &&
                 item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 (selectedCategoryFilter === 'all' || item.category === selectedCategoryFilter)
             );
-
             const garmentCategories = Object.values(GARMENT_PATTERNS).map(p => ({ id: p.title.toLowerCase(), name: p.title }));
-
             return `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Kolom Kiri: Input Penjualan -->
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
-                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.16"/></svg>
-                                Item Penjualan
-                            </h3>
-                            <!-- Pencarian dan Filter Produk -->
+                        <div class="p-6 bg-gray-50 rounded-2xl shadow-inner border">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">Item Penjualan</h3>
                             <div class="flex flex-col sm:flex-row gap-2 mb-4">
                                 <input type="text" id="salesProductSearch" placeholder="Cari produk..." value="${searchTerm}" class="p-2 border rounded-md flex-1">
                                 <select id="salesCategoryFilter" class="p-2 border rounded-md">
@@ -1564,89 +1577,80 @@
                                     ${garmentCategories.map(cat => `<option value="${cat.id}" ${selectedCategoryFilter === cat.id ? 'selected' : ''}>${cat.name}</option>`).join('')}
                                 </select>
                             </div>
-                            <!-- Pemilihan Produk dari Gudang -->
                             <div class="flex gap-2 items-end">
                                 <div class="flex-1">
                                     <label for="productSelect" class="block text-sm font-medium text-gray-700">Pilih Produk dari Gudang</label>
-                                    <select id="productSelect" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2 border">
-                                        ${filteredInventory.length > 0 ? filteredInventory.map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock}) - Rp ${formatRupiah(item.sellingPrice)}</option>`).join('') : '<option disabled>Tidak ada produk yang cocok</option>'}
+                                    <select id="productSelect" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                                        ${filteredInventory.length > 0 ? filteredInventory.map(item => `<option value="${item.id}">${item.name} (Stok: ${item.stock})</option>`).join('') : '<option disabled>Tidak ada produk</option>'}
                                     </select>
                                 </div>
-                                <button id="addProductToSaleBtn" class="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700" ${filteredInventory.length === 0 ? 'disabled' : ''}>Tambah</button>
+                                <button id="addProductToSaleBtn" class="py-2 px-4 bg-green-600 text-white rounded-md" ${filteredInventory.length === 0 ? 'disabled' : ''}>Tambah</button>
                             </div>
-                            <!-- Daftar Item yang Akan Dijual -->
-                            <div id="saleItemsList" class="mt-4 space-y-2">
-                                ${items.map((item, index) => `
-                                    <div class="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
-                                        <div>
-                                            <p class="font-semibold">${item.name}</p>
-                                            <p class="text-xs text-gray-500">Harga: Rp ${formatRupiah(item.price)}</p>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" class="sale-item-quantity w-16 p-1 border rounded-md text-center" data-index="${index}">
-                                            <button class="remove-sale-item-btn text-red-500 hover:text-red-700" data-index="${index}">&times;</button>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                            <div id="saleItemsList" class="mt-4 space-y-2">${items.map((item, index) => `
+                                <div class="p-3 bg-white rounded-lg flex justify-between items-center border">
+                                    <div><p class="font-semibold">${item.name}</p><p class="text-xs text-gray-500">Rp ${formatRupiah(item.price)}</p></div>
+                                    <div class="flex items-center gap-2"><input type="number" value="${item.quantity}" min="1" max="${item.maxStock}" class="sale-item-quantity w-16 p-1 border rounded-md text-center" data-index="${index}"><button class="remove-sale-item-btn text-red-500" data-index="${index}">&times;</button></div>
+                                </div>`).join('')}
                             </div>
                         </div>
                     </div>
-
-                    <!-- Kolom Kanan: Detail & Hasil Penjualan -->
                     <div class="space-y-6">
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
-                             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M12 16H8"/></svg>
-                                Detail Transaksi
-                            </h3>
+                        <div class="p-6 bg-gray-50 rounded-2xl shadow-inner border">
+                            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-green-600">Detail Transaksi</h3>
                             <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Tipe Penjualan</label>
-                                    <div class="flex gap-2 mt-1">
-                                        <button id="saleTypeOfflineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'offline' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Offline</button>
-                                        <button id="saleTypeOnlineBtn" class="flex-1 py-2 px-4 rounded-md font-medium transition-colors ${appState.salesCalculator.saleType === 'online' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">Online</button>
-                                    </div>
-                                </div>
-                                <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan / Tujuan</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Diskon</label>
-                                    <div class="flex gap-2 mt-1">
-                                        <select id="discountType" class="w-1/3 p-2 border rounded-md">
-                                            <option value="percentage" ${discountType === 'percentage' ? 'selected' : ''}>%</option>
-                                            <option value="fixed" ${discountType === 'fixed' ? 'selected' : ''}>Rp</option>
-                                        </select>
-                                        <input type="number" id="discountValue" value="${discountValue}" class="flex-1 p-2 border rounded-md"/>
-                                    </div>
-                                </div>
-                                <div><label for="taxPercentage" class="block text-sm font-medium text-gray-700">Pajak (%)</label><input type="number" id="taxPercentage" value="${taxPercentage}" class="mt-1 block w-full rounded-md border-gray-300 p-2 border"/></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Tipe Penjualan</label><div class="flex gap-2 mt-1"><button id="saleTypeOfflineBtn" class="flex-1 py-2 px-4 rounded-md font-medium ${appState.salesCalculator.saleType === 'offline' ? 'bg-indigo-600 text-white' : 'bg-gray-200'}">Offline</button><button id="saleTypeOnlineBtn" class="flex-1 py-2 px-4 rounded-md font-medium ${appState.salesCalculator.saleType === 'online' ? 'bg-indigo-600 text-white' : 'bg-gray-200'}">Online</button></div></div>
+                                <div><label for="customerName" class="block text-sm font-medium text-gray-700">Nama Pelanggan / Tujuan</label><input type="text" id="customerName" value="${customerName}" class="mt-1 block w-full p-2 border rounded-md"/></div>
+                                <div><label class="block text-sm font-medium text-gray-700">Diskon</label><div class="flex gap-2 mt-1"><select id="discountType" class="w-1/3 p-2 border rounded-md"><option value="percentage" ${discountType === 'percentage' ? 'selected' : ''}>%</option><option value="fixed" ${discountType === 'fixed' ? 'selected' : ''}>Rp</option></select><input type="number" id="discountValue" value="${discountValue}" class="flex-1 p-2 border rounded-md"/></div></div>
+                                <div><label for="taxPercentage" class="block text-sm font-medium text-gray-700">Pajak (%)</label><input type="number" id="taxPercentage" value="${taxPercentage}" class="mt-1 block w-full p-2 border rounded-md"/></div>
                             </div>
                         </div>
-                        <div class="p-6 bg-white rounded-2xl shadow-sm border border-gray-200 interactive-card">
-                            <button id="calculateSaleBtn" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg-custom hover:bg-green-700 transition-all">
-                                Hitung Total Penjualan
-                            </button>
-                        </div>
-                        ${result ? `
-                            <div class="p-6 bg-green-50 rounded-2xl shadow-lg-custom border border-green-200 space-y-3 interactive-card">
-                                <h3 class="text-xl font-bold text-gray-800">Ringkasan Penjualan</h3>
-                                <div class="flex justify-between text-sm"><span class="text-gray-600">Subtotal:</span><span class="font-medium">Rp ${formatRupiah(result.subtotal)}</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-gray-600">Diskon:</span><span class="font-medium text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
-                                <div class="flex justify-between text-sm"><span class="text-gray-600">Pajak (${result.taxPercentage}%):</span><span class="font-medium">+ Rp ${formatRupiah(result.taxAmount)}</span></div>
-                                <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2"><span class="text-green-700">Total Akhir:</span><span class="text-green-700">Rp ${formatRupiah(result.grandTotal)}</span></div>
-                                <div class="mt-4">
-                                    ${appState.salesCalculator.saleType === 'offline' ?
-                                        `<button id="processOfflineSaleBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-blue-700 flex items-center justify-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7"/></svg>
-                                            Proses Offline
-                                        </button>` :
-                                        `<button id="createOnlineOrderFromSaleBtn" class="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-xl shadow-md hover:bg-purple-700 flex items-center justify-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-plus"><path d="M16.5 9.4a4 4 0 1 1 0 5.2"/><path d="M12 12h10"/><path d="M12 12v10M12 12L2 22"/><path d="M7 17H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/><path d="M12 2v10"/></svg>
-                                            Buat Pesanan Online
-                                        </button>`
-                                    }
-                                </div>
-                            </div>
-                        ` : ''}
+                        <div class="p-6 bg-white rounded-2xl shadow-sm border"><button id="calculateSaleBtn" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl">Hitung Total</button></div>
+                        ${result ? `<div class="p-6 bg-green-50 rounded-2xl shadow-lg border-green-200 space-y-3">
+                            <h3 class="text-xl font-bold">Ringkasan</h3>
+                            <div class="flex justify-between"><span>Subtotal:</span><span>Rp ${formatRupiah(result.subtotal)}</span></div>
+                            <div class="flex justify-between"><span>Diskon:</span><span class="text-red-600">- Rp ${formatRupiah(result.discountAmount)}</span></div>
+                            <div class="flex justify-between"><span>Pajak:</span><span>+ Rp ${formatRupiah(result.taxAmount)}</span></div>
+                            <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2"><span>Total:</span><span>Rp ${formatRupiah(result.grandTotal)}</span></div>
+                            <div class="mt-4">${appState.salesCalculator.saleType === 'offline' ? `<button id="processOfflineSaleBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl">Proses Offline</button>` : `<button id="createOnlineOrderFromSaleBtn" class="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-xl">Buat Pesanan Online</button>`}</div>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDetailedSalesReport() {
+            const sales = appState.savedSales.filter(s => s.type !== 'online' || s.status === 'selesai'); // Show offline sales and completed online sales
+            const totalItemsSold = sales.reduce((sum, sale) => sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
+            const totalRevenue = sales.reduce((sum, sale) => sum + sale.result.grandTotal, 0);
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-blue-50 rounded-xl text-center interactive-card"><p class="text-sm">Total Item Terjual</p><p class="text-2xl font-bold text-blue-700">${totalItemsSold} pcs</p></div>
+                        <div class="p-4 bg-green-50 rounded-xl text-center interactive-card"><p class="text-sm">Total Pendapatan</p><p class="text-2xl font-bold text-green-700">Rp ${formatRupiah(totalRevenue)}</p></div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
+                                    <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Jumlah</th>
+                                    <th class="py-2 px-4 text-right text-xs font-medium text-gray-500 uppercase">Total Harga</th>
+                                    <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">No. Struk</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${sales.flatMap(sale => sale.items.map(item => `
+                                    <tr>
+                                        <td class="py-3 px-4 text-sm">${new Date(sale.timestamp).toLocaleDateString('id-ID')}</td>
+                                        <td class="py-3 px-4 font-medium">${item.name}</td>
+                                        <td class="py-3 px-4 text-center">${item.quantity}</td>
+                                        <td class="py-3 px-4 text-right">Rp ${formatRupiah(item.price * item.quantity)}</td>
+                                        <td class="py-3 px-4 text-xs font-mono">${sale.id}</td>
+                                    </tr>
+                                `)).join('')}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             `;
@@ -2248,6 +2252,7 @@
                     <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
                         ${visibleSubTabs.production ? `<button id="reportsListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'reports-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Produksi</button>` : ''}
                         ${visibleSubTabs.sales ? `<button id="salesReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'sales-report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Penjualan</button>` : ''}
+                        ${visibleSubTabs.warehouse ? `<button id="warehouseRecapTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'warehouse-recap' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Gudang</button>` : ''}
                         ${visibleSubTabs.warehouse ? `<button id="warehouseReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'warehouse-report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Gudang</button>` : ''}
                         ${visibleSubTabs.finance ? `<button id="financialRecapTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'financial-recap' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Keuangan</button>` : ''}
                         ${visibleSubTabs.product ? `<button id="productVisTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'product-vis' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Produk</button>` : ''}
@@ -2287,12 +2292,88 @@
                 renderFinancialReport();
             } else if (appState.activeReportTab === 'product-vis') {
                 renderProductVisualizationChart();
+            } else if (appState.activeReportTab === 'warehouse-recap') {
+                renderWarehouseRecap();
             } else if (appState.activeReportTab === 'warehouse-report') {
-                renderWarehouseReport();
+                renderDetailedWarehouseReport();
             }
         }
 
-        function renderWarehouseReport() {
+        function renderDetailedWarehouseReport() {
+            const container = document.getElementById('reportContentContainer');
+            if (!container) return;
+
+            const { stockHistory, productionRequests } = appState.warehouse;
+
+            const incomingStock = stockHistory.filter(h => h.type === 'Masuk');
+            const outgoingStock = stockHistory.filter(h => h.type.includes('Keluar'));
+
+            container.innerHTML = `
+                <div class="space-y-8">
+                    <!-- Barang Masuk -->
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Laporan Barang Masuk</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
+                                        <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Jumlah</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Sumber</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    ${incomingStock.map(item => `
+                                        <tr>
+                                            <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(item.timestamp).toLocaleString('id-ID')}</td>
+                                            <td class="py-3 px-4 whitespace-nowrap text-sm font-medium">${item.productName}</td>
+                                            <td class="py-3 px-4 text-center text-sm">${item.quantity}</td>
+                                            <td class="py-3 px-4 text-sm">${item.source}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Barang Keluar -->
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Laporan Barang Keluar</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
+                                        <th class="py-2 px-4 text-center text-xs font-medium text-gray-500 uppercase">Jumlah</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase">Tujuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    ${outgoingStock.map(item => `
+                                        <tr>
+                                            <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(item.timestamp).toLocaleString('id-ID')}</td>
+                                            <td class="py-3 px-4 whitespace-nowrap text-sm font-medium">${item.productName}</td>
+                                            <td class="py-3 px-4 text-center text-sm">${item.quantity}</td>
+                                            <td class="py-3 px-4 text-sm">${item.source}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pengajuan Gudang -->
+                    <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Laporan Pengajuan Gudang</h3>
+                        ${renderProductionRequests('report-view')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWarehouseRecap() {
             const container = document.getElementById('reportContentContainer');
             if (!container) return;
 
@@ -2304,7 +2385,7 @@
 
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Laporan Gudang</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Rekap Gudang</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                         <div class="bg-green-50 p-4 rounded-xl text-center interactive-card">
                             <p class="text-sm text-gray-600">Total Barang Masuk</p>
@@ -2621,7 +2702,7 @@
                     { label: 'Keuntungan', data: chartLabels.map(l => monthlyData[l].Keuntungan), backgroundColor: '#3b82f6' },
                 ]
             };
-            renderChart('financialChart', 'bar', chartData, 'Visualisasi Keuangan Bulanan');
+            renderChart('financialChart', 'line', chartData, 'Visualisasi Keuangan Bulanan');
         }
 
         /**
@@ -2681,7 +2762,7 @@
                 backgroundColor: garmentColors[title],
             }));
             const chartData = { labels: chartLabels, datasets: datasets };
-            renderChart('productChart', 'bar', chartData, 'Jumlah Produksi per Jenis Pakaian');
+            renderChart('productChart', 'line', chartData, 'Jumlah Produksi per Jenis Pakaian');
         }
 
         /**
@@ -5120,7 +5201,9 @@
 
             // --- Spesifik Tab Kalkulator Penjualan ---
             if (appState.activeTab === 'salesCalculator') {
-                if (e.target.id === 'saleTypeOfflineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'offline' } });
+                if (e.target.id === 'salesCalculatorSubTabBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, activeSubTab: 'calculator' } });
+                else if (e.target.id === 'salesReportSubTabBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, activeSubTab: 'report' } });
+                else if (e.target.id === 'saleTypeOfflineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'offline' } });
                 else if (e.target.id === 'saleTypeOnlineBtn') updateAppState({ salesCalculator: { ...appState.salesCalculator, saleType: 'online' } });
                 else if (e.target.id === 'addProductToSaleBtn') handleAddProductToSale();
                 else if (e.target.id === 'calculateSaleBtn') handleCalculateSale();
@@ -5168,6 +5251,7 @@
             if (appState.activeTab === 'report') {
                 if (e.target.id === 'reportsListTabBtn') updateAppState({ activeReportTab: 'reports-list', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'salesReportTabBtn') updateAppState({ activeReportTab: 'sales-report', selectedReport: null, selectedSale: null });
+                else if (e.target.id === 'warehouseRecapTabBtn') updateAppState({ activeReportTab: 'warehouse-recap', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'warehouseReportTabBtn') updateAppState({ activeReportTab: 'warehouse-report', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'financialRecapTabBtn') updateAppState({ activeReportTab: 'financial-recap', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'productVisTabBtn') updateAppState({ activeReportTab: 'product-vis', selectedReport: null, selectedSale: null });
