@@ -2090,9 +2090,9 @@
                     <div class="mt-6 pt-6 border-t flex justify-between items-center">
                         <div>
                             ${(order.status === 'siap_kirim' || order.status === 'selesai') ? `
-                                <button id="printOnlineOrderNoteBtn" class="printDocumentBtn py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_purchase_note" data-id="${order.id}">
+                                <button class="printDocumentBtn py-2 px-4 bg-teal-600 text-white rounded-md text-sm font-semibold flex items-center gap-2" data-type="online_product_note" data-id="${order.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-                                    Cetak Nota Pembelian
+                                    Cetak Nota Produk Online
                                 </button>
                             ` : ''}
                         </div>
@@ -3018,22 +3018,69 @@
             printArea.style.display = 'block';
         }
 
-        function generateOnlineOrderInvoiceHTML(order) {
-            const total = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        function generateOnlineProductNoteHTML(order) {
+            const noteNumber = `PROD-OL-${order.id.substring(0, 8).toUpperCase()}`;
+            const user = appState.allUsers.find(u => u.uid === order.createdBy);
+            const preparedBy = user ? user.fullName || user.username : getUsernameById(order.createdBy);
+
             return `
-                <div class="font-sans text-gray-800">
-                    <div class="text-center mb-6"><h2 class="text-2xl font-bold">KAZUMI</h2><p class="text-sm">Bandung, Indonesia</p></div>
-                    <div class="text-sm mb-4">
-                        <p>No: ${order.id}</p>
-                        <p>Tgl: ${new Date(order.timestamp).toLocaleString('id-ID')}</p>
-                        <p>Kasir: ${getUsernameById(order.createdBy)}</p>
-                        <p>Pelanggan: ${order.destination || 'Umum'}</p>
+                <div class="font-sans text-gray-800 p-8">
+                    <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-300">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Nota Produk Online</h2>
+                            <p class="text-sm text-gray-500">Surat Jalan Internal</p>
+                        </div>
+                        <img src="${logoUrl}" alt="Logo" class="h-12 w-auto object-contain">
                     </div>
-                    <div class="border-t-2 border-dashed border-gray-400 pt-2">
-                        ${order.items.map(item => `<div class="flex justify-between text-sm"><p>${item.quantity}x ${item.name}</p><p>Rp ${formatRupiah(item.price * item.quantity)}</p></div>`).join('')}
+                    <div class="grid grid-cols-2 gap-4 mb-8 text-sm">
+                        <div>
+                            <p><strong>No. Pesanan:</strong> ${order.id.substring(0, 8).toUpperCase()}</p>
+                            <p><strong>No. Nota:</strong> ${noteNumber}</p>
+                            <p><strong>Tanggal:</strong> ${new Date(order.timestamp).toLocaleString('id-ID')}</p>
+                            <p><strong>Disiapkan Oleh:</strong> ${preparedBy}</p>
+                        </div>
+                        <div class="text-right">
+                            <p><strong>Tujuan Pengiriman:</strong></p>
+                            <p class="font-bold">${order.destination || 'N/A'}</p>
+                        </div>
                     </div>
-                    <div class="border-t-2 border-dashed border-gray-400 mt-2 pt-2 font-bold text-lg flex justify-between"><p>TOTAL</p><p>Rp ${formatRupiah(total)}</p></div>
-                    <div class="text-center text-sm mt-6">** Terima Kasih **</div>
+                    <h3 class="text-lg font-semibold mb-2">Detail Barang:</h3>
+                    <table class="min-w-full bg-white border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left w-16">Check</th>
+                                <th class="py-2 px-4 text-left">Nama Produk</th>
+                                <th class="py-2 px-4 text-center">Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.items.map(item => `
+                                <tr>
+                                    <td class="py-2 px-4 border-t text-center"><div class="w-4 h-4 border border-black mx-auto"></div></td>
+                                    <td class="py-2 px-4 border-t">${item.name}</td>
+                                    <td class="py-2 px-4 border-t text-center">${item.quantity} pcs</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="mt-6">
+                        <h4 class="font-semibold">Catatan Pesanan:</h4>
+                        <p class="p-2 border rounded-md mt-1 bg-gray-50 min-h-[50px]">${order.notes || 'Tidak ada catatan.'}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 mt-16 pt-8 text-center text-sm">
+                        <div>
+                            <p class="mb-16">Penerima,</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                        <div>
+                            <p class="mb-16">Disetujui (Manager Gudang),</p>
+                            <p class="border-t pt-1">(_________________________)</p>
+                            <p>Nama Jelas & TTD</p>
+                        </div>
+                    </div>
+                    <div class="text-center text-xs text-gray-400 mt-12 pt-4 border-t">Dokumen ini dicetak melalui sistem KAZUMI.</div>
                 </div>
             `;
         }
@@ -3059,11 +3106,11 @@
                     contentToPrint = generateSaleInvoiceHTML(dataObject);
                     description = `Mencetak ulang struk penjualan #${relatedId.substring(0, 8).toUpperCase()}.`;
                 }
-            } else if (type === 'online_purchase_note') {
+            } else if (type === 'online_product_note') {
                 dataObject = appState.onlineOrders.find(o => o.id === id);
                 if (dataObject) {
-                    contentToPrint = generateOnlineOrderInvoiceHTML(dataObject);
-                    description = `Mencetak nota pembelian online #${relatedId.substring(0, 8).toUpperCase()}.`;
+                    contentToPrint = generateOnlineProductNoteHTML(dataObject);
+                    description = `Mencetak nota produk online #${relatedId.substring(0, 8).toUpperCase()}.`;
                 }
             } else {
                 showCustomMessage('Tipe dokumen untuk dicetak tidak valid.', 'error');
