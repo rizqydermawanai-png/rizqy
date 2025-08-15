@@ -2238,6 +2238,7 @@
             const visibleSubTabs = {
                 production: isAdmin || userDepartment === 'produksi',
                 sales: isAdmin || userDepartment === 'penjualan',
+                warehouse: isAdmin || userDepartment === 'gudang',
                 finance: isAdmin,
                 product: isAdmin,
             };
@@ -2247,6 +2248,7 @@
                     <div class="flex flex-wrap space-x-2 border-b border-gray-300 mb-6">
                         ${visibleSubTabs.production ? `<button id="reportsListTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'reports-list' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Produksi</button>` : ''}
                         ${visibleSubTabs.sales ? `<button id="salesReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'sales-report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Penjualan</button>` : ''}
+                        ${visibleSubTabs.warehouse ? `<button id="warehouseReportTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'warehouse-report' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Laporan Gudang</button>` : ''}
                         ${visibleSubTabs.finance ? `<button id="financialRecapTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'financial-recap' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Keuangan</button>` : ''}
                         ${visibleSubTabs.product ? `<button id="productVisTabBtn" class="py-2 px-4 text-sm font-semibold ${appState.activeReportTab === 'product-vis' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}">Rekap Produk</button>` : ''}
                     </div>
@@ -2285,7 +2287,77 @@
                 renderFinancialReport();
             } else if (appState.activeReportTab === 'product-vis') {
                 renderProductVisualizationChart();
+            } else if (appState.activeReportTab === 'warehouse-report') {
+                renderWarehouseReport();
             }
+        }
+
+        function renderWarehouseReport() {
+            const container = document.getElementById('reportContentContainer');
+            if (!container) return;
+
+            const { stockHistory } = appState.warehouse;
+
+            const incoming = stockHistory.filter(h => h.type === 'Masuk').reduce((sum, h) => sum + h.quantity, 0);
+            const outgoing = stockHistory.filter(h => h.type.includes('Keluar')).reduce((sum, h) => sum + h.quantity, 0);
+            const adjustments = stockHistory.filter(h => h.type.includes('Manual')).length;
+
+            container.innerHTML = `
+                <div class="p-6 bg-white rounded-2xl shadow-sm border interactive-card">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Laporan Gudang</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-green-50 p-4 rounded-xl text-center interactive-card">
+                            <p class="text-sm text-gray-600">Total Barang Masuk</p>
+                            <p class="text-2xl font-bold text-green-700">${incoming} pcs</p>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-xl text-center interactive-card">
+                            <p class="text-sm text-gray-600">Total Barang Keluar</p>
+                            <p class="text-2xl font-bold text-red-700">${outgoing} pcs</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-xl text-center interactive-card">
+                            <p class="text-sm text-gray-600">Penyesuaian Manual</p>
+                            <p class="text-2xl font-bold text-yellow-700">${adjustments} kali</p>
+                        </div>
+                    </div>
+                    <div style="height: 300px;"><canvas id="warehouseChart"></canvas></div>
+                </div>
+            `;
+
+            const dailyMovements = {};
+            stockHistory.forEach(h => {
+                const day = new Date(h.timestamp).toISOString().split('T')[0];
+                if (!dailyMovements[day]) {
+                    dailyMovements[day] = { in: 0, out: 0 };
+                }
+                if (h.type === 'Masuk') {
+                    dailyMovements[day].in += h.quantity;
+                } else {
+                    dailyMovements[day].out += h.quantity;
+                }
+            });
+
+            const sortedDays = Object.keys(dailyMovements).sort((a,b) => new Date(a) - new Date(b));
+
+            const chartData = {
+                labels: sortedDays,
+                datasets: [
+                    {
+                        label: 'Barang Masuk',
+                        data: sortedDays.map(day => dailyMovements[day].in),
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Barang Keluar',
+                        data: sortedDays.map(day => dailyMovements[day].out),
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.1
+                    }
+                ]
+            };
+            renderChart('warehouseChart', 'line', chartData, 'Pergerakan Stok Harian');
         }
 
         /**
@@ -5096,6 +5168,7 @@
             if (appState.activeTab === 'report') {
                 if (e.target.id === 'reportsListTabBtn') updateAppState({ activeReportTab: 'reports-list', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'salesReportTabBtn') updateAppState({ activeReportTab: 'sales-report', selectedReport: null, selectedSale: null });
+                else if (e.target.id === 'warehouseReportTabBtn') updateAppState({ activeReportTab: 'warehouse-report', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'financialRecapTabBtn') updateAppState({ activeReportTab: 'financial-recap', selectedReport: null, selectedSale: null });
                 else if (e.target.id === 'productVisTabBtn') updateAppState({ activeReportTab: 'product-vis', selectedReport: null, selectedSale: null });
                 else if (e.target.classList.contains('view-detail-btn')) updateAppState({ selectedReport: appState.savedReports.find(r => r.id === e.target.dataset.id) });
