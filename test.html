@@ -5114,7 +5114,20 @@
 
             // --- Gudang ---
             if (appState.activeTab === 'warehouse') {
-                if (e.target.classList.contains('production-request-category-checkbox')) {
+                if (e.target.classList.contains('online-order-item-checkbox')) {
+                    const orderId = e.target.dataset.orderId;
+                    const itemId = e.target.dataset.itemId;
+                    const isChecked = e.target.checked;
+
+                    const updatedChecklist = { ...appState.onlineOrderChecklist };
+                    if (!updatedChecklist[orderId]) {
+                        updatedChecklist[orderId] = {};
+                    }
+                    updatedChecklist[orderId][itemId] = isChecked;
+
+                    updateAppState({ onlineOrderChecklist: updatedChecklist });
+                }
+                else if (e.target.classList.contains('production-request-category-checkbox')) {
                     const category = e.target.value;
                     const currentFilters = [...(appState.warehouse.productionRequestCategoryFilters || [])];
                     if (e.target.checked) {
