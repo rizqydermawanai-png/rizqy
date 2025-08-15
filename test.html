@@ -2017,22 +2017,26 @@
             switch (order.status) {
                 case 'pending_gudang':
                     if (isWarehouse) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-blue-100 text-blue-700 rounded text-xs" data-id="${order.id}" data-status="approved_gudang">Setujui & Siapkan</button>`;
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
+                        actions = `
+                            <div class="flex-1 flex justify-center">
+                                <button class="update-online-order-status-btn py-2 px-6 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600" data-id="${order.id}" data-status="approved_gudang">Setujui & Siapkan</button>
+                            </div>
+                            <button class="update-online-order-status-btn text-red-500 hover:text-red-700" data-id="${order.id}" data-status="dibatalkan" title="Batalkan">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        `;
                     }
                     break;
                 case 'approved_gudang':
                      if (isWarehouse) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-green-100 text-green-700 rounded text-xs ${!allItemsChecked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-200'}" data-id="${order.id}" data-status="siap_kirim" ${!allItemsChecked ? 'disabled' : ''}>Selesai Menyiapkan</button>`;
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
+                        actions = `
+                            <button class="update-online-order-status-btn w-full py-2 px-4 font-semibold rounded-lg shadow-md ${allItemsChecked ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}" data-id="${order.id}" data-status="siap_kirim" ${!allItemsChecked ? 'disabled' : ''}>Selesai Menyiapkan & Cetak Nota</button>
+                        `;
                     }
                     break;
                 case 'siap_kirim':
                     if (isSales) {
-                        actions += `<button class="update-online-order-status-btn py-1 px-2 bg-blue-100 text-blue-700 rounded text-xs" data-id="${order.id}" data-status="selesai">Selesaikan</button>`;
-                    }
-                    if (isWarehouse) {
-                         actions += `<button class="update-online-order-status-btn py-1 px-2 bg-red-100 text-red-700 rounded text-xs" data-id="${order.id}" data-status="dibatalkan">Batalkan</button>`;
+                        actions += `<button class="update-online-order-status-btn py-1 px-3 bg-blue-100 text-blue-700 rounded-md text-sm" data-id="${order.id}" data-status="selesai">Selesaikan Pesanan</button>`;
                     }
                     break;
                 default:
@@ -2095,7 +2099,7 @@
                                 </div>
                                 ` : ''}
 
-                                <div class="mt-4 pt-4 border-t flex justify-end gap-2">
+                                <div class="mt-4 pt-4 border-t flex justify-center items-center gap-4">
                                     ${renderOnlineOrderActions(order)}
                                 </div>
                             </div>
@@ -4788,6 +4792,11 @@
 
                 showNotification('Status pesanan berhasil diperbarui.', 'success');
                 addActivityLog('Pesanan Online', `Status pesanan #${order.id.substring(0,8).toUpperCase()} diubah menjadi ${newStatus}.`, appState.userId, order.id);
+
+                // Automatically trigger print on 'siap_kirim'
+                if (newStatus === 'siap_kirim') {
+                    printDocument('online_product_note', order.id);
+                }
             });
         }
 
