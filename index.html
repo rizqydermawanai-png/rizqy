@@ -1949,7 +1949,26 @@
                 selector: '#templateEditor',
                 plugins: 'autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount textpattern',
                 toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                height: 400,
+                height: 500,
+                content_css: false,
+                content_style: `
+                    body {
+                        background: #f3f4f6;
+                        padding: 2rem 0;
+                        display: flex;
+                        justify-content: center;
+                    }
+                    .mce-content-body {
+                        width: 210mm;
+                        min-height: 297mm;
+                        border: 1px solid #ddd;
+                        box-shadow: 0 0 10px rgba(0,0,0,0.15);
+                        padding: 2.5cm 2cm;
+                        background: white;
+                        font-family: 'Times New Roman', serif;
+                        font-size: 12pt;
+                    }
+                `,
                 formats: {
                     placeholder: { inline: 'span', styles: { 'background-color': '#dbeafe', 'border-radius': '3px', 'padding': '2px 4px', 'color': '#1e40af', 'font-weight': 'bold' } }
                 },
