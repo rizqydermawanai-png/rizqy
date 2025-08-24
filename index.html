@@ -203,9 +203,44 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-primary-800 to-primary-900 text-white shadow-xl">
-        <div class="container mx-auto px-6 py-6">
+
+    <div id="login-container" class="min-h-screen flex items-center justify-center">
+        <div class="login-card w-full max-w-md p-8 rounded-2xl shadow-2xl bg-white/90">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">Sistem Surat Resmi</h1>
+                <p class="text-gray-600 mt-2">Silakan login untuk melanjutkan</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                 <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="admin atau superadmin" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full btn-gradient text-white py-3 rounded-xl font-semibold">
+                        Login sebagai Staf
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                 <p class="text-sm text-gray-600">atau</p>
+                 <button id="mahasiswaLogin" class="mt-2 w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                    Login sebagai Mahasiswa
+                </button>
+            </div>
+            <p id="error-message" class="text-red-500 text-sm mt-4 text-center"></p>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-primary-800 to-primary-900 text-white shadow-xl">
+            <div class="container mx-auto px-6 py-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -925,6 +960,7 @@
             </div>
         </div>
     </main>
+    </div>
 
     <!-- Notification Container -->
     <div id="notificationContainer" class="fixed top-4 right-4 z-[1000]"></div>
@@ -1889,62 +1925,104 @@
             showNotification('Surat pengajuan berhasil dibuat. Silakan periksa pratinjau.');
         }
 
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const userRole = localStorage.getItem('userRole');
-            if (!userRole) {
-                window.location.href = 'login.html';
-                return;
-            }
+        // --- App Initialization & Auth ---
 
+        const loginContainer = document.getElementById('login-container');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('loginForm');
+        const mahasiswaLoginBtn = document.getElementById('mahasiswaLogin');
+        const errorMessage = document.getElementById('error-message');
+        const logoutButton = document.getElementById('logoutButton');
+
+        function showApp(userRole) {
+            loginContainer.style.display = 'none';
+            appContainer.style.display = 'block';
+
+            // --- Configure UI based on role ---
             const nav = {
                 create: document.querySelector('[onclick="showTab(\'create\')"]'),
                 templates: document.querySelector('[onclick="showTab(\'templates\')"]'),
                 archive: document.querySelector('[onclick="showTab(\'archive\')"]'),
                 kop: document.querySelector('[onclick="showTab(\'kop\')"]'),
-                manageStudentTemplates: document.getElementById('manageStudentTemplatesNav'), // This will be removed later
                 studentSubmission: document.querySelector('[onclick="showTab(\'studentSubmission\')"]'),
                 studentTemplateManagementSection: document.getElementById('studentTemplateManagementSection')
             };
 
-            const allNavs = Object.values(nav);
-            allNavs.forEach(button => { if (button) button.style.display = 'none'; });
+            Object.values(nav).forEach(el => { if(el) el.style.display = 'none'; });
 
             const roles = {
                 mahasiswa: [nav.studentSubmission],
                 admin: [nav.create, nav.templates, nav.archive, nav.kop, nav.studentSubmission],
-                superadmin: [nav.create, nav.templates, nav.archive, nav.kop, nav.manageStudentTemplates, nav.studentSubmission, nav.studentTemplateManagementSection]
+                superadmin: [nav.create, nav.templates, nav.archive, nav.kop, nav.studentSubmission, nav.studentTemplateManagementSection]
             };
 
             if (roles[userRole]) {
-                roles[userRole].forEach(button => { if(button) button.style.display = 'flex'; });
+                roles[userRole].forEach(el => { if(el) el.style.display = 'flex'; });
             }
 
-            if (userRole === 'mahasiswa') showTab('studentSubmission');
-            else showTab('create');
+            // --- Set initial tab and run startup functions ---
+            if (userRole === 'mahasiswa') {
+                showTab('studentSubmission');
+            } else {
+                showTab('create');
+            }
 
-            document.getElementById('logoutButton').addEventListener('click', () => {
-                localStorage.removeItem('userRole');
-                window.location.href = 'login.html';
-            });
-
-            document.getElementById('studentTemplateSelect')?.addEventListener('change', loadStudentTemplate);
-            document.getElementById('templateSelect').addEventListener('change', handleTemplateChange);
-
-            quill = new Quill('#templateEditor', {
-                modules: {
-                    toolbar: '#toolbar-container'
-                },
-                theme: 'snow'
-            });
+            if (!window.quill) { // Initialize Quill only once
+                 quill = new Quill('#templateEditor', {
+                    modules: { toolbar: '#toolbar-container' },
+                    theme: 'snow'
+                });
+            }
 
             updateTotalLetters();
             populateKopSelect();
             populateTemplateSelect();
             updateKopPreview();
-            renderCustomTemplates();
+            // renderCustomTemplates(); // Obsolete
             renderCustomKops();
             populatePlaceholderSelector();
+            document.getElementById('studentTemplateSelect')?.addEventListener('change', loadStudentTemplate);
+            document.getElementById('templateSelect').addEventListener('change', handleTemplateChange);
+        }
+
+        function showLogin() {
+            localStorage.removeItem('userRole');
+            appContainer.style.display = 'none';
+            loginContainer.style.display = 'flex';
+        }
+
+        // --- Event Listeners ---
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            const username = document.getElementById('username').value.toLowerCase();
+            const password = document.getElementById('password').value;
+            const correctPassword = '12345678';
+
+            if ((username === 'admin' || username === 'superadmin') && password === correctPassword) {
+                localStorage.setItem('userRole', username);
+                showApp(username);
+            } else {
+                errorMessage.textContent = 'Username atau password salah.';
+            }
+        });
+
+        mahasiswaLoginBtn.addEventListener('click', function() {
+            const role = 'mahasiswa';
+            localStorage.setItem('userRole', role);
+            showApp(role);
+        });
+
+        logoutButton.addEventListener('click', showLogin);
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const userRole = localStorage.getItem('userRole');
+            if (userRole) {
+                showApp(userRole);
+            } else {
+                showLogin();
+            }
         });
     </script>
 </body>
