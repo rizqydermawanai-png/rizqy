@@ -1963,21 +1963,6 @@
 
         // --- App Initialization & Auth ---
 
-        const loginContainer = document.getElementById('login-container');
-        const appContainer = document.getElementById('app-container');
-        const registrationContainer = document.getElementById('registration-container');
-
-        const loginForm = document.getElementById('loginForm');
-        const mahasiswaLoginBtn = document.getElementById('mahasiswaLogin');
-        const errorMessage = document.getElementById('error-message');
-        const logoutButton = document.getElementById('logoutButton');
-
-        const registrationForm = document.getElementById('registrationForm');
-        const registrationMessage = document.getElementById('registration-message');
-
-        const showRegisterLink = document.getElementById('show-register-link');
-        const showLoginLink = document.getElementById('show-login-link');
-
         function setRoleUI(userRole) {
             const nav = {
                 create: document.querySelector('[onclick="showTab(\'create\')"]'),
@@ -2002,6 +1987,8 @@
         }
 
         function showApp(userRole) {
+            const loginContainer = document.getElementById('login-container');
+            const appContainer = document.getElementById('app-container');
             loginContainer.style.display = 'none';
             appContainer.style.display = 'block';
             setRoleUI(userRole);
@@ -2014,6 +2001,9 @@
         }
 
         function showLogin() {
+            const loginContainer = document.getElementById('login-container');
+            const appContainer = document.getElementById('app-container');
+            const registrationContainer = document.getElementById('registration-container');
             localStorage.removeItem('userRole');
             appContainer.style.display = 'none';
             registrationContainer.style.display = 'none';
@@ -2021,11 +2011,25 @@
         }
 
         function showRegistration() {
+            const loginContainer = document.getElementById('login-container');
+            const registrationContainer = document.getElementById('registration-container');
             loginContainer.style.display = 'none';
             registrationContainer.style.display = 'flex';
         }
 
         function initApp() {
+            const loginContainer = document.getElementById('login-container');
+            const appContainer = document.getElementById('app-container');
+            const registrationContainer = document.getElementById('registration-container');
+            const loginForm = document.getElementById('loginForm');
+            const mahasiswaLoginBtn = document.getElementById('mahasiswaLogin');
+            const errorMessage = document.getElementById('error-message');
+            const logoutButton = document.getElementById('logoutButton');
+            const registrationForm = document.getElementById('registrationForm');
+            const registrationMessage = document.getElementById('registration-message');
+            const showRegisterLink = document.getElementById('show-register-link');
+            const showLoginLink = document.getElementById('show-login-link');
+
             // Initialize Quill Editor
             quill = new Quill('#templateEditor', {
                 modules: { toolbar: '#toolbar-container' },
