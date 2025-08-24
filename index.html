@@ -901,6 +901,7 @@
 
         let customKops = JSON.parse(localStorage.getItem('customKops')) || {};
         let customTemplates = JSON.parse(localStorage.getItem('customTemplates')) || {};
+        initializePreBuiltTemplates();
         let activeDynamicFields = [];
 
         const placeholderLibrary = [
@@ -914,6 +915,37 @@
             { id: 'nama_penerima', name: 'Nama Penerima' },
             { id: 'jabatan_penerima', name: 'Jabatan Penerima' }
         ];
+
+        const preBuiltTemplates = [
+            {
+                id: 'prebuilt_penawaran',
+                name: 'Contoh: Surat Penawaran',
+                content: `<p>Dengan hormat,</p><p>Melalui surat ini, kami dari <strong>{{nama_perusahaan}}</strong> ingin mengajukan penawaran untuk produk/jasa kami. Berikut adalah detailnya:</p><p>...</p><p>Hormat kami,</p><p><strong>{{nama_pengirim}}</strong></p>`
+            },
+            {
+                id: 'prebuilt_undangan',
+                name: 'Contoh: Undangan Rapat',
+                content: `<p>Kepada Yth. Bapak/Ibu {{nama_penerima}},</p><p>Dengan ini kami mengundang Anda untuk menghadiri rapat yang akan diselenggarakan pada:</p><ul><li>Hari/Tanggal: {{hari_tanggal_rapat}}</li><li>Waktu: {{waktu_rapat}}</li><li>Tempat: {{tempat_rapat}}</li><li>Agenda: {{agenda_rapat}}</li></ul><p>Demikian undangan ini kami sampaikan.</p><p>Hormat kami,</p><p><strong>{{nama_pengundang}}</strong></p>`
+            },
+            {
+                id: 'prebuilt_berita_acara',
+                name: 'Contoh: Berita Acara',
+                content: `<h4>BERITA ACARA SERAH TERIMA</h4><p>Pada hari ini, {{hari}}, tanggal {{tanggal_lengkap}}, telah dilakukan serah terima pekerjaan dari:</p><p>Nama: {{nama_pihak_1}}<br>Jabatan: {{jabatan_pihak_1}}</p><p>Kepada:</p><p>Nama: {{nama_pihak_2}}<br>Jabatan: {{jabatan_pihak_2}}</p><p>Demikian berita acara ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>`
+            }
+        ];
+
+        function initializePreBuiltTemplates() {
+            preBuiltTemplates.forEach(template => {
+                if (!customTemplates[template.id]) {
+                    customTemplates[template.id] = {
+                        name: template.name,
+                        content: template.content
+                    };
+                }
+            });
+            // Persist the potentially updated templates back to localStorage
+            localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+        }
 
         function populatePlaceholderSelector() {
             const selector = document.getElementById('placeholderSelector');
