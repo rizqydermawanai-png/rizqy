@@ -245,9 +245,6 @@
                 <button class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('kop')">
                     <i class="fas fa-heading mr-2"></i>Kop Surat
                 </button>
-                <button id="manageStudentTemplatesNav" class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('manageStudentTemplates')">
-                    <i class="fas fa-cogs mr-2"></i>Template Pengajuan
-                </button>
                 <button class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('studentSubmission')">
                     <i class="fas fa-user-graduate mr-2"></i>Pengajuan Mahasiswa
                 </button>
@@ -593,6 +590,42 @@
                     </div>
                 </div>
 
+                <!-- Student Template Management Section (for Super Admin) -->
+                <div id="studentTemplateManagementSection" class="hidden bg-gray-50 rounded-xl p-6 mt-8 border-t-4 border-primary-500">
+                     <h2 class="text-2xl font-bold text-primary-800 mb-6 flex items-center">
+                        <i class="fas fa-cogs mr-3"></i>Kelola Template Pengajuan Mahasiswa
+                    </h2>
+                    <div class="mb-6">
+                        <label for="studentTemplateSelect" class="block text-sm font-medium text-gray-700 mb-2">Pilih Jenis Surat untuk Diedit</label>
+                        <select id="studentTemplateSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                            <option value="kerjaPraktek">Kerja Praktek</option>
+                            <option value="risetTugasAkhir">Riset Tugas Akhir</option>
+                            <option value="berhentiStudiTetap">Berhenti Studi Tetap</option>
+                            <option value="cutiAkademik">Cuti Akademik</option>
+                            <option value="perpanjanganPKRSOnline">Perpanjangan PKRS Online</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="studentTemplateEditor" class="block text-sm font-medium text-gray-700 mb-2">Isi Template Surat</label>
+                        <p class="text-xs text-gray-500 mb-2">
+                            Gunakan placeholder yang tersedia di bawah ini. Placeholder akan diganti dengan data dari formulir secara otomatis.
+                        </p>
+                        <textarea id="studentTemplateEditor" rows="15" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 font-mono text-sm"></textarea>
+                        <div class="text-xs text-gray-600 mt-2 bg-gray-100 p-3 rounded-lg">
+                            <p class="font-semibold mb-1">Placeholder yang tersedia:</p>
+                            <code class="text-blue-700">{nama_mahasiswa}</code>, <code class="text-blue-700">{nim}</code>, <code class="text-blue-700">{prodi}</code>, <code class="text-blue-700">{dosen_wali}</code>, <code class="text-blue-700">{pembimbing_kp}</code>, <code class="text-blue-700">{perusahaan}</code>, <code class="text-blue-700">{alamat_perusahaan}</code>, <code class="text-blue-700">{judul_ta}</code>, <code class="text-blue-700">{pembimbing_1}</code>, <code class="text-blue-700">{pembimbing_2}</code>, <code class="text-blue-700">{alasan}</code>, <code class="text-blue-700">{semester}</code>, <code class="text-blue-700">{semester_saat_ini}</code>.
+                        </div>
+                    </div>
+                    <div class="mt-6 flex space-x-4">
+                        <button onclick="saveStudentTemplate()" class="flex-1 btn-gradient text-white py-3 rounded-xl font-semibold">
+                            <i class="fas fa-save mr-2"></i>Simpan Template
+                        </button>
+                        <button onclick="resetStudentTemplate()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                            <i class="fas fa-undo mr-2"></i>Reset ke Default
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -711,43 +744,6 @@
             </div>
         </div>
 
-        <!-- Manage Student Templates Tab (Super Admin) -->
-        <div id="manageStudentTemplatesTab" class="tab-content hidden">
-            <div class="glass-effect rounded-xl p-6 shadow-xl">
-                <h2 class="text-2xl font-bold text-primary-800 mb-6 flex items-center">
-                    <i class="fas fa-cogs mr-3"></i>Kelola Template Surat Pengajuan
-                </h2>
-                <div class="mb-6">
-                    <label for="studentTemplateSelect" class="block text-sm font-medium text-gray-700 mb-2">Pilih Jenis Surat untuk Diedit</label>
-                    <select id="studentTemplateSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
-                        <option value="kerjaPraktek">Kerja Praktek</option>
-                        <option value="risetTugasAkhir">Riset Tugas Akhir</option>
-                        <option value="berhentiStudiTetap">Berhenti Studi Tetap</option>
-                        <option value="cutiAkademik">Cuti Akademik</option>
-                        <option value="perpanjanganPKRSOnline">Perpanjangan PKRS Online</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="studentTemplateEditor" class="block text-sm font-medium text-gray-700 mb-2">Isi Template Surat</label>
-                    <p class="text-xs text-gray-500 mb-2">
-                        Gunakan placeholder yang tersedia di bawah ini. Placeholder akan diganti dengan data dari formulir secara otomatis.
-                    </p>
-                    <textarea id="studentTemplateEditor" rows="15" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 font-mono text-sm"></textarea>
-                    <div class="text-xs text-gray-600 mt-2 bg-gray-100 p-3 rounded-lg">
-                        <p class="font-semibold mb-1">Placeholder yang tersedia:</p>
-                        <code class="text-blue-700">{nama_mahasiswa}</code>, <code class="text-blue-700">{nim}</code>, <code class="text-blue-700">{prodi}</code>, <code class="text-blue-700">{dosen_wali}</code>, <code class="text-blue-700">{pembimbing_kp}</code>, <code class="text-blue-700">{perusahaan}</code>, <code class="text-blue-700">{alamat_perusahaan}</code>, <code class="text-blue-700">{judul_ta}</code>, <code class="text-blue-700">{pembimbing_1}</code>, <code class="text-blue-700">{pembimbing_2}</code>, <code class="text-blue-700">{alasan}</code>, <code class="text-blue-700">{semester}</code>, <code class="text-blue-700">{semester_saat_ini}</code>.
-                    </div>
-                </div>
-                <div class="mt-6 flex space-x-4">
-                    <button onclick="saveStudentTemplate()" class="flex-1 btn-gradient text-white py-3 rounded-xl font-semibold">
-                        <i class="fas fa-save mr-2"></i>Simpan Template
-                    </button>
-                    <button onclick="resetStudentTemplate()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
-                        <i class="fas fa-undo mr-2"></i>Reset ke Default
-                    </button>
-                </div>
-            </div>
-        </div>
 
         <!-- Student Submission Tab -->
         <div id="studentSubmissionTab" class="tab-content hidden">
@@ -1906,8 +1902,9 @@
                 templates: document.querySelector('[onclick="showTab(\'templates\')"]'),
                 archive: document.querySelector('[onclick="showTab(\'archive\')"]'),
                 kop: document.querySelector('[onclick="showTab(\'kop\')"]'),
-                manageStudentTemplates: document.getElementById('manageStudentTemplatesNav'),
-                studentSubmission: document.querySelector('[onclick="showTab(\'studentSubmission\')"]')
+                manageStudentTemplates: document.getElementById('manageStudentTemplatesNav'), // This will be removed later
+                studentSubmission: document.querySelector('[onclick="showTab(\'studentSubmission\')"]'),
+                studentTemplateManagementSection: document.getElementById('studentTemplateManagementSection')
             };
 
             const allNavs = Object.values(nav);
@@ -1916,7 +1913,7 @@
             const roles = {
                 mahasiswa: [nav.studentSubmission],
                 admin: [nav.create, nav.templates, nav.archive, nav.kop, nav.studentSubmission],
-                superadmin: allNavs
+                superadmin: [nav.create, nav.templates, nav.archive, nav.kop, nav.manageStudentTemplates, nav.studentSubmission, nav.studentTemplateManagementSection]
             };
 
             if (roles[userRole]) {
