@@ -27,6 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -304,9 +305,13 @@
                                 <input type="text" id="to" placeholder="Nama penerima surat" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                             </div>
 
-                            <div>
+                            <div id="contentArea">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Isi Surat</label>
                                 <textarea id="content" rows="6" placeholder="Tulis isi surat di sini..." class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500"></textarea>
+                            </div>
+
+                            <div id="dynamicContentArea" class="hidden space-y-4">
+                                <!-- Dynamic fields will be injected here by JS -->
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -514,22 +519,36 @@
                     <p class="text-gray-500 col-span-full" id="noCustomTemplatesMessage">Belum ada template kustom yang diunggah.</p>
                 </div>
 
-                <!-- Upload Custom Template -->
-                <div class="bg-gray-50 rounded-xl p-6">
-                    <h3 class="text-lg font-semibold mb-4">Upload Template Word Baru</h3>
-                    <div class="file-upload" id="customTemplateUploadArea">
-                        <i class="fas fa-upload text-3xl text-gray-400 mb-3"></i>
-                        <p class="text-sm text-gray-600 mb-2">Drag & drop file template Word (.docx/.doc) di sini</p>
-                        <p class="text-xs text-gray-500 mb-3">Format .docx atau .doc</p>
-                        <button class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm">
-                            Pilih File
-                        </button>
-                        <input type="file" id="newCustomTemplateFile" accept=".docx,.doc" class="hidden">
-                        <p id="newCustomTemplateFileName" class="text-sm text-gray-500 mt-2"></p>
+                <!-- Custom Template Editor -->
+                <div class="bg-gray-50 rounded-xl p-6 mt-8">
+                    <h3 class="text-lg font-semibold mb-4" id="editorTitle">Buat Template Baru</h3>
+                    <input type="hidden" id="templateEditorId">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Template</label>
+                        <input type="text" id="templateName" placeholder="Masukkan nama untuk template Anda" class="w-full p-3 border border-gray-300 rounded-xl mb-4">
                     </div>
-                    <button onclick="saveNewCustomTemplate()" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold mt-4">
-                        <i class="fas fa-save mr-2"></i>Simpan Template Kustom
-                    </button>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Isi Template</label>
+                        <p class="text-xs text-gray-500 mb-2">
+                           Salin konten dari Word atau buat dari nol. Gunakan format <code class="text-blue-700">{{placeholder}}</code> untuk menandai bagian yang akan diisi secara dinamis. Contoh: <code class="text-blue-700">{{nama_penerima}}</code>, <code class="text-blue-700">{{tanggal_surat}}</code>.
+                        </p>
+                        <!-- Placeholder Helper -->
+                        <div class="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center space-x-2">
+                            <input type="text" id="placeholderName" placeholder="nama_placeholder_baru" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                            <button type="button" onclick="insertPlaceholder()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 font-semibold">
+                                <i class="fas fa-plus-circle mr-2"></i>Sisipkan
+                            </button>
+                        </div>
+                        <textarea id="templateEditor"></textarea>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <button onclick="saveCustomTemplate()" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
+                            <i class="fas fa-save mr-2"></i>Simpan Template
+                        </button>
+                        <button onclick="clearTemplateEditor()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                            <i class="fas fa-plus-circle mr-2"></i>Buat Baru
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -876,14 +895,11 @@
         document.getElementById('date').valueAsDate = new Date();
         let letterArchive = JSON.parse(localStorage.getItem('letterArchive')) || [];
         let currentNumber = parseInt(localStorage.getItem('currentNumber')) || 1;
-        let selectedTemplate = 'default';
 
-        // Store custom kop images as { id: { name: "...", dataUrl: "..." } }
         let customKops = JSON.parse(localStorage.getItem('customKops')) || {};
-        // Store custom Word templates as { id: { name: "...", dataUrl: "..." } }
         let customTemplates = JSON.parse(localStorage.getItem('customTemplates')) || {};
+        let activeDynamicFields = [];
 
-        // Default kop images (can be extended)
         const defaultKopImages = {
             'default': 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d9ce5d86-4df3-43cb-9f35-d9e893e6304f.png',
             'formal': 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a02ac2c5-1832-491b-b72d-5ed01886341c.png'
@@ -934,13 +950,13 @@
         function showNotification(message, type = 'success', duration = 3000) {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
+            notification.className = `notification ${type === 'error' ? 'error' : ''}`;
             notification.textContent = message;
             container.appendChild(notification);
 
             setTimeout(() => {
                 notification.classList.add('show');
-            }, 10); // Small delay to trigger transition
+            }, 10);
 
             setTimeout(() => {
                 notification.classList.remove('show');
@@ -952,271 +968,278 @@
             return Date.now().toString(36) + Math.random().toString(36).substr(2);
         }
 
-        // Update total letters counter
         function updateTotalLetters() {
             document.getElementById('totalLetters').textContent = letterArchive.length;
         }
 
         // --- Tab Navigation ---
         function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-            });
-
-            // Show selected tab
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
             const activeTab = document.getElementById(tabName + 'Tab');
             if (activeTab) {
                 activeTab.classList.remove('hidden');
                 activeTab.classList.add('animate-slide-in');
             }
 
-            // Update active tab
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             const activeNav = document.querySelector(`[onclick="showTab('${tabName}')"]`);
-            if (activeNav) {
-                activeNav.classList.add('active');
-            }
+            if (activeNav) activeNav.classList.add('active');
 
-            // Load specific data for each tab
-            if (tabName === 'archive') {
-                renderArchiveTable();
-            } else if (tabName === 'templates') {
-                renderCustomTemplates();
-            } else if (tabName === 'kop') {
-                renderCustomKops();
-            } else if (tabName === 'create') {
+            if (tabName === 'archive') renderArchiveTable();
+            else if (tabName === 'templates') renderCustomTemplates();
+            else if (tabName === 'kop') renderCustomKops();
+            else if (tabName === 'create') {
                 populateKopSelect();
                 populateTemplateSelect();
-            } else if (tabName === 'studentSubmission') {
-                showSubmissionForm(); // Ensure forms are reset/shown correctly
-            } else if (tabName === 'manageStudentTemplates') {
-                loadStudentTemplate();
-            }
+            } else if (tabName === 'studentSubmission') showSubmissionForm();
+            else if (tabName === 'manageStudentTemplates') loadStudentTemplate();
         }
 
-        // --- Template Management ---
-        function selectTemplate(template, event) {
-            selectedTemplate = template;
-            document.querySelectorAll('.template-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            if (event && event.currentTarget) {
-                event.currentTarget.classList.add('selected');
-            }
-            document.getElementById('templateSelect').value = template;
+        // --- Template Management & Dynamic Forms ---
+        function clearTemplateEditor() {
+            document.getElementById('editorTitle').textContent = 'Buat Template Baru';
+            document.getElementById('templateEditorId').value = '';
+            document.getElementById('templateName').value = '';
+            tinymce.get('templateEditor').setContent('');
         }
 
-        // Populate template select dropdown
-        function populateTemplateSelect() {
-            const templateSelect = document.getElementById('templateSelect');
-            // Clear existing custom options
-            Array.from(templateSelect.options).forEach(option => {
-                if (option.value.startsWith('custom_')) {
-                    option.remove();
-                }
-            });
+        function insertPlaceholder() {
+            const nameInput = document.getElementById('placeholderName');
+            let placeholderName = nameInput.value.trim();
 
-            // Add custom templates
-            for (const id in customTemplates) {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = customTemplates[id].name;
-                templateSelect.appendChild(option);
-            }
-            // Ensure 'custom' option is always last if it exists
-            const customOption = templateSelect.querySelector('option[value="custom"]');
-            if (customOption) {
-                templateSelect.appendChild(customOption);
-            }
-            templateSelect.value = selectedTemplate; // Set selected value
-        }
-
-        // Toggle custom template section
-        document.getElementById('templateSelect').addEventListener('change', function() {
-            const customSection = document.getElementById('customTemplateSection');
-            const complexForm = document.getElementById('complexLetterForm');
-
-            // Handle custom template upload section
-            if (this.value === 'custom') {
-                customSection.classList.remove('hidden');
-            } else {
-                customSection.classList.add('hidden');
-            }
-            if (this.value.startsWith('custom_')) {
-                 customSection.classList.add('hidden');
-            }
-
-            // Handle complex dinas form section
-            if (this.value === 'complex_dinas') {
-                complexForm.classList.remove('hidden');
-            } else {
-                complexForm.classList.add('hidden');
-            }
-        });
-
-        // Handle new custom template file upload
-        let newCustomTemplateFile = null;
-        document.getElementById('newCustomTemplateFile').addEventListener('change', function(e) {
-            newCustomTemplateFile = e.target.files[0];
-            if (newCustomTemplateFile) {
-                document.getElementById('newCustomTemplateFileName').textContent = newCustomTemplateFile.name;
-            } else {
-                document.getElementById('newCustomTemplateFileName').textContent = '';
-            }
-        });
-
-        // Save new custom template
-        function saveNewCustomTemplate() {
-            if (!newCustomTemplateFile) {
-                showNotification('Pilih file template Word terlebih dahulu!', 'error');
+            if (!placeholderName) {
+                showNotification('Masukkan nama placeholder terlebih dahulu.', 'error');
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const id = generateUniqueId();
-                customTemplates[id] = {
-                    name: newCustomTemplateFile.name,
-                    dataUrl: e.target.result // Base64 encoded content
-                };
-                localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
-                showNotification('Template kustom berhasil disimpan!');
-                newCustomTemplateFile = null; // Clear file input
-                document.getElementById('newCustomTemplateFileName').textContent = '';
-                renderCustomTemplates(); // Re-render custom templates list
-                populateTemplateSelect(); // Update dropdown
-            };
-            reader.readAsDataURL(newCustomTemplateFile);
-        }
+            // Sanitize the name: replace spaces with underscores and remove special characters
+            placeholderName = placeholderName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
 
-        // Render custom templates in the Templates tab
-        function renderCustomTemplates() {
-            const container = document.getElementById('customTemplatesContainer');
-            const noTemplatesMessage = document.getElementById('noCustomTemplatesMessage');
-
-            // Clear existing custom templates, but not the message placeholder
-            Array.from(container.children).forEach(child => {
-                if (child.id !== 'noCustomTemplatesMessage') {
-                    child.remove();
-                }
-            });
-
-            let hasCustomTemplates = false;
-            for (const id in customTemplates) {
-                hasCustomTemplates = true;
-                const template = customTemplates[id];
-                const card = document.createElement('div');
-                card.className = 'template-card border-2 border-gray-200 rounded-xl p-6';
-                card.setAttribute('onclick', `selectTemplate('${id}', event)`);
-                card.innerHTML = `
-                    <div class="text-center mb-4">
-                        <i class="fas fa-file-word text-4xl text-blue-600"></i>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">${template.name}</h3>
-                    <p class="text-gray-600 text-sm mb-4">Template Word kustom</p>
-                    <div class="flex justify-between">
-                        <span class="badge bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Kustom</span>
-                        <button onclick="deleteCustomTemplate('${id}', event)" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                // Insert the new card before the "no templates" message
-                container.insertBefore(card, noTemplatesMessage);
+            if (!placeholderName) {
+                showNotification('Nama placeholder tidak valid. Gunakan hanya huruf, angka, dan garis bawah.', 'error');
+                nameInput.value = ''; // Clear the invalid input
+                return;
             }
 
-            // Show or hide the message based on whether there are custom templates
-            if (noTemplatesMessage) {
-                noTemplatesMessage.style.display = hasCustomTemplates ? 'none' : 'block';
+            const placeholderText = `{{${placeholderName}}}`;
+            tinymce.get('templateEditor').execCommand('mceInsertContent', false, placeholderText);
+            nameInput.value = '';
+            nameInput.focus();
+        }
+
+        function saveCustomTemplate() {
+            const id = document.getElementById('templateEditorId').value || generateUniqueId();
+            const name = document.getElementById('templateName').value;
+            const content = tinymce.get('templateEditor').getContent();
+
+            if (!name) {
+                showNotification('Nama template tidak boleh kosong!', 'error');
+                return;
+            }
+            if (!content) {
+                showNotification('Isi template tidak boleh kosong!', 'error');
+                return;
+            }
+
+            customTemplates[id] = { name, content };
+            localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+
+            showNotification('Template berhasil disimpan!');
+            renderCustomTemplates();
+            populateTemplateSelect();
+            clearTemplateEditor();
+        }
+
+        function editCustomTemplate(id, event) {
+            event.stopPropagation();
+            const template = customTemplates[id];
+            if (template) {
+                showTab('templates');
+                document.getElementById('editorTitle').textContent = 'Edit Template: ' + template.name;
+                document.getElementById('templateEditorId').value = id;
+                document.getElementById('templateName').value = template.name;
+                tinymce.get('templateEditor').setContent(template.content);
+                document.getElementById('templateName').focus();
             }
         }
 
         function deleteCustomTemplate(id, event) {
-            event.stopPropagation(); // Prevent selecting the template
+            event.stopPropagation();
             if (confirm('Apakah Anda yakin ingin menghapus template ini?')) {
                 delete customTemplates[id];
                 localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
                 showNotification('Template berhasil dihapus!');
                 renderCustomTemplates();
                 populateTemplateSelect();
-                // If the deleted template was selected, revert to default
-                if (selectedTemplate === id) {
-                    selectedTemplate = 'default';
-                    document.getElementById('templateSelect').value = 'default';
+
+                if (document.getElementById('templateEditorId').value === id) {
+                    clearTemplateEditor();
                 }
             }
         }
 
-        // --- Kop Surat Management ---
-        // Populate kop select dropdown
-        function populateKopSelect() {
-            const kopSelect = document.getElementById('kopSelect');
-            // Clear existing custom options
-            Array.from(kopSelect.options).forEach(option => {
-                if (option.value.startsWith('custom_')) {
-                    option.remove();
-                }
+        function renderCustomTemplates() {
+            const container = document.getElementById('customTemplatesContainer');
+            const noTemplatesMessage = document.getElementById('noCustomTemplatesMessage');
+            container.innerHTML = '';
+            container.appendChild(noTemplatesMessage);
+
+            let hasCustomTemplates = Object.keys(customTemplates).length > 0;
+            noTemplatesMessage.style.display = hasCustomTemplates ? 'none' : 'block';
+
+            for (const id in customTemplates) {
+                const template = customTemplates[id];
+                const card = document.createElement('div');
+                card.className = 'template-card border-2 border-gray-200 rounded-xl p-4 flex flex-col';
+                card.setAttribute('onclick', `selectTemplateInCreateTab('${id}')`);
+
+                const previewContainer = document.createElement('div');
+                previewContainer.className = 'flex-grow overflow-hidden mb-4 p-2 bg-white rounded';
+                previewContainer.style.maxHeight = '150px';
+                previewContainer.innerHTML = template.content;
+                previewContainer.querySelectorAll('script, style, link, meta').forEach(el => el.remove());
+
+                card.innerHTML = `<h3 class="font-semibold text-lg mb-2 truncate">${template.name}</h3>`;
+                card.appendChild(previewContainer);
+                card.innerHTML += `
+                    <div class="flex justify-between items-center border-t pt-2 mt-auto">
+                        <span class="badge bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Kustom</span>
+                        <div class="flex space-x-2">
+                            <button onclick="editCustomTemplate('${id}', event)" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteCustomTemplate('${id}', event)" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.insertBefore(card, noTemplatesMessage);
+            }
+        }
+
+        function populateTemplateSelect() {
+            const templateSelect = document.getElementById('templateSelect');
+            const oldValue = templateSelect.value;
+            Array.from(templateSelect.options).forEach(option => {
+                if (option.dataset.custom) option.remove();
             });
 
-            // Add custom kops
+            for (const id in customTemplates) {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `Kustom: ${customTemplates[id].name}`;
+                option.dataset.custom = true;
+                templateSelect.appendChild(option);
+            }
+            if (Array.from(templateSelect.options).some(opt => opt.value === oldValue)) {
+                templateSelect.value = oldValue;
+            }
+        }
+
+        function selectTemplateInCreateTab(id) {
+            document.getElementById('templateSelect').value = id;
+            showTab('create');
+            document.getElementById('templateSelect').dispatchEvent(new Event('change'));
+        }
+
+        function generateFormForTemplate(templateId) {
+            const mainForm = document.getElementById('mainLetterForm');
+            const complexForm = document.getElementById('complexLetterForm');
+            const dynamicArea = document.getElementById('dynamicContentArea');
+            const contentArea = document.getElementById('contentArea');
+
+            mainForm.style.display = 'block';
+            complexForm.style.display = 'none';
+            dynamicArea.innerHTML = '';
+            dynamicArea.style.display = 'none';
+            contentArea.style.display = 'block';
+            activeDynamicFields = [];
+
+            if (templateId === 'complex_dinas') {
+                mainForm.style.display = 'none';
+                complexForm.style.display = 'block';
+                return;
+            }
+
+            const template = customTemplates[templateId];
+            if (!template) return;
+
+            const placeholders = template.content.match(/\{\{([^}]+)\}\}/g);
+            if (!placeholders) return;
+
+            contentArea.style.display = 'none';
+            dynamicArea.style.display = 'block';
+
+            const uniquePlaceholders = [...new Set(placeholders)];
+
+            uniquePlaceholders.forEach(placeholder => {
+                const fieldName = placeholder.replace(/[{}]/g, '');
+                const fieldId = `dynamic_${fieldName}`;
+                activeDynamicFields.push(fieldName);
+
+                const label = document.createElement('label');
+                label.className = 'block text-sm font-medium text-gray-700 mb-2';
+                label.textContent = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                label.htmlFor = fieldId;
+
+                const input = document.createElement('textarea');
+                input.id = fieldId;
+                input.className = 'w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500';
+                input.placeholder = `Masukkan data untuk ${fieldName}...`;
+                input.rows = 2;
+
+                dynamicArea.appendChild(label);
+                dynamicArea.appendChild(input);
+            });
+        }
+
+        // --- Kop Surat Management ---
+        function populateKopSelect() {
+            const kopSelect = document.getElementById('kopSelect');
+            Array.from(kopSelect.options).forEach(option => {
+                if (option.value.startsWith('custom_')) option.remove();
+            });
+
             for (const id in customKops) {
                 const option = document.createElement('option');
                 option.value = id;
                 option.textContent = customKops[id].name;
                 kopSelect.appendChild(option);
             }
-            // Set default selection
             kopSelect.value = 'default';
         }
 
-        // Handle new custom kop file upload
         let newKopFile = null;
         document.getElementById('newKopFile').addEventListener('change', function(e) {
             newKopFile = e.target.files[0];
-            if (newKopFile) {
-                document.getElementById('newKopFileName').textContent = newKopFile.name;
-            } else {
-                document.getElementById('newKopFileName').textContent = '';
-            }
+            document.getElementById('newKopFileName').textContent = newKopFile ? newKopFile.name : '';
         });
 
-        // Save new custom kop
         function saveNewCustomKop() {
             const kopName = document.getElementById('newKopName').value.trim();
-            if (!kopName) {
-                showNotification('Nama kop surat tidak boleh kosong!', 'error');
-                return;
-            }
-            if (!newKopFile) {
-                showNotification('Pilih gambar kop surat terlebih dahulu!', 'error');
+            if (!kopName || !newKopFile) {
+                showNotification('Nama dan file kop surat tidak boleh kosong!', 'error');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const id = generateUniqueId();
-                customKops[id] = {
-                    name: kopName,
-                    dataUrl: e.target.result // Base64 encoded image
-                };
+                customKops[id] = { name: kopName, dataUrl: e.target.result };
                 localStorage.setItem('customKops', JSON.stringify(customKops));
                 showNotification('Kop surat kustom berhasil disimpan!');
-                document.getElementById('newKopName').value = ''; // Clear input
-                newKopFile = null; // Clear file input
+                document.getElementById('newKopName').value = '';
+                newKopFile = null;
                 document.getElementById('newKopFileName').textContent = '';
-                renderCustomKops(); // Re-render custom kops list
-                populateKopSelect(); // Update dropdown
+                renderCustomKops();
+                populateKopSelect();
             };
             reader.readAsDataURL(newKopFile);
         }
 
-        // Render custom kops in the Kop Surat tab
         function renderCustomKops() {
             const container = document.getElementById('customKopsContainer');
-            // Clear existing custom kops, but keep default ones
             Array.from(container.children).forEach(child => {
                 if (child.id !== 'noCustomKopsMessage' && !child.classList.contains('default-kop-card')) {
                     child.remove();
@@ -1224,10 +1247,10 @@
             });
 
             const noKopsMessage = document.getElementById('noCustomKopsMessage');
-            let hasCustomKops = false;
+            let hasCustomKops = Object.keys(customKops).length > 0;
+            noKopsMessage.style.display = hasCustomKops ? 'none' : 'block';
 
             for (const id in customKops) {
-                hasCustomKops = true;
                 const kop = customKops[id];
                 const card = document.createElement('div');
                 card.className = 'border-2 border-gray-200 rounded-xl p-4';
@@ -1236,20 +1259,13 @@
                     <div class="flex justify-between items-center">
                         <span class="font-semibold">${kop.name}</span>
                         <div class="flex space-x-2">
-                            <button class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-edit"></i>
-                            </button>
                             <button onclick="deleteCustomKop('${id}')" class="text-red-600 hover:text-red-800">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
                 `;
-                container.insertBefore(card, noKopsMessage); // Insert before the message
-            }
-
-            if (noKopsMessage) {
-                noKopsMessage.style.display = hasCustomKops ? 'none' : 'block';
+                container.insertBefore(card, noKopsMessage);
             }
         }
 
@@ -1260,7 +1276,6 @@
                 showNotification('Kop surat berhasil dihapus!');
                 renderCustomKops();
                 populateKopSelect();
-                // If the deleted kop was selected, revert to default
                 if (document.getElementById('kopSelect').value === id) {
                     document.getElementById('kopSelect').value = 'default';
                     updateKopPreview();
@@ -1268,43 +1283,18 @@
             }
         }
 
-        // --- File Upload Event Listeners ---
-        document.getElementById('templateUploadArea').addEventListener('click', function() {
-            document.getElementById('templateFile').click();
-        });
-        document.getElementById('templateFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('templateFileName').textContent = file.name;
-                showNotification('File template siap diunggah. Klik "Simpan" di bawah.', 'info');
-            } else {
-                document.getElementById('templateFileName').textContent = '';
-            }
-        });
-
-        document.getElementById('customTemplateUploadArea').addEventListener('click', function() {
-            document.getElementById('newCustomTemplateFile').click();
-        });
-
-        document.getElementById('kopUploadArea').addEventListener('click', function() {
-            document.getElementById('newKopFile').click();
-        });
+        document.getElementById('kopUploadArea').addEventListener('click', () => document.getElementById('newKopFile').click());
 
         // --- Number Formatting ---
         function formatLetterNumber() {
             const format = document.getElementById('numberFormat').value;
-            // Find the numeric part, assuming it's at the beginning
             const match = format.match(/^(\d+)/);
-            let numberPart = '001'; // Default if no number found
-            if (match) {
-                numberPart = match[1];
-            }
-
+            let numberPart = '001';
+            if (match) numberPart = match[1];
             const paddedNumber = currentNumber.toString().padStart(numberPart.length, '0');
             return format.replace(numberPart, paddedNumber);
         }
 
-        // Increment/decrement number
         function incrementNumber() {
             currentNumber++;
             document.getElementById('numberFormat').value = formatLetterNumber();
@@ -1321,28 +1311,38 @@
 
         // --- Letter Generation ---
         function getKopImageSrc(kopType) {
-            if (kopType === 'default') {
-                return defaultKopImages['default'];
-            } else if (kopType === 'formal') {
-                return defaultKopImages['formal'];
-            } else if (customKops[kopType]) {
-                return customKops[kopType].dataUrl;
-            }
-            return defaultKopImages['default']; // Fallback
+            return customKops[kopType] ? customKops[kopType].dataUrl : (defaultKopImages[kopType] || defaultKopImages['default']);
         }
 
         function updateKopPreview() {
-            const kopType = document.getElementById('kopSelect').value;
-            document.getElementById('kopPreviewImage').src = getKopImageSrc(kopType);
+            document.getElementById('kopPreviewImage').src = getKopImageSrc(document.getElementById('kopSelect').value);
         }
         document.getElementById('kopSelect').addEventListener('change', updateKopPreview);
 
-
         function getTemplateHTML(templateId, data) {
             let htmlContent = '';
-            let kopImageSrc = getKopImageSrc(document.getElementById('kopSelect').value);
 
-            // Default template structure
+            if (customTemplates[templateId]) {
+                htmlContent = customTemplates[templateId].content;
+
+                for (const fieldName in data.dynamicFields) {
+                    const placeholder = `{{${fieldName}}}`;
+                    const value = (data.dynamicFields[fieldName] || '').replace(/\n/g, '<br>');
+                    htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), value);
+                }
+
+                const standardPlaceholders = {
+                    'nomor_surat': data.number, 'perihal': data.subject, 'tanggal_surat': data.date,
+                    'tempat_surat': data.place, 'penerima': data.to, 'penandatangan': data.signer,
+                    'jabatan_penandatangan': data.position
+                };
+                for (const key in standardPlaceholders) {
+                    htmlContent = htmlContent.replace(new RegExp(`{{${key}}}`, 'g'), standardPlaceholders[key]);
+                }
+                return htmlContent;
+            }
+
+            let kopImageSrc = getKopImageSrc(data.kopType);
             const defaultTemplate = `
                 <div style="text-align: center; margin-bottom: 2rem;">
                     <img src="${kopImageSrc}" alt="Kop Surat" style="max-height: 120px; object-fit: contain; margin: 0 auto 1rem;">
@@ -1371,7 +1371,6 @@
                 </div>
             `;
 
-            // Basic templates (can be expanded)
             switch (templateId) {
                 case 'complex_dinas':
                     return `
@@ -1437,36 +1436,10 @@
                 case 'formal':
                 case 'minimalist':
                 case 'corporate':
-                    htmlContent = defaultTemplate; // For simplicity, all built-in templates use the same structure
-                    break;
+                    return defaultTemplate;
                 default:
-                    // Handle custom Word templates (very basic, just shows a message)
-                    if (customTemplates[templateId]) {
-                        htmlContent = `
-                            <div style="text-align: center; margin-bottom: 2rem;">
-                                <img src="${kopImageSrc}" alt="Kop Surat" style="max-height: 120px; object-fit: contain; margin: 0 auto 1rem;">
-                                <h3 style="font-size: 1.5rem; font-weight: bold; color: #1e40af; margin-bottom: 0.5rem;">SURAT RESMI</h3>
-                                <hr style="border: 1px solid #ccc; margin: 1rem 0;">
-                            </div>
-                            <p style="text-align: center; color: red;">
-                                **Pratinjau template Word kustom tidak didukung penuh di sini.**<br>
-                                Konten akan disesuaikan saat diunduh sebagai Word/PDF (membutuhkan backend).<br><br>
-                                Data yang dimasukkan:<br>
-                                Nomor: ${data.number}<br>
-                                Perihal: ${data.subject}<br>
-                                Kepada: ${data.to}<br>
-                                Isi: ${data.content}<br>
-                                Tanggal: ${data.date}<br>
-                                Penandatangan: ${data.signer}<br>
-                                Jabatan: ${data.position}
-                            </p>
-                        `;
-                    } else {
-                        htmlContent = `<p style="color: red;">Template tidak ditemukan.</p>`;
-                    }
-                    break;
+                     return `<p style="color: red;">Template tidak ditemukan.</p>`;
             }
-            return htmlContent;
         }
 
         async function generateLetter() {
@@ -1486,34 +1459,33 @@
                 kopType: document.getElementById('kopSelect').value,
                 content: document.getElementById('content').value,
                 type: document.getElementById('letterType').value,
+                dynamicFields: {}
             };
 
-            if (template === 'complex_dinas') {
-                const readFileAsDataURL = (file) => {
-                    return new Promise((resolve, reject) => {
-                        if (!file) {
-                            resolve(null);
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    });
-                };
+            if (activeDynamicFields.length > 0) {
+                activeDynamicFields.forEach(fieldName => {
+                    const fieldId = `dynamic_${fieldName}`;
+                    const inputElement = document.getElementById(fieldId);
+                    if (inputElement) letterData.dynamicFields[fieldName] = inputElement.value;
+                });
+            }
 
-                const logo1File = document.getElementById('logo1').files[0];
-                const logo2File = document.getElementById('logo2').files[0];
+            if (template === 'complex_dinas') {
+                const readFileAsDataURL = (file) => new Promise((resolve, reject) => {
+                    if (!file) return resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
 
                 const [logo1, logo2] = await Promise.all([
-                    readFileAsDataURL(logo1File),
-                    readFileAsDataURL(logo2File)
+                    readFileAsDataURL(document.getElementById('logo1').files[0]),
+                    readFileAsDataURL(document.getElementById('logo2').files[0])
                 ]);
 
-                letterData = {
-                    ...letterData,
-                    logo1,
-                    logo2,
+                Object.assign(letterData, {
+                    logo1, logo2,
                     faculty_name: document.getElementById('faculty_name').value,
                     program_name: document.getElementById('program_name').value,
                     address1: document.getElementById('address1').value,
@@ -1526,7 +1498,7 @@
                     body_main: document.getElementById('body_main').value,
                     body_closing: document.getElementById('body_closing').value,
                     signer_nid: document.getElementById('signer_nid').value,
-                };
+                });
             }
 
             const letterHTML = getTemplateHTML(template, letterData);
@@ -1553,32 +1525,34 @@
                 position: document.getElementById('position').value,
                 template: template,
                 kopType: document.getElementById('kopSelect').value,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                dynamicFields: {}
             };
 
+            if (activeDynamicFields.length > 0) {
+                activeDynamicFields.forEach(fieldName => {
+                    const fieldId = `dynamic_${fieldName}`;
+                    const inputElement = document.getElementById(fieldId);
+                    if (inputElement) letter.dynamicFields[fieldName] = inputElement.value;
+                });
+            }
+
             if (template === 'complex_dinas') {
-                 const readFileAsDataURL = (file) => {
-                    return new Promise((resolve, reject) => {
-                        if (!file) {
-                            resolve(null);
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    });
-                };
+                 const readFileAsDataURL = (file) => new Promise((resolve, reject) => {
+                    if (!file) return resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
 
                 const [logo1, logo2] = await Promise.all([
                     readFileAsDataURL(document.getElementById('logo1').files[0]),
                     readFileAsDataURL(document.getElementById('logo2').files[0])
                 ]);
 
-                letter = {
-                    ...letter,
-                    logo1,
-                    logo2,
+                Object.assign(letter, {
+                    logo1, logo2,
                     faculty_name: document.getElementById('faculty_name').value,
                     program_name: document.getElementById('program_name').value,
                     address1: document.getElementById('address1').value,
@@ -1591,7 +1565,7 @@
                     body_main: document.getElementById('body_main').value,
                     body_closing: document.getElementById('body_closing').value,
                     signer_nid: document.getElementById('signer_nid').value,
-                };
+                });
             }
 
             letterArchive.push(letter);
@@ -1604,46 +1578,40 @@
         // --- Archive Table Rendering ---
         function renderArchiveTable() {
             const archiveBody = document.getElementById('archiveBody');
-            archiveBody.innerHTML = ''; // Clear existing rows
+            archiveBody.innerHTML = '';
             const searchTerm = document.getElementById('archiveSearchInput').value.toLowerCase();
 
             const filteredLetters = letterArchive.filter(letter =>
-                letter.number.toLowerCase().includes(searchTerm) ||
-                letter.subject.toLowerCase().includes(searchTerm) ||
-                letter.type.toLowerCase().includes(searchTerm) ||
-                letter.signer.toLowerCase().includes(searchTerm)
+                (letter.number && letter.number.toLowerCase().includes(searchTerm)) ||
+                (letter.subject && letter.subject.toLowerCase().includes(searchTerm)) ||
+                (letter.type && letter.type.toLowerCase().includes(searchTerm)) ||
+                (letter.signer && letter.signer.toLowerCase().includes(searchTerm))
             );
 
             document.getElementById('archivePaginationInfo').textContent = `Menampilkan ${filteredLetters.length} dari ${letterArchive.length} data`;
 
             if (filteredLetters.length === 0) {
                 const row = archiveBody.insertRow();
-                const cell = row.insertCell(0);
-                cell.colSpan = 7;
-                cell.textContent = 'Tidak ada surat di arsip atau tidak ditemukan.';
-                cell.className = 'px-6 py-4 text-center text-gray-500';
+                row.insertCell(0).colSpan = 7;
+                row.cells[0].textContent = 'Tidak ada surat di arsip atau tidak ditemukan.';
+                row.cells[0].className = 'px-6 py-4 text-center text-gray-500';
                 return;
             }
 
             filteredLetters.forEach((letter, index) => {
                 const row = archiveBody.insertRow();
+                const templateName = customTemplates[letter.template] ? `Kustom: ${customTemplates[letter.template].name}` : letter.template;
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${letter.type}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${letter.number}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${letter.subject}</td>
                     <td class="px-6 py-4 whitespace-nowrap">${letter.date}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${customTemplates[letter.template] ? customTemplates[letter.template].name : letter.template}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${templateName}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="viewArchivedLetter('${letter.id}')" class="text-blue-600 hover:text-blue-900 mr-2">
-                            <i class="fas fa-eye"></i> Lihat
-                        </button>
-                        <button onclick="downloadArchivedLetter('${letter.id}')" class="text-green-600 hover:text-green-900 mr-2">
-                            <i class="fas fa-download"></i> Unduh
-                        </button>
-                        <button onclick="deleteArchivedLetter('${letter.id}')" class="text-red-600 hover:text-red-900">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
+                        <button onclick="viewArchivedLetter('${letter.id}')" class="text-blue-600 hover:text-blue-900 mr-2"><i class="fas fa-eye"></i> Lihat</button>
+                        <button onclick="downloadArchivedLetter('${letter.id}')" class="text-green-600 hover:text-green-900 mr-2"><i class="fas fa-download"></i> Unduh</button>
+                        <button onclick="deleteArchivedLetter('${letter.id}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i> Hapus</button>
                     </td>
                 `;
             });
@@ -1651,12 +1619,11 @@
 
         function viewArchivedLetter(id) {
             const letter = letterArchive.find(l => l.id === id);
-            if (!letter) {
-                showNotification('Surat tidak ditemukan di arsip.', 'error');
-                return;
-            }
+            if (!letter) return showNotification('Surat tidak ditemukan di arsip.', 'error');
 
-            // Populate common fields
+            document.getElementById('templateSelect').value = letter.template;
+            document.getElementById('templateSelect').dispatchEvent(new Event('change'));
+
             document.getElementById('letterType').value = letter.type;
             document.getElementById('numberFormat').value = letter.number;
             document.getElementById('subject').value = letter.subject;
@@ -1667,17 +1634,21 @@
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             const monthIndex = monthNames.indexOf(dateParts[1]);
             if (monthIndex !== -1) {
-                const dateObj = new Date(dateParts[2], monthIndex, dateParts[0]);
-                document.getElementById('date').valueAsDate = dateObj;
+                document.getElementById('date').valueAsDate = new Date(dateParts[2], monthIndex, dateParts[0]);
             }
 
             document.getElementById('place').value = letter.place;
             document.getElementById('signer').value = letter.signer;
             document.getElementById('position').value = letter.position;
-            document.getElementById('templateSelect').value = letter.template;
             document.getElementById('kopSelect').value = letter.kopType;
 
-            // If it's a complex letter, populate those fields too
+            if (letter.dynamicFields) {
+                for (const fieldName in letter.dynamicFields) {
+                    const inputElement = document.getElementById(`dynamic_${fieldName}`);
+                    if (inputElement) inputElement.value = letter.dynamicFields[fieldName];
+                }
+            }
+
             if (letter.template === 'complex_dinas') {
                 document.getElementById('faculty_name').value = letter.faculty_name || '';
                 document.getElementById('program_name').value = letter.program_name || '';
@@ -1691,15 +1662,10 @@
                 document.getElementById('body_main').value = letter.body_main || '';
                 document.getElementById('body_closing').value = letter.body_closing || '';
                 document.getElementById('signer_nid').value = letter.signer_nid || '';
-                // Note: We can't re-populate file inputs (logo1, logo2) for security reasons.
-                // The data URLs are still in the letter object for regeneration, though.
             }
 
-            // Trigger change events to update UI (like showing the correct form)
-            document.getElementById('templateSelect').dispatchEvent(new Event('change'));
             document.getElementById('kopSelect').dispatchEvent(new Event('change'));
 
-            // Regenerate preview using the archived data
             const letterHTML = getTemplateHTML(letter.template, letter);
             document.getElementById('letterPreview').innerHTML = `<div class="letter-content">${letterHTML}</div>`;
 
@@ -1709,49 +1675,29 @@
 
         async function downloadArchivedLetter(id) {
             const letter = letterArchive.find(l => l.id === id);
-            if (!letter) {
-                showNotification('Surat tidak ditemukan.', 'error');
-                return;
-            }
+            if (!letter) return showNotification('Surat tidak ditemukan.', 'error');
 
-            // Temporarily render the letter in a hidden div to capture its HTML
             const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.width = '210mm'; // A4 width
-            tempDiv.style.padding = '20mm'; // A4 margins
+            Object.assign(tempDiv.style, { position: 'absolute', left: '-9999px', width: '210mm', padding: '20mm' });
             tempDiv.innerHTML = getTemplateHTML(letter.template, letter);
             document.body.appendChild(tempDiv);
 
             try {
-                const canvas = await html2canvas(tempDiv, { scale: 2 }); // Higher scale for better quality
+                const canvas = await html2canvas(tempDiv, { scale: 2 });
                 const imgData = canvas.toDataURL('image/png');
-
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                 pdf.save(`${letter.subject.replace(/[^a-zA-Z0-9]/g, '_')}_${letter.number.replace(/\//g, '-')}.pdf`);
                 showNotification('Surat berhasil diunduh sebagai PDF!');
             } catch (error) {
                 console.error('Error generating PDF:', error);
-                showNotification('Gagal mengunduh PDF. Coba lagi.', 'error');
+                showNotification('Gagal mengunduh PDF.', 'error');
             } finally {
-                document.body.removeChild(tempDiv); // Clean up
+                document.body.removeChild(tempDiv);
             }
         }
 
@@ -1776,29 +1722,16 @@
             const { jsPDF } = window.jspdf;
 
             try {
-                const canvas = await html2canvas(letterPreview, { scale: 2 }); // Higher scale for better quality
+                const canvas = await html2canvas(letterPreview, { scale: 2 });
                 const imgData = canvas.toDataURL('image/png');
-
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                 const subject = document.getElementById('subject').value || 'Surat';
-                const number = document.getElementById('numberFormat').value || 'Tanpa_Nomor';
-                pdf.save(`${subject.replace(/[^a-zA-Z0-9]/g, '_')}_${number.replace(/\//g, '-')}.pdf`);
+                const number = formatLetterNumber().replace(/\//g, '-');
+                pdf.save(`${subject.replace(/[^a-zA-Z0-9]/g, '_')}_${number}.pdf`);
                 showNotification('PDF berhasil diunduh!');
             } catch (error) {
                 console.error('Error generating PDF:', error);
@@ -1808,21 +1741,13 @@
 
         function exportToExcel() {
             const ws_data = [
-                ["Jenis Surat", "Nomor", "Perihal", "Kepada", "Isi Surat", "Tanggal", "Tempat", "Penandatangan", "Jabatan", "Template", "Kop Surat"]
+                ["Jenis Surat", "Nomor", "Perihal", "Kepada", "Tanggal", "Template", "Penandatangan"]
             ];
             letterArchive.forEach(letter => {
                 ws_data.push([
-                    letter.type,
-                    letter.number,
-                    letter.subject,
-                    letter.to,
-                    letter.content,
-                    letter.date,
-                    letter.place,
-                    letter.signer,
-                    letter.position,
-                    customTemplates[letter.template] ? customTemplates[letter.template].name : letter.template,
-                    customKops[letter.kopType] ? customKops[letter.kopType].name : letter.kopType
+                    letter.type, letter.number, letter.subject, letter.to,
+                    letter.date, customTemplates[letter.template] ? customTemplates[letter.template].name : letter.template,
+                    letter.signer
                 ]);
             });
 
@@ -1836,9 +1761,7 @@
         // --- Student Submission Functions ---
         function showSubmissionForm() {
             const submissionType = document.getElementById('submissionType').value;
-            document.querySelectorAll('.submission-form').forEach(form => {
-                form.classList.add('hidden');
-            });
+            document.querySelectorAll('.submission-form').forEach(form => form.classList.add('hidden'));
             if (submissionType) {
                 document.getElementById(submissionType + 'Form').classList.remove('hidden');
             }
@@ -1848,16 +1771,13 @@
             const savedTemplates = JSON.parse(localStorage.getItem('studentTemplates')) || {};
             const template = savedTemplates[type] || defaultStudentTemplates[type];
 
-            if (!template) {
-                showNotification('Template untuk jenis surat ini tidak ditemukan.', 'error');
-                return;
-            }
+            if (!template) return showNotification('Template untuk jenis surat ini tidak ditemukan.', 'error');
 
             const data = {};
-            const studentName = document.getElementById(`${type.substring(0,2)}_nama`).value;
-            data.nama_mahasiswa = studentName;
-            data.nim = document.getElementById(`${type.substring(0,2)}_nim`).value;
-            data.prodi = document.getElementById(`${type.substring(0,2)}_prodi`).value;
+            const prefix = type.substring(0,2);
+            data.nama_mahasiswa = document.getElementById(`${prefix}_nama`).value;
+            data.nim = document.getElementById(`${prefix}_nim`).value;
+            data.prodi = document.getElementById(`${prefix}_prodi`).value;
 
             if (type === 'kerjaPraktek') {
                 data.pembimbing_kp = document.getElementById('kp_pembimbing').value;
@@ -1868,13 +1788,10 @@
                 data.pembimbing_1 = document.getElementById('rta_pembimbing1').value;
                 data.pembimbing_2 = document.getElementById('rta_pembimbing2').value;
             } else {
-                data.dosen_wali = document.getElementById(`${type.substring(0,2)}_wali_dosen`).value;
-                data.alasan = document.getElementById(`${type.substring(0,2)}_alasan`).value;
-                if (type === 'cutiAkademik') {
-                    data.semester = document.getElementById('ca_semester').value;
-                } else if (type === 'perpanjanganPKRSOnline') {
-                    data.semester_saat_ini = document.getElementById('pkrs_semester_saat_ini').value;
-                }
+                data.dosen_wali = document.getElementById(`${prefix}_wali_dosen`).value;
+                data.alasan = document.getElementById(`${prefix}_alasan`).value;
+                if (type === 'cutiAkademik') data.semester = document.getElementById('ca_semester').value;
+                else if (type === 'perpanjanganPKRSOnline') data.semester_saat_ini = document.getElementById('pkrs_semester_saat_ini').value;
             }
 
             let letterContent = template;
@@ -1884,39 +1801,12 @@
                 }
             }
 
-            // Handle optional second supervisor line
-            if (type === 'risetTugasAkhir') {
-                const line2Pattern = /2\. \{pembimbing_2\} \(Pembimbing 2\)\n?/;
-                if (data.pembimbing_2) {
-                    letterContent = letterContent.replace(line2Pattern, `2. ${data.pembimbing_2} (Pembimbing 2)\n`);
-                } else {
-                    letterContent = letterContent.replace(line2Pattern, '');
-                }
-            }
-
-            let letterSubject = '';
+            let letterSubject = `Permohonan a.n. ${data.nama_mahasiswa}`;
             let letterTo = 'Dekan Fakultas';
-            let letterSigner = studentName;
-            let letterPosition = 'Mahasiswa';
 
             switch (type) {
-                case 'kerjaPraktek':
-                    letterSubject = `Permohonan Izin Kerja Praktek a.n. ${studentName}`;
-                    letterTo = `Pimpinan ${data.perusahaan}`;
-                    break;
-                case 'risetTugasAkhir':
-                    letterSubject = `Permohonan Izin Riset Tugas Akhir a.n. ${studentName}`;
-                    break;
-                case 'berhentiStudiTetap':
-                    letterSubject = `Permohonan Berhenti Studi Tetap a.n. ${studentName}`;
-                    break;
-                case 'cutiAkademik':
-                    letterSubject = `Permohonan Cuti Akademik Semester ${data.semester} a.n. ${studentName}`;
-                    break;
-                case 'perpanjanganPKRSOnline':
-                    letterSubject = `Permohonan Perpanjangan PKRS Online a.n. ${studentName}`;
-                    letterTo = 'Kepala Departemen';
-                    break;
+                case 'kerjaPraktek': letterTo = `Pimpinan ${data.perusahaan}`; break;
+                case 'perpanjanganPKRSOnline': letterTo = 'Kepala Departemen'; break;
             }
 
             document.getElementById('letterType').value = 'keterangan';
@@ -1924,8 +1814,8 @@
             document.getElementById('to').value = letterTo;
             document.getElementById('content').value = letterContent;
             document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('signer').value = letterSigner;
-            document.getElementById('position').value = letterPosition;
+            document.getElementById('signer').value = data.nama_mahasiswa;
+            document.getElementById('position').value = 'Mahasiswa';
             document.getElementById('templateSelect').value = 'default';
 
             generateLetter();
@@ -1933,17 +1823,15 @@
             showNotification('Surat pengajuan berhasil dibuat. Silakan periksa pratinjau.');
         }
 
-
-        // Initial load
+        // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Authentication and RBAC ---
             const userRole = localStorage.getItem('userRole');
             if (!userRole) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            const navButtons = {
+            const nav = {
                 create: document.querySelector('[onclick="showTab(\'create\')"]'),
                 templates: document.querySelector('[onclick="showTab(\'templates\')"]'),
                 archive: document.querySelector('[onclick="showTab(\'archive\')"]'),
@@ -1952,50 +1840,62 @@
                 studentSubmission: document.querySelector('[onclick="showTab(\'studentSubmission\')"]')
             };
 
-            function applyRBAC(role) {
-                Object.values(navButtons).forEach(button => {
-                    if (button) button.style.display = 'none';
-                });
+            const allNavs = Object.values(nav);
+            allNavs.forEach(button => { if (button) button.style.display = 'none'; });
 
-                if (role === 'mahasiswa') {
-                    if (navButtons.studentSubmission) navButtons.studentSubmission.style.display = 'flex';
-                    showTab('studentSubmission');
-                } else if (role === 'admin') {
-                    if (navButtons.create) navButtons.create.style.display = 'flex';
-                    if (navButtons.templates) navButtons.templates.style.display = 'flex';
-                    if (navButtons.archive) navButtons.archive.style.display = 'flex';
-                    if (navButtons.kop) navButtons.kop.style.display = 'flex';
-                    if (navButtons.studentSubmission) navButtons.studentSubmission.style.display = 'flex';
-                    showTab('create');
-                } else if (role === 'superadmin') {
-                    Object.values(navButtons).forEach(button => {
-                        if (button) button.style.display = 'flex';
-                    });
-                    showTab('create');
-                }
+            const roles = {
+                mahasiswa: [nav.studentSubmission],
+                admin: [nav.create, nav.templates, nav.archive, nav.kop, nav.studentSubmission],
+                superadmin: allNavs
+            };
+
+            if (roles[userRole]) {
+                roles[userRole].forEach(button => { if(button) button.style.display = 'flex'; });
             }
 
-            applyRBAC(userRole);
+            if (userRole === 'mahasiswa') showTab('studentSubmission');
+            else showTab('create');
 
-            const logoutButton = document.getElementById('logoutButton');
-            if(logoutButton) {
-                logoutButton.addEventListener('click', () => {
-                    localStorage.removeItem('userRole');
-                    window.location.href = 'login.html';
-                });
-            }
-            // --- End Authentication ---
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                localStorage.removeItem('userRole');
+                window.location.href = 'login.html';
+            });
 
-            // Add event listener for the student template editor
-            const studentTemplateSelect = document.getElementById('studentTemplateSelect');
-            if(studentTemplateSelect) {
-                studentTemplateSelect.addEventListener('change', loadStudentTemplate);
-            }
+            document.getElementById('studentTemplateSelect')?.addEventListener('change', loadStudentTemplate);
+            document.getElementById('templateSelect').addEventListener('change', (e) => generateFormForTemplate(e.target.value));
+
+            tinymce.init({
+                selector: '#templateEditor',
+                plugins: 'autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount textpattern',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                height: 400,
+                formats: {
+                    placeholder: { inline: 'span', styles: { 'background-color': '#dbeafe', 'border-radius': '3px', 'padding': '2px 4px', 'color': '#1e40af', 'font-weight': 'bold' } }
+                },
+                textpattern_patterns: [
+                     // Default patterns
+                    {start: '*', end: '*', format: 'italic'},
+                    {start: '**', end: '**', format: 'bold'},
+                    {start: '#', format: 'h1'},
+                    {start: '##', format: 'h2'},
+                    {start: '###', format: 'h3'},
+                    {start: '####', format: 'h4'},
+                    {start: '#####', format: 'h5'},
+                    {start: '######', format: 'h6'},
+                    {start: '1. ', cmd: 'InsertOrderedList'},
+                    {start: '* ', cmd: 'InsertUnorderedList'},
+                    {start: '- ', cmd: 'InsertUnorderedList'},
+                    // Custom pattern for placeholders
+                    { start: '{{', end: '}}', format: 'placeholder', block: false }
+                ]
+            });
 
             updateTotalLetters();
             populateKopSelect();
             populateTemplateSelect();
             updateKopPreview();
+            renderCustomTemplates();
+            renderCustomKops();
         });
     </script>
 </body>
