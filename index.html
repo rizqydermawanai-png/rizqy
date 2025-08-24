@@ -293,7 +293,7 @@
                                         <option value="minimalist">Minimalist</option>
                                         <option value="corporate">Corporate</option>
                                         <option value="complex_dinas">Surat Dinas Kompleks</option>
-                                        <option value="custom">Upload Custom...</option>
+                                        <option value="from_word">Gunakan dari File Word...</option>
                                     </select>
                                 </div>
                             </div>
@@ -370,6 +370,56 @@
                                 </button>
                                 <button onclick="saveToArchive()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700">
                                     <i class="fas fa-save mr-2"></i>Simpan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Word Import Workflow Container -->
+                        <div id="wordImportFlowContainer" class="hidden space-y-6">
+                            <h3 class="text-lg font-semibold border-b pb-2 text-primary-700">Impor & Edit dari Word</h3>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">1. Unggah File Word</label>
+                                <div class="file-upload" id="wordImporterArea">
+                                    <i class="fas fa-file-word text-4xl text-blue-600 mb-3"></i>
+                                    <p class="text-sm text-gray-600 mb-2">Drag & drop file .docx di sini atau klik</p>
+                                    <input type="file" id="wordImporter" class="hidden" accept=".docx" onchange="importWordTemplate(event)">
+                                    <p id="wordImporterFileName" class="text-sm text-gray-500 mt-2"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">2. Edit & Sisipkan Placeholder</label>
+                                 <div class="my-2 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center space-x-2">
+                                    <select id="placeholderSelector" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                        <option value="">-- Pilih Placeholder untuk Disisipkan --</option>
+                                    </select>
+                                    <button type="button" onclick="insertSelectedPlaceholder()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 font-semibold">
+                                        <i class="fas fa-plus-circle mr-2"></i>Sisipkan
+                                    </button>
+                                </div>
+                                <div id="toolbar-container">
+                                    <span class="ql-formats">
+                                        <select class="ql-font"></select>
+                                        <select class="ql-size"></select>
+                                    </span>
+                                    <span class="ql-formats"><button class="ql-bold"></button><button class="ql-italic"></button><button class="ql-underline"></button><button class="ql-strike"></button></span>
+                                    <span class="ql-formats"><select class="ql-color"></select><select class="ql-background"></select></span>
+                                    <span class="ql-formats"><button class="ql-script" value="sub"></button><button class="ql-script" value="super"></button></span>
+                                    <span class="ql-formats"><button class="ql-header" value="1"></button><button class="ql-header" value="2"></button><button class="ql-blockquote"></button><button class="ql-code-block"></button></span>
+                                    <span class="ql-formats"><button class="ql-list" value="ordered"></button><button class="ql-list" value="bullet"></button><button class="ql-indent" value="-1"></button><button class="ql-indent" value="+1"></button></span>
+                                    <span class="ql-formats"><select class="ql-align"></select></span>
+                                    <span class="ql-formats"><button class="ql-link"></button></span>
+                                    <span class="ql-formats"><button class="ql-clean"></button></span>
+                                </div>
+                                <div id="templateEditor" style="height: 400px; border-top: 1px solid #ccc;"></div>
+                            </div>
+                             <div id="dynamicWordFormArea" class="space-y-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">3. Isi Nilai Placeholder</label>
+                                <!-- Dynamic form fields will be injected here -->
+                                <p class="text-gray-500 text-sm">Formulir akan muncul di sini setelah Anda mengunggah dan mengedit dokumen Word yang berisi placeholder.</p>
+                            </div>
+                             <div>
+                                <button onclick="generateLetterFromWord()" class="w-full btn-gradient text-white px-6 py-3 rounded-xl font-semibold">
+                                    <i class="fas fa-magic mr-2"></i>Generate Surat dari Word
                                 </button>
                             </div>
                         </div>
@@ -543,110 +593,6 @@
                     </div>
                 </div>
 
-                <h3 class="text-lg font-semibold mb-4 mt-8">Template Kustom Anda</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="customTemplatesContainer">
-                    <!-- Custom templates will be loaded here by JS -->
-                    <p class="text-gray-500 col-span-full" id="noCustomTemplatesMessage">Belum ada template kustom yang diunggah.</p>
-                </div>
-
-                <!-- Custom Template Editor -->
-                <div class="bg-gray-50 rounded-xl p-6 mt-8">
-                    <h3 class="text-lg font-semibold mb-4" id="editorTitle">Buat Template Baru</h3>
-                    <input type="hidden" id="templateEditorId">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Template</label>
-                        <input type="text" id="templateName" placeholder="Masukkan nama untuk template Anda" class="w-full p-3 border border-gray-300 rounded-xl mb-4">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Isi Template</label>
-                        <div class="text-sm text-gray-600 mb-3 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
-                            <h4 class="font-bold text-gray-800">Cara Membuat Template Kustom:</h4>
-                            <ul class="list-disc list-inside mt-2 space-y-2">
-                                <li>
-                                    <strong>Salin dari Word:</strong> Anda bisa langsung menyalin (copy-paste) isi surat dari Microsoft Word ke dalam editor di bawah. Format teks akan coba dipertahankan.
-                                </li>
-                                <li>
-                                    <strong>Membuat Placeholder (Area Dinamis):</strong>
-                                    <ul class="list-none list-inside ml-4 mt-1 space-y-1">
-                                        <li>
-                                            <span class="font-semibold text-blue-700">Cara 1 (Otomatis):</span> Pilih placeholder dari menu dropdown di bawah, lalu klik tombol "Sisipkan".
-                                        </li>
-                                        <li>
-                                            <span class="font-semibold text-blue-700">Cara 2 (Manual):</span> Ketik sendiri placeholder Anda dengan format <code class="bg-blue-100 text-blue-800 p-1 rounded">{{nama_placeholder_anda}}</code>. Placeholder yang valid akan otomatis ditandai dengan latar biru.
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Placeholder Helper -->
-                        <div class="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center space-x-2">
-                            <select id="placeholderSelector" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                                <option value="">-- Pilih Placeholder --</option>
-                                <!-- Options will be populated by JavaScript -->
-                            </select>
-                            <button type="button" onclick="insertSelectedPlaceholder()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 font-semibold">
-                                <i class="fas fa-plus-circle mr-2"></i>Sisipkan
-                            </button>
-                        </div>
-                        <div id="toolbar-container">
-                            <span class="ql-formats">
-                                <select class="ql-font"></select>
-                                <select class="ql-size"></select>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-bold"></button>
-                                <button class="ql-italic"></button>
-                                <button class="ql-underline"></button>
-                                <button class="ql-strike"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <select class="ql-color"></select>
-                                <select class="ql-background"></select>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-script" value="sub"></button>
-                                <button class="ql-script" value="super"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-header" value="1"></button>
-                                <button class="ql-header" value="2"></button>
-                                <button class="ql-blockquote"></button>
-                                <button class="ql-code-block"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-list" value="ordered"></button>
-                                <button class="ql-list" value="bullet"></button>
-                                <button class="ql-indent" value="-1"></button>
-                                <button class="ql-indent" value="+1"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-direction" value="rtl"></button>
-                                <select class="ql-align"></select>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-link"></button>
-                                <button class="ql-image"></button>
-                                <button class="ql-video"></button>
-                            </span>
-                            <span class="ql-formats">
-                                <button class="ql-clean"></button>
-                            </span>
-                        </div>
-                        <div id="templateEditor" style="height: 500px; border-top: 1px solid #ccc;"></div>
-                    </div>
-                    <div class="flex space-x-4 mt-4">
-                        <button onclick="saveCustomTemplate()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
-                            <i class="fas fa-save mr-2"></i>Simpan Template
-                        </button>
-                        <button type="button" onclick="document.getElementById('wordImporter').click()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700">
-                            <i class="fas fa-file-word mr-2"></i>Impor dari Word
-                        </button>
-                        <input type="file" id="wordImporter" class="hidden" accept=".docx" onchange="importWordTemplate(event)">
-                        <button onclick="clearTemplateEditor()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
-                            <i class="fas fa-plus-circle mr-2"></i>Buat Baru
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -998,7 +944,7 @@
         let currentNumber = parseInt(localStorage.getItem('currentNumber')) || 1;
 
         let customKops = JSON.parse(localStorage.getItem('customKops')) || {};
-        let customTemplates = JSON.parse(localStorage.getItem('customTemplates')) || {};
+        let customTemplates = {}; // Obsolete, but kept for legacy pre-built examples.
         initializePreBuiltTemplates();
         let activeDynamicFields = [];
 
@@ -1153,13 +1099,6 @@
         }
 
         // --- Template Management & Dynamic Forms ---
-        function clearTemplateEditor() {
-            document.getElementById('editorTitle').textContent = 'Buat Template Baru';
-            document.getElementById('templateEditorId').value = '';
-            document.getElementById('templateName').value = '';
-            quill.setText('');
-        }
-
         function insertSelectedPlaceholder() {
             const selector = document.getElementById('placeholderSelector');
             const placeholderId = selector.value;
@@ -1179,9 +1118,12 @@
 
         function importWordTemplate(event) {
             const file = event.target.files[0];
+            const fileNameDisplay = document.getElementById('wordImporterFileName');
             if (!file) {
+                fileNameDisplay.textContent = '';
                 return;
             }
+            fileNameDisplay.textContent = `File terpilih: ${file.name}`;
 
             showNotification('Mengimpor dokumen Word...', 'info', 5000);
 
@@ -1196,187 +1138,130 @@
                         const importedHTML = tempContainer.innerHTML;
                         quill.clipboard.dangerouslyPasteHTML(0, importedHTML);
                         event.target.value = '';
-                        showNotification('Dokumen Word berhasil diimpor!', 'success');
+                        showNotification('Dokumen Word berhasil diimpor! Silakan edit.', 'success');
+                        generateFormFromContent();
+
+                        // Add a listener to regenerate the form on text change in the editor
+                        quill.on('text-change', (delta, oldDelta, source) => {
+                            if (source === 'user') {
+                                // Debounce this function to avoid running on every keystroke
+                                clearTimeout(window.quillDebounce);
+                                window.quillDebounce = setTimeout(generateFormFromContent, 500);
+                            }
+                        });
                     })
                     .catch(error => {
                         console.error('Docx-preview error:', error);
                         showNotification('Gagal mengimpor dokumen. Pastikan format file .docx valid.', 'error');
-                        event.target.value = '';
+                        fileNameDisplay.textContent = '';
                     });
             };
             reader.onerror = () => {
                 showNotification('Gagal membaca file.', 'error');
-                event.target.value = '';
+                fileNameDisplay.textContent = '';
             };
             reader.readAsArrayBuffer(file);
         }
 
-        function saveCustomTemplate() {
-            const id = document.getElementById('templateEditorId').value || generateUniqueId();
-            const name = document.getElementById('templateName').value;
+        function generateFormFromContent() {
+            const formArea = document.getElementById('dynamicWordFormArea');
             const content = quill.root.innerHTML;
+            const placeholders = content.match(/\{\{([^}]+)\}\}/g);
 
-            if (!name) {
-                showNotification('Nama template tidak boleh kosong!', 'error');
+            formArea.innerHTML = '<label class="block text-sm font-medium text-gray-700 mb-2">3. Isi Nilai Placeholder</label>'; // Reset form area
+
+            if (!placeholders || placeholders.length === 0) {
+                formArea.innerHTML += '<p class="text-gray-500 text-sm">Tidak ada placeholder ditemukan dalam dokumen. Tambahkan placeholder seperti {{nama}} untuk membuat form.</p>';
                 return;
             }
-            // Quill adds a <p><br></p> to an empty editor, so check against that.
-            if (!content || content === '<p><br></p>') {
-                showNotification('Isi template tidak boleh kosong!', 'error');
-                return;
-            }
 
-            customTemplates[id] = { name, content };
-            localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+            const uniquePlaceholders = [...new Set(placeholders)];
+            uniquePlaceholders.forEach(p => {
+                const fieldName = p.replace(/[{}]/g, '');
+                const fieldId = `word_form_${fieldName}`;
 
-            showNotification('Template berhasil disimpan!');
-            renderCustomTemplates();
-            populateTemplateSelect();
-            clearTemplateEditor();
-        }
+                const labelText = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-        function editCustomTemplate(id, event) {
-            event.stopPropagation();
-            const template = customTemplates[id];
-            if (template) {
-                showTab('templates');
-                document.getElementById('editorTitle').textContent = 'Edit Template: ' + template.name;
-                document.getElementById('templateEditorId').value = id;
-                document.getElementById('templateName').value = template.name;
-                quill.clipboard.dangerouslyPasteHTML(template.content);
-                document.getElementById('templateName').focus();
-            }
-        }
-
-        function deleteCustomTemplate(id, event) {
-            event.stopPropagation();
-            if (confirm('Apakah Anda yakin ingin menghapus template ini?')) {
-                delete customTemplates[id];
-                localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
-                showNotification('Template berhasil dihapus!');
-                renderCustomTemplates();
-                populateTemplateSelect();
-
-                if (document.getElementById('templateEditorId').value === id) {
-                    clearTemplateEditor();
-                }
-            }
-        }
-
-        function renderCustomTemplates() {
-            const container = document.getElementById('customTemplatesContainer');
-            const noTemplatesMessage = document.getElementById('noCustomTemplatesMessage');
-            container.innerHTML = '';
-            container.appendChild(noTemplatesMessage);
-
-            let hasCustomTemplates = Object.keys(customTemplates).length > 0;
-            noTemplatesMessage.style.display = hasCustomTemplates ? 'none' : 'block';
-
-            for (const id in customTemplates) {
-                const template = customTemplates[id];
-                const card = document.createElement('div');
-                card.className = 'template-card border-2 border-gray-200 rounded-xl p-4 flex flex-col';
-                card.setAttribute('onclick', `selectTemplateInCreateTab('${id}')`);
-
-                const previewContainer = document.createElement('div');
-                previewContainer.className = 'flex-grow overflow-hidden mb-4 p-2 bg-white rounded';
-                previewContainer.style.maxHeight = '150px';
-                previewContainer.innerHTML = template.content;
-                previewContainer.querySelectorAll('script, style, link, meta').forEach(el => el.remove());
-
-                card.innerHTML = `<h3 class="font-semibold text-lg mb-2 truncate">${template.name}</h3>`;
-                card.appendChild(previewContainer);
-                card.innerHTML += `
-                    <div class="flex justify-between items-center border-t pt-2 mt-auto">
-                        <span class="badge bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Kustom</span>
-                        <div class="flex space-x-2">
-                            <button onclick="editCustomTemplate('${id}', event)" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="deleteCustomTemplate('${id}', event)" class="text-red-600 hover:text-red-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+                const fieldHTML = `
+                    <div class="mb-2">
+                        <label for="${fieldId}" class="block text-sm font-medium text-gray-600">${labelText}</label>
+                        <input type="text" id="${fieldId}" data-placeholder="${fieldName}" class="mt-1 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500" placeholder="Masukkan nilai untuk ${labelText}...">
                     </div>
                 `;
-                container.insertBefore(card, noTemplatesMessage);
-            }
+                formArea.innerHTML += fieldHTML;
+            });
+        }
+
+        function generateLetterFromWord() {
+            let content = quill.root.innerHTML;
+            const formArea = document.getElementById('dynamicWordFormArea');
+            const inputs = formArea.querySelectorAll('input[data-placeholder]');
+
+            inputs.forEach(input => {
+                const placeholder = `{{${input.dataset.placeholder}}}`;
+                const value = input.value || '';
+                content = content.replace(new RegExp(placeholder, 'g'), value);
+            });
+
+            document.getElementById('letterPreview').innerHTML = `<div class="letter-content">${content}</div>`;
+            showNotification('Surat berhasil dibuat dari template Word!');
         }
 
         function populateTemplateSelect() {
+            // This function is now much simpler. It no longer needs to populate custom templates.
+            // It's kept in case we need to dynamically populate the dropdown in the future.
             const templateSelect = document.getElementById('templateSelect');
-            const oldValue = templateSelect.value;
-            Array.from(templateSelect.options).forEach(option => {
-                if (option.dataset.custom) option.remove();
-            });
-
-            for (const id in customTemplates) {
-                const option = document.createElement('option');
-                option.value = id;
-                option.textContent = `Kustom: ${customTemplates[id].name}`;
-                option.dataset.custom = true;
-                templateSelect.appendChild(option);
-            }
-            if (Array.from(templateSelect.options).some(opt => opt.value === oldValue)) {
-                templateSelect.value = oldValue;
-            }
+            templateSelect.value = 'nota'; // Default value
         }
 
-        function selectTemplateInCreateTab(id) {
-            document.getElementById('templateSelect').value = id;
-            showTab('create');
-            document.getElementById('templateSelect').dispatchEvent(new Event('change'));
-        }
-
-        function generateFormForTemplate(templateId) {
+        function handleTemplateChange() {
+            const templateId = document.getElementById('templateSelect').value;
             const mainForm = document.getElementById('mainLetterForm');
             const complexForm = document.getElementById('complexLetterForm');
-            const dynamicArea = document.getElementById('dynamicContentArea');
-            const contentArea = document.getElementById('contentArea');
+            const wordImportContainer = document.getElementById('wordImportFlowContainer');
 
-            mainForm.style.display = 'block';
+            // Hide all by default
+            mainForm.style.display = 'none';
             complexForm.style.display = 'none';
-            dynamicArea.innerHTML = '';
-            dynamicArea.style.display = 'none';
-            contentArea.style.display = 'block';
-            activeDynamicFields = [];
+            wordImportContainer.style.display = 'none';
 
-            if (templateId === 'complex_dinas') {
-                mainForm.style.display = 'none';
+            if (templateId === 'from_word') {
+                wordImportContainer.style.display = 'block';
+                document.getElementById('wordImporterArea').addEventListener('click', () => document.getElementById('wordImporter').click());
+            } else if (templateId === 'complex_dinas') {
                 complexForm.style.display = 'block';
-                return;
+            } else {
+                mainForm.style.display = 'block';
+                // Logic for legacy dynamic fields if any template uses them
+                const dynamicArea = document.getElementById('dynamicContentArea');
+                const contentArea = document.getElementById('contentArea');
+                const template = customTemplates[templateId];
+
+                if (template && template.content.match(/\{\{([^}]+)\}\}/g)) {
+                    // This part is now legacy, kept for pre-built examples if they use placeholders
+                    const placeholders = [...new Set(template.content.match(/\{\{([^}]+)\}\}/g))];
+                    dynamicArea.innerHTML = '';
+                    activeDynamicFields = [];
+                    placeholders.forEach(p => {
+                         const fieldName = p.replace(/[{}]/g, '');
+                         activeDynamicFields.push(fieldName);
+                         // UI generation for legacy fields
+                         const label = document.createElement('label');
+                         label.className = 'block text-sm font-medium text-gray-700 mb-2';
+                         label.textContent = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                         const input = document.createElement('textarea');
+                         input.id = `dynamic_${fieldName}`;
+                         input.className = 'w-full p-3 border border-gray-300 rounded-xl';
+                         dynamicArea.appendChild(label);
+                         dynamicArea.appendChild(input);
+                    });
+                    contentArea.style.display = 'none';
+                    dynamicArea.style.display = 'block';
+                } else {
+                    contentArea.style.display = 'block';
+                    dynamicArea.style.display = 'none';
+                }
             }
-
-            const template = customTemplates[templateId];
-            if (!template) return;
-
-            const placeholders = template.content.match(/\{\{([^}]+)\}\}/g);
-            if (!placeholders) return;
-
-            contentArea.style.display = 'none';
-            dynamicArea.style.display = 'block';
-
-            const uniquePlaceholders = [...new Set(placeholders)];
-
-            uniquePlaceholders.forEach(placeholder => {
-                const fieldName = placeholder.replace(/[{}]/g, '');
-                const fieldId = `dynamic_${fieldName}`;
-                activeDynamicFields.push(fieldName);
-
-                const label = document.createElement('label');
-                label.className = 'block text-sm font-medium text-gray-700 mb-2';
-                label.textContent = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                label.htmlFor = fieldId;
-
-                const input = document.createElement('textarea');
-                input.id = fieldId;
-                input.className = 'w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500';
-                input.placeholder = `Masukkan data untuk ${fieldName}...`;
-                input.rows = 2;
-
-                dynamicArea.appendChild(label);
-                dynamicArea.appendChild(input);
-            });
         }
 
         // --- Kop Surat Management ---
@@ -2047,7 +1932,7 @@
             });
 
             document.getElementById('studentTemplateSelect')?.addEventListener('change', loadStudentTemplate);
-            document.getElementById('templateSelect').addEventListener('change', (e) => generateFormForTemplate(e.target.value));
+            document.getElementById('templateSelect').addEventListener('change', handleTemplateChange);
 
             quill = new Quill('#templateEditor', {
                 modules: {
