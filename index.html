@@ -28,7 +28,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -575,10 +577,14 @@
                         <textarea id="templateEditor"></textarea>
                     </div>
                     <div class="flex space-x-4 mt-4">
-                        <button onclick="saveCustomTemplate()" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
+                        <button onclick="saveCustomTemplate()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
                             <i class="fas fa-save mr-2"></i>Simpan Template
                         </button>
-                        <button onclick="clearTemplateEditor()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                        <button type="button" onclick="document.getElementById('wordImporter').click()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700">
+                            <i class="fas fa-file-word mr-2"></i>Impor dari Word
+                        </button>
+                        <input type="file" id="wordImporter" class="hidden" accept=".docx" onchange="importWordTemplate(event)">
+                        <button onclick="clearTemplateEditor()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
                             <i class="fas fa-plus-circle mr-2"></i>Buat Baru
                         </button>
                     </div>
@@ -1106,6 +1112,42 @@
 
             // Reset selector to default option
             selector.value = "";
+        }
+
+        function importWordTemplate(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            // Show a loading notification
+            showNotification('Mengimpor dokumen Word...', 'info', 5000);
+
+            const reader = new FileReader();
+            reader.onload = function (loadEvent) {
+                const arrayBuffer = loadEvent.target.result;
+
+                // docx-preview renders to an element, so we create a temporary hidden one
+                const tempContainer = document.createElement('div');
+
+                window.docx.renderAsync(arrayBuffer, tempContainer)
+                    .then(x => {
+                        const importedHTML = tempContainer.innerHTML;
+                        tinymce.get('templateEditor').setContent(importedHTML);
+                        event.target.value = ''; // Reset file input
+                        showNotification('Dokumen Word berhasil diimpor!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Docx-preview error:', error);
+                        showNotification('Gagal mengimpor dokumen. Pastikan format file .docx valid.', 'error');
+                        event.target.value = '';
+                    });
+            };
+            reader.onerror = () => {
+                showNotification('Gagal membaca file.', 'error');
+                event.target.value = '';
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         function saveCustomTemplate() {
