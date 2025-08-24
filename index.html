@@ -41,12 +41,24 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        #letterPreviewContainer {
+            position: relative;
+            width: 100%;
+            padding-top: 141.4%; /* A4 Aspect Ratio: 297mm / 210mm */
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            margin: 0 auto;
+        }
+
         .letter-preview {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            min-height: 500px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2cm 1.5cm; /* A4-like margins */
+            box-sizing: border-box;
+            overflow-y: auto;
         }
 
         .letter-content {
@@ -447,12 +459,14 @@
                             </div>
                         </div>
 
-                        <div class="letter-preview p-8" id="letterPreview">
-                            <div class="letter-content text-center">
-                                <div class="mb-8">
-                                    <img id="kopPreviewImage" src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d9ce5d86-4df3-43cb-9f35-d9e893e6304f.png" alt="Kop surat default" class="mx-auto mb-4 kop-preview">
-                                    <h3 class="text-2xl font-bold text-gray-800 mb-2">SURAT RESMI</h3>
-                                    <p class="text-gray-600">Isi form di sebelah untuk melihat pratinjau surat</p>
+                        <div id="letterPreviewContainer">
+                            <div class="letter-preview p-8" id="letterPreview">
+                                <div class="letter-content text-center">
+                                    <div class="mb-8">
+                                        <img id="kopPreviewImage" src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d9ce5d86-4df3-43cb-9f35-d9e893e6304f.png" alt="Kop surat default" class="mx-auto mb-4 kop-preview">
+                                        <h3 class="text-2xl font-bold text-gray-800 mb-2">SURAT RESMI</h3>
+                                        <p class="text-gray-600">Isi form di sebelah untuk melihat pratinjau surat</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
