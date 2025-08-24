@@ -192,6 +192,9 @@
                         <span class="text-sm">Total Surat: </span>
                         <span class="font-bold" id="totalLetters">0</span>
                     </div>
+                    <button id="logoutButton" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
                 </div>
             </div>
         </div>
@@ -212,6 +215,9 @@
                 </button>
                 <button class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('kop')">
                     <i class="fas fa-heading mr-2"></i>Kop Surat
+                </button>
+                <button id="manageStudentTemplatesNav" class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('manageStudentTemplates')">
+                    <i class="fas fa-cogs mr-2"></i>Template Pengajuan
                 </button>
                 <button class="nav-tab flex-1 py-3 px-6 text-center font-semibold" onclick="showTab('studentSubmission')">
                     <i class="fas fa-user-graduate mr-2"></i>Pengajuan Mahasiswa
@@ -563,6 +569,44 @@
             </div>
         </div>
 
+        <!-- Manage Student Templates Tab (Super Admin) -->
+        <div id="manageStudentTemplatesTab" class="tab-content hidden">
+            <div class="glass-effect rounded-xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold text-primary-800 mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-3"></i>Kelola Template Surat Pengajuan
+                </h2>
+                <div class="mb-6">
+                    <label for="studentTemplateSelect" class="block text-sm font-medium text-gray-700 mb-2">Pilih Jenis Surat untuk Diedit</label>
+                    <select id="studentTemplateSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500">
+                        <option value="kerjaPraktek">Kerja Praktek</option>
+                        <option value="risetTugasAkhir">Riset Tugas Akhir</option>
+                        <option value="berhentiStudiTetap">Berhenti Studi Tetap</option>
+                        <option value="cutiAkademik">Cuti Akademik</option>
+                        <option value="perpanjanganPKRSOnline">Perpanjangan PKRS Online</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="studentTemplateEditor" class="block text-sm font-medium text-gray-700 mb-2">Isi Template Surat</label>
+                    <p class="text-xs text-gray-500 mb-2">
+                        Gunakan placeholder yang tersedia di bawah ini. Placeholder akan diganti dengan data dari formulir secara otomatis.
+                    </p>
+                    <textarea id="studentTemplateEditor" rows="15" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 font-mono text-sm"></textarea>
+                    <div class="text-xs text-gray-600 mt-2 bg-gray-100 p-3 rounded-lg">
+                        <p class="font-semibold mb-1">Placeholder yang tersedia:</p>
+                        <code class="text-blue-700">{nama_mahasiswa}</code>, <code class="text-blue-700">{nim}</code>, <code class="text-blue-700">{prodi}</code>, <code class="text-blue-700">{dosen_wali}</code>, <code class="text-blue-700">{pembimbing_kp}</code>, <code class="text-blue-700">{perusahaan}</code>, <code class="text-blue-700">{alamat_perusahaan}</code>, <code class="text-blue-700">{judul_ta}</code>, <code class="text-blue-700">{pembimbing_1}</code>, <code class="text-blue-700">{pembimbing_2}</code>, <code class="text-blue-700">{alasan}</code>, <code class="text-blue-700">{semester}</code>, <code class="text-blue-700">{semester_saat_ini}</code>.
+                    </div>
+                </div>
+                <div class="mt-6 flex space-x-4">
+                    <button onclick="saveStudentTemplate()" class="flex-1 btn-gradient text-white py-3 rounded-xl font-semibold">
+                        <i class="fas fa-save mr-2"></i>Simpan Template
+                    </button>
+                    <button onclick="resetStudentTemplate()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                        <i class="fas fa-undo mr-2"></i>Reset ke Default
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Student Submission Tab -->
         <div id="studentSubmissionTab" class="tab-content hidden">
             <div class="glass-effect rounded-xl p-6 shadow-xl">
@@ -598,6 +642,10 @@
                         <input type="text" id="kp_prodi" placeholder="Contoh: Teknik Informatika" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Pembimbing / Wali</label>
+                        <input type="text" id="kp_pembimbing" placeholder="Nama Dosen Pembimbing atau Wali" class="w-full p-3 border border-gray-300 rounded-xl">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Nama Perusahaan/Instansi</label>
                         <input type="text" id="kp_perusahaan" placeholder="Nama Perusahaan/Instansi Tujuan" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
@@ -629,9 +677,15 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Judul Tugas Akhir</label>
                         <input type="text" id="rta_judul" placeholder="Judul Tugas Akhir" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Dosen Pembimbing</label>
-                        <input type="text" id="rta_dosen_pembimbing" placeholder="Nama Dosen Pembimbing" class="w-full p-3 border border-gray-300 rounded-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Pembimbing 1</label>
+                            <input type="text" id="rta_pembimbing1" placeholder="Nama Dosen Pembimbing 1" class="w-full p-3 border border-gray-300 rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Pembimbing 2</label>
+                            <input type="text" id="rta_pembimbing2" placeholder="Nama Dosen Pembimbing 2 (jika ada)" class="w-full p-3 border border-gray-300 rounded-xl">
+                        </div>
                     </div>
                     <button onclick="generateStudentLetter('risetTugasAkhir')" class="w-full btn-gradient text-white py-3 rounded-xl font-semibold">
                         <i class="fas fa-file-alt mr-2"></i>Buat Surat Riset Tugas Akhir
@@ -652,6 +706,10 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
                         <input type="text" id="bst_prodi" placeholder="Contoh: Teknik Informatika" class="w-full p-3 border border-gray-300 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Wali</label>
+                        <input type="text" id="bst_wali_dosen" placeholder="Nama Dosen Wali" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Alasan Berhenti Studi</label>
@@ -676,6 +734,10 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
                         <input type="text" id="ca_prodi" placeholder="Contoh: Teknik Informatika" class="w-full p-3 border border-gray-300 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Wali</label>
+                        <input type="text" id="ca_wali_dosen" placeholder="Nama Dosen Wali" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Semester Cuti</label>
@@ -704,6 +766,10 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
                         <input type="text" id="pkrs_prodi" placeholder="Contoh: Teknik Informatika" class="w-full p-3 border border-gray-300 rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dosen Wali</label>
+                        <input type="text" id="pkrs_wali_dosen" placeholder="Nama Dosen Wali" class="w-full p-3 border border-gray-300 rounded-xl">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Semester Saat Ini</label>
@@ -743,6 +809,47 @@
             'formal': 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a02ac2c5-1832-491b-b72d-5ed01886341c.png'
         };
 
+        const defaultStudentTemplates = {
+            kerjaPraktek: `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: {nama_mahasiswa}\nNIM: {nim}\nProgram Studi: {prodi}\nDosen Pembimbing/Wali: {pembimbing_kp}\n\nDengan ini mengajukan permohonan izin untuk melaksanakan Kerja Praktek di {perusahaan} yang beralamat di {alamat_perusahaan}.\n\nKerja Praktek ini merupakan bagian dari kurikulum Program Studi {prodi}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`,
+            risetTugasAkhir: `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: {nama_mahasiswa}\nNIM: {nim}\nProgram Studi: {prodi}\n\nDengan ini mengajukan permohonan izin untuk melaksanakan riset Tugas Akhir dengan judul "{judul_ta}".\n\nRiset ini akan dibimbing oleh:\n1. {pembimbing_1} (Pembimbing 1)\n2. {pembimbing_2} (Pembimbing 2)\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`,
+            berhentiStudiTetap: `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: {nama_mahasiswa}\nNIM: {nim}\nProgram Studi: {prodi}\nDosen Wali: {dosen_wali}\n\nDengan ini mengajukan permohonan untuk berhenti studi tetap dari Program Studi {prodi} dengan alasan:\n{alasan}\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan kebijaksanaannya kami ucapkan terima kasih.`,
+            cutiAkademik: `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: {nama_mahasiswa}\nNIM: {nim}\nProgram Studi: {prodi}\nDosen Wali: {dosen_wali}\n\nDengan ini mengajukan permohonan cuti akademik untuk semester {semester} dengan alasan:\n{alasan}\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan kebijaksanaannya kami ucapkan terima kasih.`,
+            perpanjanganPKRSOnline: `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: {nama_mahasiswa}\nNIM: {nim}\nProgram Studi: {prodi}\nDosen Wali: {dosen_wali}\n\nDengan ini mengajukan permohonan perpanjangan pengisian Kartu Rencana Studi (PKRS) Online untuk semester {semester_saat_ini} dengan alasan:\n{alasan}\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`
+        };
+
+        // --- Student Template Management (Super Admin) ---
+        function loadStudentTemplate() {
+            const selectedType = document.getElementById('studentTemplateSelect').value;
+            const editor = document.getElementById('studentTemplateEditor');
+            const savedTemplates = JSON.parse(localStorage.getItem('studentTemplates')) || {};
+
+            editor.value = savedTemplates[selectedType] || defaultStudentTemplates[selectedType];
+        }
+
+        function saveStudentTemplate() {
+            const selectedType = document.getElementById('studentTemplateSelect').value;
+            const editor = document.getElementById('studentTemplateEditor');
+            const savedTemplates = JSON.parse(localStorage.getItem('studentTemplates')) || {};
+
+            savedTemplates[selectedType] = editor.value;
+            localStorage.setItem('studentTemplates', JSON.stringify(savedTemplates));
+            showNotification('Template untuk ' + selectedType + ' berhasil disimpan!');
+        }
+
+        function resetStudentTemplate() {
+            const selectedType = document.getElementById('studentTemplateSelect').value;
+            if (confirm(`Apakah Anda yakin ingin mereset template untuk ${selectedType} ke default?`)) {
+                const editor = document.getElementById('studentTemplateEditor');
+                editor.value = defaultStudentTemplates[selectedType];
+
+                const savedTemplates = JSON.parse(localStorage.getItem('studentTemplates')) || {};
+                delete savedTemplates[selectedType];
+                localStorage.setItem('studentTemplates', JSON.stringify(savedTemplates));
+
+                showNotification('Template berhasil direset ke default.');
+            }
+        }
+
         // --- Utility Functions ---
         function showNotification(message, type = 'success', duration = 3000) {
             const container = document.getElementById('notificationContainer');
@@ -778,14 +885,20 @@
             });
 
             // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            document.getElementById(tabName + 'Tab').classList.add('animate-slide-in');
+            const activeTab = document.getElementById(tabName + 'Tab');
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('animate-slide-in');
+            }
 
             // Update active tab
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            const activeNav = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+            if (activeNav) {
+                activeNav.classList.add('active');
+            }
 
             // Load specific data for each tab
             if (tabName === 'archive') {
@@ -799,6 +912,8 @@
                 populateTemplateSelect();
             } else if (tabName === 'studentSubmission') {
                 showSubmissionForm(); // Ensure forms are reset/shown correctly
+            } else if (tabName === 'manageStudentTemplates') {
+                loadStudentTemplate();
             }
         }
 
@@ -1044,10 +1159,8 @@
                 container.insertBefore(card, noKopsMessage); // Insert before the message
             }
 
-            if (!hasCustomKops) {
-                noKopsMessage.style.display = 'block';
-            } else {
-                noKopsMessage.style.display = 'none';
+            if (noKopsMessage) {
+                noKopsMessage.style.display = hasCustomKops ? 'none' : 'block';
             }
         }
 
@@ -1508,119 +1621,157 @@
         }
 
         function generateStudentLetter(type) {
-            let letterSubject = "";
-            let letterContent = "";
-            let letterTo = "Dekan Fakultas"; // Default recipient for student letters
-            let letterSigner = "Nama Pejabat Fakultas"; // Default signer
-            let letterPosition = "Jabatan Pejabat Fakultas"; // Default position
+            const savedTemplates = JSON.parse(localStorage.getItem('studentTemplates')) || {};
+            const template = savedTemplates[type] || defaultStudentTemplates[type];
 
-            const date = new Date(document.getElementById('date').value);
-            const formattedDate = date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-            const place = document.getElementById('place').value;
+            if (!template) {
+                showNotification('Template untuk jenis surat ini tidak ditemukan.', 'error');
+                return;
+            }
 
-            // Get common student data
-            let studentName, studentNIM, studentProdi;
+            const data = {};
+            const studentName = document.getElementById(`${type.substring(0,2)}_nama`).value;
+            data.nama_mahasiswa = studentName;
+            data.nim = document.getElementById(`${type.substring(0,2)}_nim`).value;
+            data.prodi = document.getElementById(`${type.substring(0,2)}_prodi`).value;
+
+            if (type === 'kerjaPraktek') {
+                data.pembimbing_kp = document.getElementById('kp_pembimbing').value;
+                data.perusahaan = document.getElementById('kp_perusahaan').value;
+                data.alamat_perusahaan = document.getElementById('kp_alamat_perusahaan').value;
+            } else if (type === 'risetTugasAkhir') {
+                data.judul_ta = document.getElementById('rta_judul').value;
+                data.pembimbing_1 = document.getElementById('rta_pembimbing1').value;
+                data.pembimbing_2 = document.getElementById('rta_pembimbing2').value;
+            } else {
+                data.dosen_wali = document.getElementById(`${type.substring(0,2)}_wali_dosen`).value;
+                data.alasan = document.getElementById(`${type.substring(0,2)}_alasan`).value;
+                if (type === 'cutiAkademik') {
+                    data.semester = document.getElementById('ca_semester').value;
+                } else if (type === 'perpanjanganPKRSOnline') {
+                    data.semester_saat_ini = document.getElementById('pkrs_semester_saat_ini').value;
+                }
+            }
+
+            let letterContent = template;
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    letterContent = letterContent.replace(new RegExp(`{${key}}`, 'g'), data[key] || '');
+                }
+            }
+
+            // Handle optional second supervisor line
+            if (type === 'risetTugasAkhir') {
+                const line2Pattern = /2\. \{pembimbing_2\} \(Pembimbing 2\)\n?/;
+                if (data.pembimbing_2) {
+                    letterContent = letterContent.replace(line2Pattern, `2. ${data.pembimbing_2} (Pembimbing 2)\n`);
+                } else {
+                    letterContent = letterContent.replace(line2Pattern, '');
+                }
+            }
+
+            let letterSubject = '';
+            let letterTo = 'Dekan Fakultas';
+            let letterSigner = studentName;
+            let letterPosition = 'Mahasiswa';
 
             switch (type) {
                 case 'kerjaPraktek':
-                    studentName = document.getElementById('kp_nama').value;
-                    studentNIM = document.getElementById('kp_nim').value;
-                    studentProdi = document.getElementById('kp_prodi').value;
-                    const kpPerusahaan = document.getElementById('kp_perusahaan').value;
-                    const kpAlamatPerusahaan = document.getElementById('kp_alamat_perusahaan').value;
-
                     letterSubject = `Permohonan Izin Kerja Praktek a.n. ${studentName}`;
-                    letterContent = `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: ${studentName}\nNIM: ${studentNIM}\nProgram Studi: ${studentProdi}\n\nDengan ini mengajukan permohonan izin untuk melaksanakan Kerja Praktek di ${kpPerusahaan} yang beralamat di ${kpAlamatPerusahaan}. Kerja Praktek ini merupakan bagian dari kurikulum Program Studi ${studentProdi}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`;
-                    letterTo = kpPerusahaan; // Recipient is the company for KP
-                    letterSigner = studentName; // Student signs for KP request
-                    letterPosition = "Mahasiswa";
+                    letterTo = `Pimpinan ${data.perusahaan}`;
                     break;
-
                 case 'risetTugasAkhir':
-                    studentName = document.getElementById('rta_nama').value;
-                    studentNIM = document.getElementById('rta_nim').value;
-                    studentProdi = document.getElementById('rta_prodi').value;
-                    const rtaJudul = document.getElementById('rta_judul').value;
-                    const rtaDosenPembimbing = document.getElementById('rta_dosen_pembimbing').value;
-
                     letterSubject = `Permohonan Izin Riset Tugas Akhir a.n. ${studentName}`;
-                    letterContent = `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: ${studentName}\nNIM: ${studentNIM}\nProgram Studi: ${studentProdi}\n\nDengan ini mengajukan permohonan izin untuk melaksanakan riset Tugas Akhir dengan judul "${rtaJudul}". Riset ini akan dibimbing oleh Bapak/Ibu ${rtaDosenPembimbing}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`;
-                    letterSigner = studentName;
-                    letterPosition = "Mahasiswa";
                     break;
-
                 case 'berhentiStudiTetap':
-                    studentName = document.getElementById('bst_nama').value;
-                    studentNIM = document.getElementById('bst_nim').value;
-                    studentProdi = document.getElementById('bst_prodi').value;
-                    const bstAlasan = document.getElementById('bst_alasan').value;
-
                     letterSubject = `Permohonan Berhenti Studi Tetap a.n. ${studentName}`;
-                    letterContent = `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: ${studentName}\nNIM: ${studentNIM}\nProgram Studi: ${studentProdi}\n\nDengan ini mengajukan permohonan untuk berhenti studi tetap dari Program Studi ${studentProdi} dengan alasan: ${bstAlasan}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan kebijaksanaannya kami ucapkan terima kasih.`;
-                    letterSigner = studentName;
-                    letterPosition = "Mahasiswa";
                     break;
-
                 case 'cutiAkademik':
-                    studentName = document.getElementById('ca_nama').value;
-                    studentNIM = document.getElementById('ca_nim').value;
-                    studentProdi = document.getElementById('ca_prodi').value;
-                    const caSemester = document.getElementById('ca_semester').value;
-                    const caAlasan = document.getElementById('ca_alasan').value;
-
-                    letterSubject = `Permohonan Cuti Akademik Semester ${caSemester} a.n. ${studentName}`;
-                    letterContent = `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: ${studentName}\nNIM: ${studentNIM}\nProgram Studi: ${studentProdi}\n\nDengan ini mengajukan permohonan cuti akademik untuk semester ${caSemester} dengan alasan: ${caAlasan}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan kebijaksanaannya kami ucapkan terima kasih.`;
-                    letterSigner = studentName;
-                    letterPosition = "Mahasiswa";
+                    letterSubject = `Permohonan Cuti Akademik Semester ${data.semester} a.n. ${studentName}`;
                     break;
-
                 case 'perpanjanganPKRSOnline':
-                    studentName = document.getElementById('pkrs_nama').value;
-                    studentNIM = document.getElementById('pkrs_nim').value;
-                    studentProdi = document.getElementById('pkrs_prodi').value;
-                    const pkrsSemesterSaatIni = document.getElementById('pkrs_semester_saat_ini').value;
-                    const pkrsAlasan = document.getElementById('pkrs_alasan').value;
-
                     letterSubject = `Permohonan Perpanjangan PKRS Online a.n. ${studentName}`;
-                    letterContent = `Dengan hormat,\n\nYang bertanda tangan di bawah ini:\nNama: ${studentName}\nNIM: ${studentNIM}\nProgram Studi: ${studentProdi}\n\nDengan ini mengajukan permohonan perpanjangan pengisian Kartu Rencana Studi (PKRS) Online untuk semester ${pkrsSemesterSaatIni} dengan alasan: ${pkrsAlasan}.\n\nDemikian surat permohonan ini kami sampaikan, atas perhatian dan bantuannya kami ucapkan terima kasih.`;
-                    letterSigner = studentName;
-                    letterPosition = "Mahasiswa";
+                    letterTo = 'Kepala Departemen';
                     break;
-
-                default:
-                    showNotification('Jenis pengajuan tidak valid.', 'error');
-                    return;
             }
 
-            // Populate the main letter creation form
-            document.getElementById('letterType').value = 'keterangan'; // Most student letters are "Surat Keterangan"
+            document.getElementById('letterType').value = 'keterangan';
             document.getElementById('subject').value = letterSubject;
             document.getElementById('to').value = letterTo;
             document.getElementById('content').value = letterContent;
-            document.getElementById('date').valueAsDate = new Date(); // Set current date
-            document.getElementById('place').value = place; // Keep existing place
+            document.getElementById('date').valueAsDate = new Date();
             document.getElementById('signer').value = letterSigner;
             document.getElementById('position').value = letterPosition;
-            document.getElementById('templateSelect').value = 'default'; // Use default template
+            document.getElementById('templateSelect').value = 'default';
 
-            // Generate and show the letter in the preview
             generateLetter();
-            showTab('create'); // Switch to the create tab to show the generated letter
+            showTab('create');
             showNotification('Surat pengajuan berhasil dibuat. Silakan periksa pratinjau.');
         }
 
 
         // Initial load
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Authentication and RBAC ---
+            const userRole = localStorage.getItem('userRole');
+            if (!userRole) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const navButtons = {
+                create: document.querySelector('[onclick="showTab(\'create\')"]'),
+                templates: document.querySelector('[onclick="showTab(\'templates\')"]'),
+                archive: document.querySelector('[onclick="showTab(\'archive\')"]'),
+                kop: document.querySelector('[onclick="showTab(\'kop\')"]'),
+                manageStudentTemplates: document.getElementById('manageStudentTemplatesNav'),
+                studentSubmission: document.querySelector('[onclick="showTab(\'studentSubmission\')"]')
+            };
+
+            function applyRBAC(role) {
+                Object.values(navButtons).forEach(button => {
+                    if (button) button.style.display = 'none';
+                });
+
+                if (role === 'mahasiswa') {
+                    if (navButtons.studentSubmission) navButtons.studentSubmission.style.display = 'flex';
+                    showTab('studentSubmission');
+                } else if (role === 'admin') {
+                    if (navButtons.create) navButtons.create.style.display = 'flex';
+                    if (navButtons.templates) navButtons.templates.style.display = 'flex';
+                    if (navButtons.archive) navButtons.archive.style.display = 'flex';
+                    if (navButtons.kop) navButtons.kop.style.display = 'flex';
+                    if (navButtons.studentSubmission) navButtons.studentSubmission.style.display = 'flex';
+                    showTab('create');
+                } else if (role === 'superadmin') {
+                    Object.values(navButtons).forEach(button => {
+                        if (button) button.style.display = 'flex';
+                    });
+                    showTab('create');
+                }
+            }
+
+            applyRBAC(userRole);
+
+            const logoutButton = document.getElementById('logoutButton');
+            if(logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    localStorage.removeItem('userRole');
+                    window.location.href = 'login.html';
+                });
+            }
+            // --- End Authentication ---
+
+            // Add event listener for the student template editor
+            const studentTemplateSelect = document.getElementById('studentTemplateSelect');
+            if(studentTemplateSelect) {
+                studentTemplateSelect.addEventListener('change', loadStudentTemplate);
+            }
+
             updateTotalLetters();
             populateKopSelect();
             populateTemplateSelect();
-            updateKopPreview(); // Set initial kop preview
-            showTab('create'); // Ensure 'create' tab is active on load
+            updateKopPreview();
         });
     </script>
 </body>
