@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+    --primary-color: #005A9C; /* Blue */
+    --secondary-color: #FDB813; /* Yellow */
+    --background-color: #f4f7f9;
+    --text-color: #333;
+    --container-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: var(--container-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow-color);
+    overflow: hidden;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+header p {
+    margin: 5px 0 0;
+    opacity: 0.9;
+}
+
+main {
+    padding: 20px 30px;
+}
+
+.surat-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.surat-item:hover {
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.surat-item-header {
+    background-color: #fff;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 15px 20px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.surat-item-header:hover {
+    background-color: #f9f9f9;
+}
+
+.surat-item-header .arrow {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+}
+
+.surat-item.active .arrow {
+    transform: rotate(90deg);
+}
+
+.surat-item-content {
+    padding: 0 20px;
+    background-color: #fdfdfd;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+}
+
+.surat-item.active .surat-item-content {
+    padding: 20px 20px;
+    max-height: 500px; /* Adjust as needed */
+    border-top: 1px solid var(--border-color);
+}
+
+.surat-item-content h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.surat-item-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.surat-item-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.surat-item-content li {
+    margin-bottom: 8px;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9em;
+    color: #777;
+    background-color: #f0f0f0;
+}
