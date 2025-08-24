@@ -33,39 +33,58 @@
             <p class="text-gray-600 mt-2">Silakan login untuk melanjutkan</p>
         </div>
 
-        <form id="loginForm" class="space-y-6">
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                <input type="text" id="username" placeholder="Masukkan username (opsional)" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
+        <form id="loginForm" class="space-y-4">
+             <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input type="text" id="username" name="username" required placeholder="admin atau superadmin" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-                <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Pilih Peran (untuk simulasi)</label>
-                <select id="role" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
-                    <option value="mahasiswa">Mahasiswa</option>
-                    <option value="admin">Admin</option>
-                    <option value="superadmin">Super Admin</option>
-                </select>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500">
             </div>
-            <div>
+            <div class="pt-2">
                 <button type="submit" class="w-full btn-gradient text-white py-3 rounded-xl font-semibold">
-                    Login
+                    Login sebagai Staf
                 </button>
             </div>
         </form>
+
+        <div class="mt-6 text-center">
+             <p class="text-sm text-gray-600">atau</p>
+             <button id="mahasiswaLogin" class="mt-2 w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300">
+                Login sebagai Mahasiswa
+            </button>
+        </div>
+        <p id="error-message" class="text-red-500 text-sm mt-4 text-center"></p>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Ensure user is always logged out when on the login page.
+        localStorage.removeItem('userRole');
+
+        const loginForm = document.getElementById('loginForm');
+        const mahasiswaLoginBtn = document.getElementById('mahasiswaLogin');
+        const errorMessage = document.getElementById('error-message');
+
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const selectedRole = document.getElementById('role').value;
-            if (selectedRole) {
-                // In a real app, you'd perform authentication here.
-                // For this simulation, we just store the role.
-                localStorage.setItem('userRole', selectedRole);
+            errorMessage.textContent = ''; // Clear previous errors
+
+            const username = document.getElementById('username').value.toLowerCase();
+            const password = document.getElementById('password').value;
+            const correctPassword = '12345678';
+
+            if ((username === 'admin' || username === 'superadmin') && password === correctPassword) {
+                localStorage.setItem('userRole', username);
                 window.location.href = 'index.html';
             } else {
-                alert('Silakan pilih peran terlebih dahulu.');
+                errorMessage.textContent = 'Username atau password salah.';
             }
+        });
+
+        mahasiswaLoginBtn.addEventListener('click', function() {
+            localStorage.setItem('userRole', 'mahasiswa');
+            window.location.href = 'index.html';
         });
     </script>
 </body>
