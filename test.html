@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN untuk visualisasi data laporan -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- SheetJS (XLSX) CDN untuk ekspor ke Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <!-- Font Inter dari Google Fonts untuk konsistensi tipografi -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -1309,8 +1311,7 @@
                             ${stockWithStatus.map(entry => `
                                 <tr>
                                     <td class="py-3 px-4 whitespace-nowrap text-sm">${new Date(entry.timestamp).toLocaleString('id-ID')}</td>
-                                   ,
->5="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${entry.productName}</td>
+                                    <td class="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${entry.productName}</td>
                                     <td class="py-3 px-4 whitespace-nowrap text-sm">${formatDepartment(entry.category)}</td>
                                     <td class="py-3 px-4 whitespace-nowrap text-center text-sm ${entry.type.includes('Masuk') ? 'text-green-600' : 'text-red-600'}">${entry.type}</td>
                                     <td class="py-3 px-4 whitespace-nowrap text-center text-sm">${entry.quantity}</td>
@@ -1785,27 +1786,41 @@
             const container = document.getElementById('reportContentContainer');
             if (!container) return;
             const displayReports = appState.filteredReports;
-            if (displayReports.length === 0) {
+            const displaySales = appState.filteredSales;
+
+            if (displayReports.length === 0 && displaySales.length === 0) {
                 container.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-gray-500"><p>Tidak ada data untuk ditampilkan.</p></div>`;
                 return;
             }
             const totalRevenue = displayReports.reduce((sum, r) => sum + (r.hppResult.sellingPricePerGarment * r.hppResult.garmentsProduced), 0);
             const totalCOGS = displayReports.reduce((sum, r) => sum + (r.hppResult.totalHPP * r.hppResult.garmentsProduced), 0);
             const totalProfit = totalRevenue - totalCOGS;
+            const totalActualRevenue = displaySales.reduce((sum, s) => sum + s.result.grandTotal, 0);
+
             container.innerHTML = `
                 <div class="p-6 bg-white rounded-2xl shadow-sm border">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Rekap Laporan Keuangan</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-800">Rekap Laporan Keuangan</h3>
+                        <button id="exportFinancialRecapBtn" class="py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ekspor ke Excel
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <div class="bg-green-50 p-4 rounded-xl text-center">
-                            <p class="text-sm text-gray-600">Total Pendapatan</p>
-                            <p class="text-xl font-bold text-green-700">Rp ${formatRupiah(totalRevenue)}</p>
+                            <p class="text-sm text-gray-600">Pendapatan Aktual</p>
+                            <p class="text-xl font-bold text-green-700">Rp ${formatRupiah(totalActualRevenue)}</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-xl text-center">
+                            <p class="text-sm text-gray-600">Proyeksi Pendapatan</p>
+                            <p class="text-xl font-bold text-blue-700">Rp ${formatRupiah(totalRevenue)}</p>
                         </div>
                         <div class="bg-indigo-50 p-4 rounded-xl text-center">
                             <p class="text-sm text-gray-600">Total HPP (COGS)</p>
                             <p class="text-xl font-bold text-indigo-700">Rp ${formatRupiah(totalCOGS)}</p>
                         </div>
                         <div class="p-4 rounded-xl text-center ${totalProfit >= 0 ? 'bg-green-100' : 'bg-red-100'}">
-                            <p class="text-sm text-gray-600">Total Keuntungan</p>
+                            <p class="text-sm text-gray-600">Proyeksi Keuntungan</p>
                             <p class="text-xl font-bold ${totalProfit >= 0 ? 'text-green-700' : 'text-red-700'}">Rp ${formatRupiah(totalProfit)}</p>
                         </div>
                     </div>
@@ -3375,64 +3390,113 @@
         }
 
         /**
-         * Mengekspor rekap stok ke format Excel
+         * Mengekspor rekap stok ke format Excel (.xlsx).
          */
         function exportStockHistoryToExcel() {
             const { stockHistory, inventory } = appState;
-            
+
             // Gabungkan data stok dengan informasi inventaris
-            const stockWithStatus = stockHistory.map(entry => {
+            const dataToExport = stockHistory.map(entry => {
                 const inventoryItem = inventory.find(item => item.id === entry.productId);
                 let status = 'Aman';
-                
                 if (inventoryItem) {
                     if (inventoryItem.stock === 0) {
                         status = 'Habis';
-                    } else if (inventoryItem.stock <= 10) {
+                    } else if (inventoryItem.stock <= appState.warehouse.lowStockThreshold) {
                         status = 'Hampir Habis';
                     }
                 }
-                
                 return {
-                    ...entry,
-                    status,
-                    productName: entry.productName,
-                    category: inventoryItem ? inventoryItem.category : 'Tidak Diketahui'
+                    'Tanggal': new Date(entry.timestamp).toLocaleString('id-ID'),
+                    'Produk': entry.productName,
+                    'Kategori': inventoryItem ? formatDepartment(inventoryItem.category) : 'Tidak Diketahui',
+                    'Jenis': entry.type,
+                    'Jumlah': entry.quantity,
+                    'Stok Akhir': entry.finalStock,
+                    'Status': status,
+                    'Sumber': entry.source,
+                    'Oleh': getUsernameById(entry.userId)
                 };
             });
+
+            if (dataToExport.length === 0) {
+                showNotification('Tidak ada data rekap stok untuk diekspor.', 'info');
+                return;
+            }
+
+            // Buat worksheet dari data
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+
+            // Buat workbook baru dan tambahkan worksheet
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Rekap Stok');
+
+            // Tulis file Excel dan unduh
+            XLSX.writeFile(wb, 'rekap_stok_kazumi.xlsx');
+
+            showNotification('Rekap stok berhasil diekspor ke Excel.', 'success');
+            addActivityLog('Gudang', 'Mengekspor rekap stok ke Excel.', appState.userId);
+        }
+
+        /**
+         * Mengekspor rekap keuangan ke format Excel (.xlsx).
+         */
+        function exportFinancialRecapToExcel() {
+            const { filteredReports, filteredSales } = appState;
+
+            if (filteredReports.length === 0 && filteredSales.length === 0) {
+                showNotification('Tidak ada data rekap keuangan untuk diekspor.', 'info');
+                return;
+            }
+
+            // Data Produksi
+            const productionData = filteredReports.map(report => ({
+                'Tanggal': new Date(report.timestamp).toLocaleString('id-ID'),
+                'Jenis Laporan': `Produksi - ${GARMENT_PATTERNS[report.selectedGarment].title}`,
+                'Jumlah Produksi (pcs)': report.hppResult.garmentsProduced,
+                'Total HPP': report.hppResult.totalHPP * report.hppResult.garmentsProduced,
+                'Total Proyeksi Pendapatan': report.hppResult.sellingPricePerGarment * report.hppResult.garmentsProduced,
+                'Total Proyeksi Keuntungan': (report.hppResult.sellingPricePerGarment - report.hppResult.totalHPP) * report.hppResult.garmentsProduced,
+                'Dibuat Oleh': getUsernameById(report.userId),
+            }));
+
+            // Data Penjualan
+            const salesData = filteredSales.map(sale => ({
+                'Tanggal': new Date(sale.timestamp).toLocaleString('id-ID'),
+                'Jenis Laporan': 'Penjualan',
+                'Jumlah Item Terjual': sale.items.reduce((sum, item) => sum + item.quantity, 0),
+                'Total HPP': 'N/A', // HPP per penjualan tidak dilacak secara langsung di sini
+                'Total Proyeksi Pendapatan': sale.result.grandTotal,
+                'Total Proyeksi Keuntungan': 'N/A', // Laba per penjualan tidak dilacak secara langsung di sini
+                'Dibuat Oleh': getUsernameById(sale.userId),
+            }));
             
-            // Buat data untuk CSV
-            let csvContent = "data:text/csv;charset=utf-8,";
+            // Ringkasan Keuangan
+            const totalRevenue = filteredReports.reduce((sum, r) => sum + (r.hppResult.sellingPricePerGarment * r.hppResult.garmentsProduced), 0);
+            const totalCOGS = filteredReports.reduce((sum, r) => sum + (r.hppResult.totalHPP * r.hppResult.garmentsProduced), 0);
+            const totalProfit = totalRevenue - totalCOGS;
+            const totalActualRevenue = filteredSales.reduce((sum, s) => sum + s.result.grandTotal, 0);
+
+            const summaryData = [
+                { Metric: 'Pendapatan Aktual (dari Penjualan)', Value: totalActualRevenue },
+                { Metric: 'Proyeksi Pendapatan (dari Produksi)', Value: totalRevenue },
+                { Metric: 'Total HPP (COGS)', Value: totalCOGS },
+                { Metric: 'Proyeksi Keuntungan (dari Produksi)', Value: totalProfit },
+            ];
+
+            const ws_summary = XLSX.utils.json_to_sheet(summaryData, {header: ["Metric", "Value"]});
+            const ws_production = XLSX.utils.json_to_sheet(productionData);
+            const ws_sales = XLSX.utils.json_to_sheet(salesData);
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws_summary, 'Ringkasan Keuangan');
+            XLSX.utils.book_append_sheet(wb, ws_production, 'Detail Produksi');
+            XLSX.utils.book_append_sheet(wb, ws_sales, 'Detail Penjualan');
+
+            XLSX.writeFile(wb, 'rekap_keuangan_kazumi.xlsx');
             
-            // Header
-            csvContent += "Tanggal,Produk,Kategori,Jenis,Jumlah,Stok Akhir,Status,Sumber,Oleh\n";
-            
-            // Data
-            stockWithStatus.forEach(entry => {
-                const row = [
-                    `"${new Date(entry.timestamp).toLocaleString('id-ID')}"`,
-                    `"${entry.productName}"`,
-                    `"${formatDepartment(entry.category)}"`,
-                    `"${entry.type}"`,
-                    entry.quantity,
-                    entry.finalStock,
-                    `"${entry.status}"`,
-                    `"${entry.source}"`,
-                    `"${getUsernameById(entry.userId)}"`
-                ].join(",");
-                csvContent += row + "\n";
-            });
-            
-            // Buat dan unduh file
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "rekap_stok_kazumi.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification('Rekap stok berhasil diekspor ke Excel', 'success');
+            showNotification('Rekap keuangan berhasil diekspor ke Excel.', 'success');
+            addActivityLog('Laporan', 'Mengekspor rekap keuangan ke Excel.', appState.userId);
         }
 
         /**
@@ -3538,6 +3602,8 @@
                 }
                 // Ekspor rekap stok ke Excel
                 else if (e.target.id === 'exportStockHistoryBtn') exportStockHistoryToExcel();
+                // Ekspor rekap keuangan ke Excel
+                else if (e.target.id === 'exportFinancialRecapBtn') exportFinancialRecapToExcel();
             }
 
             // --- Spesifik Tab Laporan ---
