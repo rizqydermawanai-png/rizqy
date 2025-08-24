@@ -237,7 +237,7 @@
                             <i class="fas fa-edit mr-3"></i>Form Pembuatan Surat
                         </h2>
 
-                        <div class="space-y-6">
+                        <div class="space-y-6" id="mainLetterForm">
                             <!-- Kop Surat Selection -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Kop Surat</label>
@@ -263,6 +263,7 @@
                                         <option value="formal">Formal</option>
                                         <option value="minimalist">Minimalist</option>
                                         <option value="corporate">Corporate</option>
+                                        <option value="complex_dinas">Surat Dinas Kompleks</option>
                                         <option value="custom">Upload Custom...</option>
                                     </select>
                                 </div>
@@ -335,6 +336,85 @@
                                     <i class="fas fa-magic mr-2"></i>Generate
                                 </button>
                                 <button onclick="saveToArchive()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700">
+                                    <i class="fas fa-save mr-2"></i>Simpan
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Form for Complex Dinas Letter -->
+                        <div id="complexLetterForm" class="hidden space-y-4">
+                            <h3 class="text-lg font-semibold border-b pb-2">Header Surat</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Logo 1 (Kiri)</label>
+                                    <input type="file" id="logo1" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Logo 2 (Kanan)</label>
+                                    <input type="file" id="logo2" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Fakultas</label>
+                                <input type="text" id="faculty_name" placeholder="Contoh: FAKULTAS TEKNOLOGI MANUFAKTUR" class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Program Studi</label>
+                                <input type="text" id="program_name" placeholder="Contoh: PROGRAM STUDI TEKNIK MESIN" class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Baris 1</label>
+                                <input type="text" id="address1" placeholder="Contoh: Kampus Cimahi: Jl.Trs.Jenderal Sudirman..." class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Baris 2</label>
+                                <input type="text" id="address2" placeholder="Contoh: Kampus Bandung: Jl. Gatot Subroto..." class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+
+                            <h3 class="text-lg font-semibold border-b pb-2 pt-4">Metadata Surat</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Klasifikasi</label>
+                                    <input type="text" id="classification" placeholder="Contoh: Biasa" class="w-full p-3 border border-gray-300 rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Lampiran</label>
+                                    <input type="text" id="attachment" placeholder="Contoh: 1 Lembar" class="w-full p-3 border border-gray-300 rounded-xl">
+                                </div>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi Penerima</label>
+                                <input type="text" id="recipient_location" placeholder="Contoh: Bandung -- Cimahi" class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+
+                            <h3 class="text-lg font-semibold border-b pb-2 pt-4">Isi Surat</h3>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Dasar (Poin 1.a)</label>
+                                <textarea id="body_base_a" rows="2" placeholder="Isi poin dasar 1.a" class="w-full p-3 border border-gray-300 rounded-xl"></textarea>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Dasar (Poin 1.b)</label>
+                                <textarea id="body_base_b" rows="2" placeholder="Isi poin dasar 1.b" class="w-full p-3 border border-gray-300 rounded-xl"></textarea>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Paragraf Menindaklanjuti (Poin 2)</label>
+                                <textarea id="body_main" rows="4" placeholder="Isi paragraf utama" class="w-full p-3 border border-gray-300 rounded-xl"></textarea>
+                            </div>
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Paragraf Penutup (Poin 3)</label>
+                                <textarea id="body_closing" rows="2" placeholder="Isi paragraf penutup" class="w-full p-3 border border-gray-300 rounded-xl"></textarea>
+                            </div>
+
+                            <h3 class="text-lg font-semibold border-b pb-2 pt-4">Tanda Tangan</h3>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">NID / NIP</label>
+                                <input type="text" id="signer_nid" placeholder="Contoh: NID. 4121 781 85" class="w-full p-3 border border-gray-300 rounded-xl">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                                <button onclick="generateLetter('complex')" class="btn-gradient text-white px-6 py-3 rounded-xl font-semibold">
+                                    <i class="fas fa-magic mr-2"></i>Generate
+                                </button>
+                                <button onclick="saveToArchive('complex')" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700">
                                     <i class="fas fa-save mr-2"></i>Simpan
                                 </button>
                             </div>
@@ -957,14 +1037,23 @@
         // Toggle custom template section
         document.getElementById('templateSelect').addEventListener('change', function() {
             const customSection = document.getElementById('customTemplateSection');
+            const complexForm = document.getElementById('complexLetterForm');
+
+            // Handle custom template upload section
             if (this.value === 'custom') {
                 customSection.classList.remove('hidden');
             } else {
                 customSection.classList.add('hidden');
             }
-            // If a custom_ template is selected, ensure the custom section is hidden
             if (this.value.startsWith('custom_')) {
-                customSection.classList.add('hidden');
+                 customSection.classList.add('hidden');
+            }
+
+            // Handle complex dinas form section
+            if (this.value === 'complex_dinas') {
+                complexForm.classList.remove('hidden');
+            } else {
+                complexForm.classList.add('hidden');
             }
         });
 
@@ -1284,6 +1373,66 @@
 
             // Basic templates (can be expanded)
             switch (templateId) {
+                case 'complex_dinas':
+                    return `
+                        <div class="surat-container" style="font-family: 'Times New Roman', serif; color: black; padding: 20px; background: white;">
+                          <header style="text-align: center; border-bottom: 4px double black; padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                              <img src="${data.logo1 || ''}" alt="Logo Kiri" style="height: 90px; width: 90px; object-fit: contain;">
+                              <div style="flex-grow: 1;">
+                                <div style="font-weight: bold; font-size: 16px;">YAYASAN KARTIKA EKA PAKSI</div>
+                                <div style="font-size: 22px; font-weight: bold;">UNIVERSITAS JENDERAL ACHMAD YANI</div>
+                                <div style="font-size: 18px; font-weight: bold;">${data.faculty_name}</div>
+                                <div style="font-size: 16px; font-weight: bold;">${data.program_name}</div>
+                              </div>
+                              <img src="${data.logo2 || ''}" alt="Logo Kanan" style="height: 90px; width: 90px; object-fit: contain;">
+                          </header>
+                          <div style="text-align: center; font-size: 10px; margin-top: 5px; border-bottom: 1px solid black; padding-bottom: 5px;">
+                            <p>${data.address1}</p>
+                            <p>${data.address2}</p>
+                          </div>
+                          <div style="margin-top: 30px; line-height: 1.5;">
+                            <table style="width: 100%; font-size: 12pt;">
+                              <tr>
+                                <td style="width: 55%;">
+                                  <p>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${data.number}</p>
+                                  <p>Klasifikasi: ${data.classification}</p>
+                                  <p>Lampiran&nbsp;&nbsp;: ${data.attachment}</p>
+                                </td>
+                                <td style="text-align: left; vertical-align: top;">
+                                  <p>${data.place}, ${data.date}</p>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td colspan="2"><p>Perihal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <u>${data.subject}</u></p></td>
+                              </tr>
+                            </table>
+                          </div>
+                          <div style="margin-top: 30px; font-size: 12pt;">
+                            <p>Kepada,</p>
+                            <p>Yth. ${data.to}</p>
+                            <p>di --</p>
+                            <p><u>${data.recipient_location}</u></p>
+                          </div>
+                          <div style="margin-top: 30px; text-align: justify; font-size: 12pt; line-height: 1.8;">
+                            <ol style="list-style-type: decimal; padding-left: 25px;">
+                              <li style="margin-bottom: 10px;">Dasar
+                                <ol type="a" style="padding-left: 20px; margin-top: 5px;">
+                                  <li>${data.body_base_a}</li>
+                                  <li>${data.body_base_b}</li>
+                                </ol>
+                              </li>
+                              <li style="margin-bottom: 10px;">${data.body_main}</li>
+                              <li>${data.body_closing}</li>
+                            </ol>
+                          </div>
+                          <div style="margin-top: 50px; margin-left: 60%; text-align: left; font-size: 12pt; line-height: 1.5;">
+                            <p>${data.position}</p>
+                            <br><br><br><br>
+                            <p style="font-weight: bold;"><u>${data.signer}</u></p>
+                            <p>${data.signer_nid}</p>
+                          </div>
+                        </div>
+                    `;
                 case 'default':
                 case 'formal':
                 case 'minimalist':
@@ -1320,38 +1469,65 @@
             return htmlContent;
         }
 
-        function generateLetter() {
-            const type = document.getElementById('letterType').value;
-            const number = formatLetterNumber();
-            const subject = document.getElementById('subject').value;
-            const to = document.getElementById('to').value;
-            const content = document.getElementById('content').value;
-            const date = new Date(document.getElementById('date').value);
-            const place = document.getElementById('place').value;
-            const signer = document.getElementById('signer').value;
-            const position = document.getElementById('position').value;
+        async function generateLetter() {
             const template = document.getElementById('templateSelect').value;
-            const kopType = document.getElementById('kopSelect').value;
+            const date = new Date(document.getElementById('date').value);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            const formattedDate = date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-
-            const letterData = {
-                type,
-                number,
-                subject,
-                to,
-                content,
+            let letterData = {
                 date: formattedDate,
-                place,
-                signer,
-                position,
-                template,
-                kopType
+                place: document.getElementById('place').value,
+                number: formatLetterNumber(),
+                subject: document.getElementById('subject').value,
+                to: document.getElementById('to').value,
+                signer: document.getElementById('signer').value,
+                position: document.getElementById('position').value,
+                template: template,
+                kopType: document.getElementById('kopSelect').value,
+                content: document.getElementById('content').value,
+                type: document.getElementById('letterType').value,
             };
+
+            if (template === 'complex_dinas') {
+                const readFileAsDataURL = (file) => {
+                    return new Promise((resolve, reject) => {
+                        if (!file) {
+                            resolve(null);
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                };
+
+                const logo1File = document.getElementById('logo1').files[0];
+                const logo2File = document.getElementById('logo2').files[0];
+
+                const [logo1, logo2] = await Promise.all([
+                    readFileAsDataURL(logo1File),
+                    readFileAsDataURL(logo2File)
+                ]);
+
+                letterData = {
+                    ...letterData,
+                    logo1,
+                    logo2,
+                    faculty_name: document.getElementById('faculty_name').value,
+                    program_name: document.getElementById('program_name').value,
+                    address1: document.getElementById('address1').value,
+                    address2: document.getElementById('address2').value,
+                    classification: document.getElementById('classification').value,
+                    attachment: document.getElementById('attachment').value,
+                    recipient_location: document.getElementById('recipient_location').value,
+                    body_base_a: document.getElementById('body_base_a').value,
+                    body_base_b: document.getElementById('body_base_b').value,
+                    body_main: document.getElementById('body_main').value,
+                    body_closing: document.getElementById('body_closing').value,
+                    signer_nid: document.getElementById('signer_nid').value,
+                };
+            }
 
             const letterHTML = getTemplateHTML(template, letterData);
             document.getElementById('letterPreview').innerHTML = `<div class="letter-content">${letterHTML}</div>`;
@@ -1359,46 +1535,70 @@
         }
 
         // --- Save to Archive ---
-        function saveToArchive() {
-            const type = document.getElementById('letterType').value;
-            const number = formatLetterNumber();
-            const subject = document.getElementById('subject').value;
-            const to = document.getElementById('to').value;
-            const content = document.getElementById('content').value;
-            const date = new Date(document.getElementById('date').value);
-            const place = document.getElementById('place').value;
-            const signer = document.getElementById('signer').value;
-            const position = document.getElementById('position').value;
+        async function saveToArchive() {
             const template = document.getElementById('templateSelect').value;
-            const kopType = document.getElementById('kopSelect').value;
+            const date = new Date(document.getElementById('date').value);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            const formattedDate = date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-
-            const letter = {
+            let letter = {
                 id: generateUniqueId(),
-                type,
-                number,
-                subject,
-                to,
-                content,
+                type: document.getElementById('letterType').value,
+                number: formatLetterNumber(),
+                subject: document.getElementById('subject').value,
+                to: document.getElementById('to').value,
+                content: document.getElementById('content').value,
                 date: formattedDate,
-                place,
-                signer,
-                position,
-                template,
-                kopType,
+                place: document.getElementById('place').value,
+                signer: document.getElementById('signer').value,
+                position: document.getElementById('position').value,
+                template: template,
+                kopType: document.getElementById('kopSelect').value,
                 timestamp: new Date().toISOString()
             };
+
+            if (template === 'complex_dinas') {
+                 const readFileAsDataURL = (file) => {
+                    return new Promise((resolve, reject) => {
+                        if (!file) {
+                            resolve(null);
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                };
+
+                const [logo1, logo2] = await Promise.all([
+                    readFileAsDataURL(document.getElementById('logo1').files[0]),
+                    readFileAsDataURL(document.getElementById('logo2').files[0])
+                ]);
+
+                letter = {
+                    ...letter,
+                    logo1,
+                    logo2,
+                    faculty_name: document.getElementById('faculty_name').value,
+                    program_name: document.getElementById('program_name').value,
+                    address1: document.getElementById('address1').value,
+                    address2: document.getElementById('address2').value,
+                    classification: document.getElementById('classification').value,
+                    attachment: document.getElementById('attachment').value,
+                    recipient_location: document.getElementById('recipient_location').value,
+                    body_base_a: document.getElementById('body_base_a').value,
+                    body_base_b: document.getElementById('body_base_b').value,
+                    body_main: document.getElementById('body_main').value,
+                    body_closing: document.getElementById('body_closing').value,
+                    signer_nid: document.getElementById('signer_nid').value,
+                };
+            }
 
             letterArchive.push(letter);
             localStorage.setItem('letterArchive', JSON.stringify(letterArchive));
             updateTotalLetters();
             showNotification('Surat berhasil disimpan ke arsip!');
-            renderArchiveTable(); // Update archive table if currently on that tab
+            renderArchiveTable();
         }
 
         // --- Archive Table Rendering ---
@@ -1451,36 +1651,60 @@
 
         function viewArchivedLetter(id) {
             const letter = letterArchive.find(l => l.id === id);
-            if (letter) {
-                // Populate the create form with archived letter data
-                document.getElementById('letterType').value = letter.type;
-                document.getElementById('numberFormat').value = letter.number; // Note: This will set the format, not just the number
-                document.getElementById('subject').value = letter.subject;
-                document.getElementById('to').value = letter.to;
-                document.getElementById('content').value = letter.content;
-                // Convert formatted date back to YYYY-MM-DD for input type="date"
-                const dateParts = letter.date.split(' '); // e.g., ["1", "Januari", "2024"]
-                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                const monthIndex = monthNames.indexOf(dateParts[1]);
+            if (!letter) {
+                showNotification('Surat tidak ditemukan di arsip.', 'error');
+                return;
+            }
+
+            // Populate common fields
+            document.getElementById('letterType').value = letter.type;
+            document.getElementById('numberFormat').value = letter.number;
+            document.getElementById('subject').value = letter.subject;
+            document.getElementById('to').value = letter.to;
+            document.getElementById('content').value = letter.content || '';
+
+            const dateParts = letter.date.split(' ');
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const monthIndex = monthNames.indexOf(dateParts[1]);
+            if (monthIndex !== -1) {
                 const dateObj = new Date(dateParts[2], monthIndex, dateParts[0]);
                 document.getElementById('date').valueAsDate = dateObj;
-
-                document.getElementById('place').value = letter.place;
-                document.getElementById('signer').value = letter.signer;
-                document.getElementById('position').value = letter.position;
-                document.getElementById('templateSelect').value = letter.template;
-                document.getElementById('kopSelect').value = letter.kopType;
-
-                // Trigger change events to update UI elements
-                document.getElementById('templateSelect').dispatchEvent(new Event('change'));
-                document.getElementById('kopSelect').dispatchEvent(new Event('change'));
-
-                generateLetter(); // Regenerate preview
-                showTab('create'); // Switch to create tab
-                showNotification('Surat dimuat dari arsip.');
-            } else {
-                showNotification('Surat tidak ditemukan di arsip.', 'error');
             }
+
+            document.getElementById('place').value = letter.place;
+            document.getElementById('signer').value = letter.signer;
+            document.getElementById('position').value = letter.position;
+            document.getElementById('templateSelect').value = letter.template;
+            document.getElementById('kopSelect').value = letter.kopType;
+
+            // If it's a complex letter, populate those fields too
+            if (letter.template === 'complex_dinas') {
+                document.getElementById('faculty_name').value = letter.faculty_name || '';
+                document.getElementById('program_name').value = letter.program_name || '';
+                document.getElementById('address1').value = letter.address1 || '';
+                document.getElementById('address2').value = letter.address2 || '';
+                document.getElementById('classification').value = letter.classification || '';
+                document.getElementById('attachment').value = letter.attachment || '';
+                document.getElementById('recipient_location').value = letter.recipient_location || '';
+                document.getElementById('body_base_a').value = letter.body_base_a || '';
+                document.getElementById('body_base_b').value = letter.body_base_b || '';
+                document.getElementById('body_main').value = letter.body_main || '';
+                document.getElementById('body_closing').value = letter.body_closing || '';
+                document.getElementById('signer_nid').value = letter.signer_nid || '';
+                // Note: We can't re-populate file inputs (logo1, logo2) for security reasons.
+                // The data URLs are still in the letter object for regeneration, though.
+            }
+
+            // Trigger change events to update UI (like showing the correct form)
+            document.getElementById('templateSelect').dispatchEvent(new Event('change'));
+            document.getElementById('kopSelect').dispatchEvent(new Event('change'));
+
+            // Regenerate preview using the archived data
+            const letterHTML = getTemplateHTML(letter.template, letter);
+            document.getElementById('letterPreview').innerHTML = `<div class="letter-content">${letterHTML}</div>`;
+
+            showTab('create');
+            showNotification('Surat dimuat dari arsip.');
         }
 
         async function downloadArchivedLetter(id) {
