@@ -534,8 +534,11 @@
                         </p>
                         <!-- Placeholder Helper -->
                         <div class="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center space-x-2">
-                            <input type="text" id="placeholderName" placeholder="nama_placeholder_baru" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                            <button type="button" onclick="insertPlaceholder()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 font-semibold">
+                            <select id="placeholderSelector" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                <option value="">-- Pilih Placeholder --</option>
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                            <button type="button" onclick="insertSelectedPlaceholder()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 font-semibold">
                                 <i class="fas fa-plus-circle mr-2"></i>Sisipkan
                             </button>
                         </div>
@@ -900,6 +903,30 @@
         let customTemplates = JSON.parse(localStorage.getItem('customTemplates')) || {};
         let activeDynamicFields = [];
 
+        const placeholderLibrary = [
+            { id: 'nama_lengkap', name: 'Nama Lengkap' },
+            { id: 'jabatan', name: 'Jabatan' },
+            { id: 'nama_perusahaan', name: 'Nama Perusahaan' },
+            { id: 'alamat_perusahaan', name: 'Alamat Perusahaan' },
+            { id: 'tanggal_surat', name: 'Tanggal Surat' },
+            { id: 'nomor_surat', name: 'Nomor Surat' },
+            { id: 'perihal', name: 'Perihal' },
+            { id: 'nama_penerima', name: 'Nama Penerima' },
+            { id: 'jabatan_penerima', name: 'Jabatan Penerima' }
+        ];
+
+        function populatePlaceholderSelector() {
+            const selector = document.getElementById('placeholderSelector');
+            if (!selector) return; // Guard against the element not being present
+            selector.innerHTML = '<option value="">-- Pilih Placeholder --</option>'; // Clear existing options and add default
+            placeholderLibrary.forEach(placeholder => {
+                const option = document.createElement('option');
+                option.value = placeholder.id;
+                option.textContent = placeholder.name;
+                selector.appendChild(option);
+            });
+        }
+
         const defaultKopImages = {
             'default': 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d9ce5d86-4df3-43cb-9f35-d9e893e6304f.png',
             'formal': 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a02ac2c5-1832-491b-b72d-5ed01886341c.png'
@@ -1003,28 +1030,20 @@
             tinymce.get('templateEditor').setContent('');
         }
 
-        function insertPlaceholder() {
-            const nameInput = document.getElementById('placeholderName');
-            let placeholderName = nameInput.value.trim();
+        function insertSelectedPlaceholder() {
+            const selector = document.getElementById('placeholderSelector');
+            const placeholderId = selector.value;
 
-            if (!placeholderName) {
-                showNotification('Masukkan nama placeholder terlebih dahulu.', 'error');
+            if (!placeholderId) {
+                showNotification('Pilih placeholder dari daftar terlebih dahulu.', 'error');
                 return;
             }
 
-            // Sanitize the name: replace spaces with underscores and remove special characters
-            placeholderName = placeholderName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-
-            if (!placeholderName) {
-                showNotification('Nama placeholder tidak valid. Gunakan hanya huruf, angka, dan garis bawah.', 'error');
-                nameInput.value = ''; // Clear the invalid input
-                return;
-            }
-
-            const placeholderText = `{{${placeholderName}}}`;
+            const placeholderText = `{{${placeholderId}}}`;
             tinymce.get('templateEditor').execCommand('mceInsertContent', false, placeholderText);
-            nameInput.value = '';
-            nameInput.focus();
+
+            // Reset selector to default option
+            selector.value = "";
         }
 
         function saveCustomTemplate() {
@@ -1896,6 +1915,7 @@
             updateKopPreview();
             renderCustomTemplates();
             renderCustomKops();
+            populatePlaceholderSelector();
         });
     </script>
 </body>
