@@ -27,8 +27,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.min.js"></script>
+    <!-- Quill.js CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docx-preview@0.1.15/dist/docx-preview.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -137,6 +138,19 @@
         .kop-preview {
             max-height: 120px;
             object-fit: contain;
+        }
+
+        #templateEditor .ql-editor {
+            width: 210mm;
+            min-height: 297mm;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 2cm 1.5cm;
+            margin: 1rem auto;
+            background: white;
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.5;
         }
 
         @keyframes slideIn {
@@ -574,7 +588,51 @@
                                 <i class="fas fa-plus-circle mr-2"></i>Sisipkan
                             </button>
                         </div>
-                        <textarea id="templateEditor"></textarea>
+                        <div id="toolbar-container">
+                            <span class="ql-formats">
+                                <select class="ql-font"></select>
+                                <select class="ql-size"></select>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                                <button class="ql-strike"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <select class="ql-color"></select>
+                                <select class="ql-background"></select>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-script" value="sub"></button>
+                                <button class="ql-script" value="super"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-header" value="1"></button>
+                                <button class="ql-header" value="2"></button>
+                                <button class="ql-blockquote"></button>
+                                <button class="ql-code-block"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="ordered"></button>
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-indent" value="-1"></button>
+                                <button class="ql-indent" value="+1"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-direction" value="rtl"></button>
+                                <select class="ql-align"></select>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                                <button class="ql-image"></button>
+                                <button class="ql-video"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-clean"></button>
+                            </span>
+                        </div>
+                        <div id="templateEditor" style="height: 500px; border-top: 1px solid #ccc;"></div>
                     </div>
                     <div class="flex space-x-4 mt-4">
                         <button onclick="saveCustomTemplate()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
@@ -929,8 +987,12 @@
     <!-- Notification Container -->
     <div id="notificationContainer" class="fixed top-4 right-4 z-[1000]"></div>
 
+    <!-- Quill.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
     <script>
         // Inisialisasi
+        let quill;
         document.getElementById('date').valueAsDate = new Date();
         let letterArchive = JSON.parse(localStorage.getItem('letterArchive')) || [];
         let currentNumber = parseInt(localStorage.getItem('currentNumber')) || 1;
@@ -1095,7 +1157,7 @@
             document.getElementById('editorTitle').textContent = 'Buat Template Baru';
             document.getElementById('templateEditorId').value = '';
             document.getElementById('templateName').value = '';
-            tinymce.get('templateEditor').setContent('');
+            quill.setText('');
         }
 
         function insertSelectedPlaceholder() {
@@ -1108,7 +1170,8 @@
             }
 
             const placeholderText = `{{${placeholderId}}}`;
-            tinymce.get('templateEditor').execCommand('mceInsertContent', false, placeholderText);
+            const range = quill.getSelection(true);
+            quill.insertText(range.index, placeholderText);
 
             // Reset selector to default option
             selector.value = "";
@@ -1120,21 +1183,19 @@
                 return;
             }
 
-            // Show a loading notification
             showNotification('Mengimpor dokumen Word...', 'info', 5000);
 
             const reader = new FileReader();
             reader.onload = function (loadEvent) {
                 const arrayBuffer = loadEvent.target.result;
 
-                // docx-preview renders to an element, so we create a temporary hidden one
                 const tempContainer = document.createElement('div');
 
                 window.docx.renderAsync(arrayBuffer, tempContainer)
                     .then(x => {
                         const importedHTML = tempContainer.innerHTML;
-                        tinymce.get('templateEditor').setContent(importedHTML);
-                        event.target.value = ''; // Reset file input
+                        quill.clipboard.dangerouslyPasteHTML(0, importedHTML);
+                        event.target.value = '';
                         showNotification('Dokumen Word berhasil diimpor!', 'success');
                     })
                     .catch(error => {
@@ -1153,13 +1214,14 @@
         function saveCustomTemplate() {
             const id = document.getElementById('templateEditorId').value || generateUniqueId();
             const name = document.getElementById('templateName').value;
-            const content = tinymce.get('templateEditor').getContent();
+            const content = quill.root.innerHTML;
 
             if (!name) {
                 showNotification('Nama template tidak boleh kosong!', 'error');
                 return;
             }
-            if (!content) {
+            // Quill adds a <p><br></p> to an empty editor, so check against that.
+            if (!content || content === '<p><br></p>') {
                 showNotification('Isi template tidak boleh kosong!', 'error');
                 return;
             }
@@ -1181,7 +1243,7 @@
                 document.getElementById('editorTitle').textContent = 'Edit Template: ' + template.name;
                 document.getElementById('templateEditorId').value = id;
                 document.getElementById('templateName').value = template.name;
-                tinymce.get('templateEditor').setContent(template.content);
+                quill.clipboard.dangerouslyPasteHTML(template.content);
                 document.getElementById('templateName').focus();
             }
         }
@@ -1987,49 +2049,11 @@
             document.getElementById('studentTemplateSelect')?.addEventListener('change', loadStudentTemplate);
             document.getElementById('templateSelect').addEventListener('change', (e) => generateFormForTemplate(e.target.value));
 
-            tinymce.init({
-                selector: '#templateEditor',
-                plugins: 'autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount textpattern',
-                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                height: 500,
-                content_css: false,
-                content_style: `
-                    body {
-                        background: #f3f4f6;
-                        padding: 2rem 0;
-                        display: flex;
-                        justify-content: center;
-                    }
-                    .mce-content-body {
-                        width: 210mm;
-                        min-height: 297mm;
-                        border: 1px solid #ddd;
-                        box-shadow: 0 0 10px rgba(0,0,0,0.15);
-                        padding: 2.5cm 2cm;
-                        background: white;
-                        font-family: 'Times New Roman', serif;
-                        font-size: 12pt;
-                    }
-                `,
-                formats: {
-                    placeholder: { inline: 'span', styles: { 'background-color': '#dbeafe', 'border-radius': '3px', 'padding': '2px 4px', 'color': '#1e40af', 'font-weight': 'bold' } }
+            quill = new Quill('#templateEditor', {
+                modules: {
+                    toolbar: '#toolbar-container'
                 },
-                textpattern_patterns: [
-                     // Default patterns
-                    {start: '*', end: '*', format: 'italic'},
-                    {start: '**', end: '**', format: 'bold'},
-                    {start: '#', format: 'h1'},
-                    {start: '##', format: 'h2'},
-                    {start: '###', format: 'h3'},
-                    {start: '####', format: 'h4'},
-                    {start: '#####', format: 'h5'},
-                    {start: '######', format: 'h6'},
-                    {start: '1. ', cmd: 'InsertOrderedList'},
-                    {start: '* ', cmd: 'InsertUnorderedList'},
-                    {start: '- ', cmd: 'InsertUnorderedList'},
-                    // Custom pattern for placeholders
-                    { start: '{{', end: '}}', format: 'placeholder', block: false }
-                ]
+                theme: 'snow'
             });
 
             updateTotalLetters();
