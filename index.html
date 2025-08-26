@@ -20,7 +20,7 @@
             --font-body: 'Montserrat', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-body); color: var(--text-dark); background-color: var(--white); line-height: 1.6; }
+        body { font-family: var(--font-body); color: var(--text-dark); background-color: var(--white); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         header { background-color: var(--white); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 1000; }
         .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
@@ -29,9 +29,6 @@
         .main-nav li { margin-left: 25px; }
         .main-nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
         .main-nav a:hover { color: var(--primary-brown); }
-        .nav-icons { display: flex; align-items: center; }
-        .nav-icons a { margin-left: 15px; color: var(--primary-brown); font-size: 18px; transition: color 0.3s; }
-        .nav-icons a:hover { color: var(--dark-brown); }
         .admin-btn { background-color: var(--primary-brown); color: var(--white); padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 14px; margin-left: 15px; transition: background-color 0.3s; cursor: pointer; }
         .admin-btn:hover { background-color: var(--dark-brown); }
         .main-nav .dropdown { position: relative; }
@@ -40,30 +37,322 @@
         .main-nav .dropdown-menu li { margin: 0; }
         .main-nav .dropdown-menu a { display: block; padding: 10px 20px; color: var(--text-dark); text-transform: none; font-size: 14px; letter-spacing: 0; font-weight: 400; }
         .main-nav .dropdown-menu a:hover { background-color: var(--cream); color: var(--primary-brown); }
-        .hero { background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80'); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); }
+        .nav-icons { display: flex; align-items: center; }
+        .nav-icons a { margin-left: 15px; color: var(--primary-brown); font-size: 18px; transition: color 0.3s; }
+        .nav-icons a:hover { color: var(--dark-brown); }
+
+        /* Hero Section */
+        .hero { background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), var(--hero-bg-image); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); }
         .hero-content h1 { font-family: var(--font-heading); font-size: 48px; margin-bottom: 20px; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); }
         .hero-content p { font-size: 18px; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
         .btn { display: inline-block; background-color: var(--primary-brown); color: var(--white); padding: 12px 30px; text-decoration: none; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; }
         .btn:hover { background-color: var(--dark-brown); }
         .btn-light { background-color: transparent; border: 2px solid var(--white); }
         .btn-light:hover { background-color: var(--white); color: var(--primary-brown); }
-        .popular-categories, .special-collection, .custom-section, .bulk-purchase, .promo-section, .download-app { padding: 80px 0; }
-        .popular-categories, .custom-section, .download-app { background-color: var(--cream); }
+
+        /* General Section Styles */
+        .popular-categories, .special-collection, .custom-section, .bulk-purchase, .promo-section, .download-app, .product-page, .cart-section, .auth-section, .admin-dashboard-section, .custom-order-form-section, .bulk-order-form-section, .product-detail-section { padding: 80px 0; background-color: var(--cream); min-height: calc(100vh - 180px); }
         .section-title { text-align: center; margin-bottom: 50px; font-family: var(--font-heading); font-size: 32px; color: var(--dark-brown); position: relative; }
         .section-title:after { content: ''; display: block; width: 60px; height: 3px; background-color: var(--primary-brown); margin: 15px auto 0; }
+
+        /* Categories Grid */
         .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
         .category-card-link { text-decoration: none; }
         .category-card { position: relative; height: 300px; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
         .category-card-link:hover .category-card { transform: translateY(-5px); }
         .category-card img { width: 100%; height: 100%; object-fit: cover; }
         .category-name { position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(109, 76, 65, 0.85); color: var(--white); padding: 15px; text-align: center; text-transform: uppercase; font-weight: 500; letter-spacing: 1px; }
+
+        /* Collection Grid */
         .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
         .collection-item { position: relative; height: 400px; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
         .collection-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .collection-item:hover img { transform: scale(1.05); }
         .collection-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(78, 52, 46, 0.8)); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; color: var(--white); }
         .collection-tag { background-color: var(--accent-gold); color: var(--dark-brown); padding: 5px 10px; display: inline-block; font-size: 12px; text-transform: uppercase; margin-bottom: 10px; font-weight: 600; border-radius: 3px; }
-        footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; }
+
+        /* Custom Order Section */
+        .custom-section { text-align: center; }
+        .custom-section .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+        .custom-section .process-step { background-color: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; transition: transform 0.3s; }
+        .custom-section .process-step:hover { transform: translateY(-5px); }
+        .custom-section .process-step i { font-size: 40px; color: var(--primary-brown); margin-bottom: 20px; }
+        .custom-section .process-step h4 { font-family: var(--font-heading); font-size: 20px; margin-bottom: 10px; color: var(--dark-brown); }
+        .custom-section .process-step p { font-size: 15px; color: var(--text-light); }
+        .custom-section .btn { margin-top: 50px; }
+
+        /* Bulk Purchase Section */
+        .bulk-purchase { background-color: var(--white); text-align: center; }
+        .bulk-purchase .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-top: 40px; }
+        .bulk-purchase .feature-item { background-color: var(--cream); padding: 25px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: center; }
+        .bulk-purchase .feature-item i { font-size: 30px; color: var(--primary-brown); margin-bottom: 15px; }
+        .bulk-purchase .feature-item h4 { font-family: var(--font-body); font-size: 18px; margin-bottom: 8px; color: var(--dark-brown); }
+        .bulk-purchase .feature-item p { font-size: 14px; color: var(--text-light); }
+        .bulk-purchase .btn { margin-top: 50px; }
+
+        /* Promo Section */
+        .promo-section { text-align: center; }
+        .promo-section .promo-content { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .promo-section .promo-card { background-color: var(--white); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); padding: 30px; width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .promo-section .promo-card img { max-width: 150px; margin-bottom: 20px; }
+        .promo-section .promo-card h3 { font-family: var(--font-heading); font-size: 28px; color: var(--dark-brown); margin-bottom: 15px; }
+        .promo-section .promo-card p { font-size: 16px; color: var(--text-light); margin-bottom: 20px; }
+        .promo-section .promo-card .promo-details { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; width: 100%; flex-wrap: wrap; }
+        .promo-section .promo-card .promo-item { flex: 1; min-width: 200px; padding: 15px; border: 1px dashed var(--light-brown); border-radius: 5px; background-color: #fffaf7; }
+        .promo-section .promo-card .promo-item h4 { font-size: 18px; color: var(--primary-brown); margin-bottom: 5px; }
+        .promo-section .promo-card .promo-item span { font-size: 14px; color: var(--text-dark); }
+        .promo-section .app-download { margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .promo-section .app-download p { font-size: 16px; color: var(--text-dark); }
+        .promo-section .app-buttons { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .promo-section .app-buttons a img { height: 45px; transition: transform 0.3s; }
+        .promo-section .app-buttons a img:hover { transform: translateY(-3px); }
+
+        /* Product Page Specific CSS */
+        .product-page .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .product-card { background-color: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; text-align: center; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 300px; object-fit: cover; }
+        .product-card-info { padding: 20px; }
+        .product-card h3 { font-size: 18px; margin-bottom: 10px; color: var(--dark-brown); font-family: var(--font-body); }
+        .product-card .price { font-size: 16px; color: var(--primary-brown); font-weight: 600; }
+
+        /* Product Detail Page */
+        .product-detail-section { background-color: var(--white); }
+        .product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: flex-start; }
+        .product-gallery { display: flex; flex-direction: column; gap: 15px; }
+        .main-image img { width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .thumbnail-images { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .thumbnail-images img { width: 100%; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.3s; }
+        .thumbnail-images img:hover, .thumbnail-images img.active { border-color: var(--primary-brown); }
+        .product-info h1 { font-family: var(--font-heading); font-size: 36px; color: var(--dark-brown); margin-bottom: 15px; }
+        .product-info .price { font-size: 24px; color: var(--primary-brown); font-weight: 600; margin-bottom: 20px; }
+        .product-info .description { margin-bottom: 30px; color: var(--text-light); }
+        .options-group { margin-bottom: 25px; }
+        .options-group h3 { font-size: 16px; margin-bottom: 10px; font-weight: 500; }
+        .size-options, .color-options { display: flex; gap: 10px; }
+        .size-btn { padding: 10px 15px; border: 1px solid var(--light-brown); background: var(--white); cursor: pointer; transition: all 0.3s; border-radius: 4px; }
+        .size-btn:hover, .size-btn.active { background: var(--primary-brown); color: var(--white); border-color: var(--primary-brown); }
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid var(--light-brown); transition: all 0.3s; }
+        .color-swatch.active { border-color: var(--dark-brown); transform: scale(1.1); }
+        .quantity-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+        .quantity-selector input { width: 50px; text-align: center; border: 1px solid var(--light-brown); padding: 8px; border-radius: 4px; }
+        .quantity-btn { padding: 8px 12px; border: 1px solid var(--light-brown); background: var(--cream); cursor: pointer; border-radius: 4px; }
+        .quantity-btn:hover { background-color: var(--light-brown); }
+        .add-to-cart-btn { display: block; width: 100%; padding: 15px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; }
+        .add-to-cart-btn:hover { background-color: var(--dark-brown); }
+
+        /* Cart Page Styles */
+        .cart-section { background-color: var(--white); }
+        .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        .cart-items { border: 1px solid var(--light-brown); border-radius: 8px; }
+        .cart-item { display: grid; grid-template-columns: 100px 1fr 120px 100px 50px; align-items: center; padding: 20px; gap: 15px; border-bottom: 1px solid var(--light-brown); }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item img { width: 100%; border-radius: 4px; }
+        .cart-item-info h3 { font-size: 16px; margin-bottom: 5px; }
+        .cart-item-info p { font-size: 14px; color: var(--text-light); }
+        .cart-item .quantity-selector { display: flex; align-items: center; }
+        .cart-item .quantity-selector input { width: 40px; text-align: center; border: 1px solid var(--light-brown); padding: 5px; border-radius: 4px; }
+        .cart-item .quantity-selector button { background-color: var(--cream); border: 1px solid var(--light-brown); padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        .cart-item .quantity-selector button:hover { background-color: var(--light-brown); }
+        .cart-item .remove-btn { background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 18px; }
+        .cart-item .remove-btn:hover { color: var(--dark-brown); }
+        .cart-summary { background-color: var(--cream); padding: 30px; border-radius: 8px; }
+        .cart-summary h2 { font-family: var(--font-heading); margin-bottom: 20px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .summary-total { font-weight: 700; font-size: 18px; border-top: 1px solid var(--light-brown); padding-top: 15px; margin-top: 10px; }
+        .checkout-btn { display: block; width: 100%; padding: 15px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; text-decoration: none; margin-top: 20px; }
+        .checkout-btn:hover { background-color: var(--dark-brown); }
+
+        /* Auth Page Styles */
+        .auth-section { display: flex; align-items: center; justify-content: center; }
+        .auth-container { max-width: 400px; width: 100%; background-color: var(--white); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .auth-container h1 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid var(--light-brown); border-radius: 4px; }
+        .auth-btn { display: block; width: 100%; padding: 15px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; }
+        .auth-btn:hover { background-color: var(--dark-brown); }
+        .auth-switch-link { text-align: center; margin-top: 20px; }
+        .auth-switch-link a { color: var(--primary-brown); text-decoration: none; font-weight: 500; }
+
+        /* Admin Dashboard Styles */
+        .admin-dashboard-section { background-color: var(--white); }
+        .admin-panel { max-width: 1200px; margin: 0 auto; }
+        .admin-panel h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); font-size: 28px; }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .admin-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .admin-card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--light-brown);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-card-header i {
+            font-size: 22px;
+            color: var(--primary-brown);
+        }
+        .admin-card-header h3 {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            color: var(--primary-brown);
+            margin: 0;
+        }
+
+        .admin-card-body {
+            padding: 25px;
+            flex-grow: 1;
+        }
+
+        .admin-card-footer {
+            padding: 20px 25px;
+            background-color: var(--cream);
+            border-top: 1px solid var(--light-brown);
+            text-align: right;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--dark-brown);
+            margin-bottom: 10px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #D7CCC8;
+            border-radius: 6px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-dark);
+            background-color: #FDFDFD;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group input[type="url"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-brown);
+            box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.2);
+        }
+
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .save-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--primary-brown);
+            color: var(--white);
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        .save-btn:hover {
+            background-color: var(--dark-brown);
+            transform: translateY(-2px);
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .file-upload-btn {
+            background-color: var(--white);
+            border: 1px solid var(--light-brown);
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .file-upload-btn:hover {
+            background-color: var(--cream);
+            border-color: var(--primary-brown);
+        }
+        .image-preview {
+            display: block;
+            margin-top: 15px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid var(--light-brown);
+            object-fit: cover;
+            display: none; /* Hidden by default */
+        }
+        .image-preview.active {
+            display: block;
+        }
+
+        /* Custom Order Form Styles */
+        .custom-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .custom-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-brown);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-dark);
+            background-color: var(--white);
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-group select {
+            appearance: none; -webkit-appearance: none; -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236D4C41%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-6.4H18.2c-5%200-9.3%201.8-13.2%206.4-3.9%204.6-6.1%2010.8-6.1%2017.4s2.2%2012.9%206.1%2017.4l131.7%20128.7c3.9%203.8%208.5%205.7%2013.2%205.7s9.3-1.9%2013.2-5.7L287%20104.2c3.9-4.5%206.1-10.7%206.1-17.3%200-6.6-2.2-12.8-6.1-17.4z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 12px auto; padding-right: 30px;
+        }
+        .submit-btn { display: inline-block; padding: 15px 30px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; text-decoration: none; }
+        .submit-btn:hover { background-color: var(--dark-brown); }
+
+        /* Bulk Order Form Styles */
+        .bulk-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .bulk-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
+        .form-group input[type="number"] { width: 100%; padding: 12px; border: 1px solid var(--light-brown); border-radius: 4px; font-family: var(--font-body); font-size: 15px; color: var(--text-dark); background-color: var(--white); }
+
+        /* Footer */
+        footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; margin-top: auto; }
         .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
         .footer-column h3 { font-size: 18px; margin-bottom: 20px; position: relative; padding-bottom: 10px; font-family: var(--font-heading); }
         .footer-column h3:after { content: ''; position: absolute; left: 0; bottom: 0; width: 30px; height: 2px; background-color: var(--accent-gold); }
@@ -71,7 +360,14 @@
         .footer-column ul li { margin-bottom: 10px; }
         .footer-column a { color: var(--light-brown); text-decoration: none; transition: color 0.3s; }
         .footer-column a:hover { color: var(--white); }
+        .social-icons { display: flex; gap: 15px; margin-top: 20px; }
+        .social-icons a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; transition: background-color 0.3s; }
+        .social-icons a:hover { background-color: var(--primary-brown); }
         .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; color: var(--light-brown); }
+
+        /* Utility Classes for Page Display */
+        .page-content { display: none; }
+        .page-content.active { display: block; }
     </style>
 </head>
 <body>
@@ -79,112 +375,883 @@
     <header>
         <div class="container">
             <div class="top-nav">
-                <a href="index.html" class="logo">KAZUMI</a>
+                <a href="#home" class="logo" onclick="showPage('home')">KAZUMI</a>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#home" onclick="showPage('home')">Home</a></li>
                         <li class="dropdown">
-                            <a href="#">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
+                            <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
                             <ul class="dropdown-menu">
-                                <li><a href="t-shirts.html">T-Shirt</a></li>
-                                <li><a href="shirts.html">Shirt</a></li>
-                                <li><a href="pants.html">Pants</a></li>
-                                <li><a href="jackets.html">Jacket</a></li>
-                                <li><a href="#">Accessories</a></li>
+                                <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
+                                <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
+                                <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
+                                <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
+                                <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Collections</a></li>
-                        <li><a href="#">Custom Order</a></li>
+                        <li><a href="#special-collection" onclick="showPage('home')">Collections</a></li>
+                        <li><a href="#custom-order-section" onclick="showPage('home')">Custom Order</a></li>
+                        <li><a href="#bulk-purchase-section" onclick="showPage('home')">Bulk Order</a></li>
+                        <li><a href="#promo-section" onclick="showPage('home')">Promo</a></li>
                     </ul>
                 </nav>
                 <div class="nav-icons">
                     <a href="#"><i class="fas fa-search"></i></a>
-                    <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
-                    <a href="login.html"><i class="fas fa-user"></i></a>
+                    <a href="#cart" onclick="showPage('cart')"><i class="fas fa-shopping-bag"></i></a>
+                    <a href="#login" onclick="showPage('login')"><i class="fas fa-user"></i></a>
+                    <a class="admin-btn" href="#admin-dashboard" onclick="showPage('admin-dashboard')"><i class="fas fa-cog"></i> Admin</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>ELEVATE YOUR STYLE</h1>
-                <p>Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
-                <a href="t-shirts.html" class="btn">Explore Collection</a>
-            </div>
-        </div>
-    </section>
+    <!-- Main Content Area -->
+    <div id="main-content-area">
+        <!-- Home Page Content -->
+        <section id="home" class="page-content active">
+            <!-- Hero Section -->
+            <section class="hero" id="heroSection">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1 id="heroHeadingDisplay">ELEVATE YOUR STYLE</h1>
+                        <p id="heroParagraphDisplay">Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
+                        <a href="#t-shirts" class="btn" onclick="showPage('t-shirts')">Explore Collection</a>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Kategori Populer -->
-    <section class="popular-categories">
-        <div class="container">
-            <h2 class="section-title">Produk Terlaris</h2>
-            <div class="categories-grid">
-                <a href="t-shirts.html" class="category-card-link">
-                    <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="T-Shirt">
-                        <div class="category-name">T-Shirt</div>
+            <!-- Kategori Populer -->
+            <section class="popular-categories" id="categories">
+                <div class="container">
+                    <h2 class="section-title">Produk Terlaris</h2>
+                    <div class="categories-grid">
+                        <a href="#t-shirts" class="category-card-link" onclick="showPage('t-shirts')">
+                            <div class="category-card">
+                                <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="T-Shirt">
+                                <div class="category-name">T-Shirt</div>
+                            </div>
+                        </a>
+                        <a href="#shirts" class="category-card-link" onclick="showPage('shirts')">
+                            <div class="category-card">
+                                <img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Shirt">
+                                <div class="category-name">Shirt</div>
+                            </div>
+                        </a>
+                        <a href="#pants" class="category-card-link" onclick="showPage('pants')">
+                            <div class="category-card">
+                                <img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pants">
+                                <div class="category-name">Pants</div>
+                            </div>
+                        </a>
+                        <a href="#jackets" class="category-card-link" onclick="showPage('jackets')">
+                            <div class="category-card">
+                                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Jacket">
+                                <div class="category-name">Jacket</div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-                <a href="shirts.html" class="category-card-link">
-                    <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Shirt">
-                        <div class="category-name">Shirt</div>
-                    </div>
-                </a>
-                <a href="pants.html" class="category-card-link">
-                    <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pants">
-                        <div class="category-name">Pants</div>
-                    </div>
-                </a>
-                <a href="jackets.html" class="category-card-link">
-                    <div class="category-card">
-                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Jacket">
-                        <div class="category-name">Jacket</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
+                </div>
+            </section>
 
-    <!-- Koleksi Spesial -->
-    <section class="special-collection">
-        <div class="container">
-            <h2 class="section-title">Koleksi Spesial</h2>
-            <div class="collection-grid">
-                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
-                    <div class="collection-item">
-                        <img src="https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Executive Collection">
-                        <div class="collection-overlay">
-                            <span class="collection-tag">New</span>
-                            <h3>Executive Collection</h3>
+            <!-- Koleksi Spesial -->
+            <section class="special-collection" id="special-collection">
+                <div class="container">
+                    <h2 class="section-title">Koleksi Spesial</h2>
+                    <div class="collection-grid" id="specialCollectionGrid">
+                        <!-- Content will be loaded dynamically by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custom Order Section -->
+            <section class="custom-section" id="custom-order-section">
+                <div class="container">
+                    <h2 class="section-title">Pesan Kustom Anda</h2>
+                    <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; color: var(--text-light);">
+                        Wujudkan gaya pribadi Anda dengan layanan pesanan kustom KAZUMI. Dari ukuran khusus hingga desain unik, kami siap membantu Anda menciptakan pakaian yang sempurna.
+                    </p>
+                    <div class="process-grid">
+                        <div class="process-step">
+                            <i class="fas fa-ruler-combined"></i>
+                            <h4>Konsultasi & Pengukuran</h4>
+                            <p>Tim ahli kami akan melakukan pengukuran presisi untuk memastikan hasil yang sesuai dengan bentuk tubuh Anda.</p>
+                        </div>
+                        <div class="process-step">
+                            <i class="fas fa-palette"></i>
+                            <h4>Pilih Material & Desain</h4>
+                            <p>Pilih dari berbagai bahan premium dan sesuaikan desain sesuai preferensi pribadi Anda.</p>
+                        </div>
+                        <div class="process-step">
+                            <i class="fas fa-cut"></i>
+                            <h4>Produksi & Fitting</h4>
+                            <p>Pakaian Anda akan dibuat oleh pengrajin ahli, diikuti dengan sesi fitting untuk memastikan kesempurnaan.</p>
                         </div>
                     </div>
-                </a>
-                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
-                    <div class="collection-item">
-                        <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Limited Edition">
-                        <div class="collection-overlay">
-                            <span class="collection-tag">Limited</span>
-                            <h3>Limited Edition</h3>
+                    <a href="#custom-order-form" class="btn" onclick="showPage('custom-order-form')">Mulai Pesanan Kustom</a>
+                </div>
+            </section>
+
+            <!-- Bulk Purchase Section -->
+            <section class="bulk-purchase" id="bulk-purchase-section">
+                <div class="container">
+                    <h2 class="section-title">Pembelian Jumlah Besar</h2>
+                    <p style="text-align: center; max-width: 700px; margin: 0 auto 40px; color: var(--text-light);">
+                        Dapatkan penawaran menarik untuk pembelian dalam jumlah besar. Sempurna untuk kebutuhan perusahaan, seragam, atau acara khusus.
+                    </p>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-tags"></i>
+                            <h4>Harga Khusus</h4>
+                            <p>Nikmati harga spesial untuk pembelian volume besar.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-paint-brush"></i>
+                            <h4>Kustomisasi Produk</h4>
+                            <p>Sesuaikan produk dengan logo atau identitas bisnis Anda.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-truck"></i>
+                            <h4>Pickup atau Delivery</h4>
+                            <p>Pilihan pengambilan atau pengiriman yang fleksibel.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-file-invoice"></i>
+                            <h4>Ketersediaan Invoice</h4>
+                            <p>Invoice resmi tersedia untuk keperluan pembukuan bisnis.</p>
                         </div>
                     </div>
-                </a>
-                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
-                    <div class="collection-item">
-                        <img src="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Weekend Wear">
-                        <div class="collection-overlay">
-                            <span class="collection-tag">Casual</span>
-                            <h3>Weekend Wear</h3>
+                    <a href="#bulk-order-form" class="btn" onclick="showPage('bulk-order-form')">Konsultasi Bulk Order</a>
+                </div>
+            </section>
+
+            <!-- Promo Section -->
+            <section class="promo-section" id="promo-section">
+                <div class="container">
+                    <h2 class="section-title">KAZUMI x BUSINESSWEEK Collaboration</h2>
+                    <div class="promo-content">
+                        <div class="promo-card">
+                            <img id="promoImageDisplay" src="https://images.unsplash.com/photo-1523878288860-fd508837778e?auto=format&fit=crop&w=200&q=80" alt="Collaboration Logo">
+                            <h3 id="promoTitleDisplay">Penawaran Spesial Minggu Ini!</h3>
+                            <p id="promoDescriptionDisplay">Dalam rangka kolaborasi eksklusif kami dengan BUSINESSWEEK, nikmati promo terbatas untuk gaya Anda!</p>
+                            <div class="promo-details">
+                                <div class="promo-item">
+                                    <h4 id="promoItem1TitleDisplay">Monday Special</h4>
+                                    <span id="promoItem1DescDisplay">Diskon 30% untuk pembelian 2 item</span>
+                                </div>
+                                <div class="promo-item">
+                                    <h4 id="promoItem2TitleDisplay">Cashback</h4>
+                                    <span id="promoItem2DescDisplay">IDR 8.000 dengan min. pembelian IDR 300.000</span>
+                                </div>
+                            </div>
+                            <a href="#t-shirts" class="btn" onclick="showPage('t-shirts')">Belanja Sekarang</a>
+                        </div>
+                        <div class="app-download">
+                            <p>Unduh aplikasi KAZUMI untuk pengalaman belanja yang lebih baik:</p>
+                            <div class="app-buttons">
+                                <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play"></a>
+                                <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store"></a>
+                            </div>
                         </div>
                     </div>
-                </a>
+                </div>
+            </section>
+        </section>
+
+        <!-- T-Shirts Page Content -->
+        <section id="t-shirts" class="page-content">
+            <div class="container">
+                <h1 class="section-title">T-Shirts</h1>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Classic Black T-Shirt', 'IDR 150.000', 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=200&q=80'], 'Kaos hitam klasik yang terbuat dari katun berkualitas tinggi, nyaman dipakai sehari-hari.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=500&q=60" alt="Classic Black T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Classic Black T-Shirt</h3>
+                                <p class="price">IDR 150.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Plain White T-Shirt', 'IDR 150.000', 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=200&q=80'], 'Kaos putih polos yang esensial untuk setiap lemari pakaian, terbuat dari bahan yang lembut dan adem.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=500&q=60" alt="Plain White T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Plain White T-Shirt</h3>
+                                <p class="price">IDR 150.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Olive Green T-Shirt', 'IDR 175.000', 'https://images.unsplash.com/photo-1622470953794-34505b3db690?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1622470953794-34505b3db690?auto=format&fit=crop&w=200&q=80'], 'Kaos berwarna hijau olive yang stylish, cocok untuk tampilan kasual.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1622470953794-34505b3db690?auto=format&fit=crop&w=500&q=60" alt="Olive Green T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Olive Green T-Shirt</h3>
+                                <p class="price">IDR 175.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Graphic Print T-Shirt', 'IDR 200.000', 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=200&q=80'], 'Kaos dengan desain grafis unik, menambah sentuhan modern pada gaya Anda.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=500&q=60" alt="Graphic Print T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Graphic Print T-Shirt</h3>
+                                <p class="price">IDR 200.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Navy Blue Henley', 'IDR 225.000', 'https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=200&q=80'], 'Kaos Henley biru navy yang nyaman, cocok untuk gaya santai namun tetap rapi.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=500&q=60" alt="Navy Blue Henley">
+                            <div class="product-card-info">
+                                <h3>Navy Blue Henley</h3>
+                                <p class="price">IDR 225.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Striped T-Shirt', 'IDR 185.000', 'https://images.unsplash.com/photo-1564589222379-62c733818597?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1564589222379-62c733818597?auto=format&fit=crop&w=200&q=80'], 'Kaos bergaris klasik yang tak lekang oleh waktu, memberikan kesan stylish.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1564589222379-62c733818597?auto=format&fit=crop&w=500&q=60" alt="Striped T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Striped T-Shirt</h3>
+                                <p class="price">IDR 185.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Maroon V-Neck', 'IDR 165.000', 'https://images.unsplash.com/photo-1633966902343-4a4b56b02a24?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1633966902343-4a4b56b02a24?auto=format&fit=crop&w=200&q=80'], 'Kaos V-neck berwarna maroon yang elegan, cocok untuk berbagai kesempatan.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1633966902343-4a4b56b02a24?auto=format&fit=crop&w=500&q=60" alt="Maroon V-Neck">
+                            <div class="product-card-info">
+                                <h3>Maroon V-Neck</h3>
+                                <p class="price">IDR 165.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Heather Grey T-Shirt', 'IDR 175.000', 'https://images.unsplash.com/photo-1626497764746-6dc368414b89?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1626497764746-6dc368414b89?auto=format&fit=crop&w=200&q=80'], 'Kaos abu-abu heather yang serbaguna, mudah dipadukan dengan gaya apa pun.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1626497764746-6dc368414b89?auto=format&fit=crop&w=500&q=60" alt="Heather Grey T-Shirt">
+                            <div class="product-card-info">
+                                <h3>Heather Grey T-Shirt</h3>
+                                <p class="price">IDR 175.000</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Shirts Page Content -->
+        <section id="shirts" class="page-content">
+            <div class="container">
+                <h1 class="section-title">Shirts</h1>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('White Formal Shirt', 'IDR 350.000', 'https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=200&q=80', 'https://images.unsplash.com/photo-1598032895713-c833d3d81501?auto=format&fit=crop&w=200&q=80', 'https://images.unsplash.com/photo-1598032895447-9276afe2c78b?auto=format&fit=crop&w=200&q=80', 'https://images.unsplash.com/photo-1598032895759-8913953761a4?auto=format&fit=crop&w=200&q=80'], 'Kemeja formal putih klasik yang terbuat dari bahan katun premium. Sempurna untuk acara bisnis dan formal, memberikan tampilan yang bersih, elegan, dan profesional.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=500&q=60" alt="White Formal Shirt">
+                            <div class="product-card-info">
+                                <h3>White Formal Shirt</h3>
+                                <p class="price">IDR 350.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Blue Oxford Shirt', 'IDR 375.000', 'https://images.unsplash.com/photo-1601422407622-2cc4e5b2b3cb?auto=format&fit=crop&w=800&q=80', ['https://images.unsplash.com/photo-1601422407622-2cc4e5b2b3cb?auto=format&fit=crop&w=200&q=80'], 'Kemeja Oxford biru yang nyaman dan serbaguna, cocok untuk gaya kasual maupun semi-formal.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1601422407622-2cc4e5b2b3cb?auto=format&fit=crop&w=500&q=60" alt="Blue Oxford Shirt">
+                            <div class="product-card-info">
+                                <h3>Blue Oxford Shirt</h3>
+                                <p class="price">IDR 375.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Linen Casual Shirt', 'IDR 300.000', 'https://images.unsplash.com/photo-1596755094514-5b92400d309d?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1596755094514-5b92400d309d?auto=format&fit=crop&w=200&q=60'], 'Kemeja kasual linen yang ringan dan adem, sempurna untuk cuaca hangat.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1596755094514-5b92400d309d?auto=format&fit=crop&w=500&q=60" alt="Linen Casual Shirt">
+                            <div class="product-card-info">
+                                <h3>Linen Casual Shirt</h3>
+                                <p class="price">IDR 300.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Flannel Shirt', 'IDR 400.000', 'https://images.unsplash.com/photo-1613521142432-0537075b0217?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1613521142432-0537075b0217?auto=format&fit=crop&w=200&q=60'], 'Kemeja flanel yang hangat dan nyaman, ideal untuk musim dingin atau tampilan rugged.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1613521142432-0537075b0217?auto=format&fit=crop&w=500&q=60" alt="Flannel Shirt">
+                            <div class="product-card-info">
+                                <h3>Flannel Shirt</h3>
+                                <p class="price">IDR 400.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Short Sleeve Shirt', 'IDR 285.000', 'https://images.unsplash.com/photo-1589310243343-7323b375a6a6?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1589310243343-7323b375a6a6?auto=format&fit=crop&w=200&q=60'], 'Kemeja lengan pendek yang stylish, cocok untuk tampilan santai di musim panas.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1589310243343-7323b375a6a6?auto=format&fit=crop&w=500&q=60" alt="Short Sleeve Shirt">
+                            <div class="product-card-info">
+                                <h3>Short Sleeve Shirt</h3>
+                                <p class="price">IDR 285.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Denim Shirt', 'IDR 450.000', 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=200&q=60'], 'Kemeja denim klasik yang tahan lama dan stylish, cocok untuk gaya kasual.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=500&q=60" alt="Denim Shirt">
+                            <div class="product-card-info">
+                                <h3>Denim Shirt</h3>
+                                <p class="price">IDR 450.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Black Dress Shirt', 'IDR 365.000', 'https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?auto=format&fit=crop&w=200&q=60'], 'Kemeja dress hitam yang elegan, sempurna untuk acara formal atau malam hari.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?auto=format&fit=crop&w=500&q=60" alt="Black Dress Shirt">
+                            <div class="product-card-info">
+                                <h3>Black Dress Shirt</h3>
+                                <p class="price">IDR 365.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Patterned Shirt', 'IDR 325.000', 'https://images.unsplash.com/photo-1563178406-41fb222091d2?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1563178406-41fb222091d2?auto=format&fit=crop&w=200&q=60'], 'Kemeja bermotif yang unik, menambah sentuhan gaya pada penampilan Anda.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1563178406-41fb222091d2?auto=format&fit=crop&w=500&q=60" alt="Patterned Shirt">
+                            <div class="product-card-info">
+                                <h3>Patterned Shirt</h3>
+                                <p class="price">IDR 325.000</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pants Page Content -->
+        <section id="pants" class="page-content">
+            <div class="container">
+                <h1 class="section-title">Pants</h1>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Slim-Fit Chinos', 'IDR 450.000', 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=200&q=60'], 'Celana chinos slim-fit yang nyaman dan stylish, cocok untuk berbagai kesempatan.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=500&q=60" alt="Slim-Fit Chinos">
+                            <div class="product-card-info">
+                                <h3>Slim-Fit Chinos</h3>
+                                <p class="price">IDR 450.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Classic Denim Jeans', 'IDR 550.000', 'https://images.unsplash.com/photo-1602233158242-3ba0ac4d2167?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1602233158242-3ba0ac4d2167?auto=format&fit=crop&w=200&q=60'], 'Celana jeans denim klasik yang tahan lama dan serbaguna, cocok untuk gaya kasual sehari-hari.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1602233158242-3ba0ac4d2167?auto=format&fit=crop&w=500&q=60" alt="Classic Denim Jeans">
+                            <div class="product-card-info">
+                                <h3>Classic Denim Jeans</h3>
+                                <p class="price">IDR 550.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Formal Trousers', 'IDR 500.000', 'https://images.unsplash.com/photo-1555689502-c4b22d76c56f?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1555689502-c4b22d76c56f?auto=format&fit=crop&w=200&q=60'], 'Celana formal yang rapi dan nyaman, cocok untuk acara bisnis atau formal.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1555689502-c4b22d76c56f?auto=format&fit=crop&w=500&q=60" alt="Formal Trousers">
+                            <div class="product-card-info">
+                                <h3>Formal Trousers</h3>
+                                <p class="price">IDR 500.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Cargo Pants', 'IDR 480.000', 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=200&q=60'], 'Celana cargo yang fungsional dan stylish, cocok untuk gaya kasual atau petualangan.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=500&q=60" alt="Cargo Pants">
+                            <div class="product-card-info">
+                                <h3>Cargo Pants</h3>
+                                <p class="price">IDR 480.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Grey Jogger Pants', 'IDR 380.000', 'https://images.unsplash.com/photo-1560243563-062bfc001d68?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1560243563-062bfc001d68?auto=format&fit=crop&w=200&q=60'], 'Celana jogger abu-abu yang nyaman dan trendi, cocok untuk olahraga atau gaya santai.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1560243563-062bfc001d68?auto=format&fit=crop&w=500&q=60" alt="Grey Jogger Pants">
+                            <div class="product-card-info">
+                                <h3>Grey Jogger Pants</h3>
+                                <p class="price">IDR 380.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Pleated Trousers', 'IDR 520.000', 'https://images.unsplash.com/photo-1624378439575-d87059d7ac8e?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1624378439575-d87059d7ac8e?auto=format&fit=crop&w=200&q=60'], 'Celana pleated yang stylish, menambah sentuhan klasik pada penampilan Anda.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1624378439575-d87059d7ac8e?auto=format&fit=crop&w=500&q=60" alt="Pleated Trousers">
+                            <div class="product-card-info">
+                                <h3>Pleated Trousers</h3>
+                                <p class="price">IDR 520.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Corduroy Pants', 'IDR 490.000', 'https://images.unsplash.com/photo-1584865224982-a6353c1b1275?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1584865224982-a6353c1b1275?auto=format&fit=crop&w=200&q=60'], 'Celana korduroi yang nyaman dan hangat, cocok untuk musim dingin.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1584865224982-a6353c1b1275?auto=format&fit=crop&w=500&q=60" alt="Corduroy Pants">
+                            <div class="product-card-info">
+                                <h3>Corduroy Pants</h3>
+                                <p class="price">IDR 490.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Linen Trousers', 'IDR 460.000', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=200&q=60'], 'Celana linen yang ringan dan adem, sempurna untuk cuaca hangat.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=500&q=60" alt="Linen Trousers">
+                            <div class="product-card-info">
+                                <h3>Linen Trousers</h3>
+                                <p class="price">IDR 460.000</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jackets Page Content -->
+        <section id="jackets" class="page-content">
+            <div class="container">
+                <h1 class="section-title">Jackets</h1>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Denim Jacket', 'IDR 750.000', 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=200&q=60'], 'Jaket denim klasik yang tak lekang oleh waktu, cocok untuk gaya kasual.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=500&q=60" alt="Denim Jacket">
+                            <div class="product-card-info">
+                                <h3>Denim Jacket</h3>
+                                <p class="price">IDR 750.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Leather Biker Jacket', 'IDR 1.250.000', 'https://images.unsplash.com/photo-1591942523329-87e433a1796b?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1591942523329-87e433a1796b?auto=format&fit=crop&w=200&q=60'], 'Jaket biker kulit yang stylish dan tangguh, memberikan kesan edgy.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1591942523329-87e433a1796b?auto=format&fit=crop&w=500&q=60" alt="Leather Biker Jacket">
+                            <div class="product-card-info">
+                                <h3>Leather Biker Jacket</h3>
+                                <p class="price">IDR 1.250.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Bomber Jacket', 'IDR 800.000', 'https://images.unsplash.com/photo-1566150905458-1bf1bc112f2d?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1566150905458-1bf1bc112f2d?auto=format&fit=crop&w=200&q=60'], 'Jaket bomber yang trendi dan nyaman, cocok untuk gaya kasual sehari-hari.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1566150905458-1bf1bc112f2d?auto=format&fit=crop&w=500&q=60" alt="Bomber Jacket">
+                            <div class="product-card-info">
+                                <h3>Bomber Jacket</h3>
+                                <p class="price">IDR 800.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Trench Coat', 'IDR 1.500.000', 'https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?auto=format&fit=crop&w=200&q=60'], 'Trench coat klasik yang elegan, sempurna untuk tampilan formal atau semi-formal.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?auto=format&fit=crop&w=500&q=60" alt="Trench Coat">
+                            <div class="product-card-info">
+                                <h3>Trench Coat</h3>
+                                <p class="price">IDR 1.500.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Parka Jacket', 'IDR 950.000', 'https://images.unsplash.com/photo-1548126032-079a0fb0099d?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1548126032-079a0fb0099d?auto=format&fit=crop&w=200&q=60'], 'Jaket parka yang hangat dan fungsional, ideal untuk cuaca dingin.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1548126032-079a0fb0099d?auto=format&fit=crop&w=500&q=60" alt="Parka Jacket">
+                            <div class="product-card-info">
+                                <h3>Parka Jacket</h3>
+                                <p class="price">IDR 950.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Suede Jacket', 'IDR 1.100.000', 'https://images.unsplash.com/photo-1605274281358-947cf65513a4?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1605274281358-947cf65513a4?auto=format&fit=crop&w=200&q=60'], 'Jaket suede yang mewah dan stylish, menambah sentuhan elegan pada penampilan Anda.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1605274281358-947cf65513a4?auto=format&fit=crop&w=500&q=60" alt="Suede Jacket">
+                            <div class="product-card-info">
+                                <h3>Suede Jacket</h3>
+                                <p class="price">IDR 1.100.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Casual Blazer', 'IDR 850.000', 'https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=200&q=60'], 'Blazer kasual yang serbaguna, cocok untuk tampilan semi-formal atau smart casual.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=500&q=60" alt="Blazer">
+                            <div class="product-card-info">
+                                <h3>Casual Blazer</h3>
+                                <p class="price">IDR 850.000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="product-card">
+                        <a href="#product-detail" onclick="showProductDetail('Windbreaker', 'IDR 650.000', 'https://images.unsplash.com/photo-1509315355489-53fa65a25b14?auto=format&fit=crop&w=800&q=60', ['https://images.unsplash.com/photo-1509315355489-53fa65a25b14?auto=format&fit=crop&w=200&q=60'], 'Jaket windbreaker yang ringan dan tahan angin, ideal untuk aktivitas outdoor.')" style="text-decoration: none; color: inherit;">
+                            <img src="https://images.unsplash.com/photo-1509315355489-53fa65a25b14?auto=format&fit=crop&w=500&q=60" alt="Windbreaker">
+                            <div class="product-card-info">
+                                <h3>Windbreaker</h3>
+                                <p class="price">IDR 650.000</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accessories Page Content (Placeholder) -->
+        <section id="accessories" class="page-content">
+            <div class="container">
+                <h1 class="section-title">Accessories</h1>
+                <p style="text-align: center; color: var(--text-light);">Konten untuk Aksesoris akan segera hadir!</p>
+            </div>
+        </section>
+
+        <!-- Product Detail Page Content -->
+        <section id="product-detail" class="page-content">
+            <div class="container">
+                <div class="product-detail-layout">
+                    <div class="product-gallery">
+                        <div class="main-image">
+                            <img src="" alt="Product Image" id="mainProductImage">
+                        </div>
+                        <div class="thumbnail-images" id="thumbnailImagesContainer">
+                            <!-- Thumbnails will be loaded here by JS -->
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h1 id="productDetailName"></h1>
+                        <p class="price" id="productDetailPrice"></p>
+                        <p class="description" id="productDetailDescription"></p>
+
+                        <div class="options-group">
+                            <h3>Ukuran</h3>
+                            <div class="size-options">
+                                <button class="size-btn active" data-size="S">S</button>
+                                <button class="size-btn" data-size="M">M</button>
+                                <button class="size-btn" data-size="L">L</button>
+                                <button class="size-btn" data-size="XL">XL</button>
+                            </div>
+                        </div>
+
+                        <div class="options-group">
+                            <h3>Warna</h3>
+                            <div class="color-options">
+                                <div class="color-swatch active" style="background-color: #ffffff;" data-color="white"></div>
+                                <div class="color-swatch" style="background-color: #e0f7fa;" data-color="light-blue"></div>
+                                <div class="color-swatch" style="background-color: #f1f8e9;" data-color="light-green"></div>
+                            </div>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <h3>Jumlah</h3>
+                            <button class="quantity-btn minus">-</button>
+                            <input type="text" value="1" id="productQuantity" min="1">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+
+                        <button class="add-to-cart-btn">Tambah ke Troli</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Page Content -->
+        <section id="cart" class="page-content">
+            <div class="container">
+                <h1 class="section-title">Troli Belanja Anda</h1>
+                <div class="cart-layout">
+                    <div class="cart-items" id="cartItemsContainer">
+                        <!-- Cart Item 1 -->
+                        <div class="cart-item" data-price="350000">
+                            <img src="https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=200&q=80" alt="White Formal Shirt">
+                            <div class="cart-item-info">
+                                <h3>White Formal Shirt</h3>
+                                <p>Ukuran: M</p>
+                            </div>
+                            <p class="item-price">IDR 350.000</p>
+                            <div class="quantity-selector">
+                                <button class="quantity-btn minus">-</button>
+                                <input type="number" value="1" min="1" class="item-quantity">
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                            <button class="remove-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <!-- Cart Item 2 -->
+                        <div class="cart-item" data-price="450000">
+                            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=200&q=60" alt="Slim-Fit Chinos">
+                            <div class="cart-item-info">
+                                <h3>Slim-Fit Chinos</h3>
+                                <p>Ukuran: 32</p>
+                            </div>
+                            <p class="item-price">IDR 450.000</p>
+                            <div class="quantity-selector">
+                                <button class="quantity-btn minus">-</button>
+                                <input type="number" value="1" min="1" class="item-quantity">
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                            <button class="remove-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
+                        <h2>Ringkasan Pesanan</h2>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal">IDR 800.000</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Pengiriman</span>
+                            <span id="shippingCost">IDR 20.000</span>
+                        </div>
+                        <hr style="border: 1px solid var(--light-brown); margin: 20px 0;">
+                        <div class="summary-row summary-total">
+                            <span>Total</span>
+                            <span id="totalAmount">IDR 820.000</span>
+                        </div>
+                        <a href="#" class="checkout-btn">Lanjutkan ke Pembayaran</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Page Content -->
+        <section id="login" class="page-content">
+            <div class="auth-section">
+                <div class="auth-container">
+                    <h1>Login</h1>
+                    <form action="#" method="POST">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="auth-btn">Login</button>
+                    </form>
+                    <div class="auth-switch-link">
+                        <p>Belum punya akun? <a href="#register" onclick="showPage('register')">Daftar di sini</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Page Content -->
+        <section id="register" class="page-content">
+            <div class="auth-section">
+                <div class="auth-container">
+                    <h1>Daftar Akun</h1>
+                    <form action="#" method="POST">
+                        <div class="form-group">
+                            <label for="fullname">Nama Lengkap</label>
+                            <input type="text" id="fullname" name="fullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="auth-btn">Daftar</button>
+                    </form>
+                    <div class="auth-switch-link">
+                        <p>Sudah punya akun? <a href="#login" onclick="showPage('login')">Login di sini</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard Page Content -->
+        <section id="admin-dashboard" class="page-content">
+            <div class="admin-dashboard-section">
+                <div class="container">
+                    <h1 class="section-title">Admin Dashboard</h1>
+                    <div class="admin-panel">
+                        <div class="admin-grid">
+                            <!-- Hero Section Editor Card -->
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <h3>Homepage Hero Section</h3>
+                                </div>
+                                <div class="admin-card-body">
+                                    <div class="form-group">
+                                        <label for="heroHeading">Judul Utama</label>
+                                        <input type="text" id="heroHeading" value="ELEVATE YOUR STYLE">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="heroParagraph">Sub-Judul / Paragraf</label>
+                                        <textarea id="heroParagraph">Discover the perfect blend of sophistication and modern fashion for the contemporary man</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="heroImageFile">Gambar Latar</label>
+                                        <input type="file" id="heroImageFile" accept="image/png, image/jpeg" style="display: none;">
+                                        <button type="button" class="file-upload-btn" onclick="document.getElementById('heroImageFile').click();">Pilih Gambar</button>
+                                        <img id="heroImagePreview" alt="Pratinjau Gambar Latar" class="image-preview">
+                                        <small style="display:block; margin-top: 10px; color: var(--text-light);">Ganti gambar latar hero. Ukuran besar direkomendasikan. Gambar disimpan di cache browser.</small>
+                                    </div>
+                                    <div id="heroMessage" class="message"></div>
+                                </div>
+                                <div class="admin-card-footer">
+                                    <button class="save-btn" onclick="saveHeroContent()">Simpan Perubahan</button>
+                                </div>
+                            </div>
+
+                            <!-- Promo Section Editor Card -->
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <i class="fas fa-percent"></i>
+                                    <h3>Kolaborasi & Promo</h3>
+                                </div>
+                                <div class="admin-card-body">
+                                    <div class="form-group">
+                                        <label for="promoTitle">Judul Promo</label>
+                                        <input type="text" id="promoTitle" value="Penawaran Spesial Minggu Ini!">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoDescription">Deskripsi Promo</label>
+                                        <textarea id="promoDescription">Dalam rangka kolaborasi eksklusif kami dengan BUSINESSWEEK, nikmati promo terbatas untuk gaya Anda!</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoImageFile">Gambar Promo</label>
+                                        <input type="file" id="promoImageFile" accept="image/png, image/jpeg" style="display: none;">
+                                        <button type="button" class="file-upload-btn" onclick="document.getElementById('promoImageFile').click();">Pilih Gambar</button>
+                                        <img id="promoImagePreview" alt="Pratinjau Gambar Promo" class="image-preview">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoItem1Title">Promo Item 1 Judul</label>
+                                        <input type="text" id="promoItem1Title" value="Monday Special">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoItem1Desc">Promo Item 1 Deskripsi</label>
+                                        <input type="text" id="promoItem1Desc" value="Diskon 30% untuk pembelian 2 item">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoItem2Title">Promo Item 2 Judul</label>
+                                        <input type="text" id="promoItem2Title" value="Cashback">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promoItem2Desc">Promo Item 2 Deskripsi</label>
+                                        <input type="text" id="promoItem2Desc" value="IDR 8.000 dengan min. pembelian IDR 300.000">
+                                    </div>
+                                    <div id="promoMessage" class="message"></div>
+                                </div>
+                                <div class="admin-card-footer">
+                                    <button class="save-btn" onclick="savePromoContent()">Simpan Perubahan</button>
+                                </div>
+                            </div>
+
+                            <!-- Special Collection Editor Card -->
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <i class="fas fa-star"></i>
+                                    <h3>Koleksi Spesial</h3>
+                                </div>
+                                <div class="admin-card-body">
+                                    <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Ubah gambar dan judul untuk setiap item koleksi spesial yang tampil di beranda.</p>
+                                    <div id="specialCollectionsEditor">
+                                        <!-- Collection items will be loaded here by JS -->
+                                    </div>
+                                    <div id="collectionsMessage" class="message"></div>
+                                </div>
+                                <div class="admin-card-footer">
+                                    <button class="save-btn" onclick="saveSpecialCollections()">Simpan Koleksi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Order Form Page Content -->
+        <section id="custom-order-form" class="page-content">
+            <div class="custom-order-form-section">
+                <div class="container">
+                    <h1 class="section-title">Formulir Pesanan Kustom</h1>
+                    <div class="custom-order-form-container">
+                        <h2>Detail Pesanan Anda</h2>
+                        <form action="#" method="POST">
+                            <div class="form-group">
+                                <label for="namaLengkap">Nama Lengkap</label>
+                                <input type="text" id="namaLengkap" name="namaLengkap" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nomorTelepon">Nomor Telepon</label>
+                                <input type="tel" id="nomorTelepon" name="nomorTelepon" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="jenisPakaian">Jenis Pakaian yang Diinginkan</label>
+                                <select id="jenisPakaian" name="jenisPakaian" required>
+                                    <option value="">Pilih Jenis Pakaian</option>
+                                    <option value="kemeja">Kemeja</option>
+                                    <option value="celana">Celana</option>
+                                    <option value="jaket">Jaket</option>
+                                    <option value="jas">Jas</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsiDesain">Deskripsi Desain & Detail Kustom</label>
+                                <textarea id="deskripsiDesain" name="deskripsiDesain" rows="6" placeholder="Contoh: Kemeja formal lengan panjang, warna biru navy, kerah spread, manset double, ukuran custom fit."></textarea>
+                                <small style="color: var(--text-light);">Sertakan detail seperti warna, bahan yang diinginkan, ukuran khusus, gaya kerah/manset, dll.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="tanggalKonsultasi">Tanggal Preferensi Konsultasi</label>
+                                <input type="date" id="tanggalKonsultasi" name="tanggalKonsultasi">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="submit-btn">Kirim Pesanan Kustom</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bulk Order Form Page Content -->
+        <section id="bulk-order-form" class="page-content">
+            <div class="bulk-order-form-section">
+                <div class="container">
+                    <h1 class="section-title">Formulir Pembelian Jumlah Besar</h1>
+                    <div class="bulk-order-form-container">
+                        <h2>Detail Permintaan Anda</h2>
+                        <form action="#" method="POST">
+                            <div class="form-group">
+                                <label for="namaPerusahaan">Nama Perusahaan / Organisasi</label>
+                                <input type="text" id="namaPerusahaan" name="namaPerusahaan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="namaKontak">Nama Kontak</label>
+                                <input type="text" id="namaKontak" name="namaKontak" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailKontak">Email Kontak</label>
+                                <input type="email" id="emailKontak" name="emailKontak" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nomorTeleponKontak">Nomor Telepon Kontak</label>
+                                <input type="tel" id="nomorTeleponKontak" name="nomorTeleponKontak" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="jenisProduk">Jenis Produk yang Diminati</label>
+                                <select id="jenisProduk" name="jenisProduk" required>
+                                    <option value="">Pilih Jenis Produk</option>
+                                    <option value="t-shirt">T-Shirt</option>
+                                    <option value="shirt">Shirt</option>
+                                    <option value="pants">Pants</option>
+                                    <option value="jacket">Jacket</option>
+                                    <option value="accessories">Accessories</option>
+                                    <option value="mix">Campuran</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="jumlahEstimasi">Estimasi Jumlah Produk</label>
+                                <input type="number" id="jumlahEstimasi" name="jumlahEstimasi" min="10" placeholder="Minimal 10 item" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="deskripsiKebutuhan">Deskripsi Kebutuhan & Kustomisasi (jika ada)</label>
+                                <textarea id="deskripsiKebutuhan" name="deskripsiKebutuhan" rows="6" placeholder="Contoh: Membutuhkan 50 kemeja formal putih dengan logo perusahaan di dada kiri, ukuran bervariasi S-XL."></textarea>
+                                <small style="color: var(--text-light);">Sertakan detail seperti warna, ukuran, penempatan logo, tanggal dibutuhkan, dll.</small>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="submit-btn">Kirim Permintaan Bulk Order</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -193,16 +1260,33 @@
                 <div class="footer-column">
                     <h3>INFORMASI KAMI</h3>
                     <ul>
-                        <li><a href="#">Tentang KAZUMI</a></li>
+                        <li><a href="#home" onclick="showPage('home')">Tentang KAZUMI</a></li>
+                        <li><a href="#">Sejarah Perusahaan</a></li>
+                        <li><a href="#">Karir</a></li>
+                        <li><a href="#">Ketentuan Kebijakan</a></li>
+                        <li><a href="#">Lokasi Store</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>BANTUAN</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Kebijakan Pengembalian</a></li>
+                        <li><a href="#">Click & Collect</a></li>
+                        <li><a href="#">Pengiriman</a></li>
+                        <li><a href="#">Pembayaran</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>KATEGORI PRODUK</h3>
                     <ul>
-                        <li><a href="t-shirts.html">T-Shirt</a></li>
-                        <li><a href="shirts.html">Shirt</a></li>
-                        <li><a href="pants.html">Pants</a></li>
-                        <li><a href="jackets.html">Jacket</a></li>
+                        <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
+                        <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
+                        <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
+                        <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
+                        <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
+                        <li><a href="#promo-section" onclick="showPage('home')">Sale</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -210,7 +1294,14 @@
                     <ul>
                         <li><i class="fas fa-phone"></i> +62 21 1234 5678</li>
                         <li><i class="fas fa-envelope"></i> info@kazumi.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Jl. Fashion No. 123, Jakarta</li>
                     </ul>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="copyright">
@@ -220,7 +1311,450 @@
     </footer>
 
     <script>
-        // Placeholder for future JS
+        // Function to show/hide pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            // Scroll to top of the page content
+            window.scrollTo(0, 0);
+
+            // Update URL hash
+            history.pushState(null, '', `#${pageId}`);
+
+            // Re-load dynamic content if it's the home page or admin dashboard
+            if (pageId === 'home') {
+                loadDynamicContent();
+            } else if (pageId === 'admin-dashboard') {
+                loadAdminContent();
+                loadSpecialCollectionsEditor();
+            } else if (pageId === 'cart') {
+                updateCartSummary(); // Ensure cart summary is updated when navigating to cart
+            }
+        }
+
+        // Handle initial page load based on hash
+        document.addEventListener('DOMContentLoaded', function() {
+            const initialPage = window.location.hash.substring(1) || 'home';
+            showPage(initialPage);
+            loadDynamicContent(); // Load dynamic content for home page initially
+            loadAdminContent(); // Load admin content for admin dashboard (even if not active, for data persistence)
+            loadSpecialCollectionsEditor(); // Load special collections editor (even if not active)
+
+            // Attach image upload handlers
+            handleImageUpload('heroImageFile', 'heroImagePreview');
+            handleImageUpload('promoImageFile', 'promoImagePreview');
+        });
+
+        function handleImageUpload(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (!input || !preview) return;
+
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) { // 2MB size limit
+                        showMessage('error', 'Ukuran file terlalu besar. Maksimal 2MB.', 'error');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.add('active');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // --- Hero Section Functions ---
+        function saveHeroContent() {
+            const heroHeading = document.getElementById('heroHeading').value;
+            const heroParagraph = document.getElementById('heroParagraph').value;
+            const heroImagePreview = document.getElementById('heroImagePreview');
+
+            const currentData = JSON.parse(localStorage.getItem('heroContent')) || {};
+            let newImage = currentData.image; // Default to old image
+
+            if (heroImagePreview.src && heroImagePreview.src.startsWith('data:image')) {
+                newImage = heroImagePreview.src;
+            }
+
+            const heroData = {
+                heading: heroHeading,
+                paragraph: heroParagraph,
+                image: newImage
+            };
+            localStorage.setItem('heroContent', JSON.stringify(heroData));
+            showMessage('heroMessage', 'Hero Section berhasil diperbarui!', 'success');
+            loadDynamicContent();
+        }
+
+        function loadHeroContent() {
+            const heroData = JSON.parse(localStorage.getItem('heroContent')) || {
+                heading: 'ELEVATE YOUR STYLE',
+                paragraph: 'Discover the perfect blend of sophistication and modern fashion for the contemporary man',
+                image: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80'
+            };
+
+            // For Admin Dashboard
+            const heroHeadingInput = document.getElementById('heroHeading');
+            const heroParagraphInput = document.getElementById('heroParagraph');
+            const heroImagePreview = document.getElementById('heroImagePreview');
+            if (heroHeadingInput) heroHeadingInput.value = heroData.heading;
+            if (heroParagraphInput) heroParagraphInput.value = heroData.paragraph;
+            if (heroImagePreview && heroData.image) {
+                heroImagePreview.src = heroData.image;
+                heroImagePreview.classList.add('active');
+            }
+
+            // For Home Page display
+            const heroHeadingDisplay = document.getElementById('heroHeadingDisplay');
+            const heroParagraphDisplay = document.getElementById('heroParagraphDisplay');
+            const heroSection = document.getElementById('heroSection');
+            if (heroHeadingDisplay) heroHeadingDisplay.textContent = heroData.heading;
+            if (heroParagraphDisplay) heroParagraphDisplay.textContent = heroData.paragraph;
+            if (heroSection) heroSection.style.setProperty('--hero-bg-image', `url('${heroData.image}')`);
+        }
+
+        // --- Promo Section Functions ---
+        function savePromoContent() {
+            const promoImagePreview = document.getElementById('promoImagePreview');
+            const currentData = JSON.parse(localStorage.getItem('promoContent')) || {};
+            let newImage = currentData.image;
+
+            if (promoImagePreview.src && promoImagePreview.src.startsWith('data:image')) {
+                newImage = promoImagePreview.src;
+            }
+
+            const promoData = {
+                title: document.getElementById('promoTitle').value,
+                description: document.getElementById('promoDescription').value,
+                image: newImage,
+                item1: { title: document.getElementById('promoItem1Title').value, desc: document.getElementById('promoItem1Desc').value },
+                item2: { title: document.getElementById('promoItem2Title').value, desc: document.getElementById('promoItem2Desc').value }
+            };
+            localStorage.setItem('promoContent', JSON.stringify(promoData));
+            showMessage('promoMessage', 'Promo Section berhasil diperbarui!', 'success');
+            loadDynamicContent();
+        }
+
+        function loadPromoContent() {
+            const promoData = JSON.parse(localStorage.getItem('promoContent')) || {
+                title: 'Penawaran Spesial Minggu Ini!',
+                description: 'Dalam rangka kolaborasi eksklusif kami dengan BUSINESSWEEK, nikmati promo terbatas untuk gaya Anda!',
+                image: 'https://images.unsplash.com/photo-1523878288860-fd508837778e?auto=format&fit=crop&w=200&q=80',
+                item1: { title: 'Monday Special', desc: 'Diskon 30% untuk pembelian 2 item' },
+                item2: { title: 'Cashback', desc: 'IDR 8.000 dengan min. pembelian IDR 300.000' }
+            };
+
+            // For Admin Dashboard
+            const promoTitleInput = document.getElementById('promoTitle');
+            const promoDescriptionInput = document.getElementById('promoDescription');
+            const promoImagePreview = document.getElementById('promoImagePreview');
+            const promoItem1TitleInput = document.getElementById('promoItem1Title');
+            const promoItem1DescInput = document.getElementById('promoItem1Desc');
+            const promoItem2TitleInput = document.getElementById('promoItem2Title');
+            const promoItem2DescInput = document.getElementById('promoItem2Desc');
+
+            if (promoTitleInput) promoTitleInput.value = promoData.title;
+            if (promoDescriptionInput) promoDescriptionInput.value = promoData.description;
+            if (promoImagePreview && promoData.image) {
+                promoImagePreview.src = promoData.image;
+                promoImagePreview.classList.add('active');
+            }
+            if (promoItem1TitleInput) promoItem1TitleInput.value = promoData.item1.title;
+            if (promoItem1DescInput) promoItem1DescInput.value = promoData.item1.desc;
+            if (promoItem2TitleInput) promoItem2TitleInput.value = promoData.item2.title;
+            if (promoItem2DescInput) promoItem2DescInput.value = promoData.item2.desc;
+
+            // For Home Page display
+            const promoTitleDisplay = document.getElementById('promoTitleDisplay');
+            const promoDescriptionDisplay = document.getElementById('promoDescriptionDisplay');
+            const promoImageDisplay = document.getElementById('promoImageDisplay');
+            const promoItem1TitleDisplay = document.getElementById('promoItem1TitleDisplay');
+            const promoItem1DescDisplay = document.getElementById('promoItem1DescDisplay');
+            const promoItem2TitleDisplay = document.getElementById('promoItem2TitleDisplay');
+            const promoItem2DescDisplay = document.getElementById('promoItem2DescDisplay');
+
+            if (promoTitleDisplay) promoTitleDisplay.textContent = promoData.title;
+            if (promoDescriptionDisplay) promoDescriptionDisplay.textContent = promoData.description;
+            if (promoImageDisplay) promoImageDisplay.src = promoData.image;
+            if (promoItem1TitleDisplay) promoItem1TitleDisplay.textContent = promoData.item1.title;
+            if (promoItem1DescDisplay) promoItem1DescDisplay.textContent = promoData.item1.desc;
+            if (promoItem2TitleDisplay) promoItem2TitleDisplay.textContent = promoData.item2.title;
+            if (promoItem2DescDisplay) promoItem2DescDisplay.textContent = promoData.item2.desc;
+        }
+
+        // --- Special Collections Functions (from admin_dashboard.html) ---
+        function loadSpecialCollectionsEditor() {
+            const collectionsData = JSON.parse(localStorage.getItem('specialCollections')) || [
+                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: '#product-detail' },
+                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: '#product-detail' },
+                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: '#product-detail' }
+            ];
+
+            const editorContainer = document.getElementById('specialCollectionsEditor');
+            if (!editorContainer) return; // Exit if not on admin dashboard
+
+            editorContainer.innerHTML = ''; // Clear previous content
+
+            collectionsData.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'collection-item-editor form-group';
+                itemDiv.style.borderTop = index > 0 ? '1px solid var(--light-brown)' : 'none';
+                itemDiv.style.paddingTop = index > 0 ? '20px' : '0';
+
+                itemDiv.innerHTML = `
+                    <h4 style="margin-top: 20px; margin-bottom: 10px; color: var(--dark-brown); font-weight:600;">Item Koleksi ${index + 1}</h4>
+                    <div class="form-group">
+                        <label for="collectionImgFile${index}">Gambar</label>
+                        <input type="file" id="collectionImgFile${index}" accept="image/png, image/jpeg" style="display: none;" data-index="${index}">
+                        <button type="button" class="file-upload-btn" onclick="document.getElementById('collectionImgFile${index}').click();">Pilih Gambar</button>
+                        <img id="collectionImgPreview${index}" src="${item.img}" alt="Pratinjau Koleksi" class="image-preview active">
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionTag${index}">Tag (e.g., New, Limited, Casual)</label>
+                        <input type="text" id="collectionTag${index}" value="${item.tag}">
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionTitle${index}">Judul Koleksi</label>
+                        <input type="text" id="collectionTitle${index}" value="${item.title}">
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionLink${index}">Link Produk</label>
+                        <input type="text" id="collectionLink${index}" value="${item.link}">
+                    </div>
+                `;
+                editorContainer.appendChild(itemDiv);
+                handleImageUpload(`collectionImgFile${index}`, `collectionImgPreview${index}`);
+            });
+        }
+
+        function saveSpecialCollections() {
+            const collectionsData = [];
+            const editorContainer = document.getElementById('specialCollectionsEditor');
+            const itemEditors = editorContainer.querySelectorAll('.collection-item-editor');
+            const currentData = JSON.parse(localStorage.getItem('specialCollections')) || [];
+
+            itemEditors.forEach((itemEditor, index) => {
+                const preview = document.getElementById(`collectionImgPreview${index}`);
+                let newImage = (currentData[index] && currentData[index].img) ? currentData[index].img : '';
+
+                if (preview.src && preview.src.startsWith('data:image')) {
+                    newImage = preview.src;
+                } else {
+                    newImage = preview.src; // Keep the existing URL if no new file is uploaded
+                }
+
+                const tag = document.getElementById(`collectionTag${index}`).value;
+                const title = document.getElementById(`collectionTitle${index}`).value;
+                const link = document.getElementById(`collectionLink${index}`).value;
+                collectionsData.push({ img: newImage, tag, title, link });
+            });
+
+            localStorage.setItem('specialCollections', JSON.stringify(collectionsData));
+            showMessage('collectionsMessage', 'Koleksi Spesial berhasil diperbarui!', 'success');
+            loadDynamicContent(); // Update home page special collections immediately
+        }
+
+        // Load all content when the admin dashboard loads
+        function loadAdminContent() {
+            loadHeroContent();
+            loadPromoContent();
+            loadSpecialCollectionsEditor(); // Ensure editor is loaded when admin page is shown
+        }
+
+        // --- Dynamic Content Loading for Home Page (from index.html) ---
+        function loadDynamicContent() {
+            loadHeroContent(); // Loads hero content for display
+            loadPromoContent(); // Loads promo content for display
+
+            // Load Special Collections for display
+            const collectionsData = JSON.parse(localStorage.getItem('specialCollections'));
+            const defaultCollections = [
+                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: '#product-detail' },
+                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: '#product-detail' },
+                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: '#product-detail' }
+            ];
+            const collectionsToDisplay = collectionsData || defaultCollections;
+
+            const collectionGrid = document.getElementById('specialCollectionGrid');
+            if (!collectionGrid) return; // Exit if not on home page
+
+            collectionGrid.innerHTML = ''; // Clear existing content
+
+            collectionsToDisplay.forEach(item => {
+                const collectionItemHTML = `
+                    <a href="${item.link}" onclick="showProductDetail('${item.title}', 'Harga Tidak Tersedia', '${item.img}', ['${item.img}'], 'Deskripsi koleksi spesial ini.')" style="text-decoration: none; color: inherit;">
+                        <div class="collection-item">
+                            <img src="${item.img}" alt="${item.title}">
+                            <div class="collection-overlay">
+                                <span class="collection-tag">${item.tag}</span>
+                                <h3>${item.title}</h3>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                collectionGrid.insertAdjacentHTML('beforeend', collectionItemHTML);
+            });
+        }
+
+        // --- Product Detail Functions (from product-detail.html) ---
+        function showProductDetail(name, price, mainImg, thumbnails, description) {
+            document.getElementById('productDetailName').textContent = name;
+            document.getElementById('productDetailPrice').textContent = price;
+            document.getElementById('mainProductImage').src = mainImg;
+            document.getElementById('productDetailDescription').textContent = description;
+
+            const thumbnailContainer = document.getElementById('thumbnailImagesContainer');
+            thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
+
+            thumbnails.forEach((thumbUrl, index) => {
+                const img = document.createElement('img');
+                img.src = thumbUrl;
+                img.alt = `Thumbnail ${index + 1}`;
+                img.classList.add('thumbnail-img');
+                if (index === 0) {
+                    img.classList.add('active');
+                }
+                img.onclick = function() { changeImage(this); };
+                thumbnailContainer.appendChild(img);
+            });
+
+            showPage('product-detail');
+        }
+
+        function changeImage(thumbnail) {
+            document.getElementById('mainProductImage').src = thumbnail.src.replace('w=200', 'w=800');
+            const thumbnails = document.querySelectorAll('.thumbnail-images img');
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quantity Selector for Product Detail
+            const quantityInput = document.getElementById('productQuantity');
+            const minusBtn = document.querySelector('#product-detail .quantity-btn.minus');
+            const plusBtn = document.querySelector('#product-detail .quantity-btn.plus');
+
+            if (minusBtn && plusBtn && quantityInput) {
+                minusBtn.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    if (currentValue > 1) {
+                        quantityInput.value = currentValue - 1;
+                    }
+                });
+
+                plusBtn.addEventListener('click', function() {
+                    let currentValue = parseInt(quantityInput.value);
+                    quantityInput.value = currentValue + 1;
+                });
+            }
+
+            // Size Options for Product Detail
+            const sizeButtons = document.querySelectorAll('#product-detail .size-btn');
+            sizeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sizeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Color Options for Product Detail
+            const colorSwatches = document.querySelectorAll('#product-detail .color-swatch');
+            colorSwatches.forEach(swatch => {
+                swatch.addEventListener('click', function() {
+                    colorSwatches.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add to Cart Button (Placeholder for actual logic)
+            const addToCartBtn = document.querySelector('#product-detail .add-to-cart-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    const productName = document.getElementById('productDetailName').textContent;
+                    const productPrice = document.getElementById('productDetailPrice').textContent;
+                    const selectedSize = document.querySelector('#product-detail .size-btn.active')?.dataset.size || 'N/A';
+                    const selectedColor = document.querySelector('#product-detail .color-swatch.active')?.dataset.color || 'N/A';
+                    const quantity = quantityInput.value;
+
+                    alert(`Produk ditambahkan ke troli:\n\nNama: ${productName}\nHarga: ${productPrice}\nUkuran: ${selectedSize}\nWarna: ${selectedColor}\nJumlah: ${quantity}\n\n(Ini adalah simulasi. Fungsionalitas troli sebenarnya memerlukan backend.)`);
+                });
+            }
+        });
+
+        // --- Cart Page Functions (from cart.html) ---
+        function formatRupiah(amount) {
+            return 'IDR ' + new Intl.NumberFormat('id-ID').format(amount);
+        }
+
+        function updateCartSummary() {
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+            const subtotalSpan = document.getElementById('subtotal');
+            const shippingCostSpan = document.getElementById('shippingCost');
+            const totalAmountSpan = document.getElementById('totalAmount');
+            const shippingCost = 20000; // Example shipping cost
+
+            if (!cartItemsContainer || !subtotalSpan || !shippingCostSpan || !totalAmountSpan) return;
+
+            let currentSubtotal = 0;
+            document.querySelectorAll('.cart-item').forEach(item => {
+                const pricePerItem = parseInt(item.dataset.price);
+                const quantity = parseInt(item.querySelector('.item-quantity').value);
+                currentSubtotal += pricePerItem * quantity;
+            });
+
+            subtotalSpan.textContent = formatRupiah(currentSubtotal);
+            shippingCostSpan.textContent = formatRupiah(shippingCost);
+            totalAmountSpan.textContent = formatRupiah(currentSubtotal + shippingCost);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+            if (cartItemsContainer) {
+                cartItemsContainer.addEventListener('click', function(event) {
+                    // Handle quantity change
+                    if (event.target.classList.contains('quantity-btn')) {
+                        const input = event.target.closest('.quantity-selector').querySelector('.item-quantity');
+                        let quantity = parseInt(input.value);
+
+                        if (event.target.classList.contains('plus')) {
+                            quantity++;
+                        } else if (event.target.classList.contains('minus')) {
+                            if (quantity > 1) {
+                                quantity--;
+                            }
+                        }
+                        input.value = quantity;
+                        updateCartSummary();
+                    }
+
+                    // Handle remove item
+                    if (event.target.closest('.remove-btn')) {
+                        event.target.closest('.cart-item').remove();
+                        updateCartSummary();
+                    }
+                });
+            }
+            updateCartSummary(); // Initial calculation on page load
+        });
+
+        // Utility function for admin messages
+        function showMessage(elementId, message, type) {
+            const messageElement = document.getElementById(elementId);
+            if (!messageElement) return;
+            messageElement.textContent = message;
+            messageElement.className = `message ${type}`;
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000);
+        }
     </script>
 </body>
 </html>
