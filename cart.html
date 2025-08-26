@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAZUMI - Troli Belanja</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #6D4C41;
+            --dark-brown: #4E342E;
+            --light-brown: #D7CCC8;
+            --cream: #F5F5F5;
+            --white: #FFFFFF;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); color: var(--text-dark); background-color: var(--cream); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: var(--white); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 1000; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary-brown); text-decoration: none; }
+        .main-nav ul { display: flex; list-style: none; }
+        .main-nav li { margin-left: 25px; }
+        .main-nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .main-nav a:hover { color: var(--primary-brown); }
+        .nav-icons { display: flex; align-items: center; }
+        .nav-icons a { margin-left: 15px; color: var(--primary-brown); font-size: 18px; transition: color 0.3s; }
+        .nav-icons a:hover { color: var(--dark-brown); }
+        footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; margin-top: auto; }
+        .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; color: var(--light-brown); }
+        .section-title { text-align: center; margin-bottom: 50px; font-family: var(--font-heading); font-size: 32px; color: var(--dark-brown); position: relative; }
+        .section-title:after { content: ''; display: block; width: 60px; height: 3px; background-color: var(--primary-brown); margin: 15px auto 0; }
+
+        /* Cart Page Styles */
+        .cart-section { flex-grow: 1; padding: 60px 0; background-color: var(--white); }
+        .cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        .cart-items { border: 1px solid var(--light-brown); border-radius: 8px; }
+        .cart-item { display: grid; grid-template-columns: 100px 1fr 120px 100px 50px; align-items: center; padding: 20px; gap: 15px; border-bottom: 1px solid var(--light-brown); }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item img { width: 100%; border-radius: 4px; }
+        .cart-item-info h3 { font-size: 16px; margin-bottom: 5px; }
+        .cart-item-info p { font-size: 14px; color: var(--text-light); }
+        .cart-item .quantity-selector { display: flex; align-items: center; }
+        .cart-item .quantity-selector input { width: 40px; text-align: center; border: 1px solid var(--light-brown); }
+        .cart-item .remove-btn { background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 18px; }
+        .cart-summary { background-color: var(--cream); padding: 30px; border-radius: 8px; }
+        .cart-summary h2 { font-family: var(--font-heading); margin-bottom: 20px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .summary-total { font-weight: 700; font-size: 18px; border-top: 1px solid var(--light-brown); padding-top: 15px; margin-top: 10px; }
+        .checkout-btn { display: block; width: 100%; padding: 15px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; text-decoration: none; margin-top: 20px; }
+        .checkout-btn:hover { background-color: var(--dark-brown); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="top-nav">
+                <a href="index.html" class="logo">KAZUMI</a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#categories">Shop</a></li>
+                    </ul>
+                </nav>
+                <div class="nav-icons">
+                    <a href="login.html"><i class="fas fa-user"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="cart-section">
+        <div class="container">
+            <h1 class="section-title">Troli Belanja Anda</h1>
+            <div class="cart-layout">
+                <div class="cart-items">
+                    <!-- Cart Item 1 -->
+                    <div class="cart-item">
+                        <img src="https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=200&q=80" alt="White Formal Shirt">
+                        <div class="cart-item-info">
+                            <h3>White Formal Shirt</h3>
+                            <p>Ukuran: M</p>
+                        </div>
+                        <p>IDR 350.000</p>
+                        <div class="quantity-selector">
+                            <input type="number" value="1" min="1">
+                        </div>
+                        <button class="remove-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <!-- Cart Item 2 -->
+                    <div class="cart-item">
+                        <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=200&q=60" alt="Slim-Fit Chinos">
+                        <div class="cart-item-info">
+                            <h3>Slim-Fit Chinos</h3>
+                            <p>Ukuran: 32</p>
+                        </div>
+                        <p>IDR 450.000</p>
+                        <div class="quantity-selector">
+                            <input type="number" value="1" min="1">
+                        </div>
+                        <button class="remove-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="cart-summary">
+                    <h2>Ringkasan Pesanan</h2>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>IDR 800.000</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Pengiriman</span>
+                        <span>IDR 20.000</span>
+                    </div>
+                    <hr style="border: 1px solid var(--light-brown); margin: 20px 0;">
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span>IDR 820.000</span>
+                    </div>
+                    <a href="#" class="checkout-btn">Lanjutkan ke Pembayaran</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2023 KAZUMI. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

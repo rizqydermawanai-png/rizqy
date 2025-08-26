@@ -20,6 +20,7 @@
             --font-body: 'Montserrat', sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body { font-family: var(--font-body); color: var(--text-dark); background-color: var(--white); line-height: 1.6; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         header { background-color: var(--white); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 1000; }
@@ -29,17 +30,27 @@
         .main-nav li { margin-left: 25px; }
         .main-nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
         .main-nav a:hover { color: var(--primary-brown); }
-        .main-nav .dropdown { position: relative; }
-        .main-nav .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.1); list-style: none; padding: 10px 0; margin-top: 15px; min-width: 200px; border-radius: 4px; }
-        .main-nav .dropdown:hover .dropdown-menu { display: block; }
-        .main-nav .dropdown-menu li { margin: 0; }
-        .main-nav .dropdown-menu a { display: block; padding: 10px 20px; color: var(--text-dark); text-transform: none; font-size: 14px; letter-spacing: 0; font-weight: 400; }
-        .main-nav .dropdown-menu a:hover { background-color: var(--cream); color: var(--primary-brown); }
         .nav-icons { display: flex; align-items: center; }
         .nav-icons a { margin-left: 15px; color: var(--primary-brown); font-size: 18px; transition: color 0.3s; }
         .nav-icons a:hover { color: var(--dark-brown); }
         .admin-btn { background-color: var(--primary-brown); color: var(--white); padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 14px; margin-left: 15px; transition: background-color 0.3s; cursor: pointer; }
         .admin-btn:hover { background-color: var(--dark-brown); }
+
+        /* --- Dropdown Menu Styles --- */
+        .main-nav .dropdown { position: relative; }
+        .main-nav .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.1); list-style: none; padding: 10px 0; margin-top: 15px; min-width: 200px; border-radius: 4px; z-index: 1010; }
+        .main-nav .dropdown:hover > .dropdown-menu { display: block; }
+        .main-nav .dropdown-menu li { margin: 0; }
+        .main-nav .dropdown-menu a { display: block; padding: 10px 20px; color: var(--text-dark); text-transform: none; font-size: 14px; letter-spacing: 0; font-weight: 400; }
+        .main-nav .dropdown-menu a:hover { background-color: var(--cream); color: var(--primary-brown); }
+
+        /* Submenu (Level 2) */
+        .main-nav .dropdown-submenu { position: relative; }
+        .main-nav .dropdown-submenu > a { display: flex; justify-content: space-between; align-items: center; }
+        .main-nav .dropdown-submenu .fa-chevron-right { font-size: 10px; margin-left: 10px; color: var(--text-light); }
+        .main-nav .dropdown-submenu .dropdown-menu-level-2 { display: none; position: absolute; left: 100%; top: -10px; background-color: var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.1); list-style: none; padding: 10px 0; min-width: 200px; border-radius: 4px; }
+        .main-nav .dropdown-submenu:hover > .dropdown-menu-level-2 { display: block; }
+
         .hero { background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80'); background-size: cover; background-position: center; height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); }
         .hero-content h1 { font-family: var(--font-heading); font-size: 48px; margin-bottom: 20px; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); }
         .hero-content p { font-size: 18px; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
@@ -51,10 +62,9 @@
         .section-title { text-align: center; margin-bottom: 50px; font-family: var(--font-heading); font-size: 32px; color: var(--dark-brown); position: relative; }
         .section-title:after { content: ''; display: block; width: 60px; height: 3px; background-color: var(--primary-brown); margin: 15px auto 0; }
         .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
-        .category-card-link { text-decoration: none; }
-        .category-card { position: relative; height: 300px; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
-        .category-card-link:hover .category-card { transform: translateY(-5px); }
-        .category-card img { width: 100%; height: 100%; object-fit: cover; }
+        .category-card { position: relative; height: 300px; overflow: hidden; cursor: pointer; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .category-card:hover img { transform: scale(1.05); }
         .category-name { position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(109, 76, 65, 0.85); color: var(--white); padding: 15px; text-align: center; text-transform: uppercase; font-weight: 500; letter-spacing: 1px; }
         .special-collection { padding: 80px 0; background-color: var(--white); }
         .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -112,17 +122,45 @@
     <header>
         <div class="container">
             <div class="top-nav">
-                <a href="index.html" class="logo">KAZUMI</a>
+                <a href="#" class="logo">KAZUMI</a>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">Home</a></li>
                         <li class="dropdown">
-                            <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
+                            <a href="#categories" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
                             <ul class="dropdown-menu">
-                                <li><a href="t-shirts.html">T-Shirt</a></li>
-                                <li><a href="shirts.html">Shirt</a></li>
-                                <li><a href="pants.html">Pants</a></li>
-                                <li><a href="jackets.html">Jacket</a></li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">T-Shirt <i class="fas fa-chevron-right"></i></a>
+                                    <ul class="dropdown-menu-level-2">
+                                        <li><a href="#">V-Neck</a></li>
+                                        <li><a href="#">Crew Neck</a></li>
+                                        <li><a href="#">Polo</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Shirt <i class="fas fa-chevron-right"></i></a>
+                                    <ul class="dropdown-menu-level-2">
+                                        <li><a href="#">Formal</a></li>
+                                        <li><a href="#">Casual</a></li>
+                                        <li><a href="#">Flannel</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Pants <i class="fas fa-chevron-right"></i></a>
+                                    <ul class="dropdown-menu-level-2">
+                                        <li><a href="#">Chinos</a></li>
+                                        <li><a href="#">Jeans</a></li>
+                                        <li><a href="#">Trousers</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#">Jacket <i class="fas fa-chevron-right"></i></a>
+                                    <ul class="dropdown-menu-level-2">
+                                        <li><a href="#">Bomber</a></li>
+                                        <li><a href="#">Denim</a></li>
+                                        <li><a href="#">Leather</a></li>
+                                    </ul>
+                                </li>
                                 <li><a href="#">Accessories</a></li>
                             </ul>
                         </li>
@@ -132,8 +170,8 @@
                 </nav>
                 <div class="nav-icons">
                     <a href="#"><i class="fas fa-search"></i></a>
-                    <a href="#"><i class="fas fa-shopping-bag"></i></a>
-                    <a href="#"><i class="fas fa-user"></i></a>
+                    <a href="cart.html"><i class="fas fa-shopping-bag"></i></a>
+                    <a href="login.html"><i class="fas fa-user"></i></a>
                     <a class="admin-btn" onclick="toggleAdminPanel()"><i class="fas fa-cog"></i> Admin</a>
                 </div>
             </div>
@@ -159,25 +197,25 @@
         <div class="container">
             <h2 class="section-title">Produk Terlaris</h2>
             <div class="categories-grid">
-                <a href="t-shirts.html" class="category-card-link">
+                <a href="product-detail.html" style="text-decoration: none;">
                     <div class="category-card">
                         <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="T-Shirt">
                         <div class="category-name">T-Shirt</div>
                     </div>
                 </a>
-                <a href="shirts.html" class="category-card-link">
+                <a href="product-detail.html" style="text-decoration: none;">
                     <div class="category-card">
                         <img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Shirt">
                         <div class="category-name">Shirt</div>
                     </div>
                 </a>
-                <a href="pants.html" class="category-card-link">
+                <a href="product-detail.html" style="text-decoration: none;">
                     <div class="category-card">
                         <img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pants">
                         <div class="category-name">Pants</div>
                     </div>
                 </a>
-                <a href="jackets.html" class="category-card-link">
+                <a href="product-detail.html" style="text-decoration: none;">
                     <div class="category-card">
                         <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Jacket">
                         <div class="category-name">Jacket</div>
@@ -192,27 +230,33 @@
         <div class="container">
             <h2 class="section-title">Koleksi Spesial</h2>
             <div class="collection-grid">
-                <div class="collection-item">
-                    <img src="https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Executive Collection">
-                    <div class="collection-overlay">
-                        <span class="collection-tag">New</span>
-                        <h3>Executive Collection</h3>
+                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
+                    <div class="collection-item">
+                        <img src="https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Executive Collection">
+                        <div class="collection-overlay">
+                            <span class="collection-tag">New</span>
+                            <h3>Executive Collection</h3>
+                        </div>
                     </div>
-                </div>
-                <div class="collection-item">
-                    <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Limited Edition">
-                    <div class="collection-overlay">
-                        <span class="collection-tag">Limited</span>
-                        <h3>Limited Edition</h3>
+                </a>
+                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
+                    <div class="collection-item">
+                        <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Limited Edition">
+                        <div class="collection-overlay">
+                            <span class="collection-tag">Limited</span>
+                            <h3>Limited Edition</h3>
+                        </div>
                     </div>
-                </div>
-                <div class="collection-item">
-                    <img src="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Weekend Wear">
-                    <div class="collection-overlay">
-                        <span class="collection-tag">Casual</span>
-                        <h3>Weekend Wear</h3>
+                </a>
+                <a href="product-detail.html" style="text-decoration: none; color: inherit;">
+                    <div class="collection-item">
+                        <img src="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Weekend Wear">
+                        <div class="collection-overlay">
+                            <span class="collection-tag">Casual</span>
+                            <h3>Weekend Wear</h3>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>
@@ -293,9 +337,7 @@
 
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
-        <div class="admin-toggle" onclick="toggleAdminPanel()">
-            <i class="fas fa-cog"></i>
-        </div>
+        <div class="admin-toggle" onclick="toggleAdminPanel()"><i class="fas fa-cog"></i></div>
         <h3>Super Admin Panel</h3>
         <ul>
             <li><a href="#"><i class="fas fa-plus"></i> Tambah Produk</a></li>
@@ -348,11 +390,11 @@
                 <div class="footer-column">
                     <h3>KATEGORI PRODUK</h3>
                     <ul>
-                        <li><a href="t-shirts.html">T-Shirt</a></li>
-                        <li><a href="shirts.html">Shirt</a></li>
-                        <li><a href="pants.html">Pants</a></li>
-                        <li><a href="jackets.html">Jacket</a></li>
-                        <li><a href="#">Accessories</a></li>
+                        <li><a href="#categories">T-Shirt</a></li>
+                        <li><a href="#categories">Shirt</a></li>
+                        <li><a href="#categories">Pants</a></li>
+                        <li><a href="#categories">Jacket</a></li>
+                        <li><a href="#categories">Accessories</a></li>
                         <li><a href="#promo">Sale</a></li>
                     </ul>
                 </div>
