@@ -377,6 +377,122 @@
         .submit-btn { display: inline-block; padding: 15px 30px; background: var(--primary-brown); color: var(--white); text-align: center; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border: none; cursor: pointer; transition: background-color 0.3s; border-radius: 4px; text-decoration: none; }
         .submit-btn:hover { background-color: var(--dark-brown); }
 
+        /* Inspiration Gallery Styles */
+        .inspiration-gallery {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .gallery-title {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            color: var(--dark-brown);
+            margin-bottom: 5px;
+        }
+        .gallery-subtitle {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+        }
+        .gallery-item img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Multi-Step Form Styles */
+        .form-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--light-brown);
+        }
+        .step-indicator {
+            padding: 15px 10px;
+            cursor: default;
+            color: var(--text-light);
+            flex: 1;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .step-indicator.active {
+            color: var(--primary-brown);
+            font-weight: 600;
+        }
+        .step-indicator.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-brown);
+            border-radius: 3px 3px 0 0;
+        }
+        .step-indicator i {
+            margin-right: 8px;
+        }
+
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+        .step-title {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            color: var(--dark-brown);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-actions .btn.prev-btn {
+            background-color: var(--cream);
+            color: var(--dark-brown);
+            border: 1px solid var(--light-brown);
+        }
+        .form-actions .btn.prev-btn:hover {
+             background-color: var(--light-brown);
+        }
+
+        /* Custom File Input */
+        .file-input-custom {
+            display: none;
+        }
+        .file-input-label {
+            background-color: var(--white);
+            border: 1px solid var(--light-brown);
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .file-input-label:hover {
+            background-color: var(--cream);
+            border-color: var(--primary-brown);
+        }
+        .file-input-label i {
+            margin-right: 8px;
+        }
+
         /* Bulk Order Form Styles */
         .bulk-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .bulk-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
@@ -1193,44 +1309,101 @@
         <section id="custom-order-form" class="page-content">
             <div class="custom-order-form-section">
                 <div class="container">
-                    <h1 class="section-title">Formulir Pesanan Kustom</h1>
+                    <h1 class="section-title">Buat Pesanan Kustom Impian Anda</h1>
+
+                    <!-- Inspiration Gallery -->
+                    <div class="inspiration-gallery">
+                        <h3 class="gallery-title">Galeri Inspirasi</h3>
+                        <p class="gallery-subtitle">Lihat beberapa karya kustom yang telah kami buat untuk pelanggan kami.</p>
+                        <div class="gallery-grid">
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1551867531-938f1a719283?auto=format&fit=crop&w=400&q=80" alt="Inspirasi Mengukur Bahan"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1594938384914-2343943a85b9?auto=format&fit=crop&w=400&q=80" alt="Inspirasi Pilihan Kain"></div>
+                            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=400&q=80" alt="Inspirasi Model Fashion"></div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Step Form Container -->
                     <div class="custom-order-form-container">
-                        <h2>Detail Pesanan Anda</h2>
-                        <form action="#" method="POST">
-                            <div class="form-group">
-                                <label for="namaLengkap">Nama Lengkap</label>
-                                <input type="text" id="namaLengkap" name="namaLengkap" required>
+                        <div class="form-steps">
+                            <div class="step-indicator active" data-step="1">
+                                <i class="fas fa-user"></i>
+                                <span>Langkah 1: Info Kontak</span>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required>
+                            <div class="step-indicator" data-step="2">
+                                <i class="fas fa-tshirt"></i>
+                                <span>Langkah 2: Detail Pakaian</span>
                             </div>
-                            <div class="form-group">
-                                <label for="nomorTelepon">Nomor Telepon</label>
-                                <input type="tel" id="nomorTelepon" name="nomorTelepon" required>
+                            <div class="step-indicator" data-step="3">
+                                <i class="fas fa-pencil-ruler"></i>
+                                <span>Langkah 3: Desain & Lainnya</span>
                             </div>
-                            <div class="form-group">
-                                <label for="jenisPakaian">Jenis Pakaian yang Diinginkan</label>
-                                <select id="jenisPakaian" name="jenisPakaian" required>
-                                    <option value="">Pilih Jenis Pakaian</option>
-                                    <option value="kemeja">Kemeja</option>
-                                    <option value="celana">Celana</option>
-                                    <option value="jaket">Jaket</option>
-                                    <option value="jas">Jas</option>
-                                    <option value="lainnya">Lainnya</option>
-                                </select>
+                        </div>
+
+                        <form id="multiStepForm" action="#" method="POST">
+                            <!-- Step 1: Contact Info -->
+                            <div class="form-step active" data-step="1">
+                                <h3 class="step-title">Informasi Kontak Anda</h3>
+                                <div class="form-group">
+                                    <label for="namaLengkap">Nama Lengkap</label>
+                                    <input type="text" id="namaLengkap" name="namaLengkap" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nomorTelepon">Nomor Telepon</label>
+                                    <input type="tel" id="nomorTelepon" name="nomorTelepon" required>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn next-btn">Lanjut ke Detail Pakaian</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="deskripsiDesain">Deskripsi Desain & Detail Kustom</label>
-                                <textarea id="deskripsiDesain" name="deskripsiDesain" rows="6" placeholder="Contoh: Kemeja formal lengan panjang, warna biru navy, kerah spread, manset double, ukuran custom fit."></textarea>
-                                <small style="color: var(--text-light);">Sertakan detail seperti warna, bahan yang diinginkan, ukuran khusus, gaya kerah/manset, dll.</small>
+
+                            <!-- Step 2: Garment Details -->
+                            <div class="form-step" data-step="2">
+                                <h3 class="step-title">Pilih Jenis Pakaian</h3>
+                                <div class="form-group">
+                                    <label for="jenisPakaian">Jenis Pakaian yang Diinginkan</label>
+                                    <select id="jenisPakaian" name="jenisPakaian" required>
+                                        <option value="">Pilih Jenis Pakaian</option>
+                                        <option value="kemeja">Kemeja (Shirt)</option>
+                                        <option value="celana">Celana (Pants)</option>
+                                        <option value="jaket">Jaket (Jacket)</option>
+                                        <option value="jas">Jas (Suit)</option>
+                                        <option value="lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div id="dynamic-fields-container">
+                                    <!-- Dynamic fields will be injected here by JS -->
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn prev-btn">Kembali</button>
+                                    <button type="button" class="btn next-btn">Lanjut ke Desain</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="tanggalKonsultasi">Tanggal Preferensi Konsultasi</label>
-                                <input type="date" id="tanggalKonsultasi" name="tanggalKonsultasi">
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="submit-btn">Kirim Pesanan Kustom</button>
+
+                            <!-- Step 3: Design Details -->
+                            <div class="form-step" data-step="3">
+                                <h3 class="step-title">Detail Desain dan Preferensi</h3>
+                                <div class="form-group">
+                                    <label for="deskripsiDesain">Deskripsi Desain & Detail Kustom</label>
+                                    <textarea id="deskripsiDesain" name="deskripsiDesain" rows="6" placeholder="Contoh: Kemeja formal lengan panjang, warna biru navy, kerah spread, manset double, ukuran custom fit."></textarea>
+                                    <small>Sertakan detail seperti warna, bahan yang diinginkan, ukuran khusus, gaya kerah/manset, dll.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="referenceImage">Unggah Referensi / Sketsa (Opsional)</label>
+                                    <input type="file" id="referenceImage" name="referenceImage" class="file-input-custom" accept="image/*">
+                                    <label for="referenceImage" class="file-input-label"><i class="fas fa-upload"></i> Pilih File</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggalKonsultasi">Tanggal Preferensi Konsultasi</label>
+                                    <input type="date" id="tanggalKonsultasi" name="tanggalKonsultasi">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn prev-btn">Kembali</button>
+                                    <button type="submit" class="submit-btn">Kirim Pesanan Kustom</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1377,6 +1550,98 @@
 
         // Handle initial page load based on hash
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Multi-Step Custom Order Form Logic ---
+            const multiStepForm = document.getElementById('multiStepForm');
+            if (multiStepForm) {
+                const nextButtons = multiStepForm.querySelectorAll('.next-btn');
+                const prevButtons = multiStepForm.querySelectorAll('.prev-btn');
+                const formSteps = multiStepForm.querySelectorAll('.form-step');
+                const stepIndicators = document.querySelectorAll('.form-steps .step-indicator');
+                let currentStep = 1;
+
+                function goToStep(stepNumber) {
+                    formSteps.forEach(step => step.classList.remove('active'));
+                    stepIndicators.forEach(indicator => indicator.classList.remove('active'));
+
+                    const targetStep = multiStepForm.querySelector(`.form-step[data-step="${stepNumber}"]`);
+                    const targetIndicator = document.querySelector(`.form-steps .step-indicator[data-step="${stepNumber}"]`);
+
+                    if (targetStep && targetIndicator) {
+                        targetStep.classList.add('active');
+                        targetIndicator.classList.add('active');
+                        currentStep = stepNumber;
+                    }
+                }
+
+                nextButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (currentStep < formSteps.length) {
+                            goToStep(currentStep + 1);
+                        }
+                    });
+                });
+
+                prevButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (currentStep > 1) {
+                            goToStep(currentStep - 1);
+                        }
+                    });
+                });
+
+                const garmentTypeSelect = document.getElementById('jenisPakaian');
+                const dynamicFieldsContainer = document.getElementById('dynamic-fields-container');
+
+                if (garmentTypeSelect && dynamicFieldsContainer) {
+                    garmentTypeSelect.addEventListener('change', function() {
+                        const garment = this.value;
+                        dynamicFieldsContainer.innerHTML = ''; // Clear previous fields
+
+                        if (garment === 'kemeja') {
+                            dynamicFieldsContainer.innerHTML = `
+                                <div class="form-group">
+                                    <label for="collarType">Jenis Kerah</label>
+                                    <select id="collarType" name="collarType">
+                                        <option value="spread">Spread Collar</option>
+                                        <option value="point">Point Collar</option>
+                                        <option value="button-down">Button-Down Collar</option>
+                                        <option value="mandarin">Mandarin Collar</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cuffType">Jenis Manset</label>
+                                    <select id="cuffType" name="cuffType">
+                                        <option value="barrel">Barrel Cuff</option>
+                                        <option value="french">French Cuff</option>
+                                    </select>
+                                </div>`;
+                        } else if (garment === 'celana') {
+                            dynamicFieldsContainer.innerHTML = `
+                                <div class="form-group">
+                                    <label for="fitStyle">Gaya Fit</label>
+                                    <select id="fitStyle" name="fitStyle">
+                                        <option value="slim">Slim Fit</option>
+                                        <option value="regular">Regular Fit</option>
+                                        <option value="loose">Loose Fit</option>
+                                    </select>
+                                </div>`;
+                        }
+                    });
+                }
+
+                const fileInput = document.getElementById('referenceImage');
+                if (fileInput) {
+                    const fileInputLabel = document.querySelector('label.file-input-label[for="referenceImage"]');
+                    fileInput.addEventListener('change', function() {
+                        const fileName = this.files.length > 0 ? this.files[0].name : 'Pilih File';
+                        if (fileInputLabel) {
+                            fileInputLabel.innerHTML = `<i class="fas fa-upload"></i> ${fileName}`;
+                        }
+                    });
+                }
+            }
+            // --- End of Multi-Step Form Logic ---
+
             const initialPage = window.location.hash.substring(1) || 'home';
             showPage(initialPage);
             loadDynamicContent(); // Load dynamic content for home page initially
