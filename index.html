@@ -55,7 +55,7 @@
         .popular-categories, .special-collection, .custom-section, .bulk-purchase, .promo-section, .download-app, .product-page, .cart-section, .auth-section, .admin-dashboard-section, .custom-order-form-section, .bulk-order-form-section, .product-detail-section { padding: 80px 0; background-color: var(--cream); min-height: calc(100vh - 180px); }
         .special-collection, .bulk-purchase, .product-detail-section, .cart-section, .admin-dashboard-section { background-color: var(--white); }
         .section-title { text-align: center; margin-bottom: 60px; font-family: var(--font-heading); font-size: 32px; color: var(--dark-brown); position: relative; }
-        .section-title:after { content: ''; display: block; width: 60px; height: 3px; background-color: var(--primary-brown); margin: 15px auto 0; }
+        .section-title:after { content: ''; display: block; width: 50px; height: 2px; background-color: var(--primary-brown); margin: 10px auto 0; }
 
         /* Categories Grid */
         .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
@@ -1190,6 +1190,10 @@
                             <input type="email" id="registerEmail" name="email" required>
                         </div>
                         <div class="form-group">
+                            <label for="phone">Nomor HP/WhatsApp</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
                             <label for="registerPassword">Password</label>
                             <input type="password" id="registerPassword" name="password" required>
                         </div>
@@ -1297,6 +1301,35 @@
                                 </div>
                                 <div class="admin-card-footer">
                                     <button class="save-btn" onclick="saveSpecialCollections()">Simpan Koleksi</button>
+                                </div>
+                            </div>
+
+                            <!-- Discount Management Card -->
+                            <div class="admin-card">
+                                <div class="admin-card-header">
+                                    <i class="fas fa-tags"></i>
+                                    <h3>Manajemen Diskon</h3>
+                                </div>
+                                <div class="admin-card-body">
+                                    <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Atur diskon untuk seluruh kategori produk. Diskon ini akan menimpa harga asli pada halaman produk.</p>
+                                    <div class="form-group">
+                                        <label for="discountCategory">Pilih Kategori Produk</label>
+                                        <select id="discountCategory" name="discountCategory">
+                                            <option value="">Pilih Kategori</option>
+                                            <option value="t-shirts">T-Shirt</option>
+                                            <option value="shirts">Shirt</option>
+                                            <option value="pants">Pants</option>
+                                            <option value="jackets">Jacket</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="discountPercentage">Persentase Diskon (misal: 15 untuk 15%)</label>
+                                        <input type="number" id="discountPercentage" min="0" max="100" placeholder="0-100" name="discountPercentage">
+                                    </div>
+                                    <div id="discountMessage" class="message"></div>
+                                </div>
+                                <div class="admin-card-footer">
+                                    <button class="save-btn" onclick="applyDiscount()">Terapkan Diskon</button>
                                 </div>
                             </div>
                         </div>
@@ -1417,47 +1450,74 @@
                 <div class="container">
                     <h1 class="section-title">Formulir Pembelian Jumlah Besar</h1>
                     <div class="bulk-order-form-container">
-                        <h2>Detail Permintaan Anda</h2>
-                        <form action="#" method="POST">
-                            <div class="form-group">
-                                <label for="namaPerusahaan">Nama Perusahaan / Organisasi</label>
-                                <input type="text" id="namaPerusahaan" name="namaPerusahaan" required>
+                        <div class="form-steps">
+                            <div class="step-indicator active" data-step="1">
+                                <i class="fas fa-building"></i>
+                                <span>Langkah 1: Info Perusahaan</span>
                             </div>
-                            <div class="form-group">
-                                <label for="namaKontak">Nama Kontak</label>
-                                <input type="text" id="namaKontak" name="namaKontak" required>
+                            <div class="step-indicator" data-step="2">
+                                <i class="fas fa-box-open"></i>
+                                <span>Langkah 2: Detail Pesanan</span>
                             </div>
-                            <div class="form-group">
-                                <label for="emailKontak">Email Kontak</label>
-                                <input type="email" id="emailKontak" name="emailKontak" required>
+                        </div>
+
+                        <form id="bulkOrderForm" action="#" method="POST">
+                            <!-- Step 1: Company Info -->
+                            <div class="form-step active" data-step="1">
+                                <h3 class="step-title">Informasi Perusahaan & Kontak</h3>
+                                <div class="form-group">
+                                    <label for="namaPerusahaan">Nama Perusahaan / Organisasi</label>
+                                    <input type="text" id="namaPerusahaan" name="namaPerusahaan" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="namaKontak">Nama Kontak</label>
+                                    <input type="text" id="namaKontak" name="namaKontak" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emailKontak">Email Kontak</label>
+                                    <input type="email" id="emailKontak" name="emailKontak" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nomorTeleponKontak">Nomor Telepon Kontak</label>
+                                    <input type="tel" id="nomorTeleponKontak" name="nomorTeleponKontak" required>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn next-btn">Lanjut ke Detail Pesanan</button>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="nomorTeleponKontak">Nomor Telepon Kontak</label>
-                                <input type="tel" id="nomorTeleponKontak" name="nomorTeleponKontak" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="jenisProduk">Jenis Produk yang Diminati</label>
-                                <select id="jenisProduk" name="jenisProduk" required>
-                                    <option value="">Pilih Jenis Produk</option>
-                                    <option value="t-shirt">T-Shirt</option>
-                                    <option value="shirt">Shirt</option>
-                                    <option value="pants">Pants</option>
-                                    <option value="jacket">Jacket</option>
-                                    <option value="accessories">Accessories</option>
-                                    <option value="mix">Campuran</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="jumlahEstimasi">Estimasi Jumlah Produk</label>
-                                <input type="number" id="jumlahEstimasi" name="jumlahEstimasi" min="10" placeholder="Minimal 10 item" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="deskripsiKebutuhan">Deskripsi Kebutuhan & Kustomisasi (jika ada)</label>
-                                <textarea id="deskripsiKebutuhan" name="deskripsiKebutuhan" rows="6" placeholder="Contoh: Membutuhkan 50 kemeja formal putih dengan logo perusahaan di dada kiri, ukuran bervariasi S-XL."></textarea>
-                                <small style="color: var(--text-light);">Sertakan detail seperti warna, ukuran, penempatan logo, tanggal dibutuhkan, dll.</small>
-                            </div>
-                            <div class="form-actions">
-                                <button type="submit" class="submit-btn">Kirim Permintaan Bulk Order</button>
+
+                            <!-- Step 2: Order Details -->
+                            <div class="form-step" data-step="2">
+                                <h3 class="step-title">Detail Kebutuhan Pesanan</h3>
+                                <div class="form-group">
+                                    <label for="jenisProdukBulk">Jenis Produk yang Diminati</label>
+                                    <select id="jenisProdukBulk" name="jenisProdukBulk" required>
+                                        <option value="">Pilih Jenis Produk</option>
+                                        <option value="t-shirt">T-Shirt</option>
+                                        <option value="shirt">Shirt</option>
+                                        <option value="pants">Pants</option>
+                                        <option value="jacket">Jacket</option>
+                                        <option value="accessories">Accessories</option>
+                                        <option value="mix">Campuran</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jumlahEstimasi">Estimasi Jumlah Produk</label>
+                                    <input type="number" id="jumlahEstimasi" name="jumlahEstimasi" min="10" placeholder="Minimal 10 item" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tanggalDibutuhkan">Tanggal Dibutuhkan (Opsional)</label>
+                                    <input type="date" id="tanggalDibutuhkan" name="tanggalDibutuhkan">
+                                </div>
+                                <div class="form-group">
+                                    <label for="deskripsiKebutuhan">Deskripsi Kebutuhan & Kustomisasi (jika ada)</label>
+                                    <textarea id="deskripsiKebutuhan" name="deskripsiKebutuhan" rows="6" placeholder="Contoh: Membutuhkan 50 kemeja formal putih dengan logo perusahaan di dada kiri, ukuran bervariasi S-XL."></textarea>
+                                    <small>Sertakan detail seperti warna, ukuran, penempatan logo, dll.</small>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn prev-btn">Kembali</button>
+                                    <button type="submit" class="submit-btn">Kirim Permintaan</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1624,6 +1684,49 @@
                                         <option value="regular">Regular Fit</option>
                                         <option value="loose">Loose Fit</option>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pantLength">Panjang Celana</label>
+                                    <select id="pantLength" name="pantLength">
+                                        <option value="full">Full-length</option>
+                                        <option value="cropped">Cropped</option>
+                                    </select>
+                                </div>`;
+                        } else if (garment === 'jaket') {
+                            dynamicFieldsContainer.innerHTML = `
+                                <div class="form-group">
+                                    <label for="jacketMaterial">Tipe Bahan</label>
+                                    <select id="jacketMaterial" name="jacketMaterial">
+                                        <option value="denim">Denim</option>
+                                        <option value="leather">Kulit (Leather)</option>
+                                        <option value="suede">Suede</option>
+                                        <option value="wool">Wol</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jacketClosure">Tipe Penutup</label>
+                                    <select id="jacketClosure" name="jacketClosure">
+                                        <option value="zipper">Ritsleting (Zipper)</option>
+                                        <option value="buttons">Kancing (Buttons)</option>
+                                    </select>
+                                </div>`;
+                        } else if (garment === 'jas') {
+                            dynamicFieldsContainer.innerHTML = `
+                                <div class="form-group">
+                                    <label for="suitLapel">Tipe Lapel</label>
+                                    <select id="suitLapel" name="suitLapel">
+                                        <option value="notch">Notch Lapel</option>
+                                        <option value="peak">Peak Lapel</option>
+                                        <option value="shawl">Shawl Lapel</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="suitButtons">Jumlah Kancing</label>
+                                    <select id="suitButtons" name="suitButtons">
+                                        <option value="1">1 Kancing</option>
+                                        <option value="2">2 Kancing</option>
+                                        <option value="3">3 Kancing</option>
+                                    </select>
                                 </div>`;
                         }
                     });
@@ -1641,6 +1744,48 @@
                 }
             }
             // --- End of Multi-Step Form Logic ---
+
+
+            // --- Multi-Step Bulk Order Form Logic ---
+            const bulkOrderForm = document.getElementById('bulkOrderForm');
+            if (bulkOrderForm) {
+                const nextButtons = bulkOrderForm.querySelectorAll('.next-btn');
+                const prevButtons = bulkOrderForm.querySelectorAll('.prev-btn');
+                const formSteps = bulkOrderForm.querySelectorAll('.form-step');
+                const stepIndicators = bulkOrderForm.parentElement.querySelectorAll('.form-steps .step-indicator');
+                let currentStep = 1;
+
+                function goToBulkStep(stepNumber) {
+                    formSteps.forEach(step => step.classList.remove('active'));
+                    stepIndicators.forEach(indicator => indicator.classList.remove('active'));
+
+                    const targetStep = bulkOrderForm.querySelector(`.form-step[data-step="${stepNumber}"]`);
+                    const targetIndicator = bulkOrderForm.parentElement.querySelector(`.form-steps .step-indicator[data-step="${stepNumber}"]`);
+
+                    if (targetStep && targetIndicator) {
+                        targetStep.classList.add('active');
+                        targetIndicator.classList.add('active');
+                        currentStep = stepNumber;
+                    }
+                }
+
+                nextButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (currentStep < formSteps.length) {
+                            goToBulkStep(currentStep + 1);
+                        }
+                    });
+                });
+
+                prevButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (currentStep > 1) {
+                            goToBulkStep(currentStep - 1);
+                        }
+                    });
+                });
+            }
+
 
             const initialPage = window.location.hash.substring(1) || 'home';
             showPage(initialPage);
@@ -2060,6 +2205,75 @@
                 messageElement.style.display = 'none';
             }, 3000);
         }
+
+        // --- Discount Management Functions ---
+
+        // Applies discount from the admin panel and saves to localStorage
+        function applyDiscount() {
+            const category = document.getElementById('discountCategory').value;
+            const percentage = document.getElementById('discountPercentage').value;
+
+            if (!category) {
+                showMessage('discountMessage', 'Silakan pilih kategori terlebih dahulu.', 'error');
+                return;
+            }
+            if (percentage === '' || percentage < 0 || percentage > 100) {
+                showMessage('discountMessage', 'Silakan masukkan persentase diskon yang valid (0-100).', 'error');
+                return;
+            }
+
+            let discounts = JSON.parse(localStorage.getItem('productDiscounts')) || {};
+
+            if (parseInt(percentage) === 0) {
+                delete discounts[category]; // Remove discount if set to 0
+            } else {
+                discounts[category] = parseInt(percentage);
+            }
+
+            localStorage.setItem('productDiscounts', JSON.stringify(discounts));
+            showMessage('discountMessage', `Diskon untuk kategori ${category} berhasil diperbarui!`, 'success');
+
+            // Update prices on all product pages immediately
+            updateAllProductPrices();
+        }
+
+        // Updates the price display for all products on the site
+        function updateAllProductPrices() {
+            const discounts = JSON.parse(localStorage.getItem('productDiscounts')) || {};
+
+            document.querySelectorAll('.product-page').forEach(page => {
+                const categoryId = page.id;
+                const discountPercentage = discounts[categoryId];
+
+                page.querySelectorAll('.product-card').forEach(card => {
+                    const priceElement = card.querySelector('.price');
+                    const originalPriceStr = priceElement.dataset.originalPrice || priceElement.textContent;
+
+                    // Ensure we always have the original price stored before modifying
+                    if (!priceElement.dataset.originalPrice) {
+                        priceElement.dataset.originalPrice = originalPriceStr;
+                    }
+
+                    const originalPrice = parseFloat(originalPriceStr.replace(/[^0-9]/g, ''));
+
+                    if (discountPercentage > 0) {
+                        const discountedPrice = originalPrice * (1 - discountPercentage / 100);
+                        priceElement.innerHTML = `
+                            <span style="text-decoration: line-through; color: var(--text-light); font-size: 14px;">${formatRupiah(originalPrice)}</span>
+                            <br>
+                            <span style="color: var(--accent-gold); font-weight: 700;">${formatRupiah(discountedPrice)}</span>
+                        `;
+                    } else {
+                        // Revert to original price if discount is removed
+                        priceElement.innerHTML = formatRupiah(originalPrice);
+                    }
+                });
+            });
+        }
+
+        // Initial call to apply discounts when the page loads
+        document.addEventListener('DOMContentLoaded', updateAllProductPrices);
+
     </script>
 </body>
 </html>
