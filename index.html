@@ -197,11 +197,19 @@
         /* Admin Dashboard Styles */
         .admin-dashboard-section { background-color: var(--white); }
         .admin-panel { max-width: 1200px; margin: 0 auto; }
-        .admin-panel h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); font-size: 28px; }
+        /* .admin-panel h2 is now the .section-title */
+
+        .admin-tabs { display: flex; border-bottom: 2px solid var(--light-brown); margin-bottom: 30px; }
+        .admin-tab-btn { background: none; border: none; padding: 15px 25px; cursor: pointer; font-size: 16px; font-weight: 600; color: var(--text-light); position: relative; transition: color 0.3s, border-bottom-color 0.3s; border-bottom: 3px solid transparent; }
+        .admin-tab-btn.active { color: var(--primary-brown); border-bottom-color: var(--primary-brown); }
+        .admin-tab-btn:hover { color: var(--primary-brown); }
+
+        .admin-tab-content { display: none; }
+        .admin-tab-content.active { display: block; }
 
         .admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 30px;
         }
 
@@ -595,7 +603,7 @@
                         <li><a href="#special-collection" onclick="showPage('home')">Collections</a></li>
                         <li><a href="#custom-order-section" onclick="showPage('home')">Custom Order</a></li>
                         <li><a href="#bulk-purchase-section" onclick="showPage('home')">Bulk Order</a></li>
-                        <li><a href="#promo-section" onclick="showPage('home')">Promo</a></li>
+                        <li><a href="#fitting" onclick="showPage('size-calculator')">Fitting</a></li>
                     </ul>
                 </nav>
                 <div class="nav-icons">
@@ -1009,141 +1017,73 @@
                 <div class="container">
                     <h1 class="section-title">Admin Dashboard</h1>
                     <div class="admin-panel">
-                        <div class="admin-grid">
-                            <!-- Hero Section Editor Card -->
-                            <div class="admin-card">
-                                <div class="admin-card-header">
-                                    <i class="fas fa-bullhorn"></i>
-                                    <h3>Homepage Hero Section</h3>
-                                </div>
-                                <div class="admin-card-body">
-                                    <div class="form-group">
-                                        <label for="heroHeading">Judul Utama</label>
-                                        <input type="text" id="heroHeading" value="ELEVATE YOUR STYLE">
+                        <div class="admin-tabs">
+                            <button class="admin-tab-btn active" data-tab="content">Konten</button>
+                            <button class="admin-tab-btn" data-tab="products">Produk</button>
+                            <button class="admin-tab-btn" data-tab="discounts">Diskon</button>
+                        </div>
+
+                        <div class="admin-tab-content-container">
+                            <!-- Konten Tab -->
+                            <div class="admin-tab-content active" data-tab="content">
+                                <div class="admin-grid">
+                                    <div class="admin-card">
+                                        <div class="admin-card-header"><i class="fas fa-bullhorn"></i><h3>Homepage Hero Section</h3></div>
+                                        <div class="admin-card-body">
+                                            <div class="form-group"><label for="heroHeading">Judul Utama</label><input type="text" id="heroHeading" value="ELEVATE YOUR STYLE"></div>
+                                            <div class="form-group"><label for="heroParagraph">Sub-Judul / Paragraf</label><textarea id="heroParagraph">Discover the perfect blend of sophistication and modern fashion for the contemporary man</textarea></div>
+                                            <div class="form-group"><label for="heroImageFile">Gambar Latar</label><input type="file" id="heroImageFile" accept="image/png, image/jpeg" style="display: none;"><button type="button" class="file-upload-btn" onclick="document.getElementById('heroImageFile').click();">Pilih Gambar</button><img id="heroImagePreview" alt="Pratinjau Gambar Latar" class="image-preview"><small style="display:block; margin-top: 10px; color: var(--text-light);">Ganti gambar latar hero. Ukuran besar direkomendasikan.</small></div>
+                                            <div id="heroMessage" class="message"></div>
+                                        </div>
+                                        <div class="admin-card-footer"><button class="save-btn" onclick="saveHeroContent()">Simpan Perubahan</button></div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="heroParagraph">Sub-Judul / Paragraf</label>
-                                        <textarea id="heroParagraph">Discover the perfect blend of sophistication and modern fashion for the contemporary man</textarea>
+                                    <div class="admin-card">
+                                        <div class="admin-card-header"><i class="fas fa-percent"></i><h3>Kolaborasi & Promo</h3></div>
+                                        <div class="admin-card-body">
+                                            <div class="form-group"><label for="promoTitle">Judul Promo</label><input type="text" id="promoTitle" value="Penawaran Spesial Minggu Ini!"></div>
+                                            <div class="form-group"><label for="promoDescription">Deskripsi Promo</label><textarea id="promoDescription">Dalam rangka kolaborasi eksklusif kami dengan BUSINESSWEEK, nikmati promo terbatas untuk gaya Anda!</textarea></div>
+                                            <div class="form-group"><label for="promoImageFile">Gambar Promo</label><input type="file" id="promoImageFile" accept="image/png, image/jpeg" style="display: none;"><button type="button" class="file-upload-btn" onclick="document.getElementById('promoImageFile').click();">Pilih Gambar</button><img id="promoImagePreview" alt="Pratinjau Gambar Promo" class="image-preview"></div>
+                                            <div class="form-group"><label for="promoItem1Title">Promo Item 1 Judul</label><input type="text" id="promoItem1Title" value="Monday Special"></div>
+                                            <div class="form-group"><label for="promoItem1Desc">Promo Item 1 Deskripsi</label><input type="text" id="promoItem1Desc" value="Diskon 30% untuk pembelian 2 item"></div>
+                                            <div class="form-group"><label for="promoItem2Title">Promo Item 2 Judul</label><input type="text" id="promoItem2Title" value="Cashback"></div>
+                                            <div class="form-group"><label for="promoItem2Desc">Promo Item 2 Deskripsi</label><input type="text" id="promoItem2Desc" value="IDR 8.000 dengan min. pembelian IDR 300.000"></div>
+                                            <div id="promoMessage" class="message"></div>
+                                        </div>
+                                        <div class="admin-card-footer"><button class="save-btn" onclick="savePromoContent()">Simpan Perubahan</button></div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="heroImageFile">Gambar Latar</label>
-                                        <input type="file" id="heroImageFile" accept="image/png, image/jpeg" style="display: none;">
-                                        <button type="button" class="file-upload-btn" onclick="document.getElementById('heroImageFile').click();">Pilih Gambar</button>
-                                        <img id="heroImagePreview" alt="Pratinjau Gambar Latar" class="image-preview">
-                                        <small style="display:block; margin-top: 10px; color: var(--text-light);">Ganti gambar latar hero. Ukuran besar direkomendasikan. Gambar disimpan di cache browser.</small>
+                                    <div class="admin-card">
+                                        <div class="admin-card-header"><i class="fas fa-star"></i><h3>Koleksi Spesial</h3></div>
+                                        <div class="admin-card-body">
+                                            <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Ubah gambar dan judul untuk setiap item koleksi spesial yang tampil di beranda.</p>
+                                            <div id="specialCollectionsEditor"></div>
+                                            <div id="collectionsMessage" class="message"></div>
+                                        </div>
+                                        <div class="admin-card-footer"><button class="save-btn" onclick="saveSpecialCollections()">Simpan Koleksi</button></div>
                                     </div>
-                                    <div id="heroMessage" class="message"></div>
-                                </div>
-                                <div class="admin-card-footer">
-                                    <button class="save-btn" onclick="saveHeroContent()">Simpan Perubahan</button>
                                 </div>
                             </div>
-
-                            <!-- Promo Section Editor Card -->
-                            <div class="admin-card">
-                                <div class="admin-card-header">
-                                    <i class="fas fa-percent"></i>
-                                    <h3>Kolaborasi & Promo</h3>
-                                </div>
-                                <div class="admin-card-body">
-                                    <div class="form-group">
-                                        <label for="promoTitle">Judul Promo</label>
-                                        <input type="text" id="promoTitle" value="Penawaran Spesial Minggu Ini!">
+                            <!-- Produk Tab -->
+                            <div class="admin-tab-content" data-tab="products">
+                                <div class="admin-card">
+                                    <div class="admin-card-header"><i class="fas fa-box-open"></i><h3>Manajemen Produk</h3></div>
+                                    <div class="admin-card-body">
+                                        <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Tambah, ubah, atau hapus produk dari katalog toko Anda.</p>
+                                        <button class="save-btn" id="add-new-product-btn" style="width: 100%; margin-bottom: 20px;"><i class="fas fa-plus" style="margin-right: 8px;"></i>Tambah Produk Baru</button>
+                                        <div id="product-management-list"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="promoDescription">Deskripsi Promo</label>
-                                        <textarea id="promoDescription">Dalam rangka kolaborasi eksklusif kami dengan BUSINESSWEEK, nikmati promo terbatas untuk gaya Anda!</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="promoImageFile">Gambar Promo</label>
-                                        <input type="file" id="promoImageFile" accept="image/png, image/jpeg" style="display: none;">
-                                        <button type="button" class="file-upload-btn" onclick="document.getElementById('promoImageFile').click();">Pilih Gambar</button>
-                                        <img id="promoImagePreview" alt="Pratinjau Gambar Promo" class="image-preview">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="promoItem1Title">Promo Item 1 Judul</label>
-                                        <input type="text" id="promoItem1Title" value="Monday Special">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="promoItem1Desc">Promo Item 1 Deskripsi</label>
-                                        <input type="text" id="promoItem1Desc" value="Diskon 30% untuk pembelian 2 item">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="promoItem2Title">Promo Item 2 Judul</label>
-                                        <input type="text" id="promoItem2Title" value="Cashback">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="promoItem2Desc">Promo Item 2 Deskripsi</label>
-                                        <input type="text" id="promoItem2Desc" value="IDR 8.000 dengan min. pembelian IDR 300.000">
-                                    </div>
-                                    <div id="promoMessage" class="message"></div>
-                                </div>
-                                <div class="admin-card-footer">
-                                    <button class="save-btn" onclick="savePromoContent()">Simpan Perubahan</button>
                                 </div>
                             </div>
-
-                            <!-- Special Collection Editor Card -->
-                            <div class="admin-card">
-                                <div class="admin-card-header">
-                                    <i class="fas fa-star"></i>
-                                    <h3>Koleksi Spesial</h3>
-                                </div>
-                                <div class="admin-card-body">
-                                    <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Ubah gambar dan judul untuk setiap item koleksi spesial yang tampil di beranda.</p>
-                                    <div id="specialCollectionsEditor">
-                                        <!-- Collection items will be loaded here by JS -->
+                            <!-- Diskon Tab -->
+                            <div class="admin-tab-content" data-tab="discounts">
+                                <div class="admin-card">
+                                    <div class="admin-card-header"><i class="fas fa-tags"></i><h3>Manajemen Diskon</h3></div>
+                                    <div class="admin-card-body">
+                                        <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Atur diskon untuk seluruh kategori produk. Diskon ini akan menimpa harga asli.</p>
+                                        <div class="form-group"><label for="discountCategory">Pilih Kategori Produk</label><select id="discountCategory" name="discountCategory"><option value="">Pilih Kategori</option><option value="t-shirts">T-Shirt</option><option value="shirts">Shirt</option><option value="pants">Pants</option><option value="jackets">Jacket</option></select></div>
+                                        <div class="form-group"><label for="discountPercentage">Persentase Diskon (misal: 15 untuk 15%)</label><input type="number" id="discountPercentage" min="0" max="100" placeholder="0-100" name="discountPercentage"></div>
+                                        <div id="discountMessage" class="message"></div>
                                     </div>
-                                    <div id="collectionsMessage" class="message"></div>
-                                </div>
-                                <div class="admin-card-footer">
-                                    <button class="save-btn" onclick="saveSpecialCollections()">Simpan Koleksi</button>
-                                </div>
-                            </div>
-
-                            <!-- Discount Management Card -->
-                            <div class="admin-card">
-                                <div class="admin-card-header">
-                                    <i class="fas fa-tags"></i>
-                                    <h3>Manajemen Diskon</h3>
-                                </div>
-                                <div class="admin-card-body">
-                                    <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Atur diskon untuk seluruh kategori produk. Diskon ini akan menimpa harga asli pada halaman produk.</p>
-                                    <div class="form-group">
-                                        <label for="discountCategory">Pilih Kategori Produk</label>
-                                        <select id="discountCategory" name="discountCategory">
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="t-shirts">T-Shirt</option>
-                                            <option value="shirts">Shirt</option>
-                                            <option value="pants">Pants</option>
-                                            <option value="jackets">Jacket</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="discountPercentage">Persentase Diskon (misal: 15 untuk 15%)</label>
-                                        <input type="number" id="discountPercentage" min="0" max="100" placeholder="0-100" name="discountPercentage">
-                                    </div>
-                                    <div id="discountMessage" class="message"></div>
-                                </div>
-                                <div class="admin-card-footer">
-                                    <button class="save-btn" onclick="applyDiscount()">Terapkan Diskon</button>
-                                </div>
-                            </div>
-
-                            <!-- Product Management Card -->
-                            <div class="admin-card">
-                                <div class="admin-card-header">
-                                    <i class="fas fa-box-open"></i>
-                                    <h3>Manajemen Produk</h3>
-                                </div>
-                                <div class="admin-card-body">
-                                    <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Tambah, ubah, atau hapus produk dari katalog toko Anda.</p>
-                                    <button class="save-btn" id="add-new-product-btn" style="width: 100%; margin-bottom: 20px;">
-                                        <i class="fas fa-plus" style="margin-right: 8px;"></i>Tambah Produk Baru
-                                    </button>
-                                    <div id="product-management-list">
-                                        <!-- Product list will be rendered here by JS -->
-                                    </div>
+                                    <div class="admin-card-footer"><button class="save-btn" onclick="applyDiscount()">Terapkan Diskon</button></div>
                                 </div>
                             </div>
                         </div>
@@ -1472,12 +1412,13 @@
                     <input type="number" id="product-price" required min="0">
                 </div>
                 <div class="form-group">
-                    <label for="product-imageUrl">URL Gambar Utama</label>
-                    <input type="url" id="product-imageUrl" required placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label for="product-thumbnails">URL Thumbnails (pisahkan dengan koma)</label>
-                    <input type="text" id="product-thumbnails" placeholder="https://... , https://...">
+                    <label for="product-imageFile">Gambar Utama Produk</label>
+                    <input type="file" id="product-imageFile" accept="image/png, image/jpeg" style="display: none;">
+                    <button type="button" class="file-upload-btn" onclick="document.getElementById('product-imageFile').click();">Pilih Gambar</button>
+                    <img id="product-imagePreview" alt="Pratinjau Gambar Produk" class="image-preview" style="max-height: 150px;">
+                    <small style="display:block; margin-top: 10px; color: var(--text-light);">
+                        Pilih satu gambar utama untuk produk. Ini juga akan digunakan sebagai thumbnail.
+                    </small>
                 </div>
                 <div class="form-group">
                     <label for="product-description">Deskripsi</label>
@@ -1659,15 +1600,26 @@
 
             const openProductModal = (product = null) => {
                 productForm.reset();
+                const imagePreview = document.getElementById('product-imagePreview');
+                imagePreview.src = '';
+                imagePreview.classList.remove('active');
+                // Also reset the file input value
+                document.getElementById('product-imageFile').value = '';
+
+
                 if (product) {
                     productModalTitle.textContent = 'Edit Produk';
                     document.getElementById('product-id').value = product.id;
                     document.getElementById('product-name').value = product.name;
                     document.getElementById('product-category').value = product.category;
                     document.getElementById('product-price').value = product.price;
-                    document.getElementById('product-imageUrl').value = product.imageUrl;
-                    document.getElementById('product-thumbnails').value = product.thumbnails.join(', ');
                     document.getElementById('product-description').value = product.description;
+
+                    if (product.imageUrl) {
+                        imagePreview.src = product.imageUrl;
+                        imagePreview.classList.add('active');
+                    }
+
                 } else {
                     productModalTitle.textContent = 'Tambah Produk Baru';
                     document.getElementById('product-id').value = '';
@@ -1692,19 +1644,37 @@
                     e.preventDefault();
                     let products = JSON.parse(localStorage.getItem('products')) || [];
                     const productId = document.getElementById('product-id').value;
+                    const imagePreview = document.getElementById('product-imagePreview');
 
                     const productData = {
                         name: document.getElementById('product-name').value,
                         category: document.getElementById('product-category').value,
                         price: parseFloat(document.getElementById('product-price').value),
-                        imageUrl: document.getElementById('product-imageUrl').value,
-                        thumbnails: document.getElementById('product-thumbnails').value.split(',').map(url => url.trim()),
                         description: document.getElementById('product-description').value,
                     };
 
                     if (productId) { // Update existing product
-                        products = products.map(p => p.id === productId ? { ...p, ...productData } : p);
+                        const existingProduct = products.find(p => p.id === productId);
+                        let imageUrl = existingProduct.imageUrl; // Default to old image
+                        if (imagePreview.src && imagePreview.src.startsWith('data:image')) {
+                            imageUrl = imagePreview.src; // New image was uploaded
+                        }
+
+                        if (!imageUrl) {
+                            alert('Gambar produk tidak boleh kosong.');
+                            return;
+                        }
+
+                        const updatedProductData = { ...productData, imageUrl: imageUrl, thumbnails: [imageUrl] };
+                        products = products.map(p => p.id === productId ? { ...p, ...updatedProductData } : p);
+
                     } else { // Add new product
+                        if (!imagePreview.src || !imagePreview.src.startsWith('data:image')) {
+                            alert('Silakan unggah gambar produk baru.');
+                            return;
+                        }
+                        productData.imageUrl = imagePreview.src;
+                        productData.thumbnails = [imagePreview.src];
                         productData.id = `${productData.category}-${Date.now()}`;
                         products.push(productData);
                     }
@@ -1714,7 +1684,7 @@
                     renderProductPages();
                     renderProductManagementList();
                     closeProductModal();
-                    showMessage('collectionsMessage', 'Produk berhasil disimpan!', 'success'); // Re-using a message element
+                    showMessage('collectionsMessage', 'Produk berhasil disimpan!', 'success');
                 });
             }
 
@@ -2095,6 +2065,7 @@
             // Attach image upload handlers
             handleImageUpload('heroImageFile', 'heroImagePreview');
             handleImageUpload('promoImageFile', 'promoImagePreview');
+            handleImageUpload('product-imageFile', 'product-imagePreview');
         });
 
         function handleImageUpload(inputId, previewId) {
@@ -2598,6 +2569,33 @@
         // Initial call to apply discounts when the page loads
         document.addEventListener('DOMContentLoaded', updateAllProductPrices);
 
+        // --- Admin Dashboard Tab Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabsContainer = document.querySelector('.admin-tabs');
+            if (!tabsContainer) return;
+
+            const tabButtons = tabsContainer.querySelectorAll('.admin-tab-btn');
+            const tabContents = document.querySelectorAll('.admin-tab-content');
+
+            tabsContainer.addEventListener('click', (e) => {
+                const clickedButton = e.target.closest('.admin-tab-btn');
+                if (!clickedButton) return;
+
+                // Deactivate all tabs and content
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Activate the clicked tab
+                clickedButton.classList.add('active');
+
+                // Activate the corresponding content
+                const tabName = clickedButton.dataset.tab;
+                const activeContent = document.querySelector(`.admin-tab-content[data-tab="${tabName}"]`);
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
