@@ -714,6 +714,34 @@
             color: var(--text-light);
         }
 
+        .order-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .order-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .order-card h4 {
+            font-family: var(--font-body);
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--dark-brown);
+            border-bottom: 1px solid var(--light-brown);
+            padding-bottom: 10px;
+        }
+        .order-card p {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .order-card strong {
+            color: var(--dark-brown);
+        }
+
         /* Footer */
         footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; margin-top: auto; }
         .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
@@ -1324,6 +1352,7 @@
                             <button class="admin-tab-btn" data-tab="products">Produk</button>
                             <button class="admin-tab-btn" data-tab="discounts">Diskon</button>
                             <button class="admin-tab-btn" data-tab="menu">Menu</button>
+                            <button class="admin-tab-btn" data-tab="orders">Pesanan</button>
                         </div>
 
                         <div class="admin-tab-content-container">
@@ -1402,6 +1431,28 @@
                                     </div>
                                     <div class="admin-card-footer">
                                         <button class="save-btn" onclick="saveMenuOrder()">Simpan Urutan Menu</button>
+                                    </div>
+                                </div>
+                            </div>
+                             <!-- Orders Tab -->
+                            <div class="admin-tab-content" data-tab="orders">
+                                <div class="admin-card">
+                                    <div class="admin-card-header"><i class="fas fa-clipboard-list"></i><h3>Daftar Pesanan</h3></div>
+                                    <div class="admin-card-body">
+                                        <div class="order-list-container">
+                                            <div>
+                                                <h2>Pesanan Kustom</h2>
+                                                <div id="custom-orders-list">
+                                                    <p>Tidak ada pesanan kustom yang masuk.</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h2>Pesanan Massal</h2>
+                                                <div id="bulk-orders-list">
+                                                    <p>Tidak ada pesanan massal yang masuk.</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2237,8 +2288,63 @@
 
 
             // --- Multi-Step Bulk Order Form Logic ---
+            const multiStepFormEl = document.getElementById('multiStepForm');
+            if(multiStepFormEl) {
+                multiStepFormEl.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(multiStepFormEl);
+                    const orderData = Object.fromEntries(formData.entries());
+                    orderData.id = `custom-${Date.now()}`;
+                    orderData.submittedAt = new Date().toISOString();
+
+                    const existingOrders = JSON.parse(localStorage.getItem('customOrders')) || [];
+                    existingOrders.push(orderData);
+                    localStorage.setItem('customOrders', JSON.stringify(existingOrders));
+
+                    alert('Terima kasih! Pesanan kustom Anda telah kami terima. Kami akan segera menghubungi Anda.');
+                    multiStepFormEl.reset();
+                    // Optionally, navigate back to the first step of the form
+                    const firstStep = multiStepFormEl.querySelector('.form-step[data-step="1"]');
+                    if(firstStep) {
+                        multiStepFormEl.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                        firstStep.classList.add('active');
+                         const firstIndicator = document.querySelector('.form-steps .step-indicator[data-step="1"]');
+                         if(firstIndicator) {
+                            document.querySelectorAll('.form-steps .step-indicator').forEach(i => i.classList.remove('active'));
+                            firstIndicator.classList.add('active');
+                         }
+                    }
+                });
+            }
+
             const bulkOrder_form = document.getElementById('bulkOrderForm');
             if (bulkOrder_form) {
+                bulkOrder_form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(bulkOrder_form);
+                    const orderData = Object.fromEntries(formData.entries());
+                    orderData.id = `bulk-${Date.now()}`;
+                    orderData.submittedAt = new Date().toISOString();
+
+                    const existingOrders = JSON.parse(localStorage.getItem('bulkOrders')) || [];
+                    existingOrders.push(orderData);
+                    localStorage.setItem('bulkOrders', JSON.stringify(existingOrders));
+
+                    alert('Terima kasih! Permintaan pesanan massal Anda telah kami terima. Kami akan segera menghubungi Anda.');
+                    bulkOrder_form.reset();
+                     // Optionally, navigate back to the first step of the form
+                    const firstStep = bulkOrder_form.querySelector('.form-step[data-step="1"]');
+                    if(firstStep) {
+                        bulkOrder_form.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                        firstStep.classList.add('active');
+                         const firstIndicator = bulkOrder_form.parentElement.querySelector('.form-steps .step-indicator[data-step="1"]');
+                         if(firstIndicator) {
+                            bulkOrder_form.parentElement.querySelectorAll('.form-steps .step-indicator').forEach(i => i.classList.remove('active'));
+                            firstIndicator.classList.add('active');
+                         }
+                    }
+                });
+
                 const nextButtons = bulkOrder_form.querySelectorAll('.next-btn');
                 const prevButtons = bulkOrder_form.querySelectorAll('.prev-btn');
                 const formSteps = bulkOrder_form.querySelectorAll('.form-step');
@@ -2591,6 +2697,8 @@
             loadSpecialCollectionsEditor();
             renderProductManagementList();
             renderMenuManagementList();
+            renderCustomOrders();
+            renderBulkOrders();
         }
 
         function renderProductManagementList() {
@@ -3012,6 +3120,40 @@
                 'XL': { 'Lebar Dada': '61 cm', 'Panjang Badan': '71 cm', 'Panjang Lengan': '65 cm' }
             }
         };
+
+        function renderCustomOrders() {
+            const orders = JSON.parse(localStorage.getItem('customOrders')) || [];
+            const container = document.getElementById('custom-orders-list');
+            if (!container) return;
+            if (orders.length === 0) {
+                container.innerHTML = '<p>Tidak ada pesanan kustom yang masuk.</p>';
+                return;
+            }
+            container.innerHTML = orders.map(order => {
+                let details = '';
+                for (const [key, value] of Object.entries(order)) {
+                    if (value) details += `<p><strong>${key}:</strong> ${value}</p>`;
+                }
+                return `<div class="order-card"><h4>Pesanan ID: ${order.id}</h4>${details}</div>`;
+            }).join('');
+        }
+
+        function renderBulkOrders() {
+            const orders = JSON.parse(localStorage.getItem('bulkOrders')) || [];
+            const container = document.getElementById('bulk-orders-list');
+            if (!container) return;
+            if (orders.length === 0) {
+                container.innerHTML = '<p>Tidak ada pesanan massal yang masuk.</p>';
+                return;
+            }
+            container.innerHTML = orders.map(order => {
+                let details = '';
+                for (const [key, value] of Object.entries(order)) {
+                    if (value) details += `<p><strong>${key}:</strong> ${value}</p>`;
+                }
+                return `<div class="order-card"><h4>Pesanan ID: ${order.id}</h4>${details}</div>`;
+            }).join('');
+        }
 
         function renderMenuManagementList() {
             const menuOrder = JSON.parse(localStorage.getItem('menuOrder')) || defaultMenuOrder.map(item => item.id);
