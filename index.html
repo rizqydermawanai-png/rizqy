@@ -6,6 +6,7 @@
     <title>KAZUMI - Fashion Pria Elegant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
     <style>
         :root {
             --primary-brown: #6D4C41;
@@ -18,11 +19,15 @@
             --accent-gold: #C9B037;
             --font-heading: 'Playfair Display', serif;
             --font-body: 'Montserrat', sans-serif;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-body); color: var(--text-dark); background-color: var(--white); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        header { background-color: var(--white); border-bottom: 1px solid var(--light-brown); position: sticky; top: 0; z-index: 1000; }
+        header { background-color: var(--white); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
         .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; gap: 20px; }
         .logo { font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--primary-brown); text-decoration: none; }
         .main-nav ul { display: flex; align-items: center; list-style: none; }
@@ -33,7 +38,7 @@
         .admin-btn:hover { background-color: var(--dark-brown); }
         .main-nav .dropdown { position: relative; }
         .main-nav .dropdown > a { cursor: pointer; }
-        .main-nav .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.1); list-style: none; padding: 10px 0; margin-top: 15px; min-width: 200px; border-radius: 4px; z-index: 1010; }
+        .main-nav .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: var(--white); box-shadow: var(--shadow-lg); list-style: none; padding: 10px 0; margin-top: 15px; min-width: 200px; border-radius: 8px; z-index: 1010; border: 1px solid #f0f0f0; }
         .main-nav .dropdown:hover > .dropdown-menu { display: block; }
         .main-nav .dropdown-menu li { margin: 0; }
         .main-nav .dropdown-menu a { display: block; padding: 10px 20px; color: var(--text-dark); text-transform: none; font-size: 14px; letter-spacing: 0; font-weight: 400; }
@@ -71,14 +76,14 @@
         /* Categories Grid */
         .categories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
         .category-card-link { text-decoration: none; }
-        .category-card { position: relative; height: 300px; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
-        .category-card-link:hover .category-card { transform: translateY(-5px); }
+        .category-card { position: relative; height: 300px; overflow: hidden; border-radius: 8px; box-shadow: var(--shadow-md); transition: transform 0.3s, box-shadow 0.3s; }
+        .category-card-link:hover .category-card { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
         .category-card img { width: 100%; height: 100%; object-fit: cover; }
         .category-name { position: absolute; bottom: 0; left: 0; right: 0; background-color: rgba(109, 76, 65, 0.85); color: var(--white); padding: 15px; text-align: center; text-transform: uppercase; font-weight: 500; letter-spacing: 1px; }
 
         /* Collection Grid */
         .collection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .collection-item { position: relative; height: 400px; overflow: hidden; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .collection-item { position: relative; height: 400px; overflow: hidden; border-radius: 8px; box-shadow: var(--shadow-md); }
         .collection-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
         .collection-item:hover img { transform: scale(1.05); }
         .collection-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(78, 52, 46, 0.8)); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; color: var(--white); }
@@ -87,8 +92,8 @@
         /* Custom Order Section */
         .custom-section { text-align: center; }
         .custom-section .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
-        .custom-section .process-step { background-color: var(--white); padding: 40px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); text-align: center; transition: transform 0.3s; }
-        .custom-section .process-step:hover { transform: translateY(-5px); }
+        .custom-section .process-step { background-color: var(--white); padding: 40px; border-radius: 8px; box-shadow: var(--shadow-md); text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
+        .custom-section .process-step:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
         .custom-section .process-step i { font-size: 40px; color: var(--primary-brown); margin-bottom: 20px; }
         .custom-section .process-step h4 { font-family: var(--font-heading); font-size: 20px; margin-bottom: 10px; color: var(--dark-brown); }
         .custom-section .process-step p { font-size: 15px; color: var(--text-light); }
@@ -97,7 +102,7 @@
         /* Bulk Purchase Section */
         .bulk-purchase { text-align: center; }
         .bulk-purchase .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-top: 40px; }
-        .bulk-purchase .feature-item { background-color: var(--cream); padding: 25px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: center; }
+        .bulk-purchase .feature-item { background-color: var(--cream); padding: 25px; border-radius: 8px; box-shadow: var(--shadow-sm); text-align: center; }
         .bulk-purchase .feature-item i { font-size: 30px; color: var(--primary-brown); margin-bottom: 15px; }
         .bulk-purchase .feature-item h4 { font-family: var(--font-body); font-size: 18px; margin-bottom: 8px; color: var(--dark-brown); }
         .bulk-purchase .feature-item p { font-size: 14px; color: var(--text-light); }
@@ -106,7 +111,7 @@
         /* Promo Section */
         .promo-section { text-align: center; }
         .promo-section .promo-content { display: flex; flex-direction: column; align-items: center; gap: 30px; }
-        .promo-section .promo-card { background-color: var(--white); border: 1px solid var(--light-brown); border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.07); padding: 40px; width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .promo-section .promo-card { background-color: var(--white); border: 1px solid #f0f0f0; border-radius: 8px; box-shadow: var(--shadow-lg); padding: 40px; width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .promo-section .promo-card img { max-width: 150px; margin-bottom: 20px; }
         .promo-section .promo-card h3 { font-family: var(--font-heading); font-size: 28px; color: var(--dark-brown); margin-bottom: 15px; }
         .promo-section .promo-card p { font-size: 16px; color: var(--text-light); margin-bottom: 20px; }
@@ -122,8 +127,8 @@
 
         /* Product Page Specific CSS */
         .product-page .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
-        .product-card { background-color: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; text-align: center; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .product-card { background-color: var(--white); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-md); transition: transform 0.3s, box-shadow 0.3s; text-align: center; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
         .product-card img { width: 100%; height: 300px; object-fit: cover; }
         .product-card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
         .product-card h3 { font-size: 18px; margin-bottom: 10px; color: var(--dark-brown); font-family: var(--font-body); }
@@ -132,7 +137,7 @@
         /* Product Detail Page */
         .product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: flex-start; }
         .product-gallery { display: flex; flex-direction: column; gap: 15px; }
-        .main-image img { width: 100%; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .main-image img { width: 100%; border-radius: 8px; box-shadow: var(--shadow-lg); }
         .thumbnail-images { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         .thumbnail-images img { width: 100%; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.3s; }
         .thumbnail-images img:hover, .thumbnail-images img.active { border-color: var(--primary-brown); }
@@ -178,7 +183,7 @@
 
         /* Auth Page Styles */
         .auth-section { display: flex; align-items: center; justify-content: center; }
-        .auth-container { max-width: 400px; width: 100%; background-color: var(--white); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .auth-container { max-width: 400px; width: 100%; background-color: var(--white); padding: 40px; border-radius: 8px; box-shadow: var(--shadow-xl); }
         .auth-container h1 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
@@ -216,14 +221,14 @@
         .admin-card {
             background-color: var(--white);
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
             transition: transform 0.3s, box-shadow 0.3s;
         }
         .admin-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            box-shadow: var(--shadow-lg);
         }
 
         .admin-card-header {
@@ -348,7 +353,7 @@
         }
 
         /* Custom Order Form Styles */
-        .custom-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .custom-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: var(--shadow-xl); }
         .custom-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
         .form-group input[type="text"],
         .form-group input[type="email"],
@@ -423,13 +428,14 @@
         .gallery-item img {
             width: 100%;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s, box-shadow 0.3s;
             aspect-ratio: 1 / 1;
             object-fit: cover;
         }
         .gallery-item img:hover {
             transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
         }
 
         /* Multi-Step Form Styles */
@@ -513,7 +519,7 @@
         }
 
         /* Bulk Order Form Styles */
-        .bulk-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .bulk-order-form-container { max-width: 800px; margin: 0 auto; background-color: var(--cream); padding: 40px; border-radius: 8px; box-shadow: var(--shadow-xl); }
         .bulk-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
         .form-group input[type="number"] { width: 100%; padding: 12px; border: 1px solid var(--light-brown); border-radius: 4px; font-family: var(--font-body); font-size: 15px; color: var(--text-dark); background-color: var(--white); }
 
@@ -537,13 +543,112 @@
         .checkbox-item label { margin-bottom: 0; font-weight: 500; cursor: pointer; }
 
         /* Product Management Styles */
-        #product-management-list { max-height: 400px; overflow-y: auto; padding-right: 10px; margin-top: 20px; }
-        .product-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--light-brown); }
+        #product-management-list { max-height: 500px; overflow-y: auto; padding-right: 10px; margin-top: 20px; }
+        .product-list-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--cream); }
         .product-list-item:last-child { border-bottom: none; }
-        .product-list-item span { font-weight: 500; }
-        .product-list-item .actions button { margin-left: 10px; padding: 5px 10px; font-size: 12px; }
-        .product-list-item .actions .edit-btn { background-color: #e0e0e0; border: 1px solid #bdbdbd; }
-        .product-list-item .actions .delete-btn { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+
+        .size-chart-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .size-chart-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--light-brown);
+        }
+        .size-chart-tab-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            background-color: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        .size-chart-tab-btn.active {
+            color: var(--primary-brown);
+            border-bottom-color: var(--primary-brown);
+        }
+        .size-chart-content {
+            display: none;
+        }
+        .size-chart-content.active {
+            display: block;
+        }
+        .size-chart-content h3 {
+            text-align: center;
+            font-family: var(--font-heading);
+            margin-bottom: 20px;
+            color: var(--dark-brown);
+        }
+        .size-chart-content table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: var(--white);
+            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .size-chart-content th, .size-chart-content td {
+            padding: 12px 15px;
+            border: 1px solid var(--cream);
+        }
+        .size-chart-content thead {
+            background-color: var(--cream);
+            color: var(--dark-brown);
+            font-weight: 600;
+        }
+        .size-chart-content tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .product-list-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .product-list-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .product-list-name {
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+
+        .product-list-category, .product-list-price {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .product-list-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-list-item .actions button {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .product-list-item .actions .edit-btn { background-color: #e9ecef; color: var(--dark-brown); }
+        .product-list-item .actions .edit-btn:hover { background-color: #dee2e6; }
+        .product-list-item .actions .delete-btn { background-color: #f8d7da; color: #721c24; }
+        .product-list-item .actions .delete-btn:hover { background-color: #f1b0b7; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
@@ -552,6 +657,30 @@
         .modal-header h2 { font-family: var(--font-heading); }
         .modal-close-btn { font-size: 28px; background: none; border: none; cursor: pointer; }
 
+        /* Menu Management List Styles */
+        .menu-management-list {
+            list-style: none;
+            padding: 0;
+        }
+        .menu-management-list li {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: grab;
+        }
+        .menu-management-list li:active {
+            cursor: grabbing;
+            background-color: #e9ecef;
+        }
+        .menu-management-list li .drag-handle {
+            color: var(--text-light);
+        }
 
         /* Footer */
         footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; margin-top: auto; }
@@ -588,7 +717,8 @@
             <div class="top-nav">
                 <a href="#home" class="logo" onclick="showPage('home')">KAZUMI</a>
                 <nav class="main-nav">
-                    <ul>
+                    <ul id="main-nav-list">
+                        <!-- Menu items will be rendered dynamically by JS -->
                         <li><a href="#home" onclick="showPage('home')">Home</a></li>
                         <li class="dropdown">
                             <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
@@ -812,6 +942,174 @@
                         <p style="margin-top: 15px; color: var(--text-light); font-size: 14px;">Perlu diingat ini adalah rekomendasi. Kenyamanan mungkin bervariasi tergantung model pakaian.</p>
                     </div>
                 </div>
+
+                <div class="size-chart-container">
+                    <h2 class="section-title" style="margin-top: 80px;">Panduan Ukuran Standar</h2>
+                    <div class="size-chart-tabs">
+                        <button class="size-chart-tab-btn active" data-chart="t-shirt">T-Shirt</button>
+                        <button class="size-chart-tab-btn" data-chart="shirt">Kemeja</button>
+                        <button class="size-chart-tab-btn" data-chart="pants">Celana</button>
+                        <button class="size-chart-tab-btn" data-chart="jacket">Jaket</button>
+                    </div>
+                    <div class="size-chart-content-container">
+                        <div class="size-chart-content active" data-chart="t-shirt">
+                            <h3>T-Shirt (cm)</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ukuran</th>
+                                        <th>Lebar Dada</th>
+                                        <th>Panjang Badan</th>
+                                        <th>Panjang Lengan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>S</td>
+                                        <td>48</td>
+                                        <td>68</td>
+                                        <td>21</td>
+                                    </tr>
+                                    <tr>
+                                        <td>M</td>
+                                        <td>50</td>
+                                        <td>70</td>
+                                        <td>22</td>
+                                    </tr>
+                                    <tr>
+                                        <td>L</td>
+                                        <td>52</td>
+                                        <td>72</td>
+                                        <td>23</td>
+                                    </tr>
+                                    <tr>
+                                        <td>XL</td>
+                                        <td>54</td>
+                                        <td>74</td>
+                                        <td>24</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="size-chart-content" data-chart="shirt">
+                            <h3>Kemeja (cm)</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ukuran</th>
+                                        <th>Lebar Dada</th>
+                                        <th>Panjang Badan</th>
+                                        <th>Panjang Lengan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>S</td>
+                                        <td>50</td>
+                                        <td>70</td>
+                                        <td>60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>M</td>
+                                        <td>52</td>
+                                        <td>72</td>
+                                        <td>61</td>
+                                    </tr>
+                                    <tr>
+                                        <td>L</td>
+                                        <td>54</td>
+                                        <td>74</td>
+                                        <td>62</td>
+                                    </tr>
+                                    <tr>
+                                        <td>XL</td>
+                                        <td>56</td>
+                                        <td>76</td>
+                                        <td>63</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="size-chart-content" data-chart="pants">
+                            <h3>Celana (cm)</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ukuran</th>
+                                        <th>Lingkar Pinggang</th>
+                                        <th>Panjang</th>
+                                        <th>Lebar Paha</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>28 (S)</td>
+                                        <td>76</td>
+                                        <td>100</td>
+                                        <td>28</td>
+                                    </tr>
+                                    <tr>
+                                        <td>30 (M)</td>
+                                        <td>81</td>
+                                        <td>102</td>
+                                        <td>29</td>
+                                    </tr>
+                                    <tr>
+                                        <td>32 (L)</td>
+                                        <td>86</td>
+                                        <td>104</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>34 (XL)</td>
+                                        <td>91</td>
+                                        <td>106</td>
+                                        <td>31</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="size-chart-content" data-chart="jacket">
+                            <h3>Jaket (cm)</h3>
+                             <table>
+                                <thead>
+                                    <tr>
+                                        <th>Ukuran</th>
+                                        <th>Lebar Dada</th>
+                                        <th>Panjang Badan</th>
+                                        <th>Panjang Lengan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>S</td>
+                                        <td>52</td>
+                                        <td>65</td>
+                                        <td>62</td>
+                                    </tr>
+                                    <tr>
+                                        <td>M</td>
+                                        <td>55</td>
+                                        <td>67</td>
+                                        <td>63</td>
+                                    </tr>
+                                    <tr>
+                                        <td>L</td>
+                                        <td>58</td>
+                                        <td>69</td>
+                                        <td>64</td>
+                                    </tr>
+                                    <tr>
+                                        <td>XL</td>
+                                        <td>61</td>
+                                        <td>71</td>
+                                        <td>65</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -1021,6 +1319,7 @@
                             <button class="admin-tab-btn active" data-tab="content">Konten</button>
                             <button class="admin-tab-btn" data-tab="products">Produk</button>
                             <button class="admin-tab-btn" data-tab="discounts">Diskon</button>
+                            <button class="admin-tab-btn" data-tab="menu">Menu</button>
                         </div>
 
                         <div class="admin-tab-content-container">
@@ -1084,6 +1383,22 @@
                                         <div id="discountMessage" class="message"></div>
                                     </div>
                                     <div class="admin-card-footer"><button class="save-btn" onclick="applyDiscount()">Terapkan Diskon</button></div>
+                                </div>
+                            </div>
+                             <!-- Menu Management Tab -->
+                            <div class="admin-tab-content" data-tab="menu">
+                                <div class="admin-card">
+                                    <div class="admin-card-header"><i class="fas fa-bars"></i><h3>Manajemen Urutan Menu</h3></div>
+                                    <div class="admin-card-body">
+                                        <p style="margin-bottom: 20px; color: var(--text-light); font-size: 15px;">Tarik dan lepas (drag and drop) item menu di bawah ini untuk mengubah urutannya di navigasi utama.</p>
+                                        <ul id="menu-management-list" class="menu-management-list">
+                                            <!-- Menu items will be loaded here by JS -->
+                                        </ul>
+                                        <div id="menuMessage" class="message"></div>
+                                    </div>
+                                    <div class="admin-card-footer">
+                                        <button class="save-btn" onclick="saveMenuOrder()">Simpan Urutan Menu</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1550,6 +1865,7 @@
         // Handle initial page load based on hash
         document.addEventListener('DOMContentLoaded', function() {
             initializeProductData();
+            renderMainMenu(); // Render the main menu dynamically
             renderProductPages();
 
             // --- Search Bar Logic ---
@@ -1714,6 +2030,28 @@
                 });
             }
 
+
+            // --- Size Chart Tab Logic ---
+            const sizeChartTabs = document.querySelector('.size-chart-tabs');
+            if (sizeChartTabs) {
+                const tabButtons = sizeChartTabs.querySelectorAll('.size-chart-tab-btn');
+                const tabContents = document.querySelectorAll('.size-chart-content');
+
+                sizeChartTabs.addEventListener('click', (e) => {
+                    const clickedButton = e.target.closest('.size-chart-tab-btn');
+                    if (!clickedButton) return;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    clickedButton.classList.add('active');
+                    const chartName = clickedButton.dataset.chart;
+                    const activeContent = document.querySelector(`.size-chart-content[data-chart="${chartName}"]`);
+                    if (activeContent) {
+                        activeContent.classList.add('active');
+                    }
+                });
+            }
 
             // --- Size Calculator Logic ---
             const sizeCalculatorForm = document.getElementById('size-calculator-form');
@@ -2287,6 +2625,7 @@
             loadPromoContent();
             loadSpecialCollectionsEditor();
             renderProductManagementList();
+            renderMenuManagementList();
         }
 
         function renderProductManagementList() {
@@ -2303,10 +2642,15 @@
                 const item = document.createElement('div');
                 item.className = 'product-list-item';
                 item.innerHTML = `
-                    <span>${product.name}</span>
+                    <img src="${product.imageUrl}" alt="${product.name}" class="product-list-thumbnail">
+                    <div class="product-list-details">
+                        <span class="product-list-name">${product.name}</span>
+                        <span class="product-list-category">Kategori: ${product.category}</span>
+                        <span class="product-list-price">${formatRupiah(product.price)}</span>
+                    </div>
                     <div class="actions">
-                        <button class="btn edit-btn" data-product-id="${product.id}">Edit</button>
-                        <button class="btn delete-btn" data-product-id="${product.id}">Hapus</button>
+                        <button class="btn edit-btn" data-product-id="${product.id}"><i class="fas fa-edit"></i></button>
+                        <button class="btn delete-btn" data-product-id="${product.id}"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
                 listContainer.appendChild(item);
@@ -2568,6 +2912,83 @@
 
         // Initial call to apply discounts when the page loads
         document.addEventListener('DOMContentLoaded', updateAllProductPrices);
+
+        // --- Menu Management ---
+        let sortableInstance = null;
+        const defaultMenuOrder = [
+            { id: 'home', text: 'Home' },
+            { id: 'shop', text: 'Shop' },
+            { id: 'special-collection', text: 'Collections' },
+            { id: 'custom-order-section', text: 'Custom Order' },
+            { id: 'bulk-purchase-section', text: 'Bulk Order' },
+            { id: 'fitting', text: 'Fitting' }
+        ];
+
+        function renderMenuManagementList() {
+            const menuOrder = JSON.parse(localStorage.getItem('menuOrder')) || defaultMenuOrder.map(item => item.id);
+            const menuItems = menuOrder.map(id => defaultMenuOrder.find(item => item.id === id)).filter(Boolean);
+
+            const listContainer = document.getElementById('menu-management-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
+
+            menuItems.forEach(item => {
+                const li = document.createElement('li');
+                li.dataset.id = item.id;
+                li.innerHTML = `<i class="fas fa-grip-vertical drag-handle"></i> ${item.text}`;
+                listContainer.appendChild(li);
+            });
+
+            if (sortableInstance) {
+                sortableInstance.destroy();
+            }
+            sortableInstance = new Sortable(listContainer, {
+                animation: 150,
+                handle: '.drag-handle'
+            });
+        }
+
+        function saveMenuOrder() {
+            if (!sortableInstance) return;
+            const newOrder = sortableInstance.toArray();
+            localStorage.setItem('menuOrder', JSON.stringify(newOrder));
+            showMessage('menuMessage', 'Urutan menu berhasil disimpan!', 'success');
+            renderMainMenu(); // Re-render the main menu immediately
+        }
+
+        function renderMainMenu() {
+            const menuContainer = document.getElementById('main-nav-list');
+            if (!menuContainer) return;
+
+            const menuOrder = JSON.parse(localStorage.getItem('menuOrder')) || defaultMenuOrder.map(item => item.id);
+            const menuItems = menuOrder.map(id => defaultMenuOrder.find(item => item.id === id)).filter(Boolean);
+
+            menuContainer.innerHTML = ''; // Clear existing menu
+
+            menuItems.forEach(item => {
+                const li = document.createElement('li');
+                if (item.id === 'shop') {
+                    li.className = 'dropdown';
+                    li.innerHTML = `
+                        <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
+                            <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
+                            <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
+                            <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
+                            <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
+                        </ul>
+                    `;
+                } else {
+                    let pageId = item.id;
+                    // Special handling for collection/custom/bulk links that should navigate TO the home page first
+                    let targetPage = (['special-collection', 'custom-order-section', 'bulk-purchase-section'].includes(pageId)) ? 'home' : pageId;
+
+                    li.innerHTML = `<a href="#${pageId}" onclick="showPage('${targetPage}')">${item.text}</a>`;
+                }
+                menuContainer.appendChild(li);
+            });
+        }
 
         // --- Admin Dashboard Tab Logic ---
         document.addEventListener('DOMContentLoaded', function() {
