@@ -1233,38 +1233,10 @@
         <section id="cart" class="page-content">
             <div class="container">
                 <h1 class="section-title">Troli Belanja Anda</h1>
+                 <div id="cartMessage" class="message" style="max-width: 800px; margin: 0 auto 30px;"></div>
                 <div class="cart-layout">
                     <div class="cart-items" id="cartItemsContainer">
-                        <!-- Cart Item 1 -->
-                        <div class="cart-item" data-price="350000">
-                            <img src="https://images.unsplash.com/photo-1598032895397-b9472444bf93?auto=format&fit=crop&w=200&q=80" alt="White Formal Shirt">
-                            <div class="cart-item-info">
-                                <h3>White Formal Shirt</h3>
-                                <p>Ukuran: M</p>
-                            </div>
-                            <p class="item-price">IDR 350.000</p>
-                            <div class="quantity-selector">
-                                <button class="quantity-btn minus">-</button>
-                                <input type="number" value="1" min="1" class="item-quantity">
-                                <button class="quantity-btn plus">+</button>
-                            </div>
-                            <button class="remove-btn"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <!-- Cart Item 2 -->
-                        <div class="cart-item" data-price="450000">
-                            <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=200&q=60" alt="Slim-Fit Chinos">
-                            <div class="cart-item-info">
-                                <h3>Slim-Fit Chinos</h3>
-                                <p>Ukuran: 32</p>
-                            </div>
-                            <p class="item-price">IDR 450.000</p>
-                            <div class="quantity-selector">
-                                <button class="quantity-btn minus">-</button>
-                                <input type="number" value="1" min="1" class="item-quantity">
-                                <button class="quantity-btn plus">+</button>
-                            </div>
-                            <button class="remove-btn"><i class="fas fa-trash"></i></button>
-                        </div>
+                        <!-- Cart items are now rendered dynamically by JS -->
                     </div>
                     <div class="cart-summary">
                         <h2>Ringkasan Pesanan</h2>
@@ -1834,11 +1806,9 @@
                     productCard.className = 'product-card';
 
                     const priceHTML = formatRupiah(product.price);
-                    const thumbnailsJSON = JSON.stringify(product.thumbnails);
-                    const description = product.description.replace(/'/g, "\\'"); // Escape single quotes
 
                     productCard.innerHTML = `
-                        <a href="#product-detail" onclick="showProductDetail('${product.name}', '${priceHTML}', '${product.imageUrl}', ${thumbnailsJSON}, '${description}')" style="text-decoration: none; color: inherit;">
+                        <a href="#product-detail" onclick="showProductDetailById('${product.id}')" style="text-decoration: none; color: inherit;">
                             <img src="${product.imageUrl}" alt="${product.name}">
                             <div class="product-card-info">
                                 <h3>${product.name}</h3>
@@ -1888,9 +1858,8 @@
                 loadDynamicContent();
             } else if (pageId === 'admin-dashboard') {
                 loadAdminContent();
-                loadSpecialCollectionsEditor();
             } else if (pageId === 'cart') {
-                updateCartSummary(); // Ensure cart summary is updated when navigating to cart
+                renderCart();
             }
         }
 
@@ -1900,15 +1869,12 @@
             initializeProductData();
             renderMainMenu();
             renderProductPages();
-            updateCartSummary();
+            renderCart();
             updateAllProductPrices();
 
             // Load dynamic content for the initial page
             const initialPage = window.location.hash.substring(1) || 'home';
             showPage(initialPage);
-            loadDynamicContent();
-            loadAdminContent();
-            loadSpecialCollectionsEditor();
 
             // Attach all event listeners
             // --- Search Bar Logic ---
@@ -2379,6 +2345,33 @@
             handleImageUpload('heroImageFile', 'heroImagePreview');
             handleImageUpload('promoImageFile', 'promoImagePreview');
             handleImageUpload('product-imageFile', 'product-imagePreview');
+
+            // --- Cart Page Logic ---
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+            if (cartItemsContainer) cartItemsContainer.addEventListener('click', function(event) {
+                const cartItem = event.target.closest('.cart-item');
+                if (!cartItem) return;
+                const cartItemId = cartItem.dataset.cartId;
+
+                // Handle quantity change
+                if (event.target.closest('.quantity-btn')) {
+                    const input = cartItem.querySelector('.item-quantity');
+                    let quantity = parseInt(input.value);
+                     if (event.target.closest('.plus')) {
+                        quantity++;
+                    } else if (event.target.closest('.minus')) {
+                        quantity--;
+                    }
+                    updateCartQuantity(cartItemId, quantity);
+                }
+
+                // Handle remove item
+                if (event.target.closest('.remove-btn')) {
+                    if(confirm('Hapus produk ini dari troli?')) {
+                       removeFromCart(cartItemId);
+                    }
+                }
+            });
         });
 
         function handleImageUpload(inputId, previewId) {
@@ -2525,21 +2518,25 @@
         // --- Special Collections Functions (from admin_dashboard.html) ---
         function loadSpecialCollectionsEditor() {
             const collectionsData = JSON.parse(localStorage.getItem('specialCollections')) || [
-                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: '#product-detail' },
-                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: '#product-detail' },
-                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: '#product-detail' }
+                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: 'shirts' },
+                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: 'jackets' },
+                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: 't-shirts' }
             ];
 
             const editorContainer = document.getElementById('specialCollectionsEditor');
-            if (!editorContainer) return; // Exit if not on admin dashboard
+            if (!editorContainer) return;
 
-            editorContainer.innerHTML = ''; // Clear previous content
+            editorContainer.innerHTML = '';
+
+            const categories = ['t-shirts', 'shirts', 'pants', 'jackets', 'accessories'];
 
             collectionsData.forEach((item, index) => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'collection-item-editor form-group';
                 itemDiv.style.borderTop = index > 0 ? '1px solid var(--light-brown)' : 'none';
                 itemDiv.style.paddingTop = index > 0 ? '20px' : '0';
+
+                let optionsHtml = categories.map(cat => `<option value="${cat}" ${item.link === cat ? 'selected' : ''}>${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`).join('');
 
                 itemDiv.innerHTML = `
                     <h4 style="margin-top: 20px; margin-bottom: 10px; color: var(--dark-brown); font-weight:600;">Item Koleksi ${index + 1}</h4>
@@ -2558,8 +2555,8 @@
                         <input type="text" id="collectionTitle${index}" value="${item.title}">
                     </div>
                     <div class="form-group">
-                        <label for="collectionLink${index}">Link Produk</label>
-                        <input type="text" id="collectionLink${index}" value="${item.link}">
+                        <label for="collectionLink${index}">Link Kategori</label>
+                        <select id="collectionLink${index}">${optionsHtml}</select>
                     </div>
                 `;
                 editorContainer.appendChild(itemDiv);
@@ -2571,27 +2568,20 @@
             const collectionsData = [];
             const editorContainer = document.getElementById('specialCollectionsEditor');
             const itemEditors = editorContainer.querySelectorAll('.collection-item-editor');
-            const currentData = JSON.parse(localStorage.getItem('specialCollections')) || [];
 
             itemEditors.forEach((itemEditor, index) => {
                 const preview = document.getElementById(`collectionImgPreview${index}`);
-                let newImage = (currentData[index] && currentData[index].img) ? currentData[index].img : '';
-
-                if (preview.src && preview.src.startsWith('data:image')) {
-                    newImage = preview.src;
-                } else {
-                    newImage = preview.src; // Keep the existing URL if no new file is uploaded
-                }
+                let newImage = preview.src; // Default to current preview src
 
                 const tag = document.getElementById(`collectionTag${index}`).value;
                 const title = document.getElementById(`collectionTitle${index}`).value;
-                const link = document.getElementById(`collectionLink${index}`).value;
+                const link = document.getElementById(`collectionLink${index}`).value; // Now gets value from select
                 collectionsData.push({ img: newImage, tag, title, link });
             });
 
             localStorage.setItem('specialCollections', JSON.stringify(collectionsData));
             showMessage('collectionsMessage', 'Koleksi Spesial berhasil diperbarui!', 'success');
-            loadDynamicContent(); // Update home page special collections immediately
+            loadDynamicContent();
         }
 
         // Load all content when the admin dashboard loads
@@ -2638,22 +2628,21 @@
             loadPromoContent(); // Loads promo content for display
 
             // Load Special Collections for display
-            const collectionsData = JSON.parse(localStorage.getItem('specialCollections'));
             const defaultCollections = [
-                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: '#product-detail' },
-                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: '#product-detail' },
-                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: '#product-detail' }
+                { img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'New', title: 'Executive Collection', link: 'shirts' },
+                { img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Limited', title: 'Limited Edition', link: 'jackets' },
+                { img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', tag: 'Casual', title: 'Weekend Wear', link: 't-shirts' }
             ];
-            const collectionsToDisplay = collectionsData || defaultCollections;
+            const collectionsToDisplay = JSON.parse(localStorage.getItem('specialCollections')) || defaultCollections;
 
             const collectionGrid = document.getElementById('specialCollectionGrid');
-            if (!collectionGrid) return; // Exit if not on home page
+            if (!collectionGrid) return;
 
-            collectionGrid.innerHTML = ''; // Clear existing content
+            collectionGrid.innerHTML = '';
 
             collectionsToDisplay.forEach(item => {
                 const collectionItemHTML = `
-                    <a href="${item.link}" onclick="showProductDetail('${item.title}', 'Harga Tidak Tersedia', '${item.img}', ['${item.img}'], 'Deskripsi koleksi spesial ini.')" style="text-decoration: none; color: inherit;">
+                    <a href="#${item.link}" onclick="showPage('${item.link}')" style="text-decoration: none; color: inherit;">
                         <div class="collection-item">
                             <img src="${item.img}" alt="${item.title}">
                             <div class="collection-overlay">
@@ -2667,35 +2656,59 @@
             });
         }
 
-        // --- Product Detail Functions (from product-detail.html) ---
-        function showProductDetail(name, price, mainImg, thumbnails, description) {
-            document.getElementById('productDetailName').textContent = name;
-            document.getElementById('productDetailPrice').textContent = price;
-            document.getElementById('mainProductImage').src = mainImg;
-            document.getElementById('productDetailDescription').textContent = description;
+        let currentProductId = null; // Variable to hold the currently viewed product ID
 
+        // --- Product Detail Functions ---
+        function showProductDetailById(productId) {
+            currentProductId = productId; // Store the ID when the page is shown
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const product = products.find(p => p.id === productId);
+
+            if (!product) {
+                console.error('Product not found:', productId);
+                alert('Produk tidak ditemukan.');
+                return;
+            }
+
+            // Populate main details
+            document.getElementById('productDetailName').textContent = product.name;
+            document.getElementById('mainProductImage').src = product.imageUrl;
+            document.getElementById('productDetailDescription').textContent = product.description;
+
+            // Populate thumbnails
             const thumbnailContainer = document.getElementById('thumbnailImagesContainer');
-            thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
-
-            thumbnails.forEach((thumbUrl, index) => {
+            thumbnailContainer.innerHTML = '';
+            (product.thumbnails || [product.imageUrl]).forEach((thumbUrl, index) => {
                 const img = document.createElement('img');
                 img.src = thumbUrl;
                 img.alt = `Thumbnail ${index + 1}`;
-                img.classList.add('thumbnail-img');
-                if (index === 0) {
-                    img.classList.add('active');
-                }
-                img.onclick = function() { changeImage(this); };
+                if (index === 0) img.classList.add('active');
+                img.onclick = () => changeImage(img);
                 thumbnailContainer.appendChild(img);
             });
+
+            // Calculate and display price with discount
+            const discounts = JSON.parse(localStorage.getItem('productDiscounts')) || {};
+            const discountPercentage = discounts[product.category];
+            const priceElement = document.getElementById('productDetailPrice');
+
+            if (discountPercentage > 0) {
+                const discountedPrice = product.price * (1 - discountPercentage / 100);
+                priceElement.innerHTML = `
+                    <span style="text-decoration: line-through; color: var(--text-light); font-size: 20px;">${formatRupiah(product.price)}</span>
+                    <br>
+                    <span style="color: var(--accent-gold); font-weight: 700;">${formatRupiah(discountedPrice)}</span>
+                `;
+            } else {
+                priceElement.innerHTML = formatRupiah(product.price);
+            }
 
             showPage('product-detail');
         }
 
         function changeImage(thumbnail) {
-            document.getElementById('mainProductImage').src = thumbnail.src.replace('w=200', 'w=800');
-            const thumbnails = document.querySelectorAll('.thumbnail-images img');
-            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            document.getElementById('mainProductImage').src = thumbnail.src;
+            document.querySelectorAll('#thumbnailImagesContainer img').forEach(thumb => thumb.classList.remove('active'));
             thumbnail.classList.add('active');
         }
 
@@ -2737,45 +2750,119 @@
                 });
             });
 
-            // Add to Cart Button (Placeholder for actual logic)
+            // Add to Cart Button
             const addToCartBtn = document.querySelector('#product-detail .add-to-cart-btn');
-            if (addToCartBtn) {
-                addToCartBtn.addEventListener('click', function() {
-                    const productName = document.getElementById('productDetailName').textContent;
-                    const productPrice = document.getElementById('productDetailPrice').textContent;
-                    const selectedSize = document.querySelector('#product-detail .size-btn.active')?.dataset.size || 'N/A';
-                    const selectedColor = document.querySelector('#product-detail .color-swatch.active')?.dataset.color || 'N/A';
-                    const quantity = quantityInput.value;
+            if (addToCartBtn) addToCartBtn.addEventListener('click', () => {
+                const selectedSize = document.querySelector('#product-detail .size-btn.active')?.dataset.size;
+                const selectedColor = document.querySelector('#product-detail .color-swatch.active')?.dataset.color;
+                const quantity = parseInt(document.getElementById('productQuantity').value);
 
-                    alert(`Produk ditambahkan ke troli:\n\nNama: ${productName}\nHarga: ${productPrice}\nUkuran: ${selectedSize}\nWarna: ${selectedColor}\nJumlah: ${quantity}\n\n(Ini adalah simulasi. Fungsionalitas troli sebenarnya memerlukan backend.)`);
-                });
-            }
+                if (!currentProductId || !selectedSize || !selectedColor || !quantity) {
+                    alert('Gagal menambahkan produk. Pastikan semua opsi telah dipilih.');
+                    return;
+                }
+                addToCart(currentProductId, quantity, selectedSize, selectedColor);
+                showPage('cart'); // Navigate to cart after adding
+            });
         });
 
-        // --- Cart Page Functions (from cart.html) ---
-        function formatRupiah(amount) {
-            return 'IDR ' + new Intl.NumberFormat('id-ID').format(amount);
+        // --- Cart Page Functions ---
+        function getCart() {
+            return JSON.parse(localStorage.getItem('shoppingCart')) || [];
         }
 
-        function updateCartSummary() {
-            const cartItemsContainer = document.getElementById('cartItemsContainer');
-            const subtotalSpan = document.getElementById('subtotal');
-            const shippingCostSpan = document.getElementById('shippingCost');
-            const totalAmountSpan = document.getElementById('totalAmount');
-            const shippingCost = 20000; // Example shipping cost
+        function saveCart(cart) {
+            localStorage.setItem('shoppingCart', JSON.stringify(cart));
+            renderCart();
+        }
 
-            if (!cartItemsContainer || !subtotalSpan || !shippingCostSpan || !totalAmountSpan) return;
+        function addToCart(productId, quantity, size, color) {
+            let cart = getCart();
+            const cartItemId = `${productId}-${size}-${color}`;
+            const existingItem = cart.find(item => item.cartId === cartItemId);
 
-            let currentSubtotal = 0;
-            document.querySelectorAll('.cart-item').forEach(item => {
-                const pricePerItem = parseInt(item.dataset.price);
-                const quantity = parseInt(item.querySelector('.item-quantity').value);
-                currentSubtotal += pricePerItem * quantity;
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ cartId: cartItemId, productId, quantity, size, color });
+            }
+            saveCart(cart);
+            showMessage('cartMessage', 'Produk ditambahkan ke troli!', 'success');
+        }
+
+        function updateCartQuantity(cartItemId, newQuantity) {
+            let cart = getCart();
+            const item = cart.find(item => item.cartId === cartItemId);
+            if (item) {
+                if (newQuantity > 0) {
+                    item.quantity = newQuantity;
+                } else {
+                    cart = cart.filter(item => item.cartId !== cartItemId);
+                }
+                saveCart(cart);
+            }
+        }
+
+        function removeFromCart(cartItemId) {
+            let cart = getCart();
+            cart = cart.filter(item => item.cartId !== cartItemId);
+            saveCart(cart);
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const cartContainer = document.getElementById('cartItemsContainer');
+            const summaryContainer = document.querySelector('.cart-summary');
+            if (!cartContainer || !summaryContainer) return;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p style="padding: 20px; text-align: center;">Troli belanja Anda kosong.</p>';
+                summaryContainer.style.display = 'none';
+                return;
+            }
+
+            summaryContainer.style.display = 'block';
+            cartContainer.innerHTML = '';
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.productId);
+                if (!product) return;
+
+                const itemTotalPrice = product.price * item.quantity;
+                subtotal += itemTotalPrice;
+
+                const cartItemEl = document.createElement('div');
+                cartItemEl.className = 'cart-item';
+                cartItemEl.dataset.cartId = item.cartId;
+
+                cartItemEl.innerHTML = `
+                    <img src="${product.imageUrl}" alt="${product.name}">
+                    <div class="cart-item-info">
+                        <h3>${product.name}</h3>
+                        <p>Ukuran: ${item.size}, Warna: ${item.color}</p>
+                    </div>
+                    <p class="item-price">${formatRupiah(product.price)}</p>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn minus">-</button>
+                        <input type="number" value="${item.quantity}" min="1" class="item-quantity">
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                    <button class="remove-btn"><i class="fas fa-trash"></i></button>
+                `;
+                cartContainer.appendChild(cartItemEl);
             });
 
-            subtotalSpan.textContent = formatRupiah(currentSubtotal);
-            shippingCostSpan.textContent = formatRupiah(shippingCost);
-            totalAmountSpan.textContent = formatRupiah(currentSubtotal + shippingCost);
+            // Update summary
+            const shippingCost = 20000;
+            document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+            document.getElementById('shippingCost').textContent = formatRupiah(shippingCost);
+            document.getElementById('totalAmount').textContent = formatRupiah(subtotal + shippingCost);
+        }
+
+        function formatRupiah(amount) {
+            return 'IDR ' + new Intl.NumberFormat('id-ID').format(amount);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
