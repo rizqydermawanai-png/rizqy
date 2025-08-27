@@ -775,32 +775,17 @@
     <header>
         <div class="container">
             <div class="top-nav">
-                <a href="#home" class="logo" onclick="showPage('home')">KAZUMI</a>
+                <a href="#home" class="logo nav-link" data-page="home">KAZUMI</a>
                 <nav class="main-nav">
                     <ul id="main-nav-list">
-                        <!-- Menu items will be rendered dynamically by JS -->
-                        <li><a href="#home" onclick="showPage('home')">Home</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
-                                <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
-                                <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
-                                <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
-                                <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="#special-collection" onclick="showPage('home')">Collections</a></li>
-                        <li><a href="#custom-order-section" onclick="showPage('home')">Custom Order</a></li>
-                        <li><a href="#bulk-purchase-section" onclick="showPage('home')">Bulk Order</a></li>
-                        <li><a href="#fitting" onclick="showPage('size-calculator')">Fitting</a></li>
+                        <!-- Menu items are rendered dynamically by JS, so onclicks are handled there -->
                     </ul>
                 </nav>
                 <div class="nav-icons">
                     <button type="button" id="search-icon-btn" aria-label="Open search bar"><i class="fas fa-search"></i></button>
-                    <a href="#cart" onclick="showPage('cart')" aria-label="View shopping cart"><i class="fas fa-shopping-bag"></i></a>
-                    <a href="#login" onclick="showPage('login')" aria-label="Login or register"><i class="fas fa-user"></i></a>
-                    <a class="admin-btn" href="#admin-dashboard" onclick="showPage('admin-dashboard')"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="#cart" class="nav-link" data-page="cart" aria-label="View shopping cart"><i class="fas fa-shopping-bag"></i></a>
+                    <a href="#login" class="nav-link" data-page="login" aria-label="Login or register"><i class="fas fa-user"></i></a>
+                    <a class="admin-btn nav-link" href="#admin-dashboard" data-page="admin-dashboard"><i class="fas fa-cog"></i> Admin</a>
                 </div>
             </div>
             <div id="search-bar-container">
@@ -892,7 +877,7 @@
                             <p>Pakaian Anda akan dibuat oleh pengrajin ahli, diikuti dengan sesi fitting untuk memastikan kesempurnaan.</p>
                         </div>
                     </div>
-                    <a href="#custom-order-form" class="btn" onclick="showPage('custom-order-form')">Mulai Pesanan Kustom</a>
+                    <a href="#custom-order-form" class="btn nav-link" data-page="custom-order-form">Mulai Pesanan Kustom</a>
                 </div>
             </section>
 
@@ -925,7 +910,7 @@
                             <p>Invoice resmi tersedia untuk keperluan pembukuan bisnis.</p>
                         </div>
                     </div>
-                    <a href="#bulk-order-form" class="btn" onclick="showPage('bulk-order-form')">Konsultasi Bulk Order</a>
+                    <a href="#bulk-order-form" class="btn nav-link" data-page="bulk-order-form">Konsultasi Bulk Order</a>
                 </div>
             </section>
 
@@ -948,7 +933,7 @@
                                     <span id="promoItem2DescDisplay">IDR 8.000 dengan min. pembelian IDR 300.000</span>
                                 </div>
                             </div>
-                            <a href="#t-shirts" class="btn" onclick="showPage('t-shirts')">Belanja Sekarang</a>
+                            <a href="#t-shirts" class="btn nav-link" data-page="t-shirts">Belanja Sekarang</a>
                         </div>
                         <div class="app-download">
                             <p>Unduh aplikasi KAZUMI untuk pengalaman belanja yang lebih baik:</p>
@@ -1304,7 +1289,7 @@
                         <button type="submit" class="auth-btn">Login</button>
                     </form>
                     <div class="auth-switch-link">
-                        <p>Belum punya akun? <a href="#register" onclick="showPage('register')">Daftar di sini</a></p>
+                        <p>Belum punya akun? <a href="#register" class="nav-link" data-page="register">Daftar di sini</a></p>
                     </div>
                 </div>
             </div>
@@ -1335,7 +1320,7 @@
                         <button type="submit" class="auth-btn">Daftar</button>
                     </form>
                     <div class="auth-switch-link">
-                        <p>Sudah punya akun? <a href="#login" onclick="showPage('login')">Login di sini</a></p>
+                        <p>Sudah punya akun? <a href="#login" class="nav-link" data-page="login">Login di sini</a></p>
                     </div>
                 </div>
             </div>
@@ -1367,7 +1352,7 @@
                                             <div class="form-group"><label for="heroImageFile">Gambar Latar</label><input type="file" id="heroImageFile" accept="image/png, image/jpeg" style="display: none;"><button type="button" class="file-upload-btn" onclick="document.getElementById('heroImageFile').click();">Pilih Gambar</button><img id="heroImagePreview" alt="Pratinjau Gambar Latar" class="image-preview"><small style="display:block; margin-top: 10px; color: var(--text-light);">Ganti gambar latar hero. Ukuran besar direkomendasikan.</small></div>
                                             <div id="heroMessage" class="message"></div>
                                         </div>
-                                        <div class="admin-card-footer"><button class="save-btn" onclick="saveHeroContent()">Simpan Perubahan</button></div>
+                                        <div class="admin-card-footer"><button id="saveHeroBtn" class="save-btn">Simpan Perubahan</button></div>
                                     </div>
                                     <div class="admin-card">
                                         <div class="admin-card-header"><i class="fas fa-percent"></i><h3>Kolaborasi & Promo</h3></div>
@@ -1381,7 +1366,7 @@
                                             <div class="form-group"><label for="promoItem2Desc">Promo Item 2 Deskripsi</label><input type="text" id="promoItem2Desc" value="IDR 8.000 dengan min. pembelian IDR 300.000"></div>
                                             <div id="promoMessage" class="message"></div>
                                         </div>
-                                        <div class="admin-card-footer"><button class="save-btn" onclick="savePromoContent()">Simpan Perubahan</button></div>
+                                        <div class="admin-card-footer"><button id="savePromoBtn" class="save-btn">Simpan Perubahan</button></div>
                                     </div>
                                     <div class="admin-card">
                                         <div class="admin-card-header"><i class="fas fa-star"></i><h3>Koleksi Spesial</h3></div>
@@ -1390,7 +1375,7 @@
                                             <div id="specialCollectionsEditor"></div>
                                             <div id="collectionsMessage" class="message"></div>
                                         </div>
-                                        <div class="admin-card-footer"><button class="save-btn" onclick="saveSpecialCollections()">Simpan Koleksi</button></div>
+                                        <div class="admin-card-footer"><button id="saveCollectionsBtn" class="save-btn">Simpan Koleksi</button></div>
                                     </div>
                                 </div>
                             </div>
@@ -1415,7 +1400,7 @@
                                         <div class="form-group"><label for="discountPercentage">Persentase Diskon (misal: 15 untuk 15%)</label><input type="number" id="discountPercentage" min="0" max="100" placeholder="0-100" name="discountPercentage"></div>
                                         <div id="discountMessage" class="message"></div>
                                     </div>
-                                    <div class="admin-card-footer"><button class="save-btn" onclick="applyDiscount()">Terapkan Diskon</button></div>
+                                    <div class="admin-card-footer"><button id="applyDiscountBtn" class="save-btn">Terapkan Diskon</button></div>
                                 </div>
                             </div>
                              <!-- Menu Management Tab -->
@@ -1430,7 +1415,7 @@
                                         <div id="menuMessage" class="message"></div>
                                     </div>
                                     <div class="admin-card-footer">
-                                        <button class="save-btn" onclick="saveMenuOrder()">Simpan Urutan Menu</button>
+                                        <button id="saveMenuOrderBtn" class="save-btn">Simpan Urutan Menu</button>
                                     </div>
                                 </div>
                             </div>
@@ -1704,7 +1689,7 @@
                 <div class="footer-column">
                     <h3>INFORMASI KAMI</h3>
                     <ul>
-                        <li><a href="#home" onclick="showPage('home')">Tentang KAZUMI</a></li>
+                <li><a href="#home" class="nav-link" data-page="home">Tentang KAZUMI</a></li>
                         <li><a href="#">Sejarah Perusahaan</a></li>
                         <li><a href="#">Karir</a></li>
                         <li><a href="#">Ketentuan Kebijakan</a></li>
@@ -1720,18 +1705,18 @@
                         <li><a href="#">Click & Collect</a></li>
                         <li><a href="#">Pengiriman</a></li>
                         <li><a href="#">Pembayaran</a></li>
-                        <li><a href="#size-calculator" onclick="showPage('size-calculator')">Kalkulator Ukuran</a></li>
+                <li><a href="#size-calculator" class="nav-link" data-page="size-calculator">Kalkulator Ukuran</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>KATEGORI PRODUK</h3>
                     <ul>
-                        <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
-                        <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
-                        <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
-                        <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
-                        <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
-                        <li><a href="#promo-section" onclick="showPage('home')">Sale</a></li>
+                <li><a href="#t-shirts" class="nav-link" data-page="t-shirts">T-Shirt</a></li>
+                <li><a href="#shirts" class="nav-link" data-page="shirts">Shirt</a></li>
+                <li><a href="#pants" class="nav-link" data-page="pants">Pants</a></li>
+                <li><a href="#jackets" class="nav-link" data-page="jackets">Jacket</a></li>
+                <li><a href="#accessories" class="nav-link" data-page="accessories">Accessories</a></li>
+                <li><a href="#promo-section" class="nav-link" data-page="home">Sale</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1928,6 +1913,18 @@
             showPage(initialPage);
 
             // Attach all event listeners
+            // --- Navigation Logic ---
+            document.body.addEventListener('click', function(e) {
+                const navLink = e.target.closest('.nav-link');
+                if (navLink) {
+                    e.preventDefault();
+                    const pageId = navLink.dataset.page;
+                    if (pageId) {
+                        showPage(pageId);
+                    }
+                }
+            });
+
             // --- Search Bar Logic ---
             const searchIconBtn = document.getElementById('search-icon-btn');
             const searchBarContainer = document.getElementById('search-bar-container');
@@ -2451,6 +2448,13 @@
             handleImageUpload('heroImageFile', 'heroImagePreview');
             handleImageUpload('promoImageFile', 'promoImagePreview');
             handleImageUpload('product-imageFile', 'product-imagePreview');
+
+            // --- Admin Button Listeners ---
+            document.getElementById('saveHeroBtn')?.addEventListener('click', saveHeroContent);
+            document.getElementById('savePromoBtn')?.addEventListener('click', savePromoContent);
+            document.getElementById('saveCollectionsBtn')?.addEventListener('click', saveSpecialCollections);
+            document.getElementById('applyDiscountBtn')?.addEventListener('click', applyDiscount);
+            document.getElementById('saveMenuOrderBtn')?.addEventListener('click', saveMenuOrder);
 
             // --- Cart Page Logic ---
             const cartItemsContainer = document.getElementById('cartItemsContainer');
@@ -3203,11 +3207,11 @@
                     li.innerHTML = `
                         <a href="#" class="drop-btn">Shop <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#t-shirts" onclick="showPage('t-shirts')">T-Shirt</a></li>
-                            <li><a href="#shirts" onclick="showPage('shirts')">Shirt</a></li>
-                            <li><a href="#pants" onclick="showPage('pants')">Pants</a></li>
-                            <li><a href="#jackets" onclick="showPage('jackets')">Jacket</a></li>
-                            <li><a href="#accessories" onclick="showPage('accessories')">Accessories</a></li>
+                            <li><a href="#t-shirts" class="nav-link" data-page="t-shirts">T-Shirt</a></li>
+                            <li><a href="#shirts" class="nav-link" data-page="shirts">Shirt</a></li>
+                            <li><a href="#pants" class="nav-link" data-page="pants">Pants</a></li>
+                            <li><a href="#jackets" class="nav-link" data-page="jackets">Jacket</a></li>
+                            <li><a href="#accessories" class="nav-link" data-page="accessories">Accessories</a></li>
                         </ul>
                     `;
                 } else {
@@ -3215,7 +3219,7 @@
                     // Special handling for collection/custom/bulk links that should navigate TO the home page first
                     let targetPage = (['special-collection', 'custom-order-section', 'bulk-purchase-section'].includes(pageId)) ? 'home' : pageId;
 
-                    li.innerHTML = `<a href="#${pageId}" onclick="showPage('${targetPage}')">${item.text}</a>`;
+                    li.innerHTML = `<a href="#${pageId}" class="nav-link" data-page="${targetPage}">${item.text}</a>`;
                 }
                 menuContainer.appendChild(li);
             });
