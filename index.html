@@ -607,6 +607,38 @@
             background-color: #fafafa;
         }
 
+        .size-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-brown);
+            text-align: left;
+        }
+        .size-detail-card {
+            background-color: var(--cream);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .size-detail-card h4 {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-brown);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .size-detail-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+        .size-detail-card li {
+            margin-bottom: 5px;
+        }
+
         .product-list-thumbnail {
             width: 60px;
             height: 60px;
@@ -1864,10 +1896,21 @@
 
         // Handle initial page load based on hash
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize data and render dynamic elements
             initializeProductData();
-            renderMainMenu(); // Render the main menu dynamically
+            renderMainMenu();
             renderProductPages();
+            updateCartSummary();
+            updateAllProductPrices();
 
+            // Load dynamic content for the initial page
+            const initialPage = window.location.hash.substring(1) || 'home';
+            showPage(initialPage);
+            loadDynamicContent();
+            loadAdminContent();
+            loadSpecialCollectionsEditor();
+
+            // Attach all event listeners
             // --- Search Bar Logic ---
             const searchIconBtn = document.getElementById('search-icon-btn');
             const searchBarContainer = document.getElementById('search-bar-container');
@@ -1880,27 +1923,19 @@
                     searchInput.focus();
                 });
             }
-
             if (searchCloseBtn) {
                 searchCloseBtn.addEventListener('click', () => {
                     searchBarContainer.classList.remove('active');
                 });
             }
-
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.toLowerCase().trim();
                     const activeProductPage = document.querySelector('.product-page.active');
-
                     if (activeProductPage) {
-                        const products = activeProductPage.querySelectorAll('.product-card');
-                        products.forEach(product => {
+                        activeProductPage.querySelectorAll('.product-card').forEach(product => {
                             const productName = product.querySelector('h3').textContent.toLowerCase();
-                            if (productName.includes(query)) {
-                                product.style.display = 'flex';
-                            } else {
-                                product.style.display = 'none';
-                            }
+                            product.style.display = productName.includes(query) ? 'flex' : 'none';
                         });
                     }
                 });
@@ -1908,205 +1943,145 @@
 
             // --- Product Management CRUD Logic ---
             const productModalOverlay = document.getElementById('product-modal-overlay');
-            const productModalTitle = document.getElementById('product-modal-title');
             const productModalCloseBtn = document.getElementById('product-modal-close-btn');
             const productForm = document.getElementById('product-form');
             const addNewProductBtn = document.getElementById('add-new-product-btn');
             const productManagementList = document.getElementById('product-management-list');
 
-            const openProductModal = (product = null) => {
-                productForm.reset();
-                const imagePreview = document.getElementById('product-imagePreview');
-                imagePreview.src = '';
-                imagePreview.classList.remove('active');
-                // Also reset the file input value
-                document.getElementById('product-imageFile').value = '';
-
-
-                if (product) {
-                    productModalTitle.textContent = 'Edit Produk';
-                    document.getElementById('product-id').value = product.id;
-                    document.getElementById('product-name').value = product.name;
-                    document.getElementById('product-category').value = product.category;
-                    document.getElementById('product-price').value = product.price;
-                    document.getElementById('product-description').value = product.description;
-
-                    if (product.imageUrl) {
-                        imagePreview.src = product.imageUrl;
-                        imagePreview.classList.add('active');
-                    }
-
-                } else {
-                    productModalTitle.textContent = 'Tambah Produk Baru';
-                    document.getElementById('product-id').value = '';
-                }
-                productModalOverlay.classList.add('active');
-            };
-
-            const closeProductModal = () => {
-                productModalOverlay.classList.remove('active');
-            };
-
             if(addNewProductBtn) addNewProductBtn.addEventListener('click', () => openProductModal());
-            if(productModalCloseBtn) productModalCloseBtn.addEventListener('click', closeProductModal);
+            if(productModalCloseBtn) productModalCloseBtn.addEventListener('click', () => productModalOverlay.classList.remove('active'));
             if(productModalOverlay) productModalOverlay.addEventListener('click', (e) => {
-                if (e.target === productModalOverlay) {
-                    closeProductModal();
+                if (e.target === productModalOverlay) productModalOverlay.classList.remove('active');
+            });
+            if (productForm) productForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let products = JSON.parse(localStorage.getItem('products')) || [];
+                const productId = document.getElementById('product-id').value;
+                const imagePreview = document.getElementById('product-imagePreview');
+                const productData = {
+                    name: document.getElementById('product-name').value,
+                    category: document.getElementById('product-category').value,
+                    price: parseFloat(document.getElementById('product-price').value),
+                    description: document.getElementById('product-description').value,
+                };
+                if (productId) {
+                    const existingProduct = products.find(p => p.id === productId);
+                    let imageUrl = existingProduct.imageUrl;
+                    if (imagePreview.src && imagePreview.src.startsWith('data:image')) {
+                        imageUrl = imagePreview.src;
+                    }
+                    if (!imageUrl) return alert('Gambar produk tidak boleh kosong.');
+                    const updatedProductData = { ...productData, imageUrl, thumbnails: [imageUrl] };
+                    products = products.map(p => p.id === productId ? { ...p, ...updatedProductData } : p);
+                } else {
+                    if (!imagePreview.src || !imagePreview.src.startsWith('data:image')) return alert('Silakan unggah gambar produk baru.');
+                    productData.imageUrl = imagePreview.src;
+                    productData.thumbnails = [imagePreview.src];
+                    productData.id = `${productData.category}-${Date.now()}`;
+                    products.push(productData);
+                }
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProductPages();
+                renderProductManagementList();
+                productModalOverlay.classList.remove('active');
+                showMessage('collectionsMessage', 'Produk berhasil disimpan!', 'success');
+            });
+            if (productManagementList) productManagementList.addEventListener('click', (e) => {
+                const products = JSON.parse(localStorage.getItem('products')) || [];
+                const editBtn = e.target.closest('.edit-btn');
+                if (editBtn) {
+                    const productToEdit = products.find(p => p.id === editBtn.dataset.productId);
+                    if (productToEdit) openProductModal(productToEdit);
+                }
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (deleteBtn) {
+                    if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                        const updatedProducts = products.filter(p => p.id !== deleteBtn.dataset.productId);
+                        localStorage.setItem('products', JSON.stringify(updatedProducts));
+                        renderProductPages();
+                        renderProductManagementList();
+                    }
                 }
             });
 
-            if (productForm) {
-                productForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    let products = JSON.parse(localStorage.getItem('products')) || [];
-                    const productId = document.getElementById('product-id').value;
-                    const imagePreview = document.getElementById('product-imagePreview');
-
-                    const productData = {
-                        name: document.getElementById('product-name').value,
-                        category: document.getElementById('product-category').value,
-                        price: parseFloat(document.getElementById('product-price').value),
-                        description: document.getElementById('product-description').value,
-                    };
-
-                    if (productId) { // Update existing product
-                        const existingProduct = products.find(p => p.id === productId);
-                        let imageUrl = existingProduct.imageUrl; // Default to old image
-                        if (imagePreview.src && imagePreview.src.startsWith('data:image')) {
-                            imageUrl = imagePreview.src; // New image was uploaded
-                        }
-
-                        if (!imageUrl) {
-                            alert('Gambar produk tidak boleh kosong.');
-                            return;
-                        }
-
-                        const updatedProductData = { ...productData, imageUrl: imageUrl, thumbnails: [imageUrl] };
-                        products = products.map(p => p.id === productId ? { ...p, ...updatedProductData } : p);
-
-                    } else { // Add new product
-                        if (!imagePreview.src || !imagePreview.src.startsWith('data:image')) {
-                            alert('Silakan unggah gambar produk baru.');
-                            return;
-                        }
-                        productData.imageUrl = imagePreview.src;
-                        productData.thumbnails = [imagePreview.src];
-                        productData.id = `${productData.category}-${Date.now()}`;
-                        products.push(productData);
-                    }
-
-                    localStorage.setItem('products', JSON.stringify(products));
-
-                    renderProductPages();
-                    renderProductManagementList();
-                    closeProductModal();
-                    showMessage('collectionsMessage', 'Produk berhasil disimpan!', 'success');
-                });
-            }
-
-            if (productManagementList) {
-                productManagementList.addEventListener('click', (e) => {
-                    const products = JSON.parse(localStorage.getItem('products')) || [];
-
-                    if (e.target.classList.contains('edit-btn') || e.target.parentElement.classList.contains('edit-btn')) {
-                        const btn = e.target.closest('.edit-btn');
-                        const productId = btn.dataset.productId;
-                        const productToEdit = products.find(p => p.id === productId);
-                        if (productToEdit) {
-                            openProductModal(productToEdit);
-                        }
-                    }
-
-                    if (e.target.classList.contains('delete-btn') || e.target.parentElement.classList.contains('delete-btn')) {
-                        const btn = e.target.closest('.delete-btn');
-                        const productId = btn.dataset.productId;
-                        if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                            const updatedProducts = products.filter(p => p.id !== productId);
-                            localStorage.setItem('products', JSON.stringify(updatedProducts));
-                            renderProductPages();
-                            renderProductManagementList();
-                        }
-                    }
-                });
-            }
-
-
-            // --- Size Chart Tab Logic ---
-            const sizeChartTabs = document.querySelector('.size-chart-tabs');
-            if (sizeChartTabs) {
-                const tabButtons = sizeChartTabs.querySelectorAll('.size-chart-tab-btn');
-                const tabContents = document.querySelectorAll('.size-chart-content');
-
-                sizeChartTabs.addEventListener('click', (e) => {
-                    const clickedButton = e.target.closest('.size-chart-tab-btn');
+            // --- Size Chart & Admin Tab Logic ---
+            function setupTabSystem(tabContainerSelector, buttonSelector, contentSelector) {
+                const container = document.querySelector(tabContainerSelector);
+                if (!container) return;
+                const tabButtons = container.querySelectorAll(buttonSelector);
+                const tabContents = document.querySelectorAll(contentSelector);
+                container.addEventListener('click', (e) => {
+                    const clickedButton = e.target.closest(buttonSelector);
                     if (!clickedButton) return;
-
                     tabButtons.forEach(btn => btn.classList.remove('active'));
                     tabContents.forEach(content => content.classList.remove('active'));
-
                     clickedButton.classList.add('active');
-                    const chartName = clickedButton.dataset.chart;
-                    const activeContent = document.querySelector(`.size-chart-content[data-chart="${chartName}"]`);
-                    if (activeContent) {
-                        activeContent.classList.add('active');
-                    }
+                    const tabName = clickedButton.dataset.tab || clickedButton.dataset.chart;
+                    const activeContent = document.querySelector(`${contentSelector}[data-tab="${tabName}"], ${contentSelector}[data-chart="${tabName}"]`);
+                    if (activeContent) activeContent.classList.add('active');
                 });
             }
+            setupTabSystem('.size-chart-tabs', '.size-chart-tab-btn', '.size-chart-content');
+            setupTabSystem('.admin-tabs', '.admin-tab-btn', '.admin-tab-content');
 
             // --- Size Calculator Logic ---
             const sizeCalculatorForm = document.getElementById('size-calculator-form');
-            if (sizeCalculatorForm) {
-                sizeCalculatorForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const height = parseFloat(document.getElementById('height').value);
-                    const weight = parseFloat(document.getElementById('weight').value);
-                    const chest = parseFloat(document.getElementById('chest').value);
-                    const waist = parseFloat(document.getElementById('waist').value);
+            if (sizeCalculatorForm) sizeCalculatorForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('weight').value);
+                const chest = parseFloat(document.getElementById('chest').value);
+                const waist = parseFloat(document.getElementById('waist').value);
+                if (isNaN(height) || isNaN(weight) || isNaN(chest) || isNaN(waist)) return alert('Mohon isi semua field dengan angka yang valid.');
 
-                    if (isNaN(height) || isNaN(weight) || isNaN(chest) || isNaN(waist)) {
-                        alert('Mohon isi semua field dengan angka yang valid.');
-                        return;
+                const scores = { S: 0, M: 0, L: 0, XL: 0 };
+                if (height < 165) scores.S++; else if (height <= 175) scores.M++; else if (height <= 185) scores.L++; else scores.XL++;
+                if (weight < 60) scores.S++; else if (weight <= 75) scores.M++; else if (weight <= 90) scores.L++; else scores.XL++;
+                if (chest < 92) scores.S++; else if (chest <= 102) scores.M++; else if (chest <= 112) scores.L++; else scores.XL++;
+                if (waist < 76) scores.S++; else if (waist <= 86) scores.M++; else if (waist <= 96) scores.L++; else scores.XL++;
+
+                let recommendedSize = 'M';
+                let maxScore = 0;
+                for (const size in scores) {
+                    if (scores[size] > maxScore) {
+                        maxScore = scores[size];
+                        recommendedSize = size;
                     }
+                }
 
-                    const scores = { S: 0, M: 0, L: 0, XL: 0 };
+                const resultContainer = document.getElementById('size-result');
+                document.getElementById('recommended-size').textContent = recommendedSize;
 
-                    // Height points
-                    if (height < 165) scores.S++;
-                    else if (height <= 175) scores.M++;
-                    else if (height <= 185) scores.L++;
-                    else scores.XL++;
+                // Clear previous details before adding new ones
+                const existingDetails = resultContainer.querySelector('.size-details-grid');
+                if (existingDetails) {
+                    existingDetails.remove();
+                }
 
-                    // Weight points
-                    if (weight < 60) scores.S++;
-                    else if (weight <= 75) scores.M++;
-                    else if (weight <= 90) scores.L++;
-                    else scores.XL++;
+                // Create and display detailed measurements
+                const detailsGrid = document.createElement('div');
+                detailsGrid.className = 'size-details-grid';
 
-                    // Chest points
-                    if (chest < 92) scores.S++;
-                    else if (chest <= 102) scores.M++;
-                    else if (chest <= 112) scores.L++;
-                    else scores.XL++;
+                const pantsSizeMap = { 'S': '28 (S)', 'M': '30 (M)', 'L': '32 (L)', 'XL': '34 (XL)' };
 
-                    // Waist points
-                    if (waist < 76) scores.S++;
-                    else if (waist <= 86) scores.M++;
-                    else if (waist <= 96) scores.L++;
-                    else scores.XL++;
+                Object.keys(sizeChartData).forEach(category => {
+                    const categoryName = category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ');
+                    const sizeKey = (category === 'pants') ? pantsSizeMap[recommendedSize] : recommendedSize;
+                    const measurements = sizeChartData[category][sizeKey];
 
-                    let recommendedSize = 'M'; // Default size
-                    let maxScore = 0;
-                    for (const size in scores) {
-                        if (scores[size] > maxScore) {
-                            maxScore = scores[size];
-                            recommendedSize = size;
+                    if (measurements) {
+                        let detailsHtml = `<div class="size-detail-card"><h4>${categoryName} (Ukuran ${recommendedSize})</h4><ul>`;
+                        for (const [key, value] of Object.entries(measurements)) {
+                            detailsHtml += `<li><strong>${key}:</strong> ${value}</li>`;
                         }
+                        detailsHtml += `</ul></div>`;
+                        detailsGrid.innerHTML += detailsHtml;
                     }
-
-                    document.getElementById('recommended-size').textContent = recommendedSize;
-                    document.getElementById('size-result').style.display = 'block';
                 });
-            }
+
+                resultContainer.appendChild(detailsGrid);
+                resultContainer.style.display = 'block';
+            });
 
             // --- Multi-Step Custom Order Form Logic ---
             const multiStepForm = document.getElementById('multiStepForm');
@@ -2923,6 +2898,33 @@
             { id: 'bulk-purchase-section', text: 'Bulk Order' },
             { id: 'fitting', text: 'Fitting' }
         ];
+
+        const sizeChartData = {
+            't-shirt': {
+                'S': { 'Lebar Dada': '48 cm', 'Panjang Badan': '68 cm', 'Panjang Lengan': '21 cm' },
+                'M': { 'Lebar Dada': '50 cm', 'Panjang Badan': '70 cm', 'Panjang Lengan': '22 cm' },
+                'L': { 'Lebar Dada': '52 cm', 'Panjang Badan': '72 cm', 'Panjang Lengan': '23 cm' },
+                'XL': { 'Lebar Dada': '54 cm', 'Panjang Badan': '74 cm', 'Panjang Lengan': '24 cm' }
+            },
+            'shirt': {
+                'S': { 'Lebar Dada': '50 cm', 'Panjang Badan': '70 cm', 'Panjang Lengan': '60 cm' },
+                'M': { 'Lebar Dada': '52 cm', 'Panjang Badan': '72 cm', 'Panjang Lengan': '61 cm' },
+                'L': { 'Lebar Dada': '54 cm', 'Panjang Badan': '74 cm', 'Panjang Lengan': '62 cm' },
+                'XL': { 'Lebar Dada': '56 cm', 'Panjang Badan': '76 cm', 'Panjang Lengan': '63 cm' }
+            },
+            'pants': {
+                'S': { 'Lingkar Pinggang': '76 cm', 'Panjang': '100 cm', 'Lebar Paha': '28 cm' },
+                'M': { 'Lingkar Pinggang': '81 cm', 'Panjang': '102 cm', 'Lebar Paha': '29 cm' },
+                'L': { 'Lingkar Pinggang': '86 cm', 'Panjang': '104 cm', 'Lebar Paha': '30 cm' },
+                'XL': { 'Lingkar Pinggang': '91 cm', 'Panjang': '106 cm', 'Lebar Paha': '31 cm' }
+            },
+            'jacket': {
+                'S': { 'Lebar Dada': '52 cm', 'Panjang Badan': '65 cm', 'Panjang Lengan': '62 cm' },
+                'M': { 'Lebar Dada': '55 cm', 'Panjang Badan': '67 cm', 'Panjang Lengan': '63 cm' },
+                'L': { 'Lebar Dada': '58 cm', 'Panjang Badan': '69 cm', 'Panjang Lengan': '64 cm' },
+                'XL': { 'Lebar Dada': '61 cm', 'Panjang Badan': '71 cm', 'Panjang Lengan': '65 cm' }
+            }
+        };
 
         function renderMenuManagementList() {
             const menuOrder = JSON.parse(localStorage.getItem('menuOrder')) || defaultMenuOrder.map(item => item.id);
