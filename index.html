@@ -2924,6 +2924,7 @@
         function renderCart() {
             const cart = getCart();
             const products = JSON.parse(localStorage.getItem('products')) || [];
+            const discounts = JSON.parse(localStorage.getItem('productDiscounts')) || {};
             const cartContainer = document.getElementById('cartItemsContainer');
             const summaryContainer = document.querySelector('.cart-summary');
             if (!cartContainer || !summaryContainer) return;
@@ -2942,7 +2943,20 @@
                 const product = products.find(p => p.id === item.productId);
                 if (!product) return;
 
-                const itemTotalPrice = product.price * item.quantity;
+                const discountPercentage = discounts[product.category];
+                let effectivePrice = product.price;
+                let priceHTML = formatRupiah(product.price);
+
+                if (discountPercentage > 0) {
+                    effectivePrice = product.price * (1 - discountPercentage / 100);
+                    priceHTML = `
+                        <span style="font-size: 14px; text-decoration: line-through; color: var(--text-light);">${formatRupiah(product.price)}</span>
+                        <br>
+                        <span style="font-weight: 700; color: var(--accent-gold);">${formatRupiah(effectivePrice)}</span>
+                    `;
+                }
+
+                const itemTotalPrice = effectivePrice * item.quantity;
                 subtotal += itemTotalPrice;
 
                 const cartItemEl = document.createElement('div');
@@ -2955,10 +2969,10 @@
                         <h3>${product.name}</h3>
                         <p>Ukuran: ${item.size}, Warna: ${item.color}</p>
                     </div>
-                    <p class="item-price">${formatRupiah(product.price)}</p>
+                    <div class="item-price">${priceHTML}</div>
                     <div class="quantity-selector">
                         <button class="quantity-btn minus">-</button>
-                        <input type="number" value="${item.quantity}" min="1" class="item-quantity">
+                        <input type="number" value="${item.quantity}" min="1" class="item-quantity" readonly>
                         <button class="quantity-btn plus">+</button>
                     </div>
                     <button class="remove-btn"><i class="fas fa-trash"></i></button>
@@ -2976,36 +2990,6 @@
         function formatRupiah(amount) {
             return 'IDR ' + new Intl.NumberFormat('id-ID').format(amount);
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const cartItemsContainer = document.getElementById('cartItemsContainer');
-            if (cartItemsContainer) {
-                cartItemsContainer.addEventListener('click', function(event) {
-                    // Handle quantity change
-                    if (event.target.classList.contains('quantity-btn')) {
-                        const input = event.target.closest('.quantity-selector').querySelector('.item-quantity');
-                        let quantity = parseInt(input.value);
-
-                        if (event.target.classList.contains('plus')) {
-                            quantity++;
-                        } else if (event.target.classList.contains('minus')) {
-                            if (quantity > 1) {
-                                quantity--;
-                            }
-                        }
-                        input.value = quantity;
-                        updateCartSummary();
-                    }
-
-                    // Handle remove item
-                    if (event.target.closest('.remove-btn')) {
-                        event.target.closest('.cart-item').remove();
-                        updateCartSummary();
-                    }
-                });
-            }
-            updateCartSummary(); // Initial calculation on page load
-        });
 
         // Utility function for admin messages
         function showMessage(elementId, message, type) {
@@ -3252,6 +3236,9 @@
                 }
             });
         });
+
+        // Signal that the application is ready for testing
+        window.appReady = true;
     </script>
 </body>
 </html>
