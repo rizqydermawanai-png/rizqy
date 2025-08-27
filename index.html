@@ -498,6 +498,21 @@
         .bulk-order-form-container h2 { font-family: var(--font-heading); text-align: center; margin-bottom: 30px; color: var(--dark-brown); }
         .form-group input[type="number"] { width: 100%; padding: 12px; border: 1px solid var(--light-brown); border-radius: 4px; font-family: var(--font-body); font-size: 15px; color: var(--text-dark); background-color: var(--white); }
 
+        /* Bulk Order Form Item Rows */
+        .bulk-item-row { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .bulk-item-row .form-group { margin-bottom: 0; flex-grow: 1; }
+        .bulk-item-row .form-group:nth-child(2) { flex-grow: 0; width: 120px; }
+        .bulk-item-row .remove-item-btn { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px 15px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; height: 47px; }
+        .bulk-item-row .remove-item-btn:hover { background-color: #f1b0b7; }
+        .add-item-btn { background-color: var(--white); color: var(--primary-brown); border: 1px dashed var(--primary-brown); padding: 10px 15px; border-radius: 4px; cursor: pointer; margin-top: -5px; margin-bottom: 20px; font-weight: 500; display: inline-block; }
+        .add-item-btn:hover { background-color: #fdfaf8; }
+        .add-item-btn i { margin-right: 8px; }
+
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 20px; background-color: var(--white); padding: 20px; border-radius: 4px; border: 1px solid var(--light-brown); }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; }
+        .checkbox-item input { width: auto; }
+        .checkbox-item label { margin-bottom: 0; font-weight: 500; cursor: pointer; }
+
         /* Footer */
         footer { background-color: var(--dark-brown); color: var(--white); padding: 60px 0 30px; margin-top: auto; }
         .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
@@ -1420,14 +1435,51 @@
                             <div class="form-step" data-step="3">
                                 <h3 class="step-title">Detail Desain dan Preferensi</h3>
                                 <div class="form-group">
-                                    <label for="deskripsiDesain">Deskripsi Desain & Detail Kustom</label>
-                                    <textarea id="deskripsiDesain" name="deskripsiDesain" rows="6" placeholder="Contoh: Kemeja formal lengan panjang, warna biru navy, kerah spread, manset double, ukuran custom fit."></textarea>
-                                    <small>Sertakan detail seperti warna, bahan yang diinginkan, ukuran khusus, gaya kerah/manset, dll.</small>
+                                    <label for="customFabric">Jenis Kain / Material</label>
+                                    <select id="customFabric" name="customFabric">
+                                        <option value="">Pilih Material</option>
+                                        <option value="katun">Katun (Cotton)</option>
+                                        <option value="linen">Linen</option>
+                                        <option value="denim">Denim</option>
+                                        <option value="kulit">Kulit (Leather)</option>
+                                        <option value="suede">Suede</option>
+                                        <option value="wol">Wol (Wool)</option>
+                                        <option value="lainnya">Lainnya (jelaskan di catatan)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="customColor">Warna</label>
+                                    <input type="text" id="customColor" name="customColor" placeholder="e.g., Biru Navy, Putih, Hitam">
+                                </div>
+                                <div class="form-group">
+                                    <label>Detail Tambahan</label>
+                                    <div class="checkbox-group">
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="detailPocket" name="additionalDetails[]" value="pocket">
+                                            <label for="detailPocket">Saku Dada</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="detailEmbroidery" name="additionalDetails[]" value="embroidery">
+                                            <label for="detailEmbroidery">Bordir</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="detailCustomButtons" name="additionalDetails[]" value="custom-buttons">
+                                            <label for="detailCustomButtons">Kancing Custom</label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="detailZipper" name="additionalDetails[]" value="zipper">
+                                            <label for="detailZipper">Resleting</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="referenceImage">Unggah Referensi / Sketsa (Opsional)</label>
                                     <input type="file" id="referenceImage" name="referenceImage" class="file-input-custom" accept="image/*">
-                                    <label for="referenceImage" class="file-input-label"><i class="fas fa-upload"></i> Pilih File</label>
+                                    <label for="referenceImage" class="file-input-label"><i class="fas fa-upload"></i> Pilih File Desain</label>
+                                </div>
+                                 <div class="form-group">
+                                    <label for="additionalNotes">Catatan Tambahan (jika ada)</label>
+                                    <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Jelaskan detail lain yang tidak ada di pilihan atas."></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="tanggalKonsultasi">Tanggal Preferensi Konsultasi</label>
@@ -1489,31 +1541,41 @@
                             <!-- Step 2: Order Details -->
                             <div class="form-step" data-step="2">
                                 <h3 class="step-title">Detail Kebutuhan Pesanan</h3>
+
+                                <label style="display: block; font-weight: 500; margin-bottom: 10px;">Daftar Produk & Kuantitas</label>
+                                <div id="bulk-items-container">
+                                    <!-- Dynamic item rows will be inserted here by JavaScript -->
+                                </div>
+                                <button type="button" class="add-item-btn" id="add-bulk-item-btn"><i class="fas fa-plus"></i> Tambah Item</button>
+
                                 <div class="form-group">
-                                    <label for="jenisProdukBulk">Jenis Produk yang Diminati</label>
-                                    <select id="jenisProdukBulk" name="jenisProdukBulk" required>
-                                        <option value="">Pilih Jenis Produk</option>
-                                        <option value="t-shirt">T-Shirt</option>
-                                        <option value="shirt">Shirt</option>
-                                        <option value="pants">Pants</option>
-                                        <option value="jacket">Jacket</option>
-                                        <option value="accessories">Accessories</option>
-                                        <option value="mix">Campuran</option>
+                                    <label for="logoPlacement">Penempatan Logo (jika ada)</label>
+                                    <select id="logoPlacement" name="logoPlacement">
+                                        <option value="">Tidak ada logo</option>
+                                        <option value="dada-kiri">Dada Kiri</option>
+                                        <option value="dada-kanan">Dada Kanan</option>
+                                        <option value="punggung">Punggung</option>
+                                        <option value="lengan">Lengan</option>
                                     </select>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="jumlahEstimasi">Estimasi Jumlah Produk</label>
-                                    <input type="number" id="jumlahEstimasi" name="jumlahEstimasi" min="10" placeholder="Minimal 10 item" required>
+                                    <label for="bulkLogoUpload">Unggah Logo Perusahaan (Opsional)</label>
+                                    <input type="file" id="bulkLogoUpload" name="bulkLogoUpload" class="file-input-custom" accept="image/*">
+                                    <label for="bulkLogoUpload" class="file-input-label"><i class="fas fa-upload"></i> Pilih File Logo</label>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="tanggalDibutuhkan">Tanggal Dibutuhkan (Opsional)</label>
                                     <input type="date" id="tanggalDibutuhkan" name="tanggalDibutuhkan">
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="deskripsiKebutuhan">Deskripsi Kebutuhan & Kustomisasi (jika ada)</label>
-                                    <textarea id="deskripsiKebutuhan" name="deskripsiKebutuhan" rows="6" placeholder="Contoh: Membutuhkan 50 kemeja formal putih dengan logo perusahaan di dada kiri, ukuran bervariasi S-XL."></textarea>
-                                    <small>Sertakan detail seperti warna, ukuran, penempatan logo, dll.</small>
+                                    <label for="deskripsiKebutuhan">Catatan Tambahan</label>
+                                    <textarea id="deskripsiKebutuhan" name="deskripsiKebutuhan" rows="4" placeholder="Contoh: Kemeja menggunakan bahan katun, ukuran S-XL."></textarea>
+                                    <small>Sertakan detail lain yang relevan seperti jenis bahan, variasi ukuran, dll.</small>
                                 </div>
+
                                 <div class="form-actions">
                                     <button type="button" class="btn prev-btn">Kembali</button>
                                     <button type="submit" class="submit-btn">Kirim Permintaan</button>
@@ -1660,6 +1722,14 @@
                         if (garment === 'kemeja') {
                             dynamicFieldsContainer.innerHTML = `
                                 <div class="form-group">
+                                    <label for="shirtFit">Gaya Fit</label>
+                                    <select id="shirtFit" name="shirtFit">
+                                        <option value="slim">Slim Fit</option>
+                                        <option value="regular">Regular Fit</option>
+                                        <option value="loose">Loose Fit</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="collarType">Jenis Kerah</label>
                                     <select id="collarType" name="collarType">
                                         <option value="spread">Spread Collar</option>
@@ -1671,43 +1741,47 @@
                                 <div class="form-group">
                                     <label for="cuffType">Jenis Manset</label>
                                     <select id="cuffType" name="cuffType">
-                                        <option value="barrel">Barrel Cuff</option>
-                                        <option value="french">French Cuff</option>
+                                        <option value="barrel">Barrel Cuff (Kancing)</option>
+                                        <option value="french">French Cuff (Cufflinks)</option>
                                     </select>
                                 </div>`;
                         } else if (garment === 'celana') {
                             dynamicFieldsContainer.innerHTML = `
                                 <div class="form-group">
-                                    <label for="fitStyle">Gaya Fit</label>
-                                    <select id="fitStyle" name="fitStyle">
+                                    <label for="pantFit">Gaya Fit</label>
+                                    <select id="pantFit" name="pantFit">
                                         <option value="slim">Slim Fit</option>
-                                        <option value="regular">Regular Fit</option>
+                                        <option value="straight">Straight Fit</option>
+                                        <option value="tapered">Tapered Fit</option>
                                         <option value="loose">Loose Fit</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pantLength">Panjang Celana</label>
-                                    <select id="pantLength" name="pantLength">
-                                        <option value="full">Full-length</option>
-                                        <option value="cropped">Cropped</option>
+                                    <label for="pantStyle">Gaya Celana</label>
+                                    <select id="pantStyle" name="pantStyle">
+                                        <option value="chino">Chino</option>
+                                        <option value="formal">Formal Trousers</option>
+                                        <option value="jeans">Jeans</option>
+                                        <option value="cargo">Cargo</option>
                                     </select>
                                 </div>`;
                         } else if (garment === 'jaket') {
                             dynamicFieldsContainer.innerHTML = `
                                 <div class="form-group">
-                                    <label for="jacketMaterial">Tipe Bahan</label>
-                                    <select id="jacketMaterial" name="jacketMaterial">
-                                        <option value="denim">Denim</option>
-                                        <option value="leather">Kulit (Leather)</option>
-                                        <option value="suede">Suede</option>
-                                        <option value="wool">Wol</option>
+                                    <label for="jacketType">Tipe Jaket</label>
+                                    <select id="jacketType" name="jacketType">
+                                        <option value="bomber">Bomber Jacket</option>
+                                        <option value="denim">Denim Jacket</option>
+                                        <option value="leather">Biker Jacket</option>
+                                        <option value="blazer">Blazer</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="jacketClosure">Tipe Penutup</label>
-                                    <select id="jacketClosure" name="jacketClosure">
-                                        <option value="zipper">Ritsleting (Zipper)</option>
-                                        <option value="buttons">Kancing (Buttons)</option>
+                                    <label for="jacketHoodie">Hoodie</label>
+                                    <select id="jacketHoodie" name="jacketHoodie">
+                                        <option value="none">Tanpa Hoodie</option>
+                                        <option value="fixed">Hoodie Paten</option>
+                                        <option value="detachable">Hoodie Lepas-pasang</option>
                                     </select>
                                 </div>`;
                         } else if (garment === 'jas') {
@@ -1723,9 +1797,17 @@
                                 <div class="form-group">
                                     <label for="suitButtons">Jumlah Kancing</label>
                                     <select id="suitButtons" name="suitButtons">
-                                        <option value="1">1 Kancing</option>
-                                        <option value="2">2 Kancing</option>
-                                        <option value="3">3 Kancing</option>
+                                        <option value="1">1 Kancing (Single-Breasted)</option>
+                                        <option value="2">2 Kancing (Single-Breasted)</option>
+                                        <option value="6">6 Kancing (Double-Breasted)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="suitVent">Model Vent</label>
+                                    <select id="suitVent" name="suitVent">
+                                        <option value="none">Tanpa Vent</option>
+                                        <option value="single">Single Vent</option>
+                                        <option value="double">Double Vent</option>
                                     </select>
                                 </div>`;
                         }
@@ -1747,20 +1829,20 @@
 
 
             // --- Multi-Step Bulk Order Form Logic ---
-            const bulkOrderForm = document.getElementById('bulkOrderForm');
-            if (bulkOrderForm) {
-                const nextButtons = bulkOrderForm.querySelectorAll('.next-btn');
-                const prevButtons = bulkOrderForm.querySelectorAll('.prev-btn');
-                const formSteps = bulkOrderForm.querySelectorAll('.form-step');
-                const stepIndicators = bulkOrderForm.parentElement.querySelectorAll('.form-steps .step-indicator');
+            const bulkOrder_form = document.getElementById('bulkOrderForm');
+            if (bulkOrder_form) {
+                const nextButtons = bulkOrder_form.querySelectorAll('.next-btn');
+                const prevButtons = bulkOrder_form.querySelectorAll('.prev-btn');
+                const formSteps = bulkOrder_form.querySelectorAll('.form-step');
+                const stepIndicators = bulkOrder_form.parentElement.querySelectorAll('.form-steps .step-indicator');
                 let currentStep = 1;
 
                 function goToBulkStep(stepNumber) {
                     formSteps.forEach(step => step.classList.remove('active'));
                     stepIndicators.forEach(indicator => indicator.classList.remove('active'));
 
-                    const targetStep = bulkOrderForm.querySelector(`.form-step[data-step="${stepNumber}"]`);
-                    const targetIndicator = bulkOrderForm.parentElement.querySelector(`.form-steps .step-indicator[data-step="${stepNumber}"]`);
+                    const targetStep = bulkOrder_form.querySelector(`.form-step[data-step="${stepNumber}"]`);
+                    const targetIndicator = bulkOrder_form.parentElement.querySelector(`.form-steps .step-indicator[data-step="${stepNumber}"]`);
 
                     if (targetStep && targetIndicator) {
                         targetStep.classList.add('active');
@@ -1784,6 +1866,61 @@
                         }
                     });
                 });
+                initializeBulkOrderForm();
+            }
+
+            function initializeBulkOrderForm() {
+                const container = document.getElementById('bulk-items-container');
+                if (!container) return;
+                const addButton = document.getElementById('add-bulk-item-btn');
+
+                const createItemRow = () => {
+                    const itemRow = document.createElement('div');
+                    itemRow.classList.add('bulk-item-row');
+                    itemRow.innerHTML = `
+                        <div class="form-group">
+                            <select class="form-control" name="bulk-item-product[]" required>
+                                <option value="">Pilih Produk</option>
+                                <option value="t-shirt">T-Shirt</option>
+                                <option value="shirt">Shirt</option>
+                                <option value="pants">Pants</option>
+                                <option value="jacket">Jacket</option>
+                                <option value="accessories">Accessories</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" name="bulk-item-quantity[]" min="1" placeholder="Jumlah" required>
+                        </div>
+                        <button type="button" class="remove-item-btn"><i class="fas fa-trash"></i></button>
+                    `;
+                    container.appendChild(itemRow);
+                };
+
+                addButton.addEventListener('click', createItemRow);
+
+                container.addEventListener('click', function(e) {
+                    const removeButton = e.target.closest('.remove-item-btn');
+                    if (removeButton) {
+                        removeButton.closest('.bulk-item-row').remove();
+                    }
+                });
+
+                // Add one row by default if container is empty
+                if (container.children.length === 0) {
+                    createItemRow();
+                }
+
+                // Handle file input label change
+                const fileInput = document.getElementById('bulkLogoUpload');
+                if (fileInput) {
+                    const fileInputLabel = document.querySelector('label.file-input-label[for="bulkLogoUpload"]');
+                    fileInput.addEventListener('change', function() {
+                        const fileName = this.files.length > 0 ? this.files[0].name : 'Pilih File Logo';
+                        if (fileInputLabel) {
+                            fileInputLabel.innerHTML = `<i class="fas fa-upload"></i> ${fileName}`;
+                        }
+                    });
+                }
             }
 
 
