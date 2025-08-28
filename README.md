@@ -46,24 +46,29 @@ Place the entire project folder (e.g., `kazumi-project/`) inside your XAMPP inst
 
 Open the XAMPP Control Panel and start the **Apache** and **MySQL** services.
 
-### 3. Create the Database
+### 3. Setup the Database (Method 1: Import .sql File - Recommended)
 
-- Open your web browser and navigate to `http://localhost/phpmyadmin/`.
-- Click on the **"New"** button in the left sidebar.
-- For the database name, enter `kazumi_db`.
-- Set the collation to `utf8mb4_general_ci`.
-- Click **"Create"**. You do not need to create any tables manually.
+This is the easiest and recommended method.
 
-### 4. Run the Installation Script
+1.  Navigate to `http://localhost/phpmyadmin/`.
+2.  Click on the **"New"** button in the left sidebar to create a new database.
+3.  Enter the database name as `kazumi_db` and click **"Create"**.
+4.  Once the database is created, click on its name in the left sidebar to select it.
+5.  Click on the **"Import"** tab at the top of the page.
+6.  Click "Choose File" and select the `database.sql` file from this project folder.
+7.  Leave all options as default and click the **"Import"** (or "Go") button at the bottom of the page.
 
-Now that the empty database is created, we need to create the tables and populate them with default data.
+You should see a success message indicating that the import has been successfully finished. The database is now ready.
 
-- In your browser, navigate to the `install.php` script within your project folder. For example:
-  `http://localhost/kazumi-project/install.php`
+### 4. Setup the Database (Method 2: Run PHP Script - Alternative)
 
-- You should see a success message indicating that the database, tables, and default data have been set up correctly.
+Use this method if you cannot import the `.sql` file.
 
-- **Important**: For security, you should delete the `install.php` file from your project folder after you have run it successfully.
+1.  Follow steps 1-3 from Method 1 to create the empty `kazumi_db` database.
+2.  In your browser, navigate to the `install.php` script within your project folder. For example:
+    `http://localhost/kazumi-project/install.php`
+3.  If it runs successfully, you will see a success message.
+4.  **Important**: For security, you should delete the `install.php` file from your project folder after it runs successfully.
 
 ## How to Use
 

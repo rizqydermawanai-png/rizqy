@@ -6,7 +6,6 @@
 header('Content-Type: text/plain');
 
 // Include the database connection configuration
-// Note: We are in the root, so the path is 'api/db.php'
 require 'api/db.php';
 
 echo "--- KAZUMI Database Installation --- \n\n";
@@ -128,7 +127,7 @@ $defaultProducts = [
 
 $stmt = $conn->prepare("INSERT INTO products (id, category, name, price, imageUrl, description) VALUES (?, ?, ?, ?, ?, ?)");
 foreach ($defaultProducts as $p) {
-    $stmt->bind_param("sssisss", $p[0], $p[1], $p[2], $p[3], $p[4], $p[5]);
+    $stmt->bind_param("sssiss", $p[0], $p[1], $p[2], $p[3], $p[4], $p[5]);
     $stmt->execute();
 }
 echo "[SUCCESS] Inserted " . count($defaultProducts) . " default products.\n";
