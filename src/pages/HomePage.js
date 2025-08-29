@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SectionTitle } from '../components/common';
 import { IconShirt, IconUsers, IconGooglePlay, IconApple } from '../assets/icons';
 
-const Hero = ({ setView }) => (
-    <section id="home" className="relative h-[80vh] bg-cover bg-center text-white flex items-center justify-center text-center" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80')" }}>
-        <div className="container mx-auto px-5">
-            <div className="max-w-3xl mx-auto">
-                <h1 className="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
-                <p className="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#" onClick={(e) => { e.preventDefault(); setView('special-collections'); }} className="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
-                    <a href="#" onClick={(e) => { e.preventDefault(); setView('custom-order'); }} className="btn border-2 border-white hover:bg-white hover:text-[#6D4C41]">Custom Order</a>
+const heroImages = [
+    'https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+    'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+    'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+];
+
+const Hero = ({ setView }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentImageIndex((prevIndex) =>
+                prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+            );
+        }, 5000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const heroStyle = {
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('${heroImages[currentImageIndex]}')`,
+        transition: 'background-image 1s ease-in-out',
+    };
+
+    return (
+        <section id="home" className="relative h-[80vh] bg-cover bg-center text-white flex items-center justify-center text-center" style={heroStyle}>
+            <div className="container mx-auto px-5">
+                <div className="max-w-3xl mx-auto">
+                    <h1 className="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
+                    <p className="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#" onClick={(e) => { e.preventDefault(); setView('special-collections'); }} className="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); setView('custom-order'); }} className="btn border-2 border-white hover:bg-white hover:text-[#6D4C41]">Custom Order</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-);
+        </section>
+    );
+};
 
 const PopularCategories = ({ products, setView }) => {
     return (

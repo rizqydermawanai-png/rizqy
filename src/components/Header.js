@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IconChevronDown, IconSearch, IconShoppingBag, IconUser, IconCog, IconLogout } from '../assets/icons';
 
-const Header = ({ setView, setModalView, cart, currentUser, handleLogout, categories }) => {
+const Header = ({ setView, setModalView, cart, currentUser, handleLogout, categories, navLinks }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -17,21 +17,20 @@ const Header = ({ setView, setModalView, cart, currentUser, handleLogout, catego
                     <a href="#" onClick={(e) => handleNav(e, 'home')} className="font-serif text-3xl font-bold text-[#6D4C41]">KAZUMI</a>
                     <nav className="hidden md:flex">
                         <ul className="flex items-center space-x-6">
-                            <li><a href="#" onClick={(e) => handleNav(e, 'home')} className="nav-link">Home</a></li>
-                            <li className="relative" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
-                                <a href="#" onClick={(e) => e.preventDefault()} className="nav-link flex items-center gap-2">
-                                    Shop <IconChevronDown />
-                                </a>
-                                {dropdownOpen && (
-                                    <ul className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2">
-                                        {categories.map(cat => (
-                                            <li key={cat}><a href="#" onClick={(e) => handleNav(e, 'category', cat)} className="dropdown-link">{cat}</a></li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </li>
-                            <li><a href="#" onClick={(e) => handleNav(e, 'special-collections')} className="nav-link">Collections</a></li>
-                            <li><a href="#" onClick={(e) => handleNav(e, 'custom-order')} className="nav-link">Custom Order</a></li>
+                            {navLinks.map(link => (
+                                <li key={link.id} className={link.dropdown ? "relative" : ""} onMouseEnter={link.dropdown ? () => setDropdownOpen(true) : null} onMouseLeave={link.dropdown ? () => setDropdownOpen(false) : null}>
+                                    <a href="#" onClick={(e) => handleNav(e, link.view, link.param)} className="nav-link flex items-center gap-2">
+                                        {link.text} {link.dropdown && <IconChevronDown />}
+                                    </a>
+                                    {link.dropdown && dropdownOpen && (
+                                        <ul className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2">
+                                            {categories.map(cat => (
+                                                <li key={cat}><a href="#" onClick={(e) => handleNav(e, 'category', cat)} className="dropdown-link">{cat}</a></li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     </nav>
                     <div className="flex items-center space-x-4">

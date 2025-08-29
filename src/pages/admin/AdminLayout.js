@@ -1,6 +1,6 @@
 import React from 'react';
 import { SectionTitle } from '../../components/common';
-import { IconChartBar, IconBox, IconCollection, IconTags, IconUsers, IconCog } from '../../assets/icons';
+import { IconChartBar, IconBox, IconCollection, IconTags, IconUsers, IconCog, IconEdit } from '../../assets/icons';
 
 
 const AdminLayout = ({ children, setView, adminView, setAdminView }) => {
@@ -9,6 +9,7 @@ const AdminLayout = ({ children, setView, adminView, setAdminView }) => {
         { id: 'products', icon: <IconBox />, text: "Kelola Produk" },
         { id: 'collections', icon: <IconCollection />, text: "Kelola Koleksi" },
         { id: 'promos', icon: <IconTags />, text: "Kelola Promo" },
+        { id: 'menu', icon: <IconEdit />, text: "Kelola Menu" },
         { id: 'users', icon: <IconUsers />, text: "Kelola Pengguna" },
         { id: 'settings', icon: <IconCog />, text: "Pengaturan" },
     ];

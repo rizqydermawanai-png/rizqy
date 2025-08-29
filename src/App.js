@@ -18,12 +18,14 @@ import CustomOrderPage from './pages/CustomOrderPage';
 import BulkPurchasePage from './pages/BulkPurchasePage';
 import LoginPage from './pages/LoginPage';
 import CartPage from './pages/CartPage';
+import FittingGuidePage from './pages/FittingGuidePage';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminCollections from './pages/admin/AdminCollections';
+import AdminMenu from './pages/admin/AdminMenu';
 
 
 export default function App() {
@@ -35,6 +37,13 @@ export default function App() {
     const [promos, setPromos] = useState([{ id: 1, title: "KAZUMI x BUSINESSWEEK", subtitle: "MONDAY SPECIAL", offer: "BUY 2 GET 30% OFF", terms: "Groups IDR 8.000 dengan min. pembelian IDR 300.000" }]);
     const [cart, setCart] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
+    const [navLinks, setNavLinks] = useState([
+        { id: 'home', text: 'Home', view: 'home' },
+        { id: 'shop', text: 'Shop', view: 'category', param: 'T-Shirt', dropdown: true },
+        { id: 'special-collections', text: 'Collections', view: 'special-collections' },
+        { id: 'custom-order', text: 'Custom Order', view: 'custom-order' },
+        { id: 'fitting-guide', text: 'Fitting Guide', view: 'fitting-guide' },
+    ]);
 
     const handleSetView = (page, param = null) => {
         setView({ page, param });
@@ -72,6 +81,7 @@ export default function App() {
                 switch(adminView) {
                     case 'products': return <AdminProducts products={products} setProducts={setProducts} categories={CATEGORIES} collections={SPECIAL_COLLECTIONS} />;
                     case 'collections': return <AdminCollections products={products} setProducts={setProducts} collections={SPECIAL_COLLECTIONS} />;
+                    case 'menu': return <AdminMenu navLinks={navLinks} setNavLinks={setNavLinks} />;
                     case 'dashboard':
                     default:
                         return <AdminDashboard products={products} promos={promos} />;
@@ -92,6 +102,7 @@ export default function App() {
             case 'bulk-purchase': return <BulkPurchasePage onOrderSubmit={handleOrderSubmit} />;
             case 'login': return <LoginPage setView={handleSetView} handleLogin={handleLogin} />;
             case 'cart': return <CartPage cart={cart} setCart={setCart} setView={handleSetView} />;
+            case 'fitting-guide': return <FittingGuidePage />;
             case 'home':
             default:
                 return (
@@ -104,7 +115,7 @@ export default function App() {
         <div className="font-sans text-[#333] bg-white">
             <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-            <Header setView={handleSetView} setModalView={setModalView} cart={cart} currentUser={currentUser} handleLogout={handleLogout} categories={CATEGORIES} />
+            <Header setView={handleSetView} setModalView={setModalView} cart={cart} currentUser={currentUser} handleLogout={handleLogout} categories={CATEGORIES} navLinks={navLinks} />
             <main>{renderPage()}</main>
             <Footer />
             {showSuccessMessage && <FormSuccessMessage onClose={() => setShowSuccessMessage(false)} />}

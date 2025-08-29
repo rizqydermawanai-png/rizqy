@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IconUser, IconPlus } from '../assets/icons';
 
 const LoginPage = ({ setView, handleLogin }) => {
     const [isRegister, setIsRegister] = useState(false);
@@ -19,7 +20,9 @@ const LoginPage = ({ setView, handleLogin }) => {
                     {isRegister && <div><label className="form-label">Nama Lengkap</label><input type="text" name="name" className="form-input" required /></div>}
                     <div><label className="form-label">Alamat Email</label><input type="email" name="email" className="form-input" required /></div>
                     <div><label className="form-label">Kata Sandi</label><input type="password" name="password" className="form-input" required /></div>
-                    <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">{isRegister ? 'Daftar' : 'Masuk'}</button>
+                    <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">
+                        {isRegister ? <><IconPlus /> Daftar</> : <><IconUser /> Masuk</>}
+                    </button>
                 </form>
                 <p className="text-center text-sm mt-4">
                     {isRegister ? 'Sudah punya akun?' : 'Belum punya akun?'}
