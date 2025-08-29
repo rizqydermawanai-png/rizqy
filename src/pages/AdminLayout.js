@@ -1,6 +1,6 @@
 import React from 'react';
-import { SectionTitle } from '../../components/common';
-import { IconChartBar, IconBox, IconCollection, IconTags, IconUsers, IconCog, IconEdit } from '../../assets/icons';
+import { SectionTitle } from '../components/common';
+import { IconChartBar, IconBox, IconCollection, IconTags, IconUsers, IconCog, IconEdit } from '../assets/icons';
 
 
 const AdminLayout = ({ children, setView, adminView, setAdminView }) => {

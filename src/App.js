@@ -21,11 +21,11 @@ import CartPage from './pages/CartPage.js';
 import FittingGuidePage from './pages/FittingGuidePage.js';
 
 // Admin Pages
-import AdminLayout from './pages/admin/AdminLayout.js';
-import AdminDashboard from './pages/admin/AdminDashboard.js';
-import AdminProducts from './pages/admin/AdminProducts.js';
-import AdminCollections from './pages/admin/AdminCollections.js';
-import AdminMenu from './pages/admin/AdminMenu.js';
+import AdminLayout from './pages/AdminLayout.js';
+import AdminDashboard from './pages/AdminDashboard.js';
+import AdminProducts from './pages/AdminProducts.js';
+import AdminCollections from './pages/AdminCollections.js';
+import AdminMenu from './pages/AdminMenu.js';
 
 
 export default function App() {

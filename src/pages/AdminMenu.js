@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconEdit, IconTrash } from '../../assets/icons';
+import { IconEdit, IconTrash } from '../assets/icons';
 
 const AdminMenu = ({ navLinks, setNavLinks }) => {
     const [isEditing, setIsEditing] = useState(false);
