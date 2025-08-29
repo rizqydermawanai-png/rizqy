@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ProductForm from '../components/ProductForm';
-import { IconEdit, IconTrash, IconX } from '../assets/icons';
+import ProductForm from '../components/ProductForm.js';
+import { IconEdit, IconTrash, IconX } from '../assets/icons.js';
 
 const AdminProducts = ({ products, setProducts, categories, collections }) => {
     const [modalOpen, setModalOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SectionTitle } from '../components/common';
-import { IconSend } from '../assets/icons';
+import { SectionTitle } from '../components/common.js';
+import { IconSend } from '../assets/icons.js';
 
 const CustomOrderPage = ({ onOrderSubmit }) => {
     const [formData, setFormData] = useState({

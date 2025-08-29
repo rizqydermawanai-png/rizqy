@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconShoppingBag } from '../assets/icons';
+import { IconShoppingBag } from '../assets/icons.js';
 
 const ProductDetailPage = ({ productId, products, setView, addToCart }) => {
     const product = products.find(p => p.id === productId);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconPhone, IconEnvelope, IconMapMarker, IconInstagram, IconFacebook, IconTwitter, IconYoutube } from '../assets/icons';
+import { IconPhone, IconEnvelope, IconMapMarker, IconInstagram, IconFacebook, IconTwitter, IconYoutube } from '../assets/icons.js';
 
 const Footer = () => {
     const footerLinks = {

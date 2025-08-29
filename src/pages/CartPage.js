@@ -1,6 +1,6 @@
 import React from 'react';
-import { SectionTitle } from '../components/common';
-import { IconTrash } from '../assets/icons';
+import { SectionTitle } from '../components/common.js';
+import { IconTrash } from '../assets/icons.js';
 
 const CartPage = ({ cart, setCart, setView }) => {
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);

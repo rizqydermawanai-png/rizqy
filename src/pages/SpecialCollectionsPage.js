@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionTitle } from '../components/common';
+import { SectionTitle } from '../components/common.js';
 
 const SpecialCollectionsPage = ({ products, collections }) => {
     return (

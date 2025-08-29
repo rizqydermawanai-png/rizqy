@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionTitle } from '../components/common';
+import { SectionTitle } from '../components/common.js';
 
 const CategoryPage = ({ category, products, setView }) => {
     const filteredProducts = products.filter(p => p.category === category);

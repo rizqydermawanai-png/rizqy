@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconSearch } from '../assets/icons';
+import { IconSearch } from '../assets/icons.js';
 
 const SearchModal = ({ products, setView, setModalView }) => {
     const [searchTerm, setSearchTerm] = useState('');

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SectionTitle } from '../components/common';
-import { IconRuler } from '../assets/icons';
+import { SectionTitle } from '../components/common.js';
+import { IconRuler } from '../assets/icons.js';
 
 const FittingGuidePage = () => {
     const [height, setHeight] = useState('');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SectionTitle } from '../components/common';
-import { IconShirt, IconUsers, IconGooglePlay, IconApple } from '../assets/icons';
+import { SectionTitle } from '../components/common.js';
+import { IconShirt, IconUsers, IconGooglePlay, IconApple } from '../assets/icons.js';
 
 const heroImages = [
     'https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',

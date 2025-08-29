@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconUser, IconPlus } from '../assets/icons';
+import { IconUser, IconPlus } from '../assets/icons.js';
 
 const LoginPage = ({ setView, handleLogin }) => {
     const [isRegister, setIsRegister] = useState(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconCheckCircle } from '../assets/icons';
+import { IconCheckCircle } from '../assets/icons.js';
 
 export const SectionTitle = ({ children }) => (
     <div className="text-center mb-12">

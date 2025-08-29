@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconChevronDown, IconSearch, IconShoppingBag, IconUser, IconCog, IconLogout } from '../assets/icons';
+import { IconChevronDown, IconSearch, IconShoppingBag, IconUser, IconCog, IconLogout } from '../assets/icons.js';
 
 const Header = ({ setView, setModalView, cart, currentUser, handleLogout, categories, navLinks }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
