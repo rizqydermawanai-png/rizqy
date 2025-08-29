@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 
 // Data
-import { INITIAL_PRODUCTS, CATEGORIES, SPECIAL_COLLECTIONS } from 'data/mockData';
+import { INITIAL_PRODUCTS, CATEGORIES, SPECIAL_COLLECTIONS } from './data/mockData.js';
 
 // Components
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import { FormSuccessMessage } from 'components/common';
-import SearchModal from 'components/SearchModal';
+import Header from './components/Header.js';
+import Footer from './components/Footer.js';
+import { FormSuccessMessage } from './components/common.js';
+import SearchModal from './components/SearchModal.js';
 
 // Pages
-import HomePage from 'pages/HomePage';
-import CategoryPage from 'pages/CategoryPage';
-import ProductDetailPage from 'pages/ProductDetailPage';
-import SpecialCollectionsPage from 'pages/SpecialCollectionsPage';
-import CustomOrderPage from 'pages/CustomOrderPage';
-import BulkPurchasePage from 'pages/BulkPurchasePage';
-import LoginPage from 'pages/LoginPage';
-import CartPage from 'pages/CartPage';
-import FittingGuidePage from 'pages/FittingGuidePage';
+import HomePage from './pages/HomePage.js';
+import CategoryPage from './pages/CategoryPage.js';
+import ProductDetailPage from './pages/ProductDetailPage.js';
+import SpecialCollectionsPage from './pages/SpecialCollectionsPage.js';
+import CustomOrderPage from './pages/CustomOrderPage.js';
+import BulkPurchasePage from './pages/BulkPurchasePage.js';
+import LoginPage from './pages/LoginPage.js';
+import CartPage from './pages/CartPage.js';
+import FittingGuidePage from './pages/FittingGuidePage.js';
 
 // Admin Pages
-import AdminLayout from 'pages/admin/AdminLayout';
-import AdminDashboard from 'pages/admin/AdminDashboard';
-import AdminProducts from 'pages/admin/AdminProducts';
-import AdminCollections from 'pages/admin/AdminCollections';
-import AdminMenu from 'pages/admin/AdminMenu';
+import AdminLayout from './pages/admin/AdminLayout.js';
+import AdminDashboard from './pages/admin/AdminDashboard.js';
+import AdminProducts from './pages/admin/AdminProducts.js';
+import AdminCollections from './pages/admin/AdminCollections.js';
+import AdminMenu from './pages/admin/AdminMenu.js';
 
 
 export default function App() {
