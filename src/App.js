@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 
 // Data
-import { INITIAL_PRODUCTS, CATEGORIES, SPECIAL_COLLECTIONS } from './data/mockData';
+import { INITIAL_PRODUCTS, CATEGORIES, SPECIAL_COLLECTIONS } from 'data/mockData';
 
 // Components
-import Header from './components/Header';
-import Footer from './components/Footer';
-import { FormSuccessMessage } from './components/common';
-import SearchModal from './components/SearchModal';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import { FormSuccessMessage } from 'components/common';
+import SearchModal from 'components/SearchModal';
 
 // Pages
-import HomePage from './pages/HomePage';
-import CategoryPage from './pages/CategoryPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import SpecialCollectionsPage from './pages/SpecialCollectionsPage';
-import CustomOrderPage from './pages/CustomOrderPage';
-import BulkPurchasePage from './pages/BulkPurchasePage';
-import LoginPage from './pages/LoginPage';
-import CartPage from './pages/CartPage';
-import FittingGuidePage from './pages/FittingGuidePage';
+import HomePage from 'pages/HomePage';
+import CategoryPage from 'pages/CategoryPage';
+import ProductDetailPage from 'pages/ProductDetailPage';
+import SpecialCollectionsPage from 'pages/SpecialCollectionsPage';
+import CustomOrderPage from 'pages/CustomOrderPage';
+import BulkPurchasePage from 'pages/BulkPurchasePage';
+import LoginPage from 'pages/LoginPage';
+import CartPage from 'pages/CartPage';
+import FittingGuidePage from 'pages/FittingGuidePage';
 
 // Admin Pages
-import AdminLayout from './pages/admin/AdminLayout.js';
-import AdminDashboard from './pages/admin/AdminDashboard.js';
-import AdminProducts from './pages/admin/AdminProducts.js';
-import AdminCollections from './pages/admin/AdminCollections.js';
-import AdminMenu from './pages/admin/AdminMenu.js';
+import AdminLayout from 'pages/admin/AdminLayout';
+import AdminDashboard from 'pages/admin/AdminDashboard';
+import AdminProducts from 'pages/admin/AdminProducts';
+import AdminCollections from 'pages/admin/AdminCollections';
+import AdminMenu from 'pages/admin/AdminMenu';
 
 
 export default function App() {
@@ -34,6 +34,7 @@ export default function App() {
     const [modalView, setModalView] = useState(null); // 'search'
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [products, setProducts] = useState(INITIAL_PRODUCTS);
+    // eslint-disable-next-line no-unused-vars
     const [promos, setPromos] = useState([{ id: 1, title: "KAZUMI x BUSINESSWEEK", subtitle: "MONDAY SPECIAL", offer: "BUY 2 GET 30% OFF", terms: "Groups IDR 8.000 dengan min. pembelian IDR 300.000" }]);
     const [cart, setCart] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
