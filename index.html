@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kazumi Store</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      .font-serif { font-family: 'Playfair Display', serif; }
+      .font-sans { font-family: 'Montserrat', sans-serif; }
+      .shadow-text { text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+      .nav-link { text-decoration: none; color: #333; font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+      .nav-link:hover { color: #6D4C41; }
+      .dropdown-link { display: block; padding: 8px 16px; color: #333; font-size: 14px; transition: all 0.3s; }
+      .dropdown-link:hover { background-color: #F5F5F5; color: #6D4C41; }
+      .btn { display: inline-block; padding: 12px 30px; text-decoration: none; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+      .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; transition: background-color 0.3s; }
+      .social-icon:hover { background-color: #6D4C41; }
+      .form-label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; }
+      .form-input {
+          width: 100%;
+          margin-top: 4px;
+          padding: 8px 12px;
+          background-color: white;
+          border: 1px solid #D1D5DB;
+          border-radius: 6px;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .form-input:focus {
+          border-color: #6D4C41;
+          box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      // =========== ICONS ===========
+      const IconChevronDown = () => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>;
+      const IconSearch = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>;
+      const IconShoppingBag = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>;
+      const IconUser = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+      const IconCog = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73-1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>;
+      const IconRuler = () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L3 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0L18 11.7l3.3-3.3a2.4 2.4 0 0 1 3.4 0Z"/><path d="m8 16 4-4"/><path d="m12 12 4-4"/><path d="m16 8 4-4"/><path d="m2 22 4-4"/></svg>;
+      const IconPalette = () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.667 0-.42-.15-.812-.423-1.125-.27-.31-.69-.46-1.125-.46H10c-.69 0-1.37-.28-1.87-.78s-.78-1.18-.78-1.87c0-1.09.89-1.98 1.98-1.98H12c.69 0 1.37.28 1.87.78s.78 1.18.78 1.87c0 .92.75 1.67 1.67 1.67h1.84c.43 0 .85.15 1.16.42.3.27.46.69.46 1.12A10 10 0 0 0 22 12c0-5.5-4.5-10-10-10z"/></svg>;
+      const IconShirt = () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>;
+      const IconTags = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"/><path d="M6 9.01V9"/><path d="m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4l-3.6 3.6a2.4 2.4 0 0 1-3.4 0L15 15"/></svg>;
+      const IconTruck = () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h6Z"/><path d="M14 17.98V18a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-.02"/><path d="M7 17.98V18a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-.02"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>;
+      const IconFileInvoice = () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>;
+      const IconGooglePlay = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7.2v9.6l7.2 4.8 7.2-4.8V7.2L10.2 2.4 3 7.2z"/><path d="m10.2 12 7.2-4.8"/><path d="M3 7.2 10.2 12l-7.2 4.8"/><path d="m10.2 12 7.2 4.8"/><path d="M10.2 2.4v9.6"/><path d="m17.4 7.2-7.2 4.8"/></svg>;
+      const IconApple = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 12 22z"/><path d="M12 2a4.9 4.9 0 0 0-3 1c-2 2-2.5 5-1 7A4.9 4.9 0 0 0 12 12a4.9 4.9 0 0 0 4-2c1.5-2 1-5-1-7A4.9 4.9 0 0 0 12 2z"/></svg>;
+      const IconPhone = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
+      const IconEnvelope = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>;
+      const IconMapMarker = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>;
+      const IconInstagram = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>;
+      const IconFacebook = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>;
+      const IconTwitter = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-6.1-1.4-12.1-3.8-12.1-3.8-2.4 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8z"/></svg>;
+      const IconYoutube = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 4.24 4.24 2.5 7 2.5h10c2.76 0 4.5 1.74 4.5 4.5s0 10 0 10c0 2.76-1.74 4.5-4.5 4.5H7c-2.76 0-4.5-1.74-4.5-4.5z"/><path d="m10 15 5-3-5-3z"/></svg>;
+      const IconPlus = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+      const IconEdit = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
+      const IconImage = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>;
+      const IconChartBar = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>;
+      const IconUsers = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+      const IconX = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
+      const IconTrash = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
+      const IconSend = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
+      const IconCheckCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
+      const IconLogout = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
+      const IconCollection = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-gallery-vertical"><path d="M3 2h18"/><rect width="18" height="12" x="3" y="6" rx="2"/><path d="M3 22h18"/></svg>;
+      const IconBox = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>;
+
+      // =========== DATA ===========
+      const INITIAL_PRODUCTS = [
+          { id: 1, name: 'Classic White T-Shirt', price: 150000, category: 'T-Shirt', description: 'Kaos katun putih klasik yang wajib dimiliki, sempurna untuk segala acara.', sizes: ['S', 'M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Weekend' },
+          { id: 2, name: 'Blue Oxford Shirt', price: 250000, category: 'Shirt', description: 'Kemeja oxford biru formal dengan potongan slim-fit, ideal untuk bekerja atau acara formal.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive' },
+          { id: 3, name: 'Modern Chino Pants', price: 300000, category: 'Pants', description: 'Celana chino modern yang nyaman dan serbaguna, cocok untuk gaya kasual maupun semi-formal.', sizes: ['30', '32', '34', '36'], img: 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive' },
+          { id: 4, name: 'Denim Trucker Jacket', price: 450000, category: 'Jacket', description: 'Jaket denim trucker dengan gaya abadi yang memberikan sentuhan keren pada penampilan Anda.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Limited' },
+          { id: 5, name: 'Graphic Print T-Shirt', price: 175000, category: 'T-Shirt', description: 'Tampil beda dengan kaos print grafis yang unik dan artistik.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: 'Weekend' },
+          { id: 6, name: 'Flannel Plaid Shirt', price: 275000, category: 'Shirt', description: 'Kemeja flanel kotak-kotak yang hangat dan nyaman, sempurna untuk cuaca dingin.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: null },
+      ];
+      const CATEGORIES = ['T-Shirt', 'Shirt', 'Pants', 'Jacket', 'Accessories'];
+      const SPECIAL_COLLECTIONS = {
+          'Executive': { name: 'Executive Collection', tag: 'New', img: 'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Didesain untuk para profesional modern, koleksi ini menampilkan potongan tajam, kain premium, dan siluet yang tak lekang oleh waktu. Sempurna untuk rapat penting atau acara bisnis.' },
+          'Limited': { name: 'Limited Edition', tag: 'Limited', img: 'https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Sebuah koleksi eksklusif dengan jumlah terbatas. Setiap item dibuat dengan detail unik dan bahan langka, menjadikannya barang kolektor yang istimewa bagi para pencinta fashion.' },
+          'Weekend': { name: 'Weekend Wear', tag: 'Casual', img: 'https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', description: 'Kenyamanan bertemu gaya. Koleksi ini menawarkan pakaian kasual yang santai namun tetap stylish, cocok untuk menemani akhir pekan Anda, dari bersantai di kafe hingga jalan-jalan.' },
+      };
+
+      // =========== COMMON COMPONENTS ===========
+      const SectionTitle = ({ children }) => (
+          <div className="text-center mb-12">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">
+                  {children}
+                  <span className="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span>
+              </h2>
+          </div>
+      );
+      const FormSuccessMessage = ({ onClose }) => (
+          <div className="fixed inset-0 bg-black/50 z-[80] flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-center">
+                  <IconCheckCircle className="text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold font-serif text-gray-800 mb-2">Pemesanan Terkirim!</h3>
+                  <p className="text-gray-600 mb-6">Terima kasih! Tim kami akan segera menghubungi Anda untuk konfirmasi lebih lanjut.</p>
+                  <button onClick={onClose} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Tutup</button>
+              </div>
+          </div>
+      );
+
+      // =========== MAIN COMPONENTS ===========
+      const Header = ({ setView, setModalView, cart, currentUser, handleLogout, categories, navLinks }) => {
+          const [dropdownOpen, setDropdownOpen] = React.useState(false);
+          const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+          const handleNav = (e, view, param) => {
+              e.preventDefault();
+              setView(view, param);
+          };
+          return (
+              <header className="bg-white shadow-md sticky top-0 z-50">
+                  <div className="container mx-auto px-5">
+                      <div className="flex justify-between items-center py-4">
+                          <a href="#" onClick={(e) => handleNav(e, 'home')} className="font-serif text-3xl font-bold text-[#6D4C41]">KAZUMI</a>
+                          <nav className="hidden md:flex">
+                              <ul className="flex items-center space-x-6">
+                                  {navLinks.map(link => (
+                                      <li key={link.id} className={link.dropdown ? "relative" : ""} onMouseEnter={link.dropdown ? () => setDropdownOpen(true) : null} onMouseLeave={link.dropdown ? () => setDropdownOpen(false) : null}>
+                                          <a href="#" onClick={(e) => handleNav(e, link.view, link.param)} className="nav-link flex items-center gap-2">
+                                              {link.text} {link.dropdown && <IconChevronDown />}
+                                          </a>
+                                          {link.dropdown && dropdownOpen && (
+                                              <ul className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2">
+                                                  {categories.map(cat => (
+                                                      <li key={cat}><a href="#" onClick={(e) => handleNav(e, 'category', cat)} className="dropdown-link">{cat}</a></li>
+                                                  ))}
+                                              </ul>
+                                          )}
+                                      </li>
+                                  ))}
+                              </ul>
+                          </nav>
+                          <div className="flex items-center space-x-4">
+                              <button onClick={() => setModalView('search')} className="text-[#6D4C41] hover:text-[#4E342E] transition-colors"><IconSearch /></button>
+                              <a href="#" onClick={(e) => handleNav(e, 'cart')} className="relative text-[#6D4C41] hover:text-[#4E342E] transition-colors">
+                                  <IconShoppingBag />
+                                  {cartItemCount > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cartItemCount}</span>}
+                              </a>
+                              {currentUser ? (
+                                   <div className="relative group">
+                                      <span className="text-[#6D4C41] cursor-pointer font-semibold">{currentUser.name.split(' ')[0]}</span>
+                                      <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
+                                           <a href="#" className="dropdown-link">Profil Saya</a>
+                                           <a href="#" className="dropdown-link">Pesanan Saya</a>
+                                           <button onClick={handleLogout} className="w-full text-left dropdown-link flex items-center gap-2 text-red-600"><IconLogout /> Keluar</button>
+                                      </div>
+                                  </div>
+                              ) : (
+                                 <a href="#" onClick={(e) => handleNav(e, 'login')} className="text-[#6D4C41] hover:text-[#4E342E] transition-colors"><IconUser /></a>
+                              )}
+                              <a href="#" onClick={(e) => handleNav(e, 'admin')} className="admin-btn-header hidden md:flex items-center gap-2 bg-[#6D4C41] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#4E342E] transition-colors">
+                                  <IconCog /> Admin
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+              </header>
+          );
+      };
+      const Footer = () => {
+          const footerLinks = {
+              "INFORMASI KAMI": ["Tentang KAZUMI", "Sejarah Perusahaan", "Karir", "Ketentuan Kebijakan", "Lokasi Store", "Blog"],
+              "BANTUAN": ["FAQ", "Kebijakan Pengembalian", "Click & Collect", "Pengiriman", "Pembayaran"],
+              "KATEGORI PRODUK": ["T-Shirt", "Shirt", "Pants", "Jacket", "Accessories", "Sale"],
+          };
+          return (
+              <footer id="contact" className="bg-[#4E342E] text-white pt-16 pb-8">
+                  <div className="container mx-auto px-5">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                          {Object.entries(footerLinks).map(([title, links]) => (
+                              <div key={title}>
+                                  <h3 className="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">{title}</h3>
+                                  <ul className="space-y-2">{links.map(link => <li key={link}><a href="#" className="text-[#D7CCC8] hover:text-white transition-colors">{link}</a></li>)}</ul>
+                              </div>
+                          ))}
+                          <div>
+                              <h3 className="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">HUBUNGI KAMI</h3>
+                              <ul className="space-y-3 text-[#D7CCC8]">
+                                  <li className="flex items-center gap-3"><IconPhone /> +62 21 1234 5678</li>
+                                  <li className="flex items-center gap-3"><IconEnvelope /> info@kazumi.com</li>
+                                  <li className="flex items-center gap-3"><IconMapMarker /> Jl. Fashion No. 123, Jakarta</li>
+                              </ul>
+                              <div className="flex gap-4 mt-6">
+                                  <a href="#" className="social-icon"><IconInstagram /></a><a href="#" className="social-icon"><IconFacebook /></a><a href="#" className="social-icon"><IconTwitter /></a><a href="#" className="social-icon"><IconYoutube /></a>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="text-center pt-8 border-t border-white/10 text-sm text-[#D7CCC8]"><p>&copy; {new Date().getFullYear()} KAZUMI. All Rights Reserved.</p></div>
+                  </div>
+              </footer>
+          );
+      };
+      const SearchModal = ({ products, setView, setModalView }) => {
+          const [searchTerm, setSearchTerm] = React.useState('');
+          const filteredProducts = searchTerm ? products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())) : [];
+          const handleProductClick = (productId) => {
+              setView('product', productId);
+              setModalView(null);
+          };
+          return (
+              <div className="fixed inset-0 bg-black/50 z-[70] flex items-start justify-center pt-20" onClick={() => setModalView(null)}>
+                   <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl text-black" onClick={e => e.stopPropagation()}>
+                      <div className="relative">
+                          <input type="text" autoFocus value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Cari produk..." className="form-input w-full !py-3 !pl-10" />
+                          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      </div>
+                      <div className="mt-4 max-h-96 overflow-y-auto">
+                          {searchTerm && filteredProducts.map(p => (
+                              <div key={p.id} onClick={() => handleProductClick(p.id)} className="flex items-center gap-4 p-2 rounded-md hover:bg-gray-100 cursor-pointer">
+                                  <img src={p.img} alt={p.name} className="w-16 h-16 object-cover rounded"/>
+                                  <div>
+                                      <p className="font-semibold">{p.name}</p>
+                                      <p className="text-sm text-gray-600">IDR {p.price.toLocaleString()}</p>
+                                  </div>
+                              </div>
+                          ))}
+                          {searchTerm && filteredProducts.length === 0 && <p className="text-center text-gray-500 py-4">Produk tidak ditemukan.</p>}
+                      </div>
+                  </div>
+              </div>
+          )
+      };
+
+      // =========== PAGE COMPONENTS ===========
+      const HomePage = ({ products, promos, setView, collections }) => {
+          const heroImages = [
+              'https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+              'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+              'https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80',
+          ];
+          const Hero = ({ setView }) => {
+              const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+              React.useEffect(() => {
+                  const timer = setInterval(() => {
+                      setCurrentImageIndex((prevIndex) =>
+                          prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+                      );
+                  }, 5000);
+                  return () => clearInterval(timer);
+              }, []);
+              const heroStyle = {
+                  backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('${heroImages[currentImageIndex]}')`,
+                  transition: 'background-image 1s ease-in-out',
+              };
+              return (
+                  <section id="home" className="relative h-[80vh] bg-cover bg-center text-white flex items-center justify-center text-center" style={heroStyle}>
+                      <div className="container mx-auto px-5">
+                          <div className="max-w-3xl mx-auto">
+                              <h1 className="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
+                              <p className="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
+                              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                  <a href="#" onClick={(e) => { e.preventDefault(); setView('special-collections'); }} className="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
+                                  <a href="#" onClick={(e) => { e.preventDefault(); setView('custom-order'); }} className="btn border-2 border-white hover:bg-white hover:text-[#6D4C41]">Custom Order</a>
+                              </div>
+                          </div>
+                      </div>
+                  </section>
+              );
+          };
+          const PopularCategories = ({ products, setView }) => {
+              return (
+                  <section id="categories" className="py-20 bg-[#F5F5F5]">
+                      <div className="container mx-auto px-5">
+                          <SectionTitle>Produk Terlaris</SectionTitle>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                              {products.slice(0, 4).map(prod => (
+                                  <div key={prod.id} onClick={() => setView('product', prod.id)} className="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer">
+                                      <img src={prod.img} alt={prod.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                      <div className="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
+                                          <p className="uppercase font-medium tracking-wider">{prod.name}</p>
+                                          <p className="text-sm">IDR {prod.price.toLocaleString()}</p>
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  </section>
+              );
+          };
+          const SpecialCollectionsPreview = ({ setView, collections }) => {
+              const collectionsArray = Object.values(collections);
+              return (
+                  <section id="collections" className="py-20 bg-white">
+                      <div className="container mx-auto px-5">
+                          <SectionTitle>Koleksi Spesial</SectionTitle>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                              {collectionsArray.map(col => (
+                                  <div key={col.name} className="relative h-96 rounded-lg overflow-hidden shadow-lg group">
+                                      <img src={col.img} alt={col.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
+                                          <span className="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">{col.tag}</span>
+                                          <h3 className="text-2xl font-semibold">{col.name}</h3>
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                           <div className="text-center mt-12">
+                              <button onClick={() => setView('special-collections')} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Lihat Semua Koleksi</button>
+                          </div>
+                      </div>
+                  </section>
+              );
+          };
+          const OrderPreviews = ({ setView }) => (
+              <section className="py-20 bg-[#F5F5F5]">
+                  <div className="container mx-auto px-5 grid md:grid-cols-2 gap-10">
+                      <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+                           <IconShirt className="mx-auto text-[#6D4C41]" />
+                           <h3 className="font-serif text-2xl font-bold my-3 text-[#4E342E]">Pesanan Kustom</h3>
+                           <p className="text-gray-600 mb-6">Punya ide desain sendiri? Wujudkan pakaian impian Anda bersama desainer kami.</p>
+                           <button onClick={() => setView('custom-order')} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Buat Pesanan Kustom</button>
+                      </div>
+                       <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+                           <IconUsers className="mx-auto text-[#6D4C41] w-10 h-10" />
+                           <h3 className="font-serif text-2xl font-bold my-3 text-[#4E342E]">Pembelian Jumlah Besar</h3>
+                           <p className="text-gray-600 mb-6">Solusi pengadaan seragam atau merchandise untuk perusahaan dan komunitas Anda.</p>
+                           <button onClick={() => setView('bulk-purchase')} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Hubungi Tim Bisnis</button>
+                      </div>
+                  </div>
+              </section>
+          );
+          const Promo = ({ promos }) => (
+              <section id="promo" className="py-16 bg-[#4E342E] text-white text-center">
+                  <div className="container mx-auto px-5">
+                      {promos.length > 0 ? (
+                          <>
+                              <h2 className="font-serif text-4xl font-bold mb-4">{promos[0].title}</h2>
+                              <h3 className="text-2xl text-[#C9B037] mb-2">{promos[0].subtitle}</h3>
+                              <h2 className="font-serif text-4xl font-bold mb-4">{promos[0].offer}</h2>
+                              <p className="mb-6">{promos[0].terms}</p>
+                          </>
+                      ) : ( <h2 className="font-serif text-4xl font-bold mb-4">No Active Promos</h2> )}
+                      <a href="#categories" className="btn bg-[#6D4C41] hover:bg-[#8a6b5d]">Belanja Sekarang</a>
+                  </div>
+              </section>
+          );
+          const DownloadApp = () => (
+              <section id="download-app" className="py-20 bg-[#F5F5F5] text-center">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>DOWNLOAD APLIKASI</SectionTitle>
+                      <p className="max-w-2xl mx-auto mb-8">Dapatkan pengalaman berbelanja yang lebih baik dengan aplikasi kami</p>
+                      <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
+                          <a href="#" className="flex items-center gap-3 bg-[#4E342E] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#6D4C41] transition-colors"><IconGooglePlay /><span>Google Play</span></a>
+                          <a href="#" className="flex items-center gap-3 bg-[#4E342E] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#6D4C41] transition-colors"><IconApple /><span>App Store</span></a>
+                      </div>
+                  </div>
+              </section>
+          );
+          return (
+              <React.Fragment>
+                  <Hero setView={setView} />
+                  <PopularCategories products={products} setView={setView} />
+                  <SpecialCollectionsPreview setView={setView} collections={collections} />
+                  <OrderPreviews setView={setView} />
+                  <Promo promos={promos} />
+                  <DownloadApp />
+              </React.Fragment>
+          );
+      };
+      const CategoryPage = ({ category, products, setView }) => {
+          const filteredProducts = products.filter(p => p.category === category);
+          return (
+              <div className="py-20 bg-white">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>{category}</SectionTitle>
+                      {filteredProducts.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                              {filteredProducts.map(prod => (
+                                  <div key={prod.id} onClick={() => setView('product', prod.id)} className="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer">
+                                      <img src={prod.img} alt={prod.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                      <div className="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
+                                          <p className="uppercase font-medium tracking-wider">{prod.name}</p>
+                                          <p className="text-sm">IDR {prod.price.toLocaleString()}</p>
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                      ) : (
+                          <p className="text-center text-gray-500">Produk dalam kategori ini belum tersedia.</p>
+                      )}
+                  </div>
+              </div>
+          );
+      };
+      const ProductDetailPage = ({ productId, products, setView, addToCart }) => {
+          const product = products.find(p => p.id === productId);
+          const [selectedSize, setSelectedSize] = React.useState(product?.sizes[0] || '');
+          if (!product) {
+              return <div className="py-20 text-center">Produk tidak ditemukan. <a href="#" onClick={(e) => {e.preventDefault(); setView('home')}} className="text-blue-600">Kembali ke beranda</a>.</div>;
+          }
+          return (
+              <div className="py-20 bg-white">
+                  <div className="container mx-auto px-5">
+                      <div className="grid md:grid-cols-2 gap-10">
+                          <img src={product.img} alt={product.name} className="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"/>
+                          <div>
+                              <a href="#" onClick={(e) => {e.preventDefault(); setView('category', product.category)}} className="text-sm uppercase text-gray-500 hover:text-black">{product.category}</a>
+                              <h1 className="font-serif text-4xl font-bold my-3 text-[#4E342E]">{product.name}</h1>
+                              <p className="text-2xl font-semibold text-[#6D4C41] mb-4">IDR {product.price.toLocaleString()}</p>
+                              <p className="text-gray-600 mb-6">{product.description}</p>
+
+                              <div className="mb-6">
+                                  <h3 className="font-semibold mb-2">Pilih Ukuran:</h3>
+                                  <div className="flex gap-2">
+                                      {product.sizes.map(size => (
+                                          <button key={size} onClick={() => setSelectedSize(size)}
+                                              className={`w-12 h-12 border rounded-md transition-colors ${selectedSize === size ? 'bg-[#4E342E] text-white' : 'bg-white hover:bg-gray-100'}`}>
+                                              {size}
+                                          </button>
+                                      ))}
+                                  </div>
+                              </div>
+                              <button onClick={() => addToCart(product, selectedSize)} className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">
+                                  <IconShoppingBag /> Tambah ke Keranjang
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          );
+      };
+      const SpecialCollectionsPage = ({ products, collections }) => {
+          return (
+              <div className="py-20 bg-white">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>Koleksi Spesial Kami</SectionTitle>
+                      <div className="space-y-16">
+                          {Object.entries(collections).map(([key, collection], index) => {
+                              const collectionProducts = products.filter(p => p.specialCollection === key);
+                              return (
+                                  <div key={key}>
+                                      <div className={`grid md:grid-cols-2 gap-10 items-center ${index % 2 !== 0 ? 'md:grid-flow-col-dense' : ''}`}>
+                                          <div className={`relative rounded-lg overflow-hidden shadow-lg h-96 ${index % 2 !== 0 ? 'md:col-start-2' : ''}`}>
+                                              <img src={collection.img} alt={collection.name} className="w-full h-full object-cover"/>
+                                          </div>
+                                          <div className="text-center md:text-left">
+                                              <span className="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">{collection.tag}</span>
+                                              <h3 className="font-serif text-3xl font-bold my-2 text-[#4E342E]">{collection.name}</h3>
+                                              <p className="text-gray-600">{collection.description}</p>
+                                          </div>
+                                      </div>
+                                      <div className="mt-8">
+                                          <h4 className="font-semibold text-xl mb-4">Produk di Koleksi Ini:</h4>
+                                          {collectionProducts.length > 0 ? (
+                                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                                  {collectionProducts.map(p => (
+                                                      <div key={p.id} className="text-center text-sm">
+                                                          <img src={p.img} alt={p.name} className="w-full h-48 object-cover rounded-md mb-2" />
+                                                          <p className="font-semibold">{p.name}</p>
+                                                      </div>
+                                                  ))}
+                                              </div>
+                                          ) : <p className="text-gray-500">Belum ada produk untuk koleksi ini.</p>}
+                                      </div>
+                                  </div>
+                              );
+                          })}
+                      </div>
+                  </div>
+              </div>
+          );
+      }
+      const CustomOrderPage = ({ onOrderSubmit }) => {
+          const [formData, setFormData] = React.useState({
+              name: '', email: '', phone: '',
+              items: [{ productType: 'Kemeja', material: '', color: '', quantity: 1, notes: '' }]
+          });
+          const handleInfoChange = (e) => {
+              setFormData({...formData, [e.target.name]: e.target.value});
+          };
+          const handleItemChange = (index, e) => {
+              const newItems = [...formData.items];
+              newItems[index][e.target.name] = e.target.value;
+              setFormData({...formData, items: newItems});
+          };
+          const addItem = () => {
+              setFormData({
+                  ...formData,
+                  items: [...formData.items, { productType: 'Kemeja', material: '', color: '', quantity: 1, notes: '' }]
+              });
+          };
+          const removeItem = (index) => {
+              const newItems = [...formData.items];
+              newItems.splice(index, 1);
+              setFormData({...formData, items: newItems});
+          };
+          const handleSubmit = (e) => {
+              e.preventDefault();
+              console.log("Custom Order Submitted:", formData);
+              onOrderSubmit();
+              setFormData({ name: '', email: '', phone: '', items: [{ productType: 'Kemeja', material: '', color: '', quantity: 1, notes: '' }] });
+          };
+          return (
+              <div className="py-20 bg-[#F5F5F5]">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>Buat Pesanan Kustom Anda</SectionTitle>
+                      <p className="text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12">Isi formulir di bawah ini dengan detail selengkap mungkin. Tim kami akan meninjau dan menghubungi Anda untuk konsultasi lebih lanjut.</p>
+                      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg space-y-6">
+                          <fieldset className="border p-4 rounded-md">
+                              <legend className="px-2 font-semibold">Informasi Kontak</legend>
+                              <div className="grid md:grid-cols-2 gap-4">
+                                  <div><label className="form-label">Nama Lengkap</label><input type="text" name="name" value={formData.name} onChange={handleInfoChange} className="form-input" required /></div>
+                                  <div><label className="form-label">Email</label><input type="email" name="email" value={formData.email} onChange={handleInfoChange} className="form-input" required /></div>
+                                  <div><label className="form-label">No. Telepon</label><input type="tel" name="phone" value={formData.phone} onChange={handleInfoChange} className="form-input" required /></div>
+                              </div>
+                          </fieldset>
+
+                          <fieldset className="border p-4 rounded-md">
+                              <legend className="px-2 font-semibold">Detail Kebutuhan</legend>
+                              {formData.items.map((item, index) => (
+                                  <div key={index} className="space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                                      <div className="flex justify-between items-center">
+                                          <h4 className="font-semibold">Kebutuhan #{index + 1}</h4>
+                                          {formData.items.length > 1 && (
+                                              <button type="button" onClick={() => removeItem(index)} className="text-red-500 hover:text-red-700 font-bold text-sm">HAPUS</button>
+                                          )}
+                                      </div>
+                                      <div className="grid md:grid-cols-3 gap-4">
+                                          <div><label className="form-label">Jenis Produk</label><select name="productType" value={item.productType} onChange={(e) => handleItemChange(index, e)} className="form-input"><option>Kemeja</option><option>Celana</option><option>Jaket</option><option>Jas</option></select></div>
+                                          <div><label className="form-label">Preferensi Material</label><input type="text" name="material" value={item.material} onChange={(e) => handleItemChange(index, e)} placeholder="cth: Katun Jepang" className="form-input" /></div>
+                                          <div><label className="form-label">Warna</label><input type="text" name="color" value={item.color} onChange={(e) => handleItemChange(index, e)} placeholder="cth: Biru Navy" className="form-input" /></div>
+                                      </div>
+                                      <div><label className="form-label">Jumlah</label><input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} className="form-input" min="1" /></div>
+                                      <div><label className="form-label">Catatan Tambahan (Ukuran, detail kerah, dll.)</label><textarea name="notes" value={item.notes} onChange={(e) => handleItemChange(index, e)} rows="2" className="form-input"></textarea></div>
+                                  </div>
+                              ))}
+                              <button type="button" onClick={addItem} className="btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4">
+                                  + Tambah Kebutuhan Lain
+                              </button>
+                          </fieldset>
+                          <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">Kirim Permintaan Kustom <IconSend /></button>
+                      </form>
+                  </div>
+              </div>
+          );
+      };
+      const BulkPurchasePage = ({ onOrderSubmit }) => {
+           const [formData, setFormData] = React.useState({
+              company: '', name: '', email: '', phone: '', deliveryDate: '',
+              items: [{ productType: 'T-Shirt', quantity: '', customization: '', color: '' }]
+          });
+          const handleInfoChange = (e) => {
+              setFormData({...formData, [e.target.name]: e.target.value});
+          };
+          const handleItemChange = (index, e) => {
+              const newItems = [...formData.items];
+              newItems[index][e.target.name] = e.target.value;
+              setFormData({...formData, items: newItems});
+          };
+          const addItem = () => {
+              setFormData({
+                  ...formData,
+                  items: [...formData.items, { productType: 'T-Shirt', quantity: '', customization: '', color: '' }]
+              });
+          };
+          const removeItem = (index) => {
+              const newItems = [...formData.items];
+              newItems.splice(index, 1);
+              setFormData({...formData, items: newItems});
+          };
+          const handleSubmit = (e) => {
+              e.preventDefault();
+              console.log("Bulk Order Submitted:", formData);
+              onOrderSubmit();
+              setFormData({ company: '', name: '', email: '', phone: '', deliveryDate: '', items: [{ productType: 'T-Shirt', quantity: '', customization: '', color: '' }] });
+          };
+          return (
+              <div className="py-20 bg-white">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>Pemesanan Jumlah Besar & Bisnis</SectionTitle>
+                      <p className="text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12">Kami adalah mitra terpercaya untuk kebutuhan pakaian perusahaan, acara, atau komunitas Anda. Isi formulir di bawah untuk mendapatkan penawaran harga terbaik.</p>
+                      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg space-y-6 border">
+                           <fieldset className="border p-4 rounded-md">
+                              <legend className="px-2 font-semibold">Informasi Perusahaan & PIC</legend>
+                              <div className="grid md:grid-cols-2 gap-4">
+                                  <div><label className="form-label">Nama Perusahaan/Instansi</label><input type="text" name="company" value={formData.company} onChange={handleInfoChange} className="form-input" required /></div>
+                                  <div><label className="form-label">Nama Anda (PIC)</label><input type="text" name="name" value={formData.name} onChange={handleInfoChange} className="form-input" required /></div>
+                                  <div><label className="form-label">Email</label><input type="email" name="email" value={formData.email} onChange={handleInfoChange} className="form-input" required /></div>
+                                  <div><label className="form-label">No. Telepon</label><input type="tel" name="phone" value={formData.phone} onChange={handleInfoChange} className="form-input" required /></div>
+                              </div>
+                          </fieldset>
+                          <fieldset className="border p-4 rounded-md">
+                              <legend className="px-2 font-semibold">Detail Pesanan</legend>
+                               {formData.items.map((item, index) => (
+                                  <div key={index} className="space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                                      <div className="flex justify-between items-center">
+                                          <h4 className="font-semibold">Item #{index + 1}</h4>
+                                          {formData.items.length > 1 && (
+                                              <button type="button" onClick={() => removeItem(index)} className="text-red-500 hover:text-red-700 font-bold text-sm">HAPUS</button>
+                                          )}
+                                      </div>
+                                      <div className="grid md:grid-cols-3 gap-4">
+                                          <div><label className="form-label">Jenis Produk</label><select name="productType" value={item.productType} onChange={(e) => handleItemChange(index, e)} className="form-input"><option>T-Shirt</option><option>Polo Shirt</option><option>Kemeja</option><option>Jaket</option><option>Lainnya</option></select></div>
+                                          <div><label className="form-label">Jumlah (pcs)</label><input type="number" name="quantity" value={item.quantity} onChange={(e) => handleItemChange(index, e)} className="form-input" required /></div>
+                                           <div><label className="form-label">Warna</label><input type="text" name="color" value={item.color} onChange={(e) => handleItemChange(index, e)} className="form-input" /></div>
+                                      </div>
+                                      <div><label className="form-label">Kustomisasi</label><input type="text" name="customization" value={item.customization} onChange={(e) => handleItemChange(index, e)} placeholder="cth: Bordir logo di dada kiri" className="form-input" /></div>
+                                  </div>
+                              ))}
+                               <button type="button" onClick={addItem} className="btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4">
+                                  + Tambah Item Lain
+                              </button>
+                              <div className="mt-4"><label className="form-label">Target Tanggal Pengiriman</label><input type="date" name="deliveryDate" value={formData.deliveryDate} onChange={handleInfoChange} className="form-input" /></div>
+                          </fieldset>
+                          <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">Minta Penawaran <IconSend /></button>
+                      </form>
+                  </div>
+              </div>
+          );
+      };
+      const LoginPage = ({ setView, handleLogin }) => {
+          const [isRegister, setIsRegister] = React.useState(false);
+          const handleSubmit = (e) => {
+              e.preventDefault();
+              const email = e.target.email.value;
+              const name = e.target.name?.value || "Pelanggan Baru";
+              handleLogin({ email, name });
+              setView('home');
+          };
+          return (
+              <div className="flex items-center justify-center py-20 bg-gray-50">
+                  <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black">
+                      <h3 className="text-2xl font-bold font-serif text-center mb-6">{isRegister ? 'Daftar Akun Baru' : 'Masuk ke Akun Anda'}</h3>
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                          {isRegister && <div><label className="form-label">Nama Lengkap</label><input type="text" name="name" className="form-input" required /></div>}
+                          <div><label className="form-label">Alamat Email</label><input type="email" name="email" className="form-input" required /></div>
+                          <div><label className="form-label">Kata Sandi</label><input type="password" name="password" className="form-input" required /></div>
+                          <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">
+                              {isRegister ? <><IconPlus /> Daftar</> : <><IconUser /> Masuk</>}
+                          </button>
+                      </form>
+                      <p className="text-center text-sm mt-4">
+                          {isRegister ? 'Sudah punya akun?' : 'Belum punya akun?'}
+                          <button onClick={() => setIsRegister(!isRegister)} className="font-semibold text-[#6D4C41] ml-1">{isRegister ? 'Masuk' : 'Daftar di sini'}</button>
+                      </p>
+                  </div>
+              </div>
+          )
+      };
+      const CartPage = ({ cart, setCart, setView }) => {
+          const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+          const updateQuantity = (productId, newQuantity) => {
+              if (newQuantity < 1) {
+                  setCart(cart.filter(item => item.id !== productId));
+              } else {
+                  setCart(cart.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item));
+              }
+          };
+          return(
+              <div className="py-20 bg-gray-50 min-h-[60vh]">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>Keranjang Belanja</SectionTitle>
+                      {cart.length > 0 ? (
+                          <div className="grid lg:grid-cols-3 gap-8">
+                              <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md space-y-4">
+                                 {cart.map(item => (
+                                      <div key={item.id} className="flex gap-4 items-center border-b pb-4">
+                                          <img src={item.img} alt={item.name} className="w-24 h-24 object-cover rounded-md"/>
+                                          <div className="flex-1">
+                                              <p className="font-semibold">{item.name}</p>
+                                              <p className="text-sm text-gray-500">Ukuran: {item.selectedSize}</p>
+                                              <p className="text-sm text-[#6D4C41]">IDR {item.price.toLocaleString()}</p>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                              <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="border w-8 h-8 rounded">-</button>
+                                              <span className="w-8 text-center">{item.quantity}</span>
+                                              <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="border w-8 h-8 rounded">+</button>
+                                          </div>
+                                          <p className="font-semibold w-24 text-right">IDR {(item.price * item.quantity).toLocaleString()}</p>
+                                          <button onClick={() => updateQuantity(item.id, 0)} className="text-gray-400 hover:text-red-500"><IconTrash /></button>
+                                      </div>
+                                  ))}
+                              </div>
+                              <div className="bg-white p-6 rounded-lg shadow-md h-fit">
+                                  <h3 className="font-serif text-xl font-bold mb-4 border-b pb-2">Ringkasan Pesanan</h3>
+                                  <div className="space-y-2 text-gray-600">
+                                      <div className="flex justify-between"><span>Subtotal</span><span>IDR {totalPrice.toLocaleString()}</span></div>
+                                      <div className="flex justify-between"><span>Pengiriman</span><span>Akan dihitung</span></div>
+                                  </div>
+                                  <div className="flex justify-between font-bold text-lg my-4 pt-4 border-t">
+                                      <span>Total</span>
+                                      <span>IDR {totalPrice.toLocaleString()}</span>
+                                  </div>
+                                  <button className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Lanjut ke Checkout</button>
+                              </div>
+                          </div>
+                      ) : (
+                          <div className="text-center py-10 bg-white rounded-lg shadow-md">
+                              <p className="text-gray-500 mb-4">Keranjang Anda masih kosong.</p>
+                              <button onClick={() => setView('home')} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Mulai Belanja</button>
+                          </div>
+                      )}
+                  </div>
+              </div>
+          )
+      };
+      const FittingGuidePage = () => {
+          const [height, setHeight] = React.useState('');
+          const [weight, setWeight] = React.useState('');
+          const [recommendation, setRecommendation] = React.useState(null);
+          const calculateSize = () => {
+              const h = parseInt(height);
+              const w = parseInt(weight);
+              if (isNaN(h) || isNaN(w) || h <= 0 || w <= 0) {
+                  setRecommendation({ error: "Silakan masukkan tinggi dan berat badan yang valid." });
+                  return;
+              }
+              let tShirtSize, shirtSize, pantsSize, jacketSize;
+              if (h < 165) {
+                  tShirtSize = 'S';
+                  shirtSize = 'S';
+              } else if (h >= 165 && h < 175) {
+                  if (w < 70) {
+                      tShirtSize = 'M';
+                      shirtSize = 'M';
+                  } else {
+                      tShirtSize = 'L';
+                      shirtSize = 'L';
+                  }
+              } else if (h >= 175 && h < 185) {
+                  if (w < 80) {
+                      tShirtSize = 'L';
+                      shirtSize = 'L';
+                  } else {
+                      tShirtSize = 'XL';
+                      shirtSize = 'XL';
+                  }
+              } else {
+                  tShirtSize = 'XL';
+                  shirtSize = 'XL';
+              }
+              if (w < 60) {
+                  pantsSize = '28-30';
+              } else if (w >= 60 && w < 75) {
+                  pantsSize = '30-32';
+              } else if (w >= 75 && w < 90) {
+                  pantsSize = '33-35';
+              } else {
+                  pantsSize = '36+';
+              }
+              jacketSize = shirtSize;
+              setRecommendation({ tShirtSize, shirtSize, pantsSize, jacketSize, error: null });
+          };
+          const handleSubmit = (e) => {
+              e.preventDefault();
+              calculateSize();
+          };
+          return (
+              <div className="py-20 bg-white">
+                  <div className="container mx-auto px-5">
+                      <SectionTitle>Panduan Ukuran</SectionTitle>
+                      <div className="max-w-2xl mx-auto">
+                          <div className="bg-gray-50 p-8 rounded-lg shadow-md text-center">
+                              <IconRuler className="mx-auto text-[#6D4C41]" />
+                              <h3 className="font-serif text-2xl font-bold my-3 text-[#4E342E]">Temukan Ukuran Tepat Anda</h3>
+                              <p className="text-gray-600 mb-6">Masukkan tinggi dan berat badan Anda untuk mendapatkan rekomendasi ukuran dari kami.</p>
+                              <form onSubmit={handleSubmit} className="space-y-4">
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                      <div>
+                                          <label className="form-label">Tinggi Badan (cm)</label>
+                                          <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="form-input text-center" placeholder="cth: 175" required />
+                                      </div>
+                                      <div>
+                                          <label className="form-label">Berat Badan (kg)</label>
+                                          <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="form-input text-center" placeholder="cth: 70" required />
+                                      </div>
+                                  </div>
+                                  <button type="submit" className="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Dapatkan Rekomendasi</button>
+                              </form>
+                          </div>
+                          {recommendation && (
+                              <div className="mt-8 bg-green-50 p-8 rounded-lg shadow-md">
+                                  {recommendation.error ? (
+                                      <p className="text-red-600 text-center font-semibold">{recommendation.error}</p>
+                                  ) : (
+                                      <div>
+                                          <h3 className="font-serif text-2xl font-bold text-center mb-4 text-[#4E342E]">Ukuran yang Direkomendasikan</h3>
+                                          <div className="grid grid-cols-2 gap-4 text-center">
+                                              <div className="bg-white p-4 rounded-md shadow-sm">
+                                                  <p className="font-semibold">T-Shirt</p>
+                                                  <p className="text-2xl font-bold text-[#6D4C41]">{recommendation.tShirtSize}</p>
+                                              </div>
+                                              <div className="bg-white p-4 rounded-md shadow-sm">
+                                                  <p className="font-semibold">Kemeja</p>
+                                                  <p className="text-2xl font-bold text-[#6D4C41]">{recommendation.shirtSize}</p>
+                                              </div>
+                                              <div className="bg-white p-4 rounded-md shadow-sm">
+                                                  <p className="font-semibold">Celana</p>
+                                                  <p className="text-2xl font-bold text-[#6D4C41]">{recommendation.pantsSize}</p>
+                                              </div>
+                                              <div className="bg-white p-4 rounded-md shadow-sm">
+                                                  <p className="font-semibold">Jaket</p>
+                                                  <p className="text-2xl font-bold text-[#6D4C41]">{recommendation.jacketSize}</p>
+                                              </div>
+                                          </div>
+                                          <p className="text-sm text-gray-500 mt-4 text-center">*Rekomendasi ini adalah perkiraan. Ukuran dapat bervariasi tergantung model produk.</p>
+                                      </div>
+                                  )}
+                              </div>
+                          )}
+                      </div>
+                  </div>
+              </div>
+          );
+      };
+
+      // =========== ADMIN PAGE COMPONENTS ===========
+      const AdminLayout = ({ children, setView, adminView, setAdminView }) => {
+          const adminLinks = [
+              { id: 'dashboard', icon: <IconChartBar />, text: "Dashboard" },
+              { id: 'products', icon: <IconBox />, text: "Kelola Produk" },
+              { id: 'collections', icon: <IconCollection />, text: "Kelola Koleksi" },
+              { id: 'promos', icon: <IconTags />, text: "Kelola Promo" },
+              { id: 'menu', icon: <IconEdit />, text: "Kelola Menu" },
+              { id: 'users', icon: <IconUsers />, text: "Kelola Pengguna" },
+              { id: 'settings', icon: <IconCog />, text: "Pengaturan" },
+          ];
+          return(
+              <div className="bg-gray-100 min-h-screen">
+                  <div className="container mx-auto px-5 py-10">
+                      <SectionTitle>Super Admin Panel</SectionTitle>
+                      <div className="flex flex-col md:flex-row gap-8">
+                          <aside className="md:w-1/4">
+                              <div className="bg-white p-4 rounded-lg shadow-md">
+                                 <ul className="space-y-2">
+                                  {adminLinks.map(link => (
+                                      <li key={link.id}>
+                                          <button onClick={() => setAdminView(link.id)} className={`w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors ${adminView === link.id ? 'bg-[#6D4C41] text-white' : 'hover:bg-gray-200'}`}>
+                                              {link.icon}
+                                              <span>{link.text}</span>
+                                          </button>
+                                      </li>
+                                  ))}
+                                 </ul>
+                              </div>
+                          </aside>
+                          <main className="md:w-3/4">
+                              <div className="bg-white p-6 rounded-lg shadow-md">
+                                  {children}
+                              </div>
+                          </main>
+                      </div>
+                  </div>
+              </div>
+          );
+      };
+      const AdminDashboard = ({ products, promos }) => (
+          <div>
+              <h3 className="font-serif text-2xl font-bold mb-4">Dashboard</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-blue-100 p-4 rounded-lg"><h4 className="font-bold">Total Produk</h4><p className="text-2xl">{products.length}</p></div>
+                  <div className="bg-green-100 p-4 rounded-lg"><h4 className="font-bold">Promo Aktif</h4><p className="text-2xl">{promos.length}</p></div>
+                  <div className="bg-yellow-100 p-4 rounded-lg"><h4 className="font-bold">Total Pengguna</h4><p className="text-2xl">1 (Admin)</p></div>
+              </div>
+          </div>
+      );
+      const AdminProducts = ({ products, setProducts, categories, collections }) => {
+          const [modalOpen, setModalOpen] = React.useState(false);
+          const [productToEdit, setProductToEdit] = React.useState(null);
+          const openAddProductModal = () => { setProductToEdit(null); setModalOpen(true); };
+          const openEditProductModal = (product) => { setProductToEdit(product); setModalOpen(true); };
+          const handleProductSubmit = (productData) => {
+              if (productToEdit) {
+                  setProducts(products.map(p => p.id === productToEdit.id ? { ...p, ...productData } : p));
+              } else {
+                  setProducts([...products, { ...productData, id: Date.now() }]);
+              }
+              setModalOpen(false);
+          };
+          const deleteProduct = (productId) => { setProducts(products.filter(p => p.id !== productId)); };
+          return(
+              <div>
+                  <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-serif text-2xl font-bold">Kelola Produk</h3>
+                      <button onClick={openAddProductModal} className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm">Tambah Produk</button>
+                  </div>
+                  <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                          <thead>
+                              <tr className="bg-gray-100"><th className="p-2">Nama</th><th className="p-2">Kategori</th><th className="p-2">Harga</th><th className="p-2">Aksi</th></tr>
+                          </thead>
+                          <tbody>
+                              {products.map(p => (
+                                  <tr key={p.id} className="border-b"><td className="p-2">{p.name}</td><td className="p-2">{p.category}</td><td className="p-2">IDR {p.price.toLocaleString()}</td><td className="p-2"><div className="flex gap-2"><button onClick={() => openEditProductModal(p)} className="text-blue-500"><IconEdit /></button><button onClick={() => deleteProduct(p.id)} className="text-red-500"><IconTrash /></button></div></td></tr>
+                              ))}
+                          </tbody>
+                      </table>
+                  </div>
+                   {modalOpen && (<div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center"><div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black"><div className="flex justify-between items-center mb-4"><h3 className="text-2xl font-bold font-serif">{productToEdit ? 'Edit Produk' : 'Tambah Produk Baru'}</h3><button onClick={() => setModalOpen(false)}><IconX /></button></div><ProductForm onSubmit={handleProductSubmit} product={productToEdit} categories={categories} collections={collections} /></div></div>)}
+              </div>
+          );
+      };
+      const AdminCollections = ({ products, setProducts, collections }) => {
+          const handleCollectionChange = (productId, collection) => {
+              setProducts(products.map(p => p.id === productId ? { ...p, specialCollection: collection === "None" ? null : collection } : p));
+          };
+          return(
+               <div>
+                  <h3 className="font-serif text-2xl font-bold mb-4">Kelola Koleksi Spesial</h3>
+                  <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                          <thead>
+                              <tr className="bg-gray-100"><th className="p-2">Nama Produk</th><th className="p-2">Koleksi Saat Ini</th><th className="p-2">Ganti Koleksi</th></tr>
+                          </thead>
+                          <tbody>
+                              {products.map(p => (
+                                  <tr key={p.id} className="border-b">
+                                      <td className="p-2">{p.name}</td>
+                                      <td className="p-2">{p.specialCollection || 'Tidak ada'}</td>
+                                      <td className="p-2">
+                                           <select value={p.specialCollection || "None"} onChange={(e) => handleCollectionChange(p.id, e.target.value)} className="form-input !mt-0 !text-sm !py-1">
+                                               <option>None</option>
+                                               {Object.keys(collections).map(key => <option key={key} value={key}>{key}</option>)}
+                                           </select>
+                                      </td>
+                                  </tr>
+                              ))}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          );
+      };
+      const AdminMenu = ({ navLinks, setNavLinks }) => {
+          const [isEditing, setIsEditing] = React.useState(false);
+          const [currentLink, setCurrentLink] = React.useState({ id: '', text: '', view: '', param: '' });
+          const handleInputChange = (e) => {
+              const { name, value } = e.target;
+              setCurrentLink(prev => ({ ...prev, [name]: value }));
+          };
+          const handleSubmit = (e) => {
+              e.preventDefault();
+              if (isEditing) {
+                  setNavLinks(navLinks.map(link => link.id === currentLink.id ? currentLink : link));
+              } else {
+                  setNavLinks([...navLinks, { ...currentLink, id: Date.now().toString() }]);
+              }
+              resetForm();
+          };
+          const editLink = (link) => {
+              setIsEditing(true);
+              setCurrentLink(link);
+          };
+          const deleteLink = (id) => {
+              setNavLinks(navLinks.filter(link => link.id !== id));
+          };
+          const resetForm = () => {
+              setIsEditing(false);
+              setCurrentLink({ id: '', text: '', view: '', param: '' });
+          };
+          return (
+              <div>
+                  <h3 className="font-serif text-2xl font-bold mb-4">Kelola Menu Navigasi</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div>
+                          <h4 className="font-semibold mb-2">{isEditing ? 'Edit Link' : 'Tambah Link Baru'}</h4>
+                          <form onSubmit={handleSubmit} className="space-y-3 bg-gray-50 p-4 rounded-md">
+                              <div><label className="form-label">Teks Link</label><input type="text" name="text" value={currentLink.text} onChange={handleInputChange} className="form-input" required /></div>
+                              <div><label className="form-label">View Tujuan</label><input type="text" name="view" value={currentLink.view} onChange={handleInputChange} className="form-input" placeholder="cth: category" required /></div>
+                              <div><label className="form-label">Parameter (Opsional)</label><input type="text" name="param" value={currentLink.param} onChange={handleInputChange} className="form-input" placeholder="cth: T-Shirt" /></div>
+                              <div className="flex gap-2">
+                                  <button type="submit" className="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2">{isEditing ? 'Simpan Perubahan' : 'Tambah Link'}</button>
+                                  {isEditing && <button type="button" onClick={resetForm} className="btn bg-gray-300 hover:bg-gray-400 text-black !py-2">Batal</button>}
+                              </div>
+                          </form>
+                      </div>
+                      <div>
+                          <h4 className="font-semibold mb-2">Urutan Menu Saat Ini</h4>
+                          <ul className="space-y-2">
+                              {navLinks.map(link => (
+                                  <li key={link.id} className="flex items-center justify-between bg-white p-2 rounded-md shadow-sm">
+                                      <span>{link.text} <span className="text-xs text-gray-500">({link.view})</span></span>
+                                      <div className="flex gap-2">
+                                          <button onClick={() => editLink(link)} className="text-blue-600 hover:text-blue-800 p-1"><IconEdit /></button>
+                                          <button onClick={() => deleteLink(link.id)} className="text-red-600 hover:text-red-800 p-1"><IconTrash /></button>
+                                      </div>
+                                  </li>
+                              ))}
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          );
+      };
+
+      // =========== MAIN APP ===========
+      function App() {
+          const [view, setView] = React.useState({ page: 'home', param: null });
+          const [adminView, setAdminView] = React.useState('dashboard');
+          const [modalView, setModalView] = React.useState(null);
+          const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+          const [products, setProducts] = React.useState(INITIAL_PRODUCTS);
+          const [promos, setPromos] = React.useState([{ id: 1, title: "KAZUMI x BUSINESSWEEK", subtitle: "MONDAY SPECIAL", offer: "BUY 2 GET 30% OFF", terms: "Groups IDR 8.000 dengan min. pembelian IDR 300.000" }]);
+          const [cart, setCart] = React.useState([]);
+          const [currentUser, setCurrentUser] = React.useState(null);
+          const [navLinks, setNavLinks] = React.useState([
+              { id: 'home', text: 'Home', view: 'home' },
+              { id: 'shop', text: 'Shop', view: 'category', param: 'T-Shirt', dropdown: true },
+              { id: 'special-collections', text: 'Collections', view: 'special-collections' },
+              { id: 'custom-order', text: 'Custom Order', view: 'custom-order' },
+              { id: 'fitting-guide', text: 'Fitting Guide', view: 'fitting-guide' },
+          ]);
+
+          const handleSetView = (page, param = null) => {
+              setView({ page, param });
+              window.scrollTo(0, 0);
+          };
+
+          const handleSetAdminView = (page) => {
+              setAdminView(page);
+          };
+
+          const handleOrderSubmit = () => { setShowSuccessMessage(true); };
+
+          const handleLogin = (user) => { setCurrentUser(user); };
+          const handleLogout = () => { setCurrentUser(null); };
+
+          const addToCart = (product, selectedSize) => {
+              setCart(prevCart => {
+                  const existingItem = prevCart.find(item => item.id === product.id && item.selectedSize === selectedSize);
+                  if (existingItem) {
+                      return prevCart.map(item =>
+                          item.id === product.id && item.selectedSize === selectedSize
+                              ? { ...item, quantity: item.quantity + 1 }
+                              : item
+                      );
+                  }
+                  return [...prevCart, { ...product, selectedSize, quantity: 1 }];
+              });
+              handleSetView('cart');
+          };
+
+          const renderPage = () => {
+              const page = view.page;
+              if (page.startsWith('admin')) {
+                   const renderAdminContent = () => {
+                      switch(adminView) {
+                          case 'products': return <AdminProducts products={products} setProducts={setProducts} categories={CATEGORIES} collections={SPECIAL_COLLECTIONS} />;
+                          case 'collections': return <AdminCollections products={products} setProducts={setProducts} collections={SPECIAL_COLLECTIONS} />;
+                          case 'menu': return <AdminMenu navLinks={navLinks} setNavLinks={setNavLinks} />;
+                          case 'dashboard':
+                          default:
+                              return <AdminDashboard products={products} promos={promos} />;
+                      }
+                  };
+                  return (
+                      <AdminLayout setView={handleSetView} adminView={adminView} setAdminView={handleSetAdminView}>
+                          {renderAdminContent()}
+                      </AdminLayout>
+                  );
+              }
+
+              switch (page) {
+                  case 'category': return <CategoryPage category={view.param} products={products} setView={handleSetView} />;
+                  case 'product': return <ProductDetailPage productId={view.param} products={products} setView={handleSetView} addToCart={addToCart} />;
+                  case 'special-collections': return <SpecialCollectionsPage products={products} collections={SPECIAL_COLLECTIONS} />;
+                  case 'custom-order': return <CustomOrderPage onOrderSubmit={handleOrderSubmit} />;
+                  case 'bulk-purchase': return <BulkPurchasePage onOrderSubmit={handleOrderSubmit} />;
+                  case 'login': return <LoginPage setView={handleSetView} handleLogin={handleLogin} />;
+                  case 'cart': return <CartPage cart={cart} setCart={setCart} setView={handleSetView} />;
+                  case 'fitting-guide': return <FittingGuidePage />;
+                  case 'home':
+                  default:
+                      return (
+                          <HomePage products={products} promos={promos} setView={handleSetView} collections={SPECIAL_COLLECTIONS} />
+                      );
+              }
+          };
+
+          return (
+              <div className="font-sans text-[#333] bg-white">
+                  <Header setView={handleSetView} setModalView={setModalView} cart={cart} currentUser={currentUser} handleLogout={handleLogout} categories={CATEGORIES} navLinks={navLinks} />
+                  <main>{renderPage()}</main>
+                  <Footer />
+                  {showSuccessMessage && <FormSuccessMessage onClose={() => setShowSuccessMessage(false)} />}
+                  {modalView === 'search' && <SearchModal products={products} setView={handleSetView} setModalView={setModalView} />}
+              </div>
+          );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+    </script>
+  </body>
+</html>
