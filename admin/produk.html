@@ -27,6 +27,51 @@
     </header>
 
     <main>
+        <!-- Add/Edit Product Modal -->
+        <div id="product-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-2xl">
+                <h2 id="modal-title" class="text-2xl font-bold font-serif mb-6">Tambah Produk Baru</h2>
+                <form id="product-form">
+                    <input type="hidden" id="product-id" name="id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="product-name" class="form-label">Nama Produk</label>
+                            <input type="text" id="product-name" name="name" class="form-input" required>
+                        </div>
+                        <div>
+                            <label for="product-category" class="form-label">Kategori</label>
+                            <select id="product-category" name="category" class="form-input">
+                                <option>T-Shirt</option>
+                                <option>Shirt</option>
+                                <option>Pants</option>
+                                <option>Jacket</option>
+                                <option>Accessories</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label for="product-price" class="form-label">Harga (IDR)</label>
+                        <input type="number" id="product-price" name="price" class="form-input" required>
+                    </div>
+                    <div class="mt-6">
+                        <label class="form-label">Gambar Produk</label>
+                        <div class="flex items-center gap-4">
+                            <img id="product-image-preview" src="" class="h-16 w-16 object-cover rounded-md border hidden">
+                            <input type="file" id="product-image" name="image" class="form-input">
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label for="product-description" class="form-label">Deskripsi</label>
+                        <textarea id="product-description" name="description" rows="3" class="form-input"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-4 mt-8">
+                        <button type="button" id="modal-cancel" class="btn bg-gray-200 hover:bg-gray-300 text-gray-800">Batal</button>
+                        <button type="submit" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="bg-gray-100 min-h-screen">
             <div class="container mx-auto px-5 py-10">
                 <div class="text-center mb-12">
@@ -53,7 +98,9 @@
                                 </li>
                                 <li>
                                     <a href="koleksi.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors hover:bg-gray-100 text-gray-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 12l4.179 2.25M6.429 9.75L12 12.75l5.571-3M6.429 9.75L12 6.75l5.571 3m0 0l4.179 2.25L12 12.75l-5.571-3z" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402a3.75 3.75 0 00-.625-6.25A3.75 3.75 0 006.75 7.5v.75m11.25 10.5a3.75 3.75 0 01-5.304 0l-6.401-6.402a3.75 3.75 0 01.625-6.25A3.75 3.75 0 0117.25 7.5v.75" />
+                                        </svg>
                                         <span>Kelola Koleksi</span>
                                     </a>
                                 </li>
@@ -92,13 +139,14 @@
                                         <thead class="bg-gray-100">
                                             <tr><th class="p-3">Gambar</th><th class="p-3">Nama</th><th class="p-3">Kategori</th><th class="p-3">Harga</th><th class="p-3">Aksi</th></tr>
                                         </thead>
-                                        <tbody>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Classic White T-Shirt</td><td class="p-3">T-Shirt</td><td class="p-3">IDR 150,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Blue Oxford Shirt</td><td class="p-3">Shirt</td><td class="p-3">IDR 250,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Modern Chino Pants</td><td class="p-3">Pants</td><td class="p-3">IDR 300,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Denim Trucker Jacket</td><td class="p-3">Jacket</td><td class="p-3">IDR 450,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Graphic Print T-Shirt</td><td class="p-3">T-Shirt</td><td class="p-3">IDR 175,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
-                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Flannel Plaid Shirt</td><td class="p-3">Shirt</td><td class="p-3">IDR 275,000</td><td class="p-3"><div class="flex gap-2"><button class="text-blue-500 hover:text-blue-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                        <tbody id="product-table-body">
+                                            <!-- Rows will be injected by JS, but we can keep them here as a template -->
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Classic White T-Shirt</td><td class="p-3">T-Shirt</td><td class="p-3">IDR 150,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="1" data-name="Classic White T-Shirt" data-category="T-Shirt" data-price="150000" data-image="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" data-description="Kaos katun putih klasik yang wajib dimiliki, sempurna untuk segala acara."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Blue Oxford Shirt</td><td class="p-3">Shirt</td><td class="p-3">IDR 250,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="2" data-name="Blue Oxford Shirt" data-category="Shirt" data-price="250000" data-image="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" data-description="Kemeja oxford biru formal dengan potongan slim-fit, ideal untuk bekerja atau acara formal."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Modern Chino Pants</td><td class="p-3">Pants</td><td class="p-3">IDR 300,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="3" data-name="Modern Chino Pants" data-category="Pants" data-price="300000" data-image="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" data-description="Celana chino modern yang nyaman dan serbaguna, cocok untuk gaya kasual maupun semi-formal."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Denim Trucker Jacket</td><td class="p-3">Jacket</td><td class="p-3">IDR 450,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="4" data-name="Denim Trucker Jacket" data-category="Jacket" data-price="450000" data-image="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=80" data-description="Jaket denim trucker dengan gaya abadi yang memberikan sentuhan keren pada penampilan Anda."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Graphic Print T-Shirt</td><td class="p-3">T-Shirt</td><td class="p-3">IDR 175,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="5" data-name="Graphic Print T-Shirt" data-category="T-Shirt" data-price="175000" data-image="https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" data-description="Tampil beda dengan kaos print grafis yang unik dan artistik."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
+                                            <tr class="border-b"><td class="p-3"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" class="w-12 h-12 object-cover rounded-md"/></td><td class="p-3">Flannel Plaid Shirt</td><td class="p-3">Shirt</td><td class="p-3">IDR 275,000</td><td class="p-3"><div class="flex gap-2"><button class="edit-btn text-blue-500 hover:text-blue-700" data-id="6" data-name="Flannel Plaid Shirt" data-category="Shirt" data-price="275000" data-image="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=80&q=60" data-description="Kemeja flanel kotak-kotak yang hangat dan nyaman, sempurna untuk cuaca dingin."><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 pointer-events-none"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg></button><button class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg></button></div></td></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -110,5 +158,55 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('product-modal');
+            const addProductBtn = document.querySelector('.btn.bg-\\[\\#6D4C41\\]'); // A bit fragile, but works
+            const cancelBtn = document.getElementById('modal-cancel');
+            const productForm = document.getElementById('product-form');
+            const modalTitle = document.getElementById('modal-title');
+
+            const nameInput = document.getElementById('product-name');
+            const categoryInput = document.getElementById('product-category');
+            const priceInput = document.getElementById('product-price');
+            const imagePreview = document.getElementById('product-image-preview');
+            const imageInput = document.getElementById('product-image');
+            const descriptionInput = document.getElementById('product-description');
+
+            function openModal() { modal.classList.remove('hidden'); }
+            function closeModal() { modal.classList.add('hidden'); }
+
+            addProductBtn.addEventListener('click', () => {
+                modalTitle.textContent = 'Tambah Produk Baru';
+                productForm.reset();
+                imagePreview.classList.add('hidden');
+                openModal();
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    modalTitle.textContent = 'Edit Produk';
+                    const data = e.currentTarget.dataset;
+
+                    nameInput.value = data.name;
+                    categoryInput.value = data.category;
+                    priceInput.value = data.price;
+                    descriptionInput.value = data.description;
+                    imagePreview.src = data.image;
+                    imagePreview.classList.remove('hidden');
+
+                    openModal();
+                });
+            });
+
+            cancelBtn.addEventListener('click', closeModal);
+            productForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // In a real app, you would handle form submission here.
+                // For this static version, we just close the modal.
+                closeModal();
+            });
+        });
+    </script>
 </body>
 </html>
