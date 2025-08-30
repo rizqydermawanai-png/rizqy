@@ -2582,28 +2582,30 @@
                 specialCollections: SPECIAL_COLLECTIONS, // Moved here to be editable
                 mainMenu: [ // Inisialisasi menu utama
                     { id: 'home', label: 'Home', type: 'internal', target: 'home', isVisible: true, icon: null },
-                    { id: 't-shirt', label: 'T-Shirt', type: 'dropdown', isVisible: true, icon: null, children: [
-                        { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                        { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                        { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                        { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                    { id: 'shop', label: 'Shop', type: 'dropdown', isVisible: true, icon: null, children: [
+                        { id: 't-shirt', label: 'T-Shirt', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                            { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                            { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                        ]},
+                        { id: 'shirt', label: 'Shirt', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
+                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
+                            { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
+                        ]},
+                        { id: 'pants', label: 'Pants', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
+                            { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
+                            { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
+                        ]},
+                        { id: 'jacket', label: 'Jacket', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
+                            { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
+                            { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
+                        ]},
+                        { id: 'accessories', label: 'Accessories', type: 'internal', target: 'category', param: 'Accessories', isVisible: true, icon: null },
                     ]},
-                    { id: 'shirt', label: 'Shirt', type: 'dropdown', isVisible: true, icon: null, children: [
-                        { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
-                        { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
-                        { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
-                    ]},
-                    { id: 'pants', label: 'Pants', type: 'dropdown', isVisible: true, icon: null, children: [
-                        { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
-                        { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
-                        { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
-                    ]},
-                    { id: 'jacket', label: 'Jacket', type: 'dropdown', isVisible: true, icon: null, children: [
-                        { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
-                        { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
-                        { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
-                    ]},
-                    { id: 'accessories', label: 'Accessories', type: 'internal', target: 'category', param: 'Accessories', isVisible: true, icon: null },
                     { id: 'collections', label: 'Collections', type: 'internal', target: 'special-collections', isVisible: true, icon: null },
                     { id: 'fitting-room', label: 'Fitting Room', type: 'internal', target: 'fitting-room', isVisible: true, icon: null },
                     { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: false, icon: null }, // Contoh menu yang awalnya tidak terlihat
