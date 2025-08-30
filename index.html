@@ -55,12 +55,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                 </svg>
                             </a>
-                            <ul class="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
-                                <li><a href="kategori/t-shirt.html" class="dropdown-link">T-Shirt</a></li>
-                                <li><a href="kategori/shirt.html" class="dropdown-link">Shirt</a></li>
-                                <li><a href="kategori/pants.html" class="dropdown-link">Pants</a></li>
-                                <li><a href="kategori/jacket.html" class="dropdown-link">Jacket</a></li>
-                                <li><a href="kategori/accessories.html" class="dropdown-link">Accessories</a></li>
+                            <ul id="category-dropdown" class="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
+                                <!-- Categories will be injected by JS -->
                             </ul>
                         </li>
                         <li><a href="koleksi.html" class="nav-link">Collections</a></li>
@@ -78,6 +74,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                         </svg>
+                        <span id="cart-icon-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                     </a>
                     <a href="login.html" class="text-[#6D4C41] hover:text-[#4E342E] transition-colors">
                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -99,81 +96,18 @@
         <!-- Hero Slider Section -->
         <section id="home" class="relative h-[80vh] text-white overflow-hidden">
             <div id="slider-container" class="relative w-full h-full">
-                <!-- Slide 1 -->
-                <div class="slider-slide active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
-                    <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
-                        <div class="max-w-3xl mx-auto">
-                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
-                            <p class="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion.</p>
-                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Slide 2 -->
-                <div class="slider-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
-                     <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
-                        <div class="max-w-3xl mx-auto">
-                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">The Executive Collection</h1>
-                            <p class="text-lg mb-8 shadow-text">Sharp cuts and premium fabrics for the modern professional.</p>
-                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Shop Now</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Slide 3 -->
-                <div class="slider-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
-                     <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
-                        <div class="max-w-3xl mx-auto">
-                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">Comfortable Weekend Wear</h1>
-                            <p class="text-lg mb-8 shadow-text">Relaxed yet stylish outfits for your perfect weekend.</p>
-                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">View Casuals</a>
-                        </div>
-                    </div>
-                </div>
+                <!-- Slides will be injected by JS -->
             </div>
         </section>
 
         <!-- Popular Categories Section -->
         <section id="categories" class="py-20 bg-[#F5F5F5]">
             <div class="container mx-auto px-5">
-                <div class="text-center mb-12">
-                    <h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">
-                        Produk Terlaris
-                        <span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span>
-                    </h2>
+                <div id="new-arrivals-title-container" class="text-center mb-12">
+                    <!-- Title will be injected by JS -->
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <a href="produk/1.html" class="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer transition-shadow duration-300 hover:shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Classic White T-Shirt" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
-                            <p class="uppercase font-medium tracking-wider">Classic White T-Shirt</p>
-                            <p class="text-sm">IDR 150,000</p>
-                        </div>
-                    </a>
-                    <a href="produk/2.html" class="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer transition-shadow duration-300 hover:shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Blue Oxford Shirt" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
-                            <p class="uppercase font-medium tracking-wider">Blue Oxford Shirt</p>
-                            <p class="text-sm">IDR 250,000</p>
-                        </div>
-                    </a>
-                    <a href="produk/3.html" class="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer transition-shadow duration-300 hover:shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Chino Pants" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
-                            <p class="uppercase font-medium tracking-wider">Modern Chino Pants</p>
-                            <p class="text-sm">IDR 300,000</p>
-                        </div>
-                    </a>
-                    <a href="produk/4.html" class="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer transition-shadow duration-300 hover:shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Denim Trucker Jacket" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
-                            <p class="uppercase font-medium tracking-wider">Denim Trucker Jacket</p>
-                            <p class="text-sm">IDR 450,000</p>
-                        </div>
-                    </a>
+                <div id="new-arrivals-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Products will be injected by JS -->
                 </div>
             </div>
         </section>
@@ -181,34 +115,11 @@
         <!-- Special Collections Preview -->
         <section id="collections" class="py-20 bg-white">
             <div class="container mx-auto px-5">
-                <div class="text-center mb-12">
-                    <h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">
-                        Koleksi Spesial
-                        <span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span>
-                    </h2>
+                <div id="featured-collections-title-container" class="text-center mb-12">
+                     <!-- Title will be injected by JS -->
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group transition-shadow duration-300 hover:shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Executive Collection" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">New</span>
-                            <h3 class="text-2xl font-semibold">Executive Collection</h3>
-                        </div>
-                    </div>
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group transition-shadow duration-300 hover:shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Limited Edition" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">Limited</span>
-                            <h3 class="text-2xl font-semibold">Limited Edition</h3>
-                        </div>
-                    </div>
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group transition-shadow duration-300 hover:shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Weekend Wear" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">Casual</span>
-                            <h3 class="text-2xl font-semibold">Weekend Wear</h3>
-                        </div>
-                    </div>
+                <div id="featured-collections-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Collections will be injected by JS -->
                 </div>
                  <div class="text-center mt-12">
                     <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Lihat Semua Koleksi</a>
@@ -239,14 +150,8 @@
         </section>
 
         <!-- Promo Section -->
-        <section id="promo" class="py-16 bg-[#4E342E] text-white text-center shadow-inner">
-            <div class="container mx-auto px-5">
-                <h2 class="font-serif text-4xl font-bold mb-4">KAZUMI x BUSINESSWEEK</h2>
-                <h3 class="text-2xl text-[#C9B037] mb-2">MONDAY SPECIAL</h3>
-                <h2 class="font-serif text-4xl font-bold mb-4">BUY 2 GET 30% OFF</h2>
-                <p class="mb-6">Groups IDR 8.000 dengan min. pembelian IDR 300.000</p>
-                <a href="#categories" class="btn bg-[#6D4C41] hover:bg-[#8a6b5d]">Belanja Sekarang</a>
-            </div>
+        <section id="promo-banner-container" class="py-16 bg-[#4E342E] text-white text-center shadow-inner">
+            <!-- Promo banner will be injected by JS -->
         </section>
 
         <!-- Download App Section -->
@@ -300,13 +205,8 @@
                 </div>
                 <div>
                     <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">KATEGORI PRODUK</h3>
-                    <ul class="space-y-2">
-                        <li><a href="kategori/t-shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">T-Shirt</a></li>
-                        <li><a href="kategori/shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">Shirt</a></li>
-                        <li><a href="kategori/pants.html" class="text-[#D7CCC8] hover:text-white transition-colors">Pants</a></li>
-                        <li><a href="kategori/jacket.html" class="text-[#D7CCC8] hover:text-white transition-colors">Jacket</a></li>
-                        <li><a href="kategori/accessories.html" class="text-[#D7CCC8] hover:text-white transition-colors">Accessories</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sale</a></li>
+                    <ul id="footer-categories" class="space-y-2">
+                        <!-- Footer categories will be injected by JS -->
                     </ul>
                 </div>
                 <div>
@@ -344,6 +244,93 @@
         </div>
     </footer>
 
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
     <script src="slider.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const settings = JSON.parse(localStorage.getItem('kazumiSettings'));
+            const products = JSON.parse(localStorage.getItem('kazumiProducts'));
+
+            // Render Slider
+            const sliderContainer = document.getElementById('slider-container');
+            settings.slider.forEach((slide, index) => {
+                const slideEl = document.createElement('div');
+                slideEl.className = `slider-slide ${index === 0 ? 'active' : ''}`;
+                slideEl.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('${slide.image}')`;
+                slideEl.innerHTML = `
+                    <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
+                        <div class="max-w-3xl mx-auto">
+                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">${slide.title}</h1>
+                            <p class="text-lg mb-8 shadow-text">${slide.subtitle}</p>
+                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
+                        </div>
+                    </div>
+                `;
+                sliderContainer.appendChild(slideEl);
+            });
+
+            // Render New Arrivals
+            document.getElementById('new-arrivals-title-container').innerHTML = `<h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">${settings.newArrivalsTitle}<span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span></h2>`;
+            const newArrivalsContainer = document.getElementById('new-arrivals-container');
+            settings.newArrivalsProductIds.forEach(productId => {
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    newArrivalsContainer.innerHTML += `
+                        <a href="produk/template.html?id=${product.id}" class="relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer transition-shadow duration-300 hover:shadow-xl">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center">
+                                <p class="uppercase font-medium tracking-wider">${product.name}</p>
+                                <p class="text-sm">IDR ${product.price.toLocaleString('id-ID')}</p>
+                            </div>
+                        </a>
+                    `;
+                }
+            });
+
+            // Render Featured Collections
+            document.getElementById('featured-collections-title-container').innerHTML = `<h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">${settings.featuredTitle}<span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span></h2>`;
+            const featuredContainer = document.getElementById('featured-collections-container');
+            settings.featuredCategories.forEach(catName => {
+                const product = products.find(p => p.category === catName);
+                if(product){
+                     featuredContainer.innerHTML += `
+                        <a href="kategori/template.html?name=${catName}" class="relative h-96 rounded-lg overflow-hidden shadow-lg group transition-shadow duration-300 hover:shadow-2xl">
+                            <img src="${product.image}" alt="${catName}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
+                                <h3 class="text-2xl font-semibold">${catName}</h3>
+                            </div>
+                        </a>
+                    `;
+                }
+            });
+
+            // Render Promo Banner
+            const promo = settings.promoBanner;
+            document.getElementById('promo-banner-container').innerHTML = `
+                <div class="container mx-auto px-5">
+                    <h2 class="font-serif text-4xl font-bold mb-4">${promo.title}</h2>
+                    <h3 class="text-2xl text-[#C9B037] mb-2">${promo.subtitle}</h3>
+                    <h2 class="font-serif text-4xl font-bold mb-4">${promo.offer}</h2>
+                    <a href="#categories" class="btn bg-[#6D4C41] hover:bg-[#8a6b5d]">Belanja Sekarang</a>
+                </div>
+            `;
+
+            // Render Categories in Dropdown and Footer
+            const allCategories = [...new Set(products.map(p => p.category))];
+            const categoryDropdown = document.getElementById('category-dropdown');
+            const footerCategories = document.getElementById('footer-categories');
+            categoryDropdown.innerHTML = '';
+            footerCategories.innerHTML = '';
+            allCategories.forEach(cat => {
+                categoryDropdown.innerHTML += `<li><a href="kategori/template.html?name=${cat}" class="dropdown-link">${cat}</a></li>`;
+                footerCategories.innerHTML += `<li><a href="kategori/template.html?name=${cat}" class="text-[#D7CCC8] hover:text-white transition-colors">${cat}</a></li>`;
+            });
+             footerCategories.innerHTML += `<li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sale</a></li>`;
+
+
+        });
+    </script>
 </body>
 </html>
