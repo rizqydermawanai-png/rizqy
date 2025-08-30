@@ -88,7 +88,7 @@
         const IconMapMarker = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z' }), React.createElement('circle', { cx: '12', cy: '10', r: '3' }));
         const IconInstagram = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('rect', { width: '20', height: '20', x: '2', y: '2', rx: '5', ry: '5' }), React.createElement('path', { d: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z' }), React.createElement('line', { x1: '17.5', x2: '17.51', y1: '6.5', y2: '6.5' }));
         const IconFacebook = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z' }));
-        const IconTwitter = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-6.1-1.4-12.1-3.8-12.1-3.8-2.4 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8z' }));
+        const IconTwitter = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-6.1-1.4-12.1-3.8-12.1-3.8-2.4 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8z' }));
         const IconYoutube = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M2.5 17a24.12 24.12 0 0 1 0-10C2.5 4.24 4.24 2.5 7 2.5h10c2.76 0 4.5 1.74 4.5 4.5s0 10 0 10c0 2.76-1.74 4.5-4.5 4.5H7c-2.76 0-4.5-1.74-4.5-4.5z' }), React.createElement('path', { d: 'm10 15 5-3-5-3z' }));
         const IconPlus = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('line', { x1: '12', y1: '5', x2: '12', y2: '19' }), React.createElement('line', { x1: '5', y1: '12', x2: '19', y2: '12' }));
         const IconEdit = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7' }), React.createElement('path', { d: 'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z' }));
@@ -304,100 +304,24 @@
 
         // --- HOME PAGE COMPONENTS ---
 
-        const CategoryShowcase = ({ siteContent, setView }) => {
-            const [currentIndex, setCurrentIndex] = useState(0);
-
-            const goToPrevious = () => {
-                const isFirstSlide = currentIndex === 0;
-                const newIndex = isFirstSlide ? siteContent.categoryShowcase.length - 1 : currentIndex - 1;
-                setCurrentIndex(newIndex);
-            };
-
-            const goToNext = () => {
-                const isLastSlide = currentIndex === siteContent.categoryShowcase.length - 1;
-                const newIndex = isLastSlide ? 0 : currentIndex + 1;
-                setCurrentIndex(newIndex);
-            };
-
-            const goToSlide = (slideIndex) => {
-                setCurrentIndex(slideIndex);
-            };
-
-            if (!siteContent.categoryShowcase || siteContent.categoryShowcase.length === 0) {
-                return null;
-            }
-
-            const currentCategory = siteContent.categoryShowcase[currentIndex];
-
-            return (
-                React.createElement('section', { id: 'category-showcase', className: 'py-20 bg-gray-100' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, "Shop By Category"),
-                        React.createElement('div', { className: 'relative h-[60vh] rounded-lg overflow-hidden shadow-2xl group' },
-                            // Background Image
-                            siteContent.categoryShowcase.map((category, index) => (
-                                React.createElement('div', {
-                                    key: category.name,
-                                    className: `absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-700 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`,
-                                    style: { backgroundImage: `url('${category.wallpaperImage}')` }
-                                })
-                            )),
-                            // Overlay
-                            React.createElement('div', { className: 'absolute inset-0 bg-black/40' }),
-                            // Content
-                            React.createElement('div', { className: 'absolute inset-0 flex flex-col items-center justify-center text-white text-center p-8' },
-                                React.createElement('h2', { className: 'font-serif text-4xl md:text-5xl font-bold mb-3 shadow-text' }, currentCategory.title),
-                                React.createElement('p', { className: 'text-lg md:text-xl mb-6 shadow-text' }, currentCategory.subtitle),
-                                React.createElement('button', {
-                                    onClick: () => setView('category', currentCategory.name),
-                                    className: 'btn bg-white text-[#4E342E] hover:bg-gray-200'
-                                }, 'Explore ', currentCategory.name)
-                            ),
-                            // Left Arrow
-                            React.createElement('div', { className: 'absolute top-1/2 left-5 -translate-y-1/2 cursor-pointer text-white/70 hover:text-white transition-colors p-2 bg-black/20 rounded-full opacity-0 group-hover:opacity-100', onClick: goToPrevious },
-                                React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '32', height: '32', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'm15 18-6-6 6-6' }))
-                            ),
-                            // Right Arrow
-                            React.createElement('div', { className: 'absolute top-1/2 right-5 -translate-y-1/2 cursor-pointer text-white/70 hover:text-white transition-colors p-2 bg-black/20 rounded-full opacity-0 group-hover:opacity-100', onClick: goToNext },
-                                React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '32', height: '32', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'm9 18 6-6-6-6' }))
-                            ),
-                            // Dots
-                            React.createElement('div', { className: 'absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2' },
-                                siteContent.categoryShowcase.map((_, slideIndex) => (
-                                    React.createElement('div', {
-                                        key: slideIndex,
-                                        onClick: () => goToSlide(slideIndex),
-                                        className: `cursor-pointer w-3 h-3 rounded-full transition-colors ${currentIndex === slideIndex ? 'bg-white' : 'bg-white/50'}`
-                                    })
-                                ))
-                            )
-                        )
-                    )
-                )
-            );
-        };
-
-        // Hero Component: Features an automatic image slider with dynamic content.
-
         const FeaturedCategory = ({ categoryName, products, siteContent, setView }) => {
             const categoryData = siteContent.categoryShowcase.find(c => c.name === categoryName);
             const categoryProducts = products.filter(p => p.category === categoryName).slice(0, 4);
 
             if (!categoryData) {
-                return React.createElement('div', null, `Featured category '${categoryName}' not found.`);
+                // Return null or a placeholder if the category data isn't found, to prevent crashes.
+                return null;
             }
 
             return (
-                React.createElement('section', { className: 'mb-16' },
-                    // Wallpaper
+                React.createElement('section', { className: 'my-16' },
+                    // Full-width wallpaper section. It's a direct child of 'main' so it won't be constrained by the .container class.
                     React.createElement('div', {
-                        className: 'relative h-[60vh] bg-cover bg-center flex items-center justify-center text-white shadow-lg',
-                        style: { backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${categoryData.wallpaperImage}')` }
-                    },
-                        React.createElement('h2', { className: 'font-serif text-4xl md:text-5xl font-bold text-center' }, categoryData.title)
-                    ),
-                    // Product Grid
-                    React.createElement('div', { className: 'container mx-auto px-5 -mt-16' },
+                        className: 'w-full h-[60vh] bg-cover bg-center',
+                        style: { backgroundImage: `url('${categoryData.wallpaperImage}')` }
+                    }),
+                    // Product grid with a standard container to keep it centered.
+                    React.createElement('div', { className: 'container mx-auto px-5 mt-8' },
                         React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
                             categoryProducts.map(prod => (
                                 React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-xl group cursor-pointer' },
@@ -414,6 +338,8 @@
                 )
             );
         };
+
+        // Hero Component: Features an automatic image slider with dynamic content.
         const Hero = ({ setView, siteContent }) => {
             const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -2104,6 +2030,86 @@
         };
 
         // AdminSettings Component: Placeholder for general settings.
+        const AdminCategoryShowcase = ({ siteContent, setSiteContent }) => {
+            const handleShowcaseChange = (index, key, value) => {
+                const newShowcase = [...siteContent.categoryShowcase];
+                newShowcase[index] = { ...newShowcase[index], [key]: value };
+                setSiteContent(prev => ({ ...prev, categoryShowcase: newShowcase }));
+            };
+
+            const handleImageChange = (index, file) => {
+                if (file) {
+                    const fileUrl = URL.createObjectURL(file);
+                    handleShowcaseChange(index, 'wallpaperImage', fileUrl);
+                }
+            };
+
+            return (
+                React.createElement('div', null,
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Tampilan Kategori'),
+                    React.createElement('div', { className: 'space-y-8' },
+                        siteContent.categoryShowcase.map((item, index) => (
+                            React.createElement('fieldset', { key: item.name, className: 'border p-4 rounded-md' },
+                                React.createElement('legend', { className: 'px-2 font-semibold text-lg' }, item.name),
+                                React.createElement('div', { className: 'space-y-4' },
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Judul (for internal showcase, not used in featured view)'),
+                                        React.createElement('input', {
+                                            type: 'text',
+                                            value: item.title,
+                                            onChange: (e) => handleShowcaseChange(index, 'title', e.target.value),
+                                            className: 'form-input'
+                                        })
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Gambar Wallpaper'),
+                                        React.createElement('input', {
+                                            type: 'file',
+                                            accept: 'image/*',
+                                            onChange: (e) => handleImageChange(index, e.target.files[0]),
+                                            className: 'form-input'
+                                        }),
+                                        item.wallpaperImage && React.createElement('img', {
+                                            src: item.wallpaperImage,
+                                            alt: `${item.name} Preview`,
+                                            className: 'mt-2 w-48 h-28 object-cover rounded-md border'
+                                        })
+                                    )
+                                )
+                            )
+                        ))
+                    )
+                )
+            );
+        };
+
+        const AdminFeaturedCategories = ({ siteContent, setSiteContent }) => {
+            const handleCategoryChange = (index, newCategoryName) => {
+                const newFeaturedCategories = [...siteContent.featuredCategories];
+                newFeaturedCategories[index] = { categoryName: newCategoryName };
+                setSiteContent(prev => ({ ...prev, featuredCategories: newFeaturedCategories }));
+            };
+
+            return (
+                React.createElement('div', null,
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Kategori Unggulan di Homepage'),
+                    React.createElement('div', { className: 'space-y-6' },
+                        siteContent.featuredCategories.map((item, index) => (
+                            React.createElement('div', { key: index },
+                                React.createElement('label', { className: 'form-label font-semibold' }, `Baris Unggulan #${index + 1}`),
+                                React.createElement('select', {
+                                    value: item.categoryName,
+                                    onChange: (e) => handleCategoryChange(index, e.target.value),
+                                    className: 'form-input'
+                                },
+                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
+                                )
+                            )
+                        ))
+                    )
+                )
+            );
+        };
         const AdminSettings = () => {
             const [settings, setSettings] = useState({
                 siteName: 'KAZUMI Fashion Store',
@@ -2151,95 +2157,6 @@
 
 
         // AdminContent Component: Allows admin to edit various text content on the website.
-        const AdminFeaturedCategories = ({ siteContent, setSiteContent }) => {
-            const handleCategoryChange = (index, newCategoryName) => {
-                const newFeaturedCategories = [...siteContent.featuredCategories];
-                newFeaturedCategories[index] = { categoryName: newCategoryName };
-                setSiteContent(prev => ({ ...prev, featuredCategories: newFeaturedCategories }));
-            };
-
-            return (
-                React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Kategori Unggulan'),
-                    React.createElement('div', { className: 'space-y-6' },
-                        siteContent.featuredCategories.map((item, index) => (
-                            React.createElement('div', { key: index },
-                                React.createElement('label', { className: 'form-label font-semibold' }, `Baris Unggulan #${index + 1}`),
-                                React.createElement('select', {
-                                    value: item.categoryName,
-                                    onChange: (e) => handleCategoryChange(index, e.target.value),
-                                    className: 'form-input'
-                                },
-                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
-                                )
-                            )
-                        ))
-                    )
-                )
-            );
-        };
-
-        const AdminCategoryShowcase = ({ siteContent, setSiteContent }) => {
-            const handleShowcaseChange = (index, key, value) => {
-                const newShowcase = [...siteContent.categoryShowcase];
-                newShowcase[index] = { ...newShowcase[index], [key]: value };
-                setSiteContent(prev => ({ ...prev, categoryShowcase: newShowcase }));
-            };
-
-            const handleImageChange = (index, file) => {
-                if (file) {
-                    const fileUrl = URL.createObjectURL(file);
-                    handleShowcaseChange(index, 'wallpaperImage', fileUrl);
-                }
-            };
-
-            return (
-                React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Tampilan Kategori'),
-                    React.createElement('div', { className: 'space-y-8' },
-                        siteContent.categoryShowcase.map((item, index) => (
-                            React.createElement('fieldset', { key: item.name, className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold text-lg' }, item.name),
-                                React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Judul'),
-                                        React.createElement('input', {
-                                            type: 'text',
-                                            value: item.title,
-                                            onChange: (e) => handleShowcaseChange(index, 'title', e.target.value),
-                                            className: 'form-input'
-                                        })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Subjudul'),
-                                        React.createElement('input', {
-                                            type: 'text',
-                                            value: item.subtitle,
-                                            onChange: (e) => handleShowcaseChange(index, 'subtitle', e.target.value),
-                                            className: 'form-input'
-                                        })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Gambar Wallpaper'),
-                                        React.createElement('input', {
-                                            type: 'file',
-                                            accept: 'image/*',
-                                            onChange: (e) => handleImageChange(index, e.target.files[0]),
-                                            className: 'form-input'
-                                        }),
-                                        item.wallpaperImage && React.createElement('img', {
-                                            src: item.wallpaperImage,
-                                            alt: `${item.name} Preview`,
-                                            className: 'mt-2 w-48 h-28 object-cover rounded-md border'
-                                        })
-                                    )
-                                )
-                            )
-                        ))
-                    )
-                )
-            );
-        };
         const AdminContent = ({ siteContent, setSiteContent }) => {
 
             const handleContentChange = (section, key, value) => {
@@ -2976,7 +2893,6 @@
                                     siteContent: siteContent,
                                     setView: handleSetView
                                 })),
-                                React.createElement(CategoryShowcase, { siteContent: siteContent, setView: handleSetView }),
                                 React.createElement(PopularCategories, { products: products, setView: handleSetView, siteContent: siteContent }),
                                 React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent: siteContent }),
                                 React.createElement(OrderPreviews, { setView: handleSetView }),
