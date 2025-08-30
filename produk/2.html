@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Oxford Shirt - KAZUMI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+        .nav-link { text-decoration: none; color: #333; font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-link:hover { color: #6D4C41; }
+        .dropdown-link { display: block; padding: 8px 16px; color: #333; font-size: 14px; transition: all 0.3s; }
+        .dropdown-link:hover { background-color: #F5F5F5; color: #6D4C41; }
+        .btn { display: inline-block; padding: 12px 30px; text-decoration: none; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+    </style>
+</head>
+<body class="font-sans text-[#333] bg-white">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-5">
+            <div class="flex justify-between items-center py-4">
+                <a href="../index.html" class="font-serif text-3xl font-bold text-[#6D4C41]">KAZUMI</a>
+                <nav class="hidden md:flex">
+                    <ul class="flex items-center space-x-6">
+                        <li><a href="../index.html" class="nav-link">Home</a></li>
+                        <li class="relative group">
+                            <a href="#" class="nav-link flex items-center gap-2">
+                                Shop
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </a>
+                            <ul class="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md py-2 opacity-0 group-hover:opacity-100 transition-opacity invisible group-hover:visible">
+                                <li><a href="../kategori/t-shirt.html" class="dropdown-link">T-Shirt</a></li>
+                                <li><a href="../kategori/shirt.html" class="dropdown-link">Shirt</a></li>
+                                <li><a href="../kategori/pants.html" class="dropdown-link">Pants</a></li>
+                                <li><a href="../kategori/jacket.html" class="dropdown-link">Jacket</a></li>
+                                <li><a href="../kategori/accessories.html" class="dropdown-link">Accessories</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="../koleksi.html" class="nav-link">Collections</a></li>
+                        <li><a href="../pesanan-kustom.html" class="nav-link">Custom Order</a></li>
+                    </ul>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button class="text-[#6D4C41] hover:text-[#4E342E] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </button>
+                    <a href="../keranjang.html" class="relative text-[#6D4C41] hover:text-[#4E342E] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    </a>
+                    <a href="../login.html" class="text-[#6D4C41] hover:text-[#4E342E] transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </a>
+                    <a href="../admin/index.html" class="admin-btn-header hidden md:flex items-center gap-2 bg-[#6D4C41] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#4E342E] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73-1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>
+                        Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="py-20 bg-white">
+            <div class="container mx-auto px-5">
+                <div class="grid md:grid-cols-2 gap-10">
+                    <img src="https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Blue Oxford Shirt" class="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg"/>
+                    <div>
+                        <a href="../kategori/shirt.html" class="text-sm uppercase text-gray-500 hover:text-black">Shirt</a>
+                        <h1 class="font-serif text-4xl font-bold my-3 text-[#4E342E]">Blue Oxford Shirt</h1>
+                        <p class="text-2xl font-semibold text-[#6D4C41] mb-4">IDR 250,000</p>
+                        <p class="text-gray-600 mb-6">Kemeja oxford biru formal dengan potongan slim-fit, ideal untuk bekerja atau acara formal.</p>
+
+                        <div class="mb-6">
+                            <h3 class="font-semibold mb-2">Pilih Ukuran:</h3>
+                            <div class="flex gap-2">
+                                <button class="w-12 h-12 border rounded-md transition-colors bg-[#4E342E] text-white">M</button>
+                                <button class="w-12 h-12 border rounded-md transition-colors bg-white hover:bg-gray-100">L</button>
+                                <button class="w-12 h-12 border rounded-md transition-colors bg-white hover:bg-gray-100">XL</button>
+                            </div>
+                        </div>
+
+                        <a href="../keranjang.html" class="w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                             Tambah ke Keranjang
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-[#4E342E] text-white pt-16 pb-8">
+        <div class="container mx-auto px-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+                <div>
+                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">INFORMASI KAMI</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Tentang KAZUMI</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sejarah Perusahaan</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Karir</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Ketentuan Kebijakan</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Lokasi Store</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">BANTUAN</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Kebijakan Pengembalian</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Click & Collect</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Pengiriman</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Pembayaran</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">KATEGORI PRODUK</h3>
+                    <ul class="space-y-2">
+                        <li><a href="../kategori/t-shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">T-Shirt</a></li>
+                        <li><a href="../kategori/shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">Shirt</a></li>
+                        <li><a href="../kategori/pants.html" class="text-[#D7CCC8] hover:text-white transition-colors">Pants</a></li>
+                        <li><a href="../kategori/jacket.html" class="text-[#D7CCC8] hover:text-white transition-colors">Jacket</a></li>
+                        <li><a href="../kategori/accessories.html" class="text-[#D7CCC8] hover:text-white transition-colors">Accessories</a></li>
+                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sale</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">HUBUNGI KAMI</h3>
+                    <ul class="space-y-3 text-[#D7CCC8]">
+                        <li class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            +62 21 1234 5678
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            info@kazumi.com
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Jl. Fashion No. 123, Jakarta
+                        </li>
+                    </ul>
+                    <div class="flex gap-4 mt-6">
+                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-6.1-1.4-12.1-3.8-12.1-3.8-2.4 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8z"/></svg></a>
+                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 4.24 4.24 2.5 7 2.5h10c2.76 0 4.5 1.74 4.5 4.5s0 10 0 10c0 2.76-1.74 4.5-4.5 4.5H7c-2.76 0-4.5-1.74-4.5-4.5z"/><path d="m10 15 5-3-5-3z"/></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center pt-8 border-t border-white/10 text-sm text-[#D7CCC8]"><p>&copy; 2023 KAZUMI. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+</body>
+</html>
