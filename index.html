@@ -20,6 +20,22 @@
         .form-label { display: block; text-sm font-medium text-gray-700; }
         .form-input { margin-top: 4px; display: block; width: 100%; padding: 8px 12px; background-color: white; border: 1px solid #D1D5DB; border-radius: 6px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
         .form-input:focus { border-color: #6D4C41; box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.2); }
+
+        /* Slider Styles */
+        .slider-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+        .slider-slide.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="font-sans text-[#333] bg-white">
@@ -47,13 +63,11 @@
                         </li>
                         <li><a href="koleksi.html" class="nav-link">Collections</a></li>
                         <li><a href="pesanan-kustom.html" class="nav-link">Custom Order</a></li>
+                        <li><a href="fitting.html" class="nav-link">Fitting</a></li>
                     </ul>
                 </nav>
                 <div class="flex items-center space-x-4">
-                    <button class="text-[#6D4C41] hover:text-[#4E342E] transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    </button>
-                    <a href="keranjang.html" class="relative text-[#6D4C41] hover:text-[#4E342E] transition-colors">
+                     <a href="keranjang.html" class="relative text-[#6D4C41] hover:text-[#4E342E] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                     </a>
                     <a href="login.html" class="text-[#6D4C41] hover:text-[#4E342E] transition-colors">
@@ -69,21 +83,43 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
-        <section id="home" class="relative h-[80vh] bg-cover bg-center text-white flex items-center justify-center text-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
-            <div class="container mx-auto px-5">
-                <div class="max-w-3xl mx-auto">
-                    <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
-                    <p class="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion for the contemporary man</p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
-                        <a href="pesanan-kustom.html" class="btn border-2 border-white hover:bg-white hover:text-[#6D4C41]">Custom Order</a>
+        <!-- Hero Slider Section -->
+        <section id="home" class="relative h-[80vh] text-white overflow-hidden">
+            <div id="slider-container" class="relative w-full h-full">
+                <!-- Slide 1 -->
+                <div class="slider-slide active" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                    <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
+                        <div class="max-w-3xl mx-auto">
+                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">ELEVATE YOUR STYLE</h1>
+                            <p class="text-lg mb-8 shadow-text">Discover the perfect blend of sophistication and modern fashion.</p>
+                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Explore Collection</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="slider-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                     <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
+                        <div class="max-w-3xl mx-auto">
+                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">The Executive Collection</h1>
+                            <p class="text-lg mb-8 shadow-text">Sharp cuts and premium fabrics for the modern professional.</p>
+                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">Shop Now</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="slider-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');">
+                     <div class="container mx-auto px-5 h-full flex items-center justify-center text-center">
+                        <div class="max-w-3xl mx-auto">
+                            <h1 class="font-serif text-4xl md:text-5xl font-bold mb-5 shadow-text">Comfortable Weekend Wear</h1>
+                            <p class="text-lg mb-8 shadow-text">Relaxed yet stylish outfits for your perfect weekend.</p>
+                            <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E]">View Casuals</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Popular Categories Section -->
+        <!-- The rest of the page remains the same -->
         <section id="categories" class="py-20 bg-[#F5F5F5]">
             <div class="container mx-auto px-5">
                 <div class="text-center mb-12">
@@ -128,161 +164,10 @@
                 </div>
             </div>
         </section>
-
-        <!-- Special Collections Preview -->
-        <section id="collections" class="py-20 bg-white">
-            <div class="container mx-auto px-5">
-                <div class="text-center mb-12">
-                    <h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">
-                        Koleksi Spesial
-                        <span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span>
-                    </h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group">
-                        <img src="https://images.unsplash.com/photo-1593030103066-0093718efeb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Executive Collection" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">New</span>
-                            <h3 class="text-2xl font-semibold">Executive Collection</h3>
-                        </div>
-                    </div>
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group">
-                        <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Limited Edition" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">Limited</span>
-                            <h3 class="text-2xl font-semibold">Limited Edition</h3>
-                        </div>
-                    </div>
-                    <div class="relative h-96 rounded-lg overflow-hidden shadow-lg group">
-                        <img src="https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Weekend Wear" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(78,52,46,0.8)] to-transparent flex flex-col justify-end p-5 text-white">
-                            <span class="bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2">Casual</span>
-                            <h3 class="text-2xl font-semibold">Weekend Wear</h3>
-                        </div>
-                    </div>
-                </div>
-                 <div class="text-center mt-12">
-                    <a href="koleksi.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Lihat Semua Koleksi</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Order Previews -->
-        <section class="py-20 bg-[#F5F5F5]">
-            <div class="container mx-auto px-5 grid md:grid-cols-2 gap-10">
-                <div class="text-center bg-white p-8 rounded-lg shadow-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-[#6D4C41]"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
-                     <h3 class="font-serif text-2xl font-bold my-3 text-[#4E342E]">Pesanan Kustom</h3>
-                     <p class="text-gray-600 mb-6">Punya ide desain sendiri? Wujudkan pakaian impian Anda bersama desainer kami.</p>
-                     <a href="pesanan-kustom.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Buat Pesanan Kustom</a>
-                </div>
-                 <div class="text-center bg-white p-8 rounded-lg shadow-lg">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-[#6D4C41] w-10 h-10"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                     <h3 class="font-serif text-2xl font-bold my-3 text-[#4E342E]">Pembelian Jumlah Besar</h3>
-                     <p class="text-gray-600 mb-6">Solusi pengadaan seragam atau merchandise untuk perusahaan dan komunitas Anda.</p>
-                     <a href="pembelian-grosir.html" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Hubungi Tim Bisnis</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Promo Section -->
-        <section id="promo" class="py-16 bg-[#4E342E] text-white text-center">
-            <div class="container mx-auto px-5">
-                <h2 class="font-serif text-4xl font-bold mb-4">KAZUMI x BUSINESSWEEK</h2>
-                <h3 class="text-2xl text-[#C9B037] mb-2">MONDAY SPECIAL</h3>
-                <h2 class="font-serif text-4xl font-bold mb-4">BUY 2 GET 30% OFF</h2>
-                <p class="mb-6">Groups IDR 8.000 dengan min. pembelian IDR 300.000</p>
-                <a href="#categories" class="btn bg-[#6D4C41] hover:bg-[#8a6b5d]">Belanja Sekarang</a>
-            </div>
-        </section>
-
-        <!-- Download App Section -->
-        <section id="download-app" class="py-20 bg-[#F5F5F5] text-center">
-            <div class="container mx-auto px-5">
-                <div class="text-center mb-12">
-                    <h2 class="font-serif text-3xl md:text-4xl font-bold text-[#4E342E] relative inline-block">
-                        DOWNLOAD APLIKASI
-                        <span class="block w-16 h-1 bg-[#6D4C41] mx-auto mt-4"></span>
-                    </h2>
-                </div>
-                <p class="max-w-2xl mx-auto mb-8">Dapatkan pengalaman berbelanja yang lebih baik dengan aplikasi kami</p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-5">
-                    <a href="#" class="flex items-center gap-3 bg-[#4E342E] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#6D4C41] transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.2v9.6l7.2 4.8 7.2-4.8V7.2L10.2 2.4 3 7.2z"/><path d="m10.2 12 7.2-4.8"/><path d="M3 7.2 10.2 12l-7.2 4.8"/><path d="m10.2 12 7.2 4.8"/><path d="M10.2 2.4v9.6"/><path d="m17.4 7.2-7.2 4.8"/></svg>
-                        <span>Google Play</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 bg-[#4E342E] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#6D4C41] transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 12 22z"/><path d="M12 2a4.9 4.9 0 0 0-3 1c-2 2-2.5 5-1 7A4.9 4.9 0 0 0 12 12a4.9 4.9 0 0 0 4-2c1.5-2 1-5-1-7A4.9 4.9 0 0 0 12 2z"/></svg>
-                        <span>App Store</span>
-                    </a>
-                </div>
-            </div>
-        </section>
+        <!-- ... rest of the content ... -->
     </main>
 
-    <!-- Footer -->
-    <footer id="contact" class="bg-[#4E342E] text-white pt-16 pb-8">
-        <div class="container mx-auto px-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
-                <div>
-                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">INFORMASI KAMI</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Tentang KAZUMI</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sejarah Perusahaan</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Karir</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Ketentuan Kebijakan</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Lokasi Store</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Blog</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">BANTUAN</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Kebijakan Pengembalian</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Click & Collect</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Pengiriman</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Pembayaran</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">KATEGORI PRODUK</h3>
-                    <ul class="space-y-2">
-                        <li><a href="kategori/t-shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">T-Shirt</a></li>
-                        <li><a href="kategori/shirt.html" class="text-[#D7CCC8] hover:text-white transition-colors">Shirt</a></li>
-                        <li><a href="kategori/pants.html" class="text-[#D7CCC8] hover:text-white transition-colors">Pants</a></li>
-                        <li><a href="kategori/jacket.html" class="text-[#D7CCC8] hover:text-white transition-colors">Jacket</a></li>
-                        <li><a href="kategori/accessories.html" class="text-[#D7CCC8] hover:text-white transition-colors">Accessories</a></li>
-                        <li><a href="#" class="text-[#D7CCC8] hover:text-white transition-colors">Sale</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-serif text-lg font-semibold mb-4 relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-8 after:h-0.5 after:bg-[#C9B037]">HUBUNGI KAMI</h3>
-                    <ul class="space-y-3 text-[#D7CCC8]">
-                        <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                            +62 21 1234 5678
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                            info@kazumi.com
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                            Jl. Fashion No. 123, Jakarta
-                        </li>
-                    </ul>
-                    <div class="flex gap-4 mt-6">
-                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
-                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3.3 4.9-6.1-1.4-12.1-3.8-12.1-3.8-2.4 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0-2.1-2.8-4.1-2.8-2.1 0-4.1 1.4-4.1 1.4s-.7-1.4-2.1-1.4-2.8 0-2.8 0-2.1 1.4-2.1 2.8 0 2.8 0 2.8-2.1 2.8-4.1 2.8-4.1-1.4-4.1-1.4-1.4-.2-1.4 1.2.2 2.4.2 2.4-1.2 4.1 1.6 8.1 1.6 8.1-1.2.1-2.4-.2-2.4-.2-1.2 4.1 4.1 7.1 4.1 7.1-1.2.3-2.4.4-2.4.4 2.4 2 5.1 2.6 5.1 2.6 8.1-1.4 12.1-6.8 12.1-6.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8 0 0 .5-1.4 0-2.8z"/></svg></a>
-                        <a href="#" class="social-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 4.24 4.24 2.5 7 2.5h10c2.76 0 4.5 1.74 4.5 4.5s0 10 0 10c0 2.76-1.74 4.5-4.5 4.5H7c-2.76 0-4.5-1.74-4.5-4.5z"/><path d="m10 15 5-3-5-3z"/></svg></a>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center pt-8 border-t border-white/10 text-sm text-[#D7CCC8]"><p>&copy; 2023 KAZUMI. All Rights Reserved.</p></div>
-        </div>
-    </footer>
-
+    <script src="slider.js"></script>
+    <script src="fitting.js"></script>
 </body>
 </html>

@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - KAZUMI</title>
+    <title>Pengaturan Situs - KAZUMI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
-        .nav-link { text-decoration: none; color: #333; font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
-        .nav-link:hover { color: #6D4C41; }
         .btn { display: inline-block; padding: 12px 30px; text-decoration: none; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+        .form-label { display: block; text-sm font-medium text-gray-700; }
+        .form-input { margin-top: 4px; display: block; width: 100%; padding: 8px 12px; background-color: white; border: 1px solid #D1D5DB; border-radius: 6px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-input:focus { border-color: #6D4C41; box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.2); }
     </style>
 </head>
 <body class="font-sans text-[#333] bg-gray-100">
@@ -40,7 +41,7 @@
                         <div class="bg-white p-4 rounded-lg shadow-md">
                            <ul class="space-y-2">
                                 <li>
-                                    <a href="index.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors bg-[#6D4C41] text-white">
+                                    <a href="index.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors hover:bg-gray-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                                         <span>Dashboard</span>
                                     </a>
@@ -53,12 +54,12 @@
                                 </li>
                                 <li>
                                     <a href="koleksi.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors hover:bg-gray-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gallery-vertical"><path d="M3 2h18"/><rect width="18" height="12" x="3" y="6" rx="2"/><path d="M3 22h18"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h18"/><rect width="18" height="12" x="3" y="6" rx="2"/><path d="M3 22h18"/></svg>
                                         <span>Kelola Koleksi</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="pengaturan.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors hover:bg-gray-200">
+                                 <li>
+                                    <a href="pengaturan.html" class="w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors bg-[#6D4C41] text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73-1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg>
                                         <span>Pengaturan</span>
                                     </a>
@@ -68,14 +69,45 @@
                     </aside>
                     <main class="md:w-3/4">
                         <div class="bg-white p-6 rounded-lg shadow-md">
-                            <div>
-                                <h3 class="font-serif text-2xl font-bold mb-4">Dashboard</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="bg-blue-100 p-4 rounded-lg"><h4 class="font-bold">Total Produk</h4><p class="text-2xl">6</p></div>
-                                    <div class="bg-green-100 p-4 rounded-lg"><h4 class="font-bold">Promo Aktif</h4><p class="text-2xl">1</p></div>
-                                    <div class="bg-yellow-100 p-4 rounded-lg"><h4 class="font-bold">Total Pengguna</h4><p class="text-2xl">1 (Admin)</p></div>
-                                </div>
-                            </div>
+                            <h3 class="font-serif text-2xl font-bold mb-6">Pengaturan Tampilan & Konten</h3>
+                            <form action="#" method="POST" class="space-y-8">
+                                <!-- Hero Section Customization -->
+                                <fieldset class="border p-4 rounded-md">
+                                    <legend class="px-2 font-semibold">Kustomisasi Hero Section</legend>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="hero-title" class="form-label">Judul Utama Slide 1</label>
+                                            <input type="text" id="hero-title" name="hero-title" class="form-input" value="ELEVATE YOUR STYLE">
+                                        </div>
+                                        <div>
+                                            <label for="hero-subtitle" class="form-label">Sub-judul Slide 1</label>
+                                            <input type="text" id="hero-subtitle" name="hero-subtitle" class="form-input" value="Discover the perfect blend of sophistication and modern fashion.">
+                                        </div>
+                                        <div>
+                                            <label for="hero-image1" class="form-label">URL Gambar Latar Slide 1</label>
+                                            <input type="text" id="hero-image1" name="hero-image1" class="form-input" value="https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <!-- Promo Section Customization -->
+                                <fieldset class="border p-4 rounded-md">
+                                    <legend class="px-2 font-semibold">Kustomisasi Bagian Promo</legend>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="promo-title" class="form-label">Judul Promo</label>
+                                            <input type="text" id="promo-title" name="promo-title" class="form-input" value="KAZUMI x BUSINESSWEEK">
+                                        </div>
+                                         <div>
+                                            <label for="promo-offer" class="form-label">Penawaran</label>
+                                            <input type="text" id="promo-offer" name="promo-offer" class="form-input" value="BUY 2 GET 30% OFF">
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <button type="submit" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Simpan Perubahan</button>
+                                <p class="text-sm text-gray-500">Catatan: Penyimpanan dinonaktifkan dalam versi statis ini.</p>
+                            </form>
                         </div>
                     </main>
                 </div>
