@@ -378,6 +378,42 @@
         };
 
         // Hero Component: Features an automatic image slider with dynamic content.
+
+        const FeaturedCategory = ({ categoryName, products, siteContent, setView }) => {
+            const categoryData = siteContent.categoryShowcase.find(c => c.name === categoryName);
+            const categoryProducts = products.filter(p => p.category === categoryName).slice(0, 4);
+
+            if (!categoryData) {
+                return React.createElement('div', null, `Featured category '${categoryName}' not found.`);
+            }
+
+            return (
+                React.createElement('section', { className: 'py-10' },
+                    React.createElement('div', { className: 'container mx-auto px-5' },
+                        // Wallpaper
+                        React.createElement('div', {
+                            className: 'relative h-64 md:h-80 rounded-lg bg-cover bg-center flex items-center justify-center text-white mb-8 shadow-lg',
+                            style: { backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${categoryData.wallpaperImage}')` }
+                        },
+                            React.createElement('h2', { className: 'font-serif text-4xl font-bold text-center' }, categoryData.title)
+                        ),
+                        // Product Grid
+                        React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
+                            categoryProducts.map(prod => (
+                                React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
+                                    React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
+                                    React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
+                                    React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
+                                        React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
+                                        React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
+                                    )
+                                )
+                            ))
+                        )
+                    )
+                )
+            );
+        };
         const Hero = ({ setView, siteContent }) => {
             const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -1399,6 +1435,7 @@
                 { id: 'collections', icon: React.createElement(IconCollection, null), text: "Kelola Koleksi" },
                 { id: 'content', icon: React.createElement(IconFileText, null), text: "Kelola Konten" },
                 { id: 'category-display', icon: React.createElement(IconImage, null), text: "Kelola Tampilan Kategori" },
+                { id: 'featured-categories', icon: React.createElement(IconCollection, null), text: "Kelola Kategori Unggulan" },
                 { id: 'promos', icon: React.createElement(IconTags, null), text: "Kelola Promo" },
                 { id: 'orders', icon: React.createElement(IconClipboardCheck, null), text: "Kelola Pesanan" }, // New
                 { id: 'payments', icon: React.createElement(IconBank, null), text: "Kelola Pembayaran" }, // New
@@ -2114,6 +2151,34 @@
 
 
         // AdminContent Component: Allows admin to edit various text content on the website.
+        const AdminFeaturedCategories = ({ siteContent, setSiteContent }) => {
+            const handleCategoryChange = (index, newCategoryName) => {
+                const newFeaturedCategories = [...siteContent.featuredCategories];
+                newFeaturedCategories[index] = { categoryName: newCategoryName };
+                setSiteContent(prev => ({ ...prev, featuredCategories: newFeaturedCategories }));
+            };
+
+            return (
+                React.createElement('div', null,
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Kategori Unggulan'),
+                    React.createElement('div', { className: 'space-y-6' },
+                        siteContent.featuredCategories.map((item, index) => (
+                            React.createElement('div', { key: index },
+                                React.createElement('label', { className: 'form-label font-semibold' }, `Baris Unggulan #${index + 1}`),
+                                React.createElement('select', {
+                                    value: item.categoryName,
+                                    onChange: (e) => handleCategoryChange(index, e.target.value),
+                                    className: 'form-input'
+                                },
+                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
+                                )
+                            )
+                        ))
+                    )
+                )
+            );
+        };
+
         const AdminCategoryShowcase = ({ siteContent, setSiteContent }) => {
             const handleShowcaseChange = (index, key, value) => {
                 const newShowcase = [...siteContent.categoryShowcase];
@@ -2747,6 +2812,11 @@
                         subtitle: 'Complete your look with our finest accessories.'
                     }
                 ],
+                featuredCategories: [
+                    { categoryName: 'T-Shirt' },
+                    { categoryName: 'Pants' },
+                    { categoryName: 'Jacket' },
+                ],
                 mainMenu: [ // Inisialisasi menu utama
                     { id: 'home', label: 'Home', type: 'internal', target: 'home', isVisible: true, icon: null },
                     { id: 'shop', label: 'Shop', type: 'dropdown', isVisible: true, icon: null, children: [
@@ -2861,6 +2931,7 @@
                             case 'collections': return React.createElement(AdminCollections, { products: products, setProducts: setProducts });
                             case 'content': return React.createElement(AdminContent, { siteContent: siteContent, setSiteContent: setSiteContent });
                             case 'category-display': return React.createElement(AdminCategoryShowcase, { siteContent: siteContent, setSiteContent: setSiteContent });
+                            case 'featured-categories': return React.createElement(AdminFeaturedCategories, { siteContent: siteContent, setSiteContent: setSiteContent });
                             case 'promos': return React.createElement(AdminPromos, { promos: promos, setPromos: setPromos });
                             case 'orders': return React.createElement(AdminOrders, { orders: orders, setOrders: setOrders });
                             case 'payments': return React.createElement(AdminPayments, { availableBanks: availableBanks, setAvailableBanks: setAvailableBanks });
@@ -2898,6 +2969,13 @@
                         return (
                             React.createElement(React.Fragment, null,
                                 React.createElement(Hero, { setView: handleSetView, siteContent: siteContent }),
+                                siteContent.featuredCategories.map(fc => React.createElement(FeaturedCategory, {
+                                    key: fc.categoryName,
+                                    categoryName: fc.categoryName,
+                                    products: products,
+                                    siteContent: siteContent,
+                                    setView: handleSetView
+                                })),
                                 React.createElement(CategoryShowcase, { siteContent: siteContent, setView: handleSetView }),
                                 React.createElement(PopularCategories, { products: products, setView: handleSetView, siteContent: siteContent }),
                                 React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent: siteContent }),
