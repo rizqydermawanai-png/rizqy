@@ -87,6 +87,9 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="mt-6 text-right">
+                                    <button id="save-collections-btn" class="btn bg-[#6D4C41] hover:bg-[#4E342E] text-white">Simpan Perubahan Koleksi</button>
+                                </div>
                             </div>
                         </div>
                     </main>
@@ -95,5 +98,13 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const saveBtn = document.getElementById('save-collections-btn');
+            saveBtn.addEventListener('click', () => {
+                alert('Perubahan koleksi telah disimpan! (Simulasi)');
+            });
+        });
+    </script>
 </body>
 </html>
