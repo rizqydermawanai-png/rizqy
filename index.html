@@ -570,7 +570,7 @@
             }
 
             const filteredProducts = products.filter(p => p.subCategory === subCategory);
-            const title = category ? `${category} / ${subCategory}` : subCategory;
+            const title = subCategory;
 
             return (
                 React.createElement('div', { className: 'py-20 bg-white' },
