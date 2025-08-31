@@ -216,7 +216,7 @@
                                                             React.createElement('li', { key: subCategory.id },
                                                                 React.createElement('a', {
                                                                     href: '#',
-                                                                    onClick: (e) => { handleNav(e, subCategory.target, subCategory.param); },
+                                                                    onClick: (e) => { handleNav(e, subCategory.target, { category: category.label, subCategory: subCategory.param }); },
                                                                     className: 'text-gray-600 hover:text-[#6D4C41] text-sm transition-colors'
                                                                 }, subCategory.label)
                                                             )
@@ -550,12 +550,14 @@
         // --- DEDICATED PAGES & MODALS ---
 
         // SubCategoryPage Component: Displays products filtered by sub-category.
-        const SubCategoryPage = ({ subCategory, products, setView }) => {
+        const SubCategoryPage = ({ pageParams, products, setView }) => {
+            const { category, subCategory } = pageParams;
             const filteredProducts = products.filter(p => p.subCategory === subCategory);
+            const title = `${category} / ${subCategory}`;
             return (
                 React.createElement('div', { className: 'py-20 bg-white' },
                     React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, subCategory),
+                        React.createElement(SectionTitle, null, title),
                         filteredProducts.length > 0 ? (
                             React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
                                 filteredProducts.map(prod => (
@@ -3162,7 +3164,7 @@
 
                 // Frontend page routing
                 switch (page) {
-                    case 'sub-category': return React.createElement(SubCategoryPage, { subCategory: view.param, products: products, setView: handleSetView });
+                    case 'sub-category': return React.createElement(SubCategoryPage, { pageParams: view.param, products: products, setView: handleSetView });
                     case 'category': return React.createElement(CategoryPage, { category: view.param, products: products, setView: handleSetView });
                     case 'product': return React.createElement(ProductDetailPage, { productId: view.param, products: products, setView: handleSetView, addToCart: addToCart });
                     case 'special-collections': return React.createElement(SpecialCollectionsPage, { products: products, siteContent: siteContent });
