@@ -551,9 +551,27 @@
 
         // SubCategoryPage Component: Displays products filtered by sub-category.
         const SubCategoryPage = ({ pageParams, products, setView }) => {
-            const { category, subCategory } = pageParams;
+            let category, subCategory;
+
+            // Check if pageParams is an object (new format) or a string (old format)
+            if (typeof pageParams === 'object' && pageParams !== null) {
+                category = pageParams.category;
+                subCategory = pageParams.subCategory;
+            } else {
+                // Fallback for old format or misconfigured menu items
+                subCategory = pageParams;
+                // Try to find the category from the product data
+                const productWithSubCategory = products.find(p => p.subCategory === subCategory);
+                category = productWithSubCategory ? productWithSubCategory.category : null;
+            }
+
+            if (!subCategory) {
+                return React.createElement('div', { className: 'py-20 text-center text-gray-500' }, 'Sub-kategori tidak valid atau tidak ditemukan.');
+            }
+
             const filteredProducts = products.filter(p => p.subCategory === subCategory);
-            const title = `${category} / ${subCategory}`;
+            const title = category ? `${category} / ${subCategory}` : subCategory;
+
             return (
                 React.createElement('div', { className: 'py-20 bg-white' },
                     React.createElement('div', { className: 'container mx-auto px-5' },
