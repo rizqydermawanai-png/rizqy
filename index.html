@@ -1601,6 +1601,12 @@
 
             const shopMenu = siteContent.mainMenu.find(item => item.id === 'shop');
             const categoryMenuItem = shopMenu?.children.find(item => item.label === activeCategory);
+
+            // Guard clause to prevent managing sub-categories for non-dropdown categories
+            if (categoryMenuItem && categoryMenuItem.type !== 'nested-dropdown') {
+                return React.createElement('div', { className: 'p-4 bg-gray-100 rounded-lg text-sm text-gray-600' }, `Kategori "${activeCategory}" tidak mendukung sub-kategori.`);
+            }
+
             const subCategories = categoryMenuItem?.children.map(c => c.param) || [];
 
             const handleAdd = () => {
@@ -1623,8 +1629,8 @@
                     const newMainMenu = prev.mainMenu.map(menuItem => {
                         if (menuItem.id === 'shop') {
                             return { ...menuItem, children: menuItem.children.map(catItem => {
-                                if (catItem.label === activeCategory) {
-                                    return { ...catItem, children: [...catItem.children, newSubMenuItem] };
+                                if (catItem.label === activeCategory && catItem.type === 'nested-dropdown') {
+                                    return { ...catItem, children: [...(catItem.children || []), newSubMenuItem] };
                                 }
                                 return catItem;
                             })};
@@ -1643,7 +1649,7 @@
                     const newMainMenu = prev.mainMenu.map(menuItem => {
                         if (menuItem.id === 'shop') {
                             return { ...menuItem, children: menuItem.children.map(catItem => {
-                                if (catItem.label === activeCategory) {
+                                if (catItem.label === activeCategory && catItem.type === 'nested-dropdown') {
                                     return { ...catItem, children: catItem.children.filter(sub => sub.param !== subCategoryToDelete) };
                                 }
                                 return catItem;
