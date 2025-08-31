@@ -153,12 +153,12 @@
         // --- DATA ---
         // Initial product data
         const INITIAL_PRODUCTS = [
-            { id: 1, name: 'Classic White T-Shirt', price: 150000, category: 'T-Shirt', description: 'Kaos katun putih klasik yang wajib dimiliki, sempurna untuk segala acara.', sizes: ['S', 'M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Weekend', detailImages: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1622434641406-a1581234509b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
-            { id: 2, name: 'Blue Oxford Shirt', price: 250000, category: 'Shirt', description: 'Kemeja oxford biru formal dengan potongan slim-fit, ideal untuk bekerja atau acara formal.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive', detailImages: ['https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
-            { id: 3, name: 'Modern Chino Pants', price: 300000, category: 'Pants', description: 'Celana chino modern yang nyaman dan serbaguna, cocok untuk gaya kasual maupun semi-formal.', sizes: ['30', '32', '34', '36'], img: 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive', detailImages: ['https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
-            { id: 4, name: 'Denim Trucker Jacket', price: 450000, category: 'Jacket', description: 'Jaket denim trucker dengan gaya abadi yang memberikan sentuhan keren pada penampilan Anda.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Limited', detailImages: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
-            { id: 5, name: 'Graphic Print T-Shirt', price: 175000, category: 'T-Shirt', description: 'Tampil beda dengan kaos print grafis yang unik dan artistik.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: 'Weekend', detailImages: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'] },
-            { id: 6, name: 'Flannel Plaid Shirt', price: 275000, category: 'Shirt', description: 'Kemeja flanel kotak-kotak yang hangat dan nyaman, sempurna untuk cuaca dingin.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: null, detailImages: ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'] },
+            { id: 1, name: 'Classic White T-Shirt', price: 150000, category: 'T-Shirt', subCategory: 'Regular', description: 'Kaos katun putih klasik yang wajib dimiliki, sempurna untuk segala acara.', sizes: ['S', 'M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Weekend', detailImages: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1622434641406-a1581234509b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
+            { id: 2, name: 'Blue Oxford Shirt', price: 250000, category: 'Shirt', subCategory: 'Slim Fit', description: 'Kemeja oxford biru formal dengan potongan slim-fit, ideal untuk bekerja atau acara formal.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive', detailImages: ['https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1603252109360-7049524f3a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
+            { id: 3, name: 'Modern Chino Pants', price: 300000, category: 'Pants', subCategory: 'Chino', description: 'Celana chino modern yang nyaman dan serbaguna, cocok untuk gaya kasual maupun semi-formal.', sizes: ['30', '32', '34', '36'], img: 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Executive', detailImages: ['https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1605518216938-6c52b6b82195?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
+            { id: 4, name: 'Denim Trucker Jacket', price: 450000, category: 'Jacket', subCategory: 'Denim', description: 'Jaket denim trucker dengan gaya abadi yang memberikan sentuhan keren pada penampilan Anda.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', specialCollection: 'Limited', detailImages: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'] },
+            { id: 5, name: 'Graphic Print T-Shirt', price: 175000, category: 'T-Shirt', subCategory: 'Oversized', description: 'Tampil beda dengan kaos print grafis yang unik dan artistik.', sizes: ['S', 'M', 'L'], img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: 'Weekend', detailImages: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'] },
+            { id: 6, name: 'Flannel Plaid Shirt', price: 275000, category: 'Shirt', subCategory: 'Flannel', description: 'Kemeja flanel kotak-kotak yang hangat dan nyaman, sempurna untuk cuaca dingin.', sizes: ['M', 'L', 'XL'], img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', specialCollection: null, detailImages: ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60', 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60'] },
         ];
         const CATEGORIES = ['T-Shirt', 'Shirt', 'Pants', 'Jacket', 'Accessories'];
         const SPECIAL_COLLECTIONS = {
@@ -565,6 +565,34 @@
 
         // --- DEDICATED PAGES & MODALS ---
 
+        // SubCategoryPage Component: Displays products filtered by sub-category.
+        const SubCategoryPage = ({ subCategory, products, setView }) => {
+            const filteredProducts = products.filter(p => p.subCategory === subCategory);
+            return (
+                React.createElement('div', { className: 'py-20 bg-white' },
+                    React.createElement('div', { className: 'container mx-auto px-5' },
+                        React.createElement(SectionTitle, null, subCategory),
+                        filteredProducts.length > 0 ? (
+                            React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
+                                filteredProducts.map(prod => (
+                                    React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
+                                        React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
+                                        React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
+                                        React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
+                                            React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
+                                            React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
+                                        )
+                                    )
+                                ))
+                            )
+                        ) : (
+                            React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam sub-kategori ini belum tersedia.')
+                        )
+                    )
+                )
+            );
+        };
+
         // CategoryPage Component: Displays products filtered by category.
         const CategoryPage = ({ category, products, setView }) => {
             const filteredProducts = products.filter(p => p.category === category);
@@ -912,7 +940,7 @@
         // ProductForm Component: Reusable form for adding/editing products in admin panel.
         const ProductForm = ({ onSubmit, product }) => {
             const [formData, setFormData] = useState({
-                name: product?.name || '', price: product?.price || '', img: product?.img || '', category: product?.category || CATEGORIES[0], description: product?.description || '', sizes: product?.sizes.join(', ') || '', specialCollection: product?.specialCollection || 'None',
+                name: product?.name || '', price: product?.price || '', img: product?.img || '', category: product?.category || CATEGORIES[0], subCategory: product?.subCategory || '', description: product?.description || '', sizes: product?.sizes.join(', ') || '', specialCollection: product?.specialCollection || 'None',
                 detailImages: product?.detailImages || [] // Store as array of URLs
             });
 
@@ -959,6 +987,7 @@
                         React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Harga'), React.createElement('input', { type: 'number', name: 'price', value: formData.price, onChange: handleChange, className: 'form-input', required: true })),
                         React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Kategori'), React.createElement('select', { name: 'category', value: formData.category, onChange: handleChange, className: 'form-input' }, CATEGORIES.map(c => React.createElement('option', { key: c, value: c }, c))))
                     ),
+                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'), React.createElement('input', { type: 'text', name: 'subCategory', value: formData.subCategory, onChange: handleChange, className: 'form-input', placeholder: 'cth: Regular, Slim Fit' })),
                     React.createElement('div', null,
                         React.createElement('label', { className: 'form-label' }, 'Gambar Utama'),
                         React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, className: 'form-input' }),
@@ -2512,6 +2541,7 @@
                                                     React.createElement('select', { value: item.target, onChange: (e) => handleMenuItemChange(index, 'target', e.target.value), className: 'form-input' },
                                                         React.createElement('option', { value: 'home' }, 'Home'),
                                                         React.createElement('option', { value: 'category' }, 'Kategori Produk'),
+                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
                                                         React.createElement('option', { value: 'product' }, 'Detail Produk (membutuhkan ID)'),
                                                         React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
                                                         React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
@@ -2520,7 +2550,7 @@
                                                         React.createElement('option', { value: 'login' }, 'Login'),
                                                         React.createElement('option', { value: 'cart' }, 'Keranjang'),
                                                         React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
-                                                        React.createElement('option', { value: 'profile' }, 'Profil Saya') // Tambahkan opsi ini
+                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
                                                     )
                                                 ),
                                                 item.target === 'category' && (
@@ -2529,6 +2559,12 @@
                                                         React.createElement('select', { value: item.param || '', onChange: (e) => handleMenuItemChange(index, 'param', e.target.value), className: 'form-input' },
                                                             CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
                                                         )
+                                                    )
+                                                ),
+                                                item.target === 'sub-category' && (
+                                                    React.createElement('div', null,
+                                                        React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
+                                                        React.createElement('input', { type: 'text', value: item.param || '', onChange: (e) => handleMenuItemChange(index, 'param', e.target.value), className: 'form-input', placeholder: 'cth: Regular Fit' })
                                                     )
                                                 )
                                             )
@@ -2575,6 +2611,7 @@
                                                                 React.createElement('select', { value: subItem.target, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'target', e.target.value), className: 'form-input !py-1 !text-sm' },
                                                                     React.createElement('option', { value: 'home' }, 'Home'),
                                                                     React.createElement('option', { value: 'category' }, 'Kategori Produk'),
+                                                                    React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
                                                                     React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
                                                                     React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
                                                                     React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
@@ -2592,6 +2629,12 @@
                                                                 React.createElement('select', { value: subItem.param || '', onChange: (e) => handleSubMenuItemChange(index, subIndex, 'param', e.target.value), className: 'form-input !py-1 !text-sm' },
                                                                     CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
                                                                 )
+                                                            )
+                                                        ),
+                                                        subItem.target === 'sub-category' && (
+                                                            React.createElement('div', null,
+                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
+                                                                React.createElement('input', { type: 'text', value: subItem.param || '', onChange: (e) => handleSubMenuItemChange(index, subIndex, 'param', e.target.value), className: 'form-input !py-1 !text-sm', placeholder: 'cth: Regular Fit' })
                                                             )
                                                         ),
                                                         React.createElement('div', null,
@@ -2618,7 +2661,15 @@
                                                                             React.createElement('select', { value: nestedSubItem.target, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'target', e.target.value), className: 'form-input !py-1 !text-xs' },
                                                                                 React.createElement('option', { value: 'home' }, 'Home'),
                                                                                 React.createElement('option', { value: 'category' }, 'Kategori Produk'),
-                                                                                React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial')
+                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
+                                                                                React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
+                                                                                React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
+                                                                                React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
+                                                                                React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
+                                                                                React.createElement('option', { value: 'login' }, 'Login'),
+                                                                                React.createElement('option', { value: 'cart' }, 'Keranjang'),
+                                                                                React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
+                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
                                                                             )
                                                                         ),
                                                                         nestedSubItem.target === 'category' && (
@@ -2627,6 +2678,12 @@
                                                                                 React.createElement('select', { value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs' },
                                                                                     CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
                                                                                 )
+                                                                            )
+                                                                        ),
+                                                                        nestedSubItem.target === 'sub-category' && (
+                                                                            React.createElement('div', null,
+                                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
+                                                                                React.createElement('input', { type: 'text', value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs', placeholder: 'cth: Regular Fit' })
                                                                             )
                                                                         ),
                                                                         React.createElement('div', null,
@@ -2826,25 +2883,25 @@
                     { id: 'home', label: 'Home', type: 'internal', target: 'home', isVisible: true, icon: null },
                     { id: 'shop', label: 'Shop', type: 'dropdown', isVisible: true, icon: null, children: [
                         { id: 't-shirt', label: 'T-Shirt', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                            { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                            { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
-                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'category', param: 'T-Shirt', isVisible: true },
+                            { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'sub-category', param: 'Regular', isVisible: true },
+                            { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
+                            { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'sub-category', param: 'Oversized', isVisible: true },
+                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'sub-category', param: 'Oversize Box', isVisible: true },
                         ]},
                         { id: 'shirt', label: 'Shirt', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
-                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
-                            { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'category', param: 'Shirt', isVisible: true },
+                            { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'sub-category', param: 'Slim Fit', isVisible: true },
+                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
+                            { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'sub-category', param: 'Flannel', isVisible: true },
                         ]},
                         { id: 'pants', label: 'Pants', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
-                            { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
-                            { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'category', param: 'Pants', isVisible: true },
+                            { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'sub-category', param: 'Chino', isVisible: true },
+                            { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'sub-category', param: 'Jeans', isVisible: true },
+                            { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'sub-category', param: 'Formal', isVisible: true },
                         ]},
                         { id: 'jacket', label: 'Jacket', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
-                            { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
-                            { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'category', param: 'Jacket', isVisible: true },
+                            { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'sub-category', param: 'Bomber', isVisible: true },
+                            { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'sub-category', param: 'Denim', isVisible: true },
+                            { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'sub-category', param: 'Leather', isVisible: true },
                         ]},
                         { id: 'accessories', label: 'Accessories', type: 'internal', target: 'category', param: 'Accessories', isVisible: true, icon: null },
                     ]},
@@ -2982,6 +3039,7 @@
 
                 // Frontend page routing
                 switch (page) {
+                    case 'sub-category': return React.createElement(SubCategoryPage, { subCategory: view.param, products: products, setView: handleSetView });
                     case 'category': return React.createElement(CategoryPage, { category: view.param, products: products, setView: handleSetView });
                     case 'product': return React.createElement(ProductDetailPage, { productId: view.param, products: products, setView: handleSetView, addToCart: addToCart });
                     case 'special-collections': return React.createElement(SpecialCollectionsPage, { products: products, siteContent: siteContent });
