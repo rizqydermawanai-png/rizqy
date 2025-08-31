@@ -964,10 +964,13 @@
                 });
             };
 
-            let availableSubCategories = allProducts
-                .filter(p => p.category === formData.category)
-                .map(p => p.subCategory)
-                .filter((value, index, self) => self.indexOf(value) === index && value); // Unique and non-empty
+            let availableSubCategories = [];
+            if (allProducts && Array.isArray(allProducts)) {
+                availableSubCategories = allProducts
+                    .filter(p => p.category === formData.category)
+                    .map(p => p.subCategory)
+                    .filter((value, index, self) => self.indexOf(value) === index && value);
+            }
 
             // Edge case: If editing a product whose sub-category is not in the list, add it.
             if (product && product.subCategory && !availableSubCategories.includes(product.subCategory)) {
