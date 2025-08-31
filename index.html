@@ -3128,4 +3128,55 @@
                     case 'product': return React.createElement(ProductDetailPage, { productId: view.param, products: products, setView: handleSetView, addToCart: addToCart });
                     case 'special-collections': return React.createElement(SpecialCollectionsPage, { products: products, siteContent: siteContent });
                     case 'custom-order': return React.createElement(CustomOrderPage, { onOrderSubmit: handleOrderSubmit });
-                    case 'bulk-purchase': return React.createElement(BulkPurchasePage, {
+                    case 'bulk-purchase': return React.createElement(BulkPurchasePage, { onOrderSubmit: handleOrderSubmit });
+                    case 'login': return React.createElement(LoginPage, { setView: handleSetView, handleLogin: handleLogin });
+                    case 'cart': return React.createElement(CartPage, { cart: cart, setCart: setCart, setView: handleSetView });
+                    case 'checkout': return React.createElement(CheckoutPage, { cart: cart, setView: handleSetView, onOrderPlaced: handleOrderPlaced, availableBanks: availableBanks, availableShippingOptions: availableShippingOptions });
+                    case 'order-success': return React.createElement(OrderSuccessPage, { orderDetails: view.param, setView: handleSetView });
+                    case 'order-tracking': return React.createElement(OrderTrackingPage, { orders: orders });
+                    case 'fitting-room': return React.createElement(FittingRoomPage, null);
+                    case 'profile': return React.createElement(ProfilePage, { currentUser: currentUser, setCurrentUser: setCurrentUser, setView: handleSetView });
+                    case 'home':
+                    default:
+                        return (
+                            React.createElement(React.Fragment, null,
+                                React.createElement(Hero, { setView: handleSetView, siteContent: siteContent }),
+                                siteContent.featuredCategories.map(fc => React.createElement(FeaturedCategory, {
+                                    key: fc.categoryName,
+                                    categoryName: fc.categoryName,
+                                    products: products,
+                                    siteContent: siteContent,
+                                    setView: handleSetView
+                                })),
+                                React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
+                                React.createElement(PopularCategories, { products: products, setView: handleSetView, siteContent: siteContent }),
+                                React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent: siteContent }),
+                                React.createElement(OrderPreviews, { setView: handleSetView }),
+                                React.createElement(Promo, { siteContent: siteContent }),
+                                React.createElement(DownloadApp, null)
+                            )
+                        );
+                }
+            };
+
+            return (
+                React.createElement('div', { className: 'font-sans text-[#333] bg-white' },
+                    // Header component is always visible
+                    React.createElement(Header, { setView: handleSetView, setModalView: setModalView, cart: cart, currentUser: currentUser, handleLogout: handleLogout, siteContent: siteContent }),
+                    // Main content area
+                    React.createElement('main', null, renderPage()),
+                    // Footer component is always visible
+                    React.createElement(Footer, null),
+                    // Conditional rendering for success message and search modal
+                    showSuccessMessage && React.createElement(FormSuccessMessage, { onClose: () => setShowSuccessMessage(false) }),
+                    // SearchModal component (assuming it exists elsewhere in your original code)
+                    // modalView === 'search' && React.createElement(SearchModal, { products: products, setView: handleSetView, setModalView: setModalView })
+                )
+            );
+        }
+
+        // Render the main App component into the 'root' div
+        ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+    </script>
+</body>
+</html>
