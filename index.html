@@ -964,10 +964,15 @@
                 });
             };
 
-            const availableSubCategories = allProducts
+            let availableSubCategories = allProducts
                 .filter(p => p.category === formData.category)
                 .map(p => p.subCategory)
                 .filter((value, index, self) => self.indexOf(value) === index && value); // Unique and non-empty
+
+            // Edge case: If editing a product whose sub-category is not in the list, add it.
+            if (product && product.subCategory && !availableSubCategories.includes(product.subCategory)) {
+                availableSubCategories.push(product.subCategory);
+            }
 
             return (
                 React.createElement('form', { onSubmit: handleSubmit, className: 'space-y-4 max-h-[70vh] overflow-y-auto pr-2' },
@@ -978,17 +983,14 @@
                     ),
                     React.createElement('div', null,
                         React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'),
-                        React.createElement('input', {
-                            type: 'text',
+                        React.createElement('select', {
                             name: 'subCategory',
                             value: formData.subCategory,
                             onChange: handleChange,
-                            className: 'form-input',
-                            placeholder: 'cth: Regular, Slim Fit',
-                            list: 'sub-category-list' // Link to the datalist
-                        }),
-                        React.createElement('datalist', { id: 'sub-category-list' },
-                            availableSubCategories.map(sc => React.createElement('option', { key: sc, value: sc }))
+                            className: 'form-input'
+                        },
+                            React.createElement('option', { value: '' }, 'Pilih Sub-Kategori...'),
+                            availableSubCategories.map(sc => React.createElement('option', { key: sc, value: sc }, sc))
                         )
                     ),
                     React.createElement('div', null,
