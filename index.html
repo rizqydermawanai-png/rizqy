@@ -2967,9 +2967,9 @@
                 { id: 2, name: 'Diskon Member Baru', code: 'WELCOME10', discountType: 'fixed', discountValue: 50000, minPurchase: 200000, startDate: '2024-01-01', endDate: '2024-12-31', maxUsage: 1, targetAudience: 'new', status: 'active' },
             ]);
             const [users, setUsers] = usePersistentState('kazumi-users', [
-                { id: 1, name: 'Admin Kazumi', email: 'admin@kazumi.com', isActive: true, phone: '081234567890', role: 'admin' },
-                { id: 2, name: 'Budi Santoso', email: 'budi@example.com', isActive: true, phone: '087654321098', role: 'customer' },
-                { id: 3, name: 'Siti Aminah', email: 'siti@example.com', isActive: false, phone: '085000111222', role: 'customer' },
+                { id: 1, name: 'Admin Kazumi', email: 'admin@kazumi.com', password: 'rizqybrokol1', isActive: true, phone: '081234567890', role: 'admin' },
+                { id: 2, name: 'Budi Santoso', email: 'budi@example.com', password: 'password123', isActive: true, phone: '087654321098', role: 'customer' },
+                { id: 3, name: 'Siti Aminah', email: 'siti@example.com', password: 'password123', isActive: false, phone: '085000111222', role: 'customer' },
             ]);
             const [orders, setOrders] = usePersistentState('kazumi-orders', []);
             const [availableBanks, setAvailableBanks] = usePersistentState('kazumi-banks', INITIAL_BANKS);
@@ -3084,14 +3084,16 @@
             const handleLogin = (user) => {
                 const existingUser = users.find(u => u.email === user.email);
                 if (existingUser) {
-                    if ((user.email === 'admin@kazumi.com' && user.password === 'rizqybrokol1') || (existingUser.role === 'customer')) {
+                    // Secure password check for all users
+                    if (existingUser.password === user.password) {
                         setCurrentUser(existingUser);
                         handleSetView('home');
                     } else {
                         alert('Email atau password salah.');
                     }
                 } else {
-                    const newUser = { id: Date.now(), name: user.name, email: user.email, phone: user.phone, isActive: true, role: 'customer' };
+                    // This is the registration case
+                    const newUser = { id: Date.now(), name: user.name, email: user.email, phone: user.phone, password: user.password, isActive: true, role: 'customer' };
                     setUsers(prevUsers => [...prevUsers, newUser]);
                     setCurrentUser(newUser);
                     handleSetView('home');
