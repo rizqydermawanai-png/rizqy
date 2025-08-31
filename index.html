@@ -1536,8 +1536,8 @@
         const AdminProducts = ({ products, setProducts }) => {
             const [modalOpen, setModalOpen] = useState(false);
             const [productToEdit, setProductToEdit] = useState(null);
-            const [filterCategory, setFilterCategory] = useState('All');
-            const [filterCollection, setFilterCollection] = useState('All');
+            const [activeCategoryTab, setActiveCategoryTab] = useState('All');
+            const [activeSubCategoryTab, setActiveSubCategoryTab] = useState('All');
 
             const openAddProductModal = () => { setProductToEdit(null); setModalOpen(true); };
             const openEditProductModal = (product) => { setProductToEdit(product); setModalOpen(true); };
@@ -1555,10 +1555,20 @@
 
             const deleteProduct = (productId) => { setProducts(products.filter(p => p.id !== productId)); };
 
+            // Get unique sub-categories for the active category
+            let subCategories = [];
+            if (activeCategoryTab !== 'All') {
+                const categoryProducts = products.filter(p => p.category === activeCategoryTab);
+                const uniqueSubCategories = [...new Set(categoryProducts.map(p => p.subCategory).filter(sc => sc))];
+                if (uniqueSubCategories.length > 0) {
+                    subCategories = ['All', ...uniqueSubCategories];
+                }
+            }
+
             const filteredProducts = products.filter(p => {
-                const categoryMatch = filterCategory === 'All' || p.category === filterCategory;
-                const collectionMatch = filterCollection === 'All' || p.specialCollection === filterCollection;
-                return categoryMatch && collectionMatch;
+                const categoryMatch = activeCategoryTab === 'All' || p.category === activeCategoryTab;
+                const subCategoryMatch = activeCategoryTab === 'All' || activeSubCategoryTab === 'All' || p.subCategory === activeSubCategoryTab;
+                return categoryMatch && subCategoryMatch;
             });
 
             return (
@@ -1567,21 +1577,32 @@
                         React.createElement('h3', { className: 'font-serif text-2xl font-bold' }, 'Kelola Produk'),
                         React.createElement('button', { onClick: openAddProductModal, className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm' }, 'Tambah Produk')
                     ),
-                    React.createElement('div', { className: 'flex gap-4 mb-4' },
-                        React.createElement('div', null,
-                            React.createElement('label', { className: 'form-label' }, 'Filter Kategori'),
-                            React.createElement('select', { value: filterCategory, onChange: (e) => setFilterCategory(e.target.value), className: 'form-input' },
-                                React.createElement('option', { value: 'All' }, 'Semua Kategori'),
-                                CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
-                            )
-                        ),
-                        React.createElement('div', null,
-                            React.createElement('label', { className: 'form-label' }, 'Filter Koleksi'),
-                            React.createElement('select', { value: filterCollection, onChange: (e) => setFilterCollection(e.target.value), className: 'form-input' },
-                                React.createElement('option', { value: 'All' }, 'Semua Koleksi'),
-                                React.createElement('option', { value: 'None' }, 'Tidak Ada Koleksi'),
-                                Object.keys(SPECIAL_COLLECTIONS).map(key => React.createElement('option', { key: key, value: key }, key))
-                            )
+                    // Main Category Tabs
+                    React.createElement('div', { className: 'mb-1 border-b' },
+                        React.createElement('div', { className: 'flex -mb-px' },
+                            ['All', ...CATEGORIES].map(cat => (
+                                React.createElement('button', {
+                                    key: cat,
+                                    onClick: () => {
+                                        setActiveCategoryTab(cat);
+                                        setActiveSubCategoryTab('All');
+                                    },
+                                    className: `px-4 py-2 text-sm font-medium border-b-2 ${activeCategoryTab === cat ? 'border-[#6D4C41] text-[#6D4C41]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`
+                                }, cat === 'All' ? 'Semua' : cat)
+                            ))
+                        )
+                    ),
+                    // Sub-Category Tabs
+                    subCategories.length > 0 && React.createElement('div', { className: 'mb-4 border-b flex items-center space-x-2 p-2' },
+                        React.createElement('span', { className: 'text-xs text-gray-500 mr-2 ml-1' }, 'Sub-Kategori:'),
+                        React.createElement('div', { className: 'flex flex-wrap gap-2' },
+                          subCategories.map(subCat => (
+                              React.createElement('button', {
+                                  key: subCat,
+                                  onClick: () => setActiveSubCategoryTab(subCat),
+                                  className: `px-3 py-1 text-xs font-medium rounded-full ${activeSubCategoryTab === subCat ? 'bg-[#6D4C41] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`
+                              }, subCat === 'All' ? 'Semua' : subCat)
+                          ))
                         )
                     ),
                     React.createElement('div', { className: 'overflow-x-auto' },
@@ -1594,7 +1615,7 @@
                                     React.createElement('tr', { key: p.id, className: 'border-b' },
                                         React.createElement('td', { className: 'p-2' }, React.createElement('img', { src: p.img, alt: p.name, className: 'w-16 h-16 object-cover rounded' })),
                                         React.createElement('td', { className: 'p-2' }, p.name),
-                                        React.createElement('td', { className: 'p-2' }, p.category),
+                                        React.createElement('td', { className: 'p-2' }, p.category + (p.subCategory ? ` / ${p.subCategory}` : '')),
                                         React.createElement('td', { className: 'p-2' }, 'IDR ', p.price.toLocaleString()),
                                         React.createElement('td', { className: 'p-2' }, React.createElement('div', { className: 'flex gap-2' }, React.createElement('button', { onClick: () => openEditProductModal(p), className: 'text-blue-500' }, React.createElement(IconEdit, null)), React.createElement('button', { onClick: () => deleteProduct(p.id), className: 'text-red-500' }, React.createElement(IconTrash, null))))
                                     )
