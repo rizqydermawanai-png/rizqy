@@ -1037,7 +1037,7 @@
                         React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Kategori'), React.createElement('select', { name: 'category', value: formData.category, onChange: handleChange, className: 'form-input' }, CATEGORIES.map(c => React.createElement('option', { key: c, value: c }, c))))
                     ),
                     React.createElement('div', null,
-                        React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'),
+                        React.createElement('label', { className: 'form-label' }, 'Sub Item'),
                         React.createElement('select', {
                             name: 'subCategory',
                             value: formData.subCategory,
@@ -1592,93 +1592,6 @@
             )
         );
 
-        const SubCategoryManager = ({ activeCategory, siteContent, setSiteContent }) => {
-            const [newSubCategory, setNewSubCategory] = useState('');
-
-            if (activeCategory === 'All') {
-                return React.createElement('div', { className: 'p-4 bg-gray-100 rounded-lg text-sm text-gray-600' }, 'Pilih kategori utama di atas untuk mengelola sub-kategorinya.');
-            }
-
-            const shopMenu = siteContent.mainMenu.find(item => item.id === 'shop');
-            const categoryMenuItem = shopMenu?.children.find(item => item.label === activeCategory);
-
-            // Guard clause to prevent managing sub-categories for non-dropdown categories
-            if (categoryMenuItem && categoryMenuItem.type !== 'nested-dropdown') {
-                return React.createElement('div', { className: 'p-4 bg-gray-100 rounded-lg text-sm text-gray-600' }, `Kategori "${activeCategory}" tidak mendukung sub-kategori.`);
-            }
-
-            const subCategories = categoryMenuItem?.children.map(c => c.param) || [];
-
-            const handleAdd = () => {
-                const trimmedSubCategory = newSubCategory.trim();
-                if (trimmedSubCategory === '' || subCategories.includes(trimmedSubCategory)) {
-                    alert('Nama sub-kategori tidak boleh kosong atau duplikat.');
-                    return;
-                }
-
-                const newSubMenuItem = {
-                    id: `sub-${Date.now()}`,
-                    label: trimmedSubCategory,
-                    param: trimmedSubCategory,
-                    target: 'sub-category',
-                    type: 'internal',
-                    isVisible: true,
-                };
-
-                setSiteContent(prev => {
-                    const newMainMenu = prev.mainMenu.map(menuItem => {
-                        if (menuItem.id === 'shop') {
-                            return { ...menuItem, children: menuItem.children.map(catItem => {
-                                if (catItem.label === activeCategory && catItem.type === 'nested-dropdown') {
-                                    return { ...catItem, children: [...(catItem.children || []), newSubMenuItem] };
-                                }
-                                return catItem;
-                            })};
-                        }
-                        return menuItem;
-                    });
-                    return { ...prev, mainMenu: newMainMenu };
-                });
-                setNewSubCategory('');
-            };
-
-            const handleDelete = (subCategoryToDelete) => {
-                if (!window.confirm(`Anda yakin ingin menghapus sub-kategori "${subCategoryToDelete}"?`)) return;
-
-                setSiteContent(prev => {
-                    const newMainMenu = prev.mainMenu.map(menuItem => {
-                        if (menuItem.id === 'shop') {
-                            return { ...menuItem, children: menuItem.children.map(catItem => {
-                                if (catItem.label === activeCategory && catItem.type === 'nested-dropdown') {
-                                    return { ...catItem, children: catItem.children.filter(sub => sub.param !== subCategoryToDelete) };
-                                }
-                                return catItem;
-                            })};
-                        }
-                        return menuItem;
-                    });
-                    return { ...prev, mainMenu: newMainMenu };
-                });
-            };
-
-            return (
-                React.createElement('div', { className: 'p-4 border rounded-lg bg-gray-50' },
-                    React.createElement('h4', { className: 'font-bold text-lg mb-3 border-b pb-2' }, `Sub-Kategori untuk ${activeCategory}`),
-                    React.createElement('div', { className: 'space-y-2 mb-4' },
-                        subCategories.length > 0 ? subCategories.map(sub => (
-                            React.createElement('div', { key: sub, className: 'flex justify-between items-center bg-white p-2 rounded border' },
-                                React.createElement('span', { className: 'text-sm' }, sub),
-                                React.createElement('button', { onClick: () => handleDelete(sub), className: 'text-red-500 hover:text-red-700' }, React.createElement(IconTrash, { style: { width: 14, height: 14 } }))
-                            )
-                        )) : React.createElement('p', {className: 'text-sm text-gray-500'}, 'Belum ada sub-kategori.')
-                    ),
-                    React.createElement('div', { className: 'flex gap-2' },
-                        React.createElement('input', { type: 'text', value: newSubCategory, onChange: e => setNewSubCategory(e.target.value), className: 'form-input !text-sm', placeholder: 'Nama Sub-Kategori Baru' }),
-                        React.createElement('button', { onClick: handleAdd, className: 'btn !py-2 !px-4 bg-[#6D4C41] text-white' }, 'Tambah')
-                    )
-                )
-            );
-        };
 
         // AdminProducts Component: Allows admin to manage (add, edit, delete) products.
         const AdminProducts = ({ products, setProducts, siteContent, setSiteContent }) => {
@@ -1753,33 +1666,22 @@
                           ))
                         )
                     ),
-                    React.createElement('div', { className: 'grid lg:grid-cols-3 gap-8 mt-6' },
-                        React.createElement('div', { className: 'lg:col-span-2' },
-                            React.createElement('div', { className: 'overflow-x-auto' },
-                                React.createElement('table', { className: 'w-full text-left' },
-                                    React.createElement('thead', null,
-                                        React.createElement('tr', { className: 'bg-gray-100' }, React.createElement('th', { className: 'p-2' }, 'Gambar'), React.createElement('th', { className: 'p-2' }, 'Nama'), React.createElement('th', { className: 'p-2' }, 'Kategori'), React.createElement('th', { className: 'p-2' }, 'Harga'), React.createElement('th', { className: 'p-2' }, 'Aksi'))
-                                    ),
-                                    React.createElement('tbody', null,
-                                        filteredProducts.map(p => (
-                                            React.createElement('tr', { key: p.id, className: 'border-b' },
-                                                React.createElement('td', { className: 'p-2' }, React.createElement('img', { src: p.img, alt: p.name, className: 'w-16 h-16 object-cover rounded' })),
-                                                React.createElement('td', { className: 'p-2' }, p.name),
-                                                React.createElement('td', { className: 'p-2' }, p.category + (p.subCategory ? ` / ${p.subCategory}` : '')),
-                                                React.createElement('td', { className: 'p-2' }, 'IDR ', p.price.toLocaleString()),
-                                                React.createElement('td', { className: 'p-2' }, React.createElement('div', { className: 'flex gap-2' }, React.createElement('button', { onClick: () => openEditProductModal(p), className: 'text-blue-500' }, React.createElement(IconEdit, null)), React.createElement('button', { onClick: () => deleteProduct(p.id), className: 'text-red-500' }, React.createElement(IconTrash, null))))
-                                            )
-                                        ))
+                    React.createElement('div', { className: 'overflow-x-auto' },
+                        React.createElement('table', { className: 'w-full text-left' },
+                            React.createElement('thead', null,
+                                React.createElement('tr', { className: 'bg-gray-100' }, React.createElement('th', { className: 'p-2' }, 'Gambar'), React.createElement('th', { className: 'p-2' }, 'Nama'), React.createElement('th', { className: 'p-2' }, 'Kategori'), React.createElement('th', { className: 'p-2' }, 'Harga'), React.createElement('th', { className: 'p-2' }, 'Aksi'))
+                            ),
+                            React.createElement('tbody', null,
+                                filteredProducts.map(p => (
+                                    React.createElement('tr', { key: p.id, className: 'border-b' },
+                                        React.createElement('td', { className: 'p-2' }, React.createElement('img', { src: p.img, alt: p.name, className: 'w-16 h-16 object-cover rounded' })),
+                                        React.createElement('td', { className: 'p-2' }, p.name),
+                                        React.createElement('td', { className: 'p-2' }, p.category + (p.subCategory ? ` / ${p.subCategory}` : '')),
+                                        React.createElement('td', { className: 'p-2' }, 'IDR ', p.price.toLocaleString()),
+                                        React.createElement('td', { className: 'p-2' }, React.createElement('div', { className: 'flex gap-2' }, React.createElement('button', { onClick: () => openEditProductModal(p), className: 'text-blue-500' }, React.createElement(IconEdit, null)), React.createElement('button', { onClick: () => deleteProduct(p.id), className: 'text-red-500' }, React.createElement(IconTrash, null))))
                                     )
-                                )
+                                ))
                             )
-                        ),
-                        React.createElement('div', { className: 'lg:col-span-1' },
-                            React.createElement(SubCategoryManager, {
-                                activeCategory: activeCategoryTab,
-                                siteContent: siteContent,
-                                setSiteContent: setSiteContent
-                            })
                         )
                     ),
                     // Product Add/Edit Modal
