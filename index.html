@@ -309,7 +309,6 @@
             const categoryProducts = products.filter(p => p.category === categoryName).slice(0, 4);
 
             if (!categoryData) {
-                // Return null or a placeholder if the category data isn't found, to prevent crashes.
                 return null;
             }
 
@@ -333,6 +332,50 @@
                                     )
                                 )
                             ))
+                        )
+                    )
+                )
+            );
+        };
+
+        const CategorySlider = ({ categories }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            const nextSlide = () => {
+                setCurrentIndex(prevIndex => (prevIndex + 1) % categories.length);
+            };
+
+            const prevSlide = () => {
+                setCurrentIndex(prevIndex => (prevIndex - 1 + categories.length) % categories.length);
+            };
+
+            return React.createElement('section', { className: 'py-12 bg-gray-50' },
+                React.createElement('div', { className: 'container mx-auto px-5' },
+                    React.createElement(SectionTitle, null, 'Jelajahi Kategori'),
+                    React.createElement('div', { className: 'relative' },
+                        React.createElement('div', { className: 'overflow-hidden rounded-lg' },
+                            React.createElement('div', {
+                                className: 'flex transition-transform duration-500 ease-in-out',
+                                style: { transform: `translateX(-${currentIndex * 100}%)` }
+                            },
+                                categories.map((category, index) => (
+                                    React.createElement('div', { key: index, className: 'w-full flex-shrink-0' },
+                                        React.createElement('a', { href: category.externalUrl, target: '_blank', rel: 'noopener noreferrer' },
+                                            React.createElement('img', {
+                                                src: category.wallpaperImage,
+                                                alt: category.title,
+                                                className: 'w-full h-[50vh] object-cover'
+                                            })
+                                        )
+                                    )
+                                ))
+                            )
+                        ),
+                        React.createElement('button', { onClick: prevSlide, className: 'absolute top-1/2 left-4 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors' },
+                            React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'm15 18-6-6 6-6' }))
+                        ),
+                        React.createElement('button', { onClick: nextSlide, className: 'absolute top-1/2 right-4 -translate-y-1/2 bg-white/50 hover:bg-white rounded-full p-2 transition-colors' },
+                            React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'm9 18 6-6-6-6' }))
                         )
                     )
                 )
@@ -2074,6 +2117,16 @@
                                             alt: `${item.name} Preview`,
                                             className: 'mt-2 w-48 h-28 object-cover rounded-md border'
                                         })
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'URL Eksternal (untuk Slider)'),
+                                        React.createElement('input', {
+                                            type: 'text',
+                                            value: item.externalUrl || '',
+                                            onChange: (e) => handleShowcaseChange(index, 'externalUrl', e.target.value),
+                                            className: 'form-input',
+                                            placeholder: 'https://example.com'
+                                        })
                                     )
                                 )
                             )
@@ -2702,31 +2755,36 @@
                         name: 'T-Shirt',
                         wallpaperImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
                         title: 'The T-Shirt Collection',
-                        subtitle: 'Versatile and comfortable for every occasion.'
+                        subtitle: 'Versatile and comfortable for every occasion.',
+                        externalUrl: '#'
                     },
                     {
                         name: 'Shirt',
                         wallpaperImage: 'https://images.unsplash.com/photo-1596755094519-5b12820356a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
                         title: 'The Shirt Collection',
-                        subtitle: 'Sharp and stylish for a polished look.'
+                        subtitle: 'Sharp and stylish for a polished look.',
+                        externalUrl: '#'
                     },
                     {
                         name: 'Pants',
                         wallpaperImage: 'https://images.unsplash.com/photo-1602293589922-152d31b15468?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
                         title: 'The Pants Collection',
-                        subtitle: 'From casual chinos to formal trousers.'
+                        subtitle: 'From casual chinos to formal trousers.',
+                        externalUrl: '#'
                     },
                     {
                         name: 'Jacket',
                         wallpaperImage: 'https://images.unsplash.com/photo-1591047139829-d919b5ca2373?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
                         title: 'The Jacket Collection',
-                        subtitle: 'The perfect outer layer for any weather.'
+                        subtitle: 'The perfect outer layer for any weather.',
+                        externalUrl: '#'
                     },
                     {
                         name: 'Accessories',
                         wallpaperImage: 'https://images.unsplash.com/photo-1619642828348-a9680e73b68a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1374&q=80',
                         title: 'The Accessories Collection',
-                        subtitle: 'Complete your look with our finest accessories.'
+                        subtitle: 'Complete your look with our finest accessories.',
+                        externalUrl: '#'
                     }
                 ],
                 featuredCategories: [
@@ -2893,6 +2951,7 @@
                                     siteContent: siteContent,
                                     setView: handleSetView
                                 })),
+                                React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
                                 React.createElement(PopularCategories, { products: products, setView: handleSetView, siteContent: siteContent }),
                                 React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent: siteContent }),
                                 React.createElement(OrderPreviews, { setView: handleSetView }),
