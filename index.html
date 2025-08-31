@@ -922,9 +922,9 @@
         };
 
         // ProductForm Component: Reusable form for adding/editing products in admin panel.
-        const ProductForm = ({ onSubmit, product }) => {
+        const ProductForm = ({ onSubmit, product, allProducts }) => {
             const [formData, setFormData] = useState({
-                name: product?.name || '', price: product?.price || '', img: product?.img || '', category: product?.category || CATEGORIES[0], subCategory: product?.subCategory || '', description: product?.description || '', sizes: product?.sizes.join(', ') || '', specialCollection: product?.specialCollection || 'None',
+                name: product?.name || '', price: product?.price || '', img: product?.img || '', category: product?.category || CATEGORIES[0], subCategory: product?.subCategory || '', description: product?.description || '', sizes: product?.sizes ? product.sizes.join(', ') : '', specialCollection: product?.specialCollection || 'None',
                 detailImages: product?.detailImages || [] // Store as array of URLs
             });
 
@@ -964,6 +964,11 @@
                 });
             };
 
+            const availableSubCategories = allProducts
+                .filter(p => p.category === formData.category)
+                .map(p => p.subCategory)
+                .filter((value, index, self) => self.indexOf(value) === index && value); // Unique and non-empty
+
             return (
                 React.createElement('form', { onSubmit: handleSubmit, className: 'space-y-4 max-h-[70vh] overflow-y-auto pr-2' },
                     React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Produk'), React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleChange, className: 'form-input', required: true })),
@@ -971,7 +976,21 @@
                         React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Harga'), React.createElement('input', { type: 'number', name: 'price', value: formData.price, onChange: handleChange, className: 'form-input', required: true })),
                         React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Kategori'), React.createElement('select', { name: 'category', value: formData.category, onChange: handleChange, className: 'form-input' }, CATEGORIES.map(c => React.createElement('option', { key: c, value: c }, c))))
                     ),
-                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'), React.createElement('input', { type: 'text', name: 'subCategory', value: formData.subCategory, onChange: handleChange, className: 'form-input', placeholder: 'cth: Regular, Slim Fit' })),
+                    React.createElement('div', null,
+                        React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'),
+                        React.createElement('input', {
+                            type: 'text',
+                            name: 'subCategory',
+                            value: formData.subCategory,
+                            onChange: handleChange,
+                            className: 'form-input',
+                            placeholder: 'cth: Regular, Slim Fit',
+                            list: 'sub-category-list' // Link to the datalist
+                        }),
+                        React.createElement('datalist', { id: 'sub-category-list' },
+                            availableSubCategories.map(sc => React.createElement('option', { key: sc, value: sc }))
+                        )
+                    ),
                     React.createElement('div', null,
                         React.createElement('label', { className: 'form-label' }, 'Gambar Utama'),
                         React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, className: 'form-input' }),
@@ -1608,7 +1627,7 @@
                         )
                     ),
                     // Product Add/Edit Modal
-                    modalOpen && (React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' }, React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' }, React.createElement('div', { className: 'flex justify-between items-center mb-4' }, React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, productToEdit ? 'Edit Produk' : 'Tambah Produk Baru'), React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))), React.createElement(ProductForm, { onSubmit: handleProductSubmit, product: productToEdit }))))
+                    modalOpen && (React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' }, React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' }, React.createElement('div', { className: 'flex justify-between items-center mb-4' }, React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, productToEdit ? 'Edit Produk' : 'Tambah Produk Baru'), React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))), React.createElement(ProductForm, { onSubmit: handleProductSubmit, product: productToEdit, allProducts: products }))))
                 )
             );
         };
