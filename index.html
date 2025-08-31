@@ -598,19 +598,25 @@
         };
 
         // CategoryPage Component: Displays products filtered by category.
-        const CategoryPage = ({ category, products, setView }) => {
+        const CategoryPage = ({ category, products, setView, siteContent }) => {
             const [activeSubCategory, setActiveSubCategory] = useState('All');
 
-            // Get all products for the main category first.
-            const categoryProducts = products.filter(p => p.category === category);
+            // Get sub-categories from the menu structure, not from products
+            const getSubcategoriesFromMenu = (menu, categoryName) => {
+                if (!menu || !categoryName) return [];
+                const shopMenu = menu.find(item => item.id === 'shop');
+                if (!shopMenu || !shopMenu.children) return [];
+                const categoryMenu = shopMenu.children.find(item => item.label === categoryName);
+                if (!categoryMenu || categoryMenu.type !== 'nested-dropdown' || !categoryMenu.children) return [];
+                return categoryMenu.children.map(subItem => subItem.param).filter(Boolean);
+            };
 
-            // Get unique sub-categories from these products.
-            const subCategories = ['All', ...new Set(categoryProducts.map(p => p.subCategory).filter(Boolean))];
+            const subCategories = ['All', ...getSubcategoriesFromMenu(siteContent?.mainMenu, category)];
 
             // Filter products based on the active sub-category filter.
             const filteredProducts = activeSubCategory === 'All'
-                ? categoryProducts
-                : categoryProducts.filter(p => p.subCategory === activeSubCategory);
+                ? products.filter(p => p.category === category)
+                : products.filter(p => p.category === category && p.subCategory === activeSubCategory);
 
             return (
                 React.createElement('div', { className: 'py-20 bg-white' },
@@ -643,7 +649,7 @@
                                 ))
                             )
                         ) : (
-                            React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam sub-kategori ini belum tersedia.')
+                            React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam kategori ini belum tersedia.')
                         )
                     )
                 )
@@ -3210,7 +3216,7 @@
                 // Frontend page routing
                 switch (page) {
                     case 'sub-category': return React.createElement(SubCategoryPage, { pageParams: view.param, products: products, setView: handleSetView });
-                    case 'category': return React.createElement(CategoryPage, { category: view.param, products: products, setView: handleSetView });
+                    case 'category': return React.createElement(CategoryPage, { category: view.param, products: products, setView: handleSetView, siteContent: siteContent });
                     case 'product': return React.createElement(ProductDetailPage, { productId: view.param, products: products, setView: handleSetView, addToCart: addToCart });
                     case 'special-collections': return React.createElement(SpecialCollectionsPage, { products: products, siteContent: siteContent });
                     case 'custom-order': return React.createElement(CustomOrderPage, { onOrderSubmit: handleOrderSubmit });
