@@ -316,8 +316,11 @@
                 React.createElement('section', { className: 'my-16' },
                     // Full-width wallpaper section. It's a direct child of 'main' so it won't be constrained by the .container class.
                     React.createElement('div', {
-                        className: 'w-full h-[60vh] bg-cover bg-center',
-                        style: { backgroundImage: `url('${categoryData.wallpaperImage}')` }
+                        className: 'w-full h-[60vh] bg-cover',
+                        style: {
+                            backgroundImage: `url('${categoryData.wallpaperImage}')`,
+                            backgroundPosition: categoryData.wallpaperPosition || 'center'
+                        }
                     }),
                     // Product grid with a standard container to keep it centered.
                     React.createElement('div', { className: 'container mx-auto px-5 mt-8' },
@@ -572,9 +575,9 @@
             return (
                 React.createElement('div', { className: 'py-20 bg-white' },
                     React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement('div', { className: 'grid md:grid-cols-2 gap-10' },
-                            React.createElement('div', null,
-                                React.createElement('img', { src: mainImage, alt: product.name, className: 'w-full h-auto max-h-[500px] object-cover rounded-lg shadow-lg cursor-pointer', onClick: () => setFullScreenImage(mainImage) }),
+                React.createElement('div', { className: 'grid lg:grid-cols-5 gap-12' },
+                            React.createElement('div', { className: 'lg:col-span-3' },
+                                React.createElement('img', { src: mainImage, alt: product.name, className: 'w-full h-auto object-cover rounded-lg shadow-lg cursor-pointer aspect-[4/5]', onClick: () => setFullScreenImage(mainImage) }),
                                 product.detailImages && product.detailImages.length > 0 && (
                                     React.createElement('div', { className: 'flex gap-2 mt-4 overflow-x-auto' },
                                         product.detailImages.map((img, index) => (
@@ -583,7 +586,7 @@
                                     )
                                 )
                             ),
-                            React.createElement('div', null,
+                            React.createElement('div', { className: 'lg:col-span-2' },
                                 React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); setView('category', product.category); }, className: 'text-sm uppercase text-gray-500 hover:text-black' }, product.category),
                                 React.createElement('h1', { className: 'font-serif text-4xl font-bold my-3 text-[#4E342E]' }, product.name),
                                 React.createElement('p', { className: 'text-2xl font-semibold text-[#6D4C41]' }, 'IDR ', product.price.toLocaleString()),
@@ -1397,7 +1400,7 @@
 
         // --- ADMIN PAGES ---
         // AdminLayout Component: Provides the sidebar navigation for the admin panel.
-        const AdminLayout = ({ children, adminView, setAdminView }) => {
+        const AdminLayout = ({ children, adminView, setAdminView, hasUnsavedChanges, onSave, onDiscard }) => {
             const adminLinks = [
                 { id: 'dashboard', icon: React.createElement(IconChartBar, null), text: "Dashboard" },
                 { id: 'products', icon: React.createElement(IconBox, null), text: "Kelola Produk" },
@@ -1416,6 +1419,13 @@
                 React.createElement('div', { className: 'bg-gray-100 min-h-screen' },
                     React.createElement('div', { className: 'container mx-auto px-5 py-10' },
                         React.createElement(SectionTitle, null, 'Super Admin Panel'),
+                        hasUnsavedChanges && React.createElement('div', { className: 'sticky top-[70px] z-40 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded-md flex justify-between items-center shadow-lg' },
+                            React.createElement('p', { className: 'font-bold' }, 'Anda memiliki perubahan yang belum disimpan.'),
+                            React.createElement('div', { className: 'flex gap-4' },
+                                React.createElement('button', { onClick: onDiscard, className: 'btn bg-gray-500 hover:bg-gray-600 text-white !py-2 !px-4' }, 'Batalkan'),
+                                React.createElement('button', { onClick: onSave, className: 'btn bg-green-600 hover:bg-green-700 text-white !py-2 !px-4' }, 'Simpan & Publikasikan')
+                            )
+                        ),
                         React.createElement('div', { className: 'flex flex-col md:flex-row gap-8' },
                             React.createElement('aside', { className: 'md:w-1/4' },
                                 React.createElement('div', { className: 'bg-white p-4 rounded-lg shadow-md' },
@@ -2127,6 +2137,18 @@
                                             className: 'form-input',
                                             placeholder: 'https://example.com'
                                         })
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Posisi Gambar Wallpaper'),
+                                        React.createElement('select', {
+                                            value: item.wallpaperPosition || 'center',
+                                            onChange: (e) => handleShowcaseChange(index, 'wallpaperPosition', e.target.value),
+                                            className: 'form-input'
+                                        },
+                                            ['center', 'top', 'bottom', 'left', 'right'].map(pos =>
+                                                React.createElement('option', { key: pos, value: pos }, pos.charAt(0).toUpperCase() + pos.slice(1))
+                                            )
+                                        )
                                     )
                                 )
                             )
@@ -2732,13 +2754,12 @@
             const [availableBanks, setAvailableBanks] = useState(INITIAL_BANKS); // New: Stores bank transfer options
             const [availableShippingOptions, setAvailableShippingOptions] = useState(INITIAL_SHIPPING_OPTIONS); // New: Stores shipping courier options
 
-            // Site content that can be managed by admin
-            const [siteContent, setSiteContent] = useState({
+            const initialSiteContent = {
                 hero: {
                     title: "ELEVATE YOUR STYLE",
                     subtitle: "Discover the perfect blend of sophistication and modern fashion for the contemporary man."
                 },
-                heroSlides: HERO_SLIDES, // Use the existing HERO_SLIDES data
+                heroSlides: HERO_SLIDES,
                 sections: {
                     popularTitle: "Produk Terlaris",
                     collectionsTitle: "Koleksi Spesial"
@@ -2749,50 +2770,20 @@
                     offer: "BUY 2 GET 30% OFF",
                     terms: "Groups IDR 8.000 dengan min. pembelian IDR 300.000"
                 },
-                specialCollections: SPECIAL_COLLECTIONS, // Moved here to be editable
+                specialCollections: SPECIAL_COLLECTIONS,
                 categoryShowcase: [
-                    {
-                        name: 'T-Shirt',
-                        wallpaperImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
-                        title: 'The T-Shirt Collection',
-                        subtitle: 'Versatile and comfortable for every occasion.',
-                        externalUrl: '#'
-                    },
-                    {
-                        name: 'Shirt',
-                        wallpaperImage: 'https://images.unsplash.com/photo-1596755094519-5b12820356a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
-                        title: 'The Shirt Collection',
-                        subtitle: 'Sharp and stylish for a polished look.',
-                        externalUrl: '#'
-                    },
-                    {
-                        name: 'Pants',
-                        wallpaperImage: 'https://images.unsplash.com/photo-1602293589922-152d31b15468?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80',
-                        title: 'The Pants Collection',
-                        subtitle: 'From casual chinos to formal trousers.',
-                        externalUrl: '#'
-                    },
-                    {
-                        name: 'Jacket',
-                        wallpaperImage: 'https://images.unsplash.com/photo-1591047139829-d919b5ca2373?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
-                        title: 'The Jacket Collection',
-                        subtitle: 'The perfect outer layer for any weather.',
-                        externalUrl: '#'
-                    },
-                    {
-                        name: 'Accessories',
-                        wallpaperImage: 'https://images.unsplash.com/photo-1619642828348-a9680e73b68a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1374&q=80',
-                        title: 'The Accessories Collection',
-                        subtitle: 'Complete your look with our finest accessories.',
-                        externalUrl: '#'
-                    }
+                    { name: 'T-Shirt', wallpaperImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The T-Shirt Collection', subtitle: 'Versatile and comfortable for every occasion.', externalUrl: '#' },
+                    { name: 'Shirt', wallpaperImage: 'https://images.unsplash.com/photo-1596755094519-5b12820356a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The Shirt Collection', subtitle: 'Sharp and stylish for a polished look.', externalUrl: '#' },
+                    { name: 'Pants', wallpaperImage: 'https://images.unsplash.com/photo-1602293589922-152d31b15468?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The Pants Collection', subtitle: 'From casual chinos to formal trousers.', externalUrl: '#' },
+                    { name: 'Jacket', wallpaperImage: 'https://images.unsplash.com/photo-1591047139829-d919b5ca2373?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80', title: 'The Jacket Collection', subtitle: 'The perfect outer layer for any weather.', externalUrl: '#' },
+                    { name: 'Accessories', wallpaperImage: 'https://images.unsplash.com/photo-1619642828348-a9680e73b68a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1374&q=80', title: 'The Accessories Collection', subtitle: 'Complete your look with our finest accessories.', externalUrl: '#' }
                 ],
                 featuredCategories: [
                     { categoryName: 'T-Shirt' },
                     { categoryName: 'Pants' },
                     { categoryName: 'Jacket' },
                 ],
-                mainMenu: [ // Inisialisasi menu utama
+                mainMenu: [
                     { id: 'home', label: 'Home', type: 'internal', target: 'home', isVisible: true, icon: null },
                     { id: 'shop', label: 'Shop', type: 'dropdown', isVisible: true, icon: null, children: [
                         { id: 't-shirt', label: 'T-Shirt', type: 'nested-dropdown', isVisible: true, children: [
@@ -2820,11 +2811,30 @@
                     ]},
                     { id: 'collections', label: 'Collections', type: 'internal', target: 'special-collections', isVisible: true, icon: null },
                     { id: 'fitting-room', label: 'Fitting Room', type: 'internal', target: 'fitting-room', isVisible: true, icon: null },
-                    { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: false, icon: null }, // Contoh menu yang awalnya tidak terlihat
+                    { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: false, icon: null },
                     { id: 'order-tracking', label: 'Lacak Pesanan', type: 'internal', target: 'order-tracking', isVisible: true, icon: null },
                 ],
-            });
+            };
 
+            // Live site content
+            const [siteContent, setSiteContent] = useState(initialSiteContent);
+            // Draft content for admin panel
+            const [draftSiteContent, setDraftSiteContent] = useState(initialSiteContent);
+
+            // Track if there are unsaved changes
+            const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(draftSiteContent);
+
+            // Function to save changes
+            const handleSaveChanges = () => {
+                setSiteContent(draftSiteContent);
+                alert('Perubahan telah disimpan dan dipublikasikan!');
+            };
+
+            // Function to discard changes
+            const handleDiscardChanges = () => {
+                setDraftSiteContent(siteContent);
+                alert('Perubahan yang belum disimpan telah dibatalkan.');
+            };
 
             // Handles changing the main view of the application
             const handleSetView = (page, param = null) => {
@@ -2842,27 +2852,22 @@
 
             // Handles user login
             const handleLogin = (user) => {
-                // Simulate user login. In a real app, you'd verify credentials.
-                // For simplicity, we'll just set the user.
-                // If it's a new registration, assign a new ID.
                 const existingUser = users.find(u => u.email === user.email);
                 if (existingUser) {
-                    // Simulate password check for admin
-                    if (user.email === 'admin@kazumi.com' && user.password === 'rizqybrokol1') { // Tambahkan pemeriksaan password untuk admin
+                    if ((user.email === 'admin@kazumi.com' && user.password === 'rizqybrokol1') || (existingUser.role === 'customer')) {
                         setCurrentUser(existingUser);
-                        handleSetView('home'); // Redirect to home after successful admin login
-                    } else if (existingUser.role === 'customer') {
-                        setCurrentUser(existingUser);
-                        handleSetView('home'); // Redirect to home after successful customer login
+                        handleSetView('home');
+                        if (existingUser.role === 'admin') {
+                            setDraftSiteContent(siteContent); // Sync draft with live on admin login
+                        }
                     } else {
-                        alert('Email atau password salah.'); // Pesan error jika password admin salah
+                        alert('Email atau password salah.');
                     }
                 } else {
-                    // For new registrations, default to 'customer' role
                     const newUser = { id: Date.now(), name: user.name, email: user.email, phone: user.phone, isActive: true, role: 'customer' };
                     setUsers(prevUsers => [...prevUsers, newUser]);
                     setCurrentUser(newUser);
-                    handleSetView('home'); // Redirect to home after new registration
+                    handleSetView('home');
                 }
             };
             // Handles user logout
@@ -2895,8 +2900,7 @@
                 const page = view.page;
                 // Admin panel routing
                 if (page.startsWith('admin')) {
-                    if (!currentUser || currentUser.role !== 'admin') { // Periksa role admin
-                        // Jika bukan admin, arahkan kembali ke home atau login
+                    if (!currentUser || currentUser.role !== 'admin') {
                         return React.createElement('div', { className: 'py-20 text-center' }, 'Akses ditolak. Anda tidak memiliki izin untuk melihat halaman ini.', React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); handleSetView('home'); }, className: 'text-blue-600' }, 'Kembali ke beranda.'));
                     }
 
@@ -2904,9 +2908,9 @@
                         switch (adminView) {
                             case 'products': return React.createElement(AdminProducts, { products: products, setProducts: setProducts });
                             case 'collections': return React.createElement(AdminCollections, { products: products, setProducts: setProducts });
-                            case 'content': return React.createElement(AdminContent, { siteContent: siteContent, setSiteContent: setSiteContent });
-                            case 'category-display': return React.createElement(AdminCategoryShowcase, { siteContent: siteContent, setSiteContent: setSiteContent });
-                            case 'featured-categories': return React.createElement(AdminFeaturedCategories, { siteContent: siteContent, setSiteContent: setSiteContent });
+                            case 'content': return React.createElement(AdminContent, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent });
+                            case 'category-display': return React.createElement(AdminCategoryShowcase, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent });
+                            case 'featured-categories': return React.createElement(AdminFeaturedCategories, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent });
                             case 'promos': return React.createElement(AdminPromos, { promos: promos, setPromos: setPromos });
                             case 'orders': return React.createElement(AdminOrders, { orders: orders, setOrders: setOrders });
                             case 'payments': return React.createElement(AdminPayments, { availableBanks: availableBanks, setAvailableBanks: setAvailableBanks });
@@ -2919,7 +2923,13 @@
                         }
                     };
                     return (
-                        React.createElement(AdminLayout, { adminView: adminView, setAdminView: handleSetAdminView },
+                        React.createElement(AdminLayout, {
+                            adminView: adminView,
+                            setAdminView: handleSetAdminView,
+                            hasUnsavedChanges: hasUnsavedChanges,
+                            onSave: handleSaveChanges,
+                            onDiscard: handleDiscardChanges
+                        },
                             renderAdminContent()
                         )
                     );
@@ -2938,7 +2948,7 @@
                     case 'order-success': return React.createElement(OrderSuccessPage, { orderDetails: view.param, setView: handleSetView });
                     case 'order-tracking': return React.createElement(OrderTrackingPage, { orders: orders });
                     case 'fitting-room': return React.createElement(FittingRoomPage, null);
-                    case 'profile': return React.createElement(ProfilePage, { currentUser: currentUser, setCurrentUser: setCurrentUser, setView: handleSetView }); // Tambahkan routing untuk ProfilePage
+                    case 'profile': return React.createElement(ProfilePage, { currentUser: currentUser, setCurrentUser: setCurrentUser, setView: handleSetView });
                     case 'home':
                     default:
                         return (
