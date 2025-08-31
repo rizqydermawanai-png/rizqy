@@ -70,6 +70,30 @@
         import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
 
+        // --- CUSTOM HOOKS ---
+        // Hook to persist state in localStorage
+        const usePersistentState = (key, initialValue) => {
+            const [state, setState] = useState(() => {
+                try {
+                    const storedValue = window.localStorage.getItem(key);
+                    return storedValue ? JSON.parse(storedValue) : initialValue;
+                } catch (error) {
+                    console.error("Error reading from localStorage", error);
+                    return initialValue;
+                }
+            });
+
+            useEffect(() => {
+                try {
+                    window.localStorage.setItem(key, JSON.stringify(state));
+                } catch (error) {
+                    console.error("Error writing to localStorage", error);
+                }
+            }, [key, state]);
+
+            return [state, setState];
+        };
+
         // --- ICONS ---
         // All icons are defined as React components returning SVG elements
         const IconChevronDown = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '12', height: '12', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'm6 9 6 6 6-6' }));
@@ -2738,21 +2762,22 @@
             const [adminView, setAdminView] = useState('dashboard'); // Manages current admin panel view
             const [modalView, setModalView] = useState(null); // Manages active modal ('search', etc.)
             const [showSuccessMessage, setShowSuccessMessage] = useState(false); // Controls success message visibility
-            const [products, setProducts] = useState(INITIAL_PRODUCTS); // Product data
-            const [cart, setCart] = useState([]); // Shopping cart data
-            const [currentUser, setCurrentUser] = useState(null); // Current logged-in user
-            const [promos, setPromos] = useState([ // Initial promo data
+
+            const [products, setProducts] = usePersistentState('kazumi-products', INITIAL_PRODUCTS);
+            const [cart, setCart] = usePersistentState('kazumi-cart', []);
+            const [currentUser, setCurrentUser] = usePersistentState('kazumi-currentUser', null);
+            const [promos, setPromos] = usePersistentState('kazumi-promos', [
                 { id: 1, name: 'Promo Awal Tahun', code: 'NEWYEAR20', discountType: 'percentage', discountValue: 20, minPurchase: 100000, startDate: '2024-01-01', endDate: '2024-12-31', maxUsage: null, targetAudience: 'all', status: 'active' },
                 { id: 2, name: 'Diskon Member Baru', code: 'WELCOME10', discountType: 'fixed', discountValue: 50000, minPurchase: 200000, startDate: '2024-01-01', endDate: '2024-12-31', maxUsage: 1, targetAudience: 'new', status: 'active' },
             ]);
-            const [users, setUsers] = useState([ // Initial user data (simulated)
-                { id: 1, name: 'Admin Kazumi', email: 'admin@kazumi.com', isActive: true, phone: '081234567890', role: 'admin' }, // Tambahkan role: 'admin'
+            const [users, setUsers] = usePersistentState('kazumi-users', [
+                { id: 1, name: 'Admin Kazumi', email: 'admin@kazumi.com', isActive: true, phone: '081234567890', role: 'admin' },
                 { id: 2, name: 'Budi Santoso', email: 'budi@example.com', isActive: true, phone: '087654321098', role: 'customer' },
                 { id: 3, name: 'Siti Aminah', email: 'siti@example.com', isActive: false, phone: '085000111222', role: 'customer' },
             ]);
-            const [orders, setOrders] = useState([]); // New: Stores customer orders
-            const [availableBanks, setAvailableBanks] = useState(INITIAL_BANKS); // New: Stores bank transfer options
-            const [availableShippingOptions, setAvailableShippingOptions] = useState(INITIAL_SHIPPING_OPTIONS); // New: Stores shipping courier options
+            const [orders, setOrders] = usePersistentState('kazumi-orders', []);
+            const [availableBanks, setAvailableBanks] = usePersistentState('kazumi-banks', INITIAL_BANKS);
+            const [availableShippingOptions, setAvailableShippingOptions] = usePersistentState('kazumi-shipping', INITIAL_SHIPPING_OPTIONS);
 
             const initialSiteContent = {
                 hero: {
@@ -2817,12 +2842,21 @@
             };
 
             // Live site content
-            const [siteContent, setSiteContent] = useState(initialSiteContent);
+            const [siteContent, setSiteContent] = usePersistentState('kazumi-siteContent', initialSiteContent);
             // Draft content for admin panel
-            const [draftSiteContent, setDraftSiteContent] = useState(initialSiteContent);
+            const [draftSiteContent, setDraftSiteContent] = usePersistentState('kazumi-draftSiteContent', siteContent);
 
             // Track if there are unsaved changes
             const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(draftSiteContent);
+
+            // Effect to sync draft content when an admin logs in
+            useEffect(() => {
+                if (currentUser && currentUser.role === 'admin') {
+                    // When an admin logs in, reset their draft to match the live site.
+                    // This ensures they don't accidentally edit a stale draft.
+                    setDraftSiteContent(siteContent);
+                }
+            }, [currentUser]); // This effect runs whenever the user logs in or out.
 
             // Function to save changes
             const handleSaveChanges = () => {
@@ -2857,9 +2891,6 @@
                     if ((user.email === 'admin@kazumi.com' && user.password === 'rizqybrokol1') || (existingUser.role === 'customer')) {
                         setCurrentUser(existingUser);
                         handleSetView('home');
-                        if (existingUser.role === 'admin') {
-                            setDraftSiteContent(siteContent); // Sync draft with live on admin login
-                        }
                     } else {
                         alert('Email atau password salah.');
                     }
