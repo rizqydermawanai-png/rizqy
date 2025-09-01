@@ -1528,20 +1528,38 @@
         // --- ADMIN PAGES ---
         // AdminLayout Component: Provides the sidebar navigation for the admin panel.
         const AdminLayout = ({ children, adminView, setAdminView, hasUnsavedChanges, onSave, onDiscard }) => {
+            const [openDropdown, setOpenDropdown] = useState('content-group');
+
             const adminLinks = [
                 { id: 'dashboard', icon: React.createElement(IconChartBar, null), text: "Dashboard" },
                 { id: 'products', icon: React.createElement(IconBox, null), text: "Kelola Produk" },
                 { id: 'collections', icon: React.createElement(IconCollection, null), text: "Kelola Koleksi" },
-                { id: 'content', icon: React.createElement(IconFileText, null), text: "Kelola Konten" },
+                {
+                    id: 'content-group',
+                    icon: React.createElement(IconFileText, null),
+                    text: "Kelola Konten",
+                    children: [
+                        { id: 'content', icon: React.createElement(IconFileText, null), text: 'Konten Website'},
+                        { id: 'menu-layout', icon: React.createElement(IconMaximize, null), text: 'Menu Navigation'},
+                    ]
+                },
                 { id: 'category-display', icon: React.createElement(IconImage, null), text: "Kelola Tampilan Kategori" },
                 { id: 'featured-categories', icon: React.createElement(IconCollection, null), text: "Kelola Kategori Unggulan" },
                 { id: 'promos', icon: React.createElement(IconTags, null), text: "Kelola Promo" },
-                { id: 'orders', icon: React.createElement(IconClipboardCheck, null), text: "Kelola Pesanan" },
-                { id: 'payments', icon: React.createElement(IconBank, null), text: "Kelola Pembayaran" },
-                { id: 'shipping', icon: React.createElement(IconTruck, null), text: "Kelola Pengiriman" },
+                { id: 'orders', icon: React.createElement(IconClipboardCheck, null), text: "Kelola Pesanan" }, // New
+                { id: 'payments', icon: React.createElement(IconBank, null), text: "Kelola Pembayaran" }, // New
+                { id: 'shipping', icon: React.createElement(IconTruck, null), text: "Kelola Pengiriman" }, // New
                 { id: 'users', icon: React.createElement(IconUsers, null), text: "Kelola Pengguna" },
                 { id: 'settings', icon: React.createElement(IconCog, null), text: "Pengaturan" },
             ];
+
+            const handleDropdownClick = (id) => {
+                setOpenDropdown(openDropdown === id ? null : id);
+            };
+
+            // Filter out the original 'menu-layout' and 'content' since they are now in a group
+            const topLevelLinks = adminLinks.filter(l => l.id !== 'menu-layout' && l.id !== 'content');
+
             return (
                 React.createElement('div', { className: 'bg-gray-100 min-h-screen' },
                     React.createElement('div', { className: 'container mx-auto px-5 py-10' },
@@ -1556,15 +1574,38 @@
                         React.createElement('div', { className: 'flex flex-col md:flex-row gap-8' },
                             React.createElement('aside', { className: 'md:w-1/4' },
                                 React.createElement('div', { className: 'bg-white p-4 rounded-lg shadow-md' },
-                                    React.createElement('ul', { className: 'space-y-2' },
-                                        adminLinks.map(link => (
-                                            React.createElement('li', { key: link.id },
-                                                React.createElement('button', { onClick: () => setAdminView(link.id), className: `w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors ${adminView === link.id ? 'bg-[#6D4C41] text-white' : 'hover:bg-gray-200'}` },
-                                                    link.icon,
-                                                    React.createElement('span', null, link.text)
+                                    React.createElement('ul', { className: 'space-y-1' },
+                                        topLevelLinks.map(link => {
+                                            if (link.children) {
+                                                const isActive = link.children.some(child => child.id === adminView);
+                                                return (
+                                                    React.createElement('li', { key: link.id },
+                                                        React.createElement('button', { onClick: () => handleDropdownClick(link.id), className: `w-full flex items-center justify-between gap-3 p-3 rounded-md text-left transition-colors ${isActive ? 'bg-[#6D4C41] text-white' : 'hover:bg-gray-200'}` },
+                                                            React.createElement('span', {className: 'flex items-center gap-3'}, link.icon, link.text),
+                                                            React.createElement(IconChevronDown, { })
+                                                        ),
+                                                        (openDropdown === link.id || isActive) && React.createElement('ul', { className: 'pl-6 mt-1 space-y-1' },
+                                                            link.children.map(child => (
+                                                                React.createElement('li', { key: child.id },
+                                                                    React.createElement('button', { onClick: () => setAdminView(child.id), className: `w-full flex items-center gap-3 p-2 rounded-md text-left transition-colors text-sm ${adminView === child.id ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100'}` },
+                                                                        child.icon,
+                                                                        React.createElement('span', null, child.text)
+                                                                    )
+                                                                )
+                                                            ))
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                            return (
+                                                React.createElement('li', { key: link.id },
+                                                    React.createElement('button', { onClick: () => setAdminView(link.id), className: `w-full flex items-center gap-3 p-3 rounded-md text-left transition-colors ${adminView === link.id ? 'bg-[#6D4C41] text-white' : 'hover:bg-gray-200'}` },
+                                                        link.icon,
+                                                        React.createElement('span', null, link.text)
+                                                    )
                                                 )
                                             )
-                                        ))
+                                        })
                                     )
                                 )
                             ),
@@ -2373,38 +2414,15 @@
                             React.createElement('label', { className: 'form-label' }, 'Biaya Pengiriman Default (IDR)'),
                             React.createElement('input', { type: 'number', name: 'shippingCost', value: settings.shippingCost, onChange: handleChange, className: 'form-input' })
                         ),
-                        React.createElement('button', { type: 'submit', className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Pengaturan')
+                        React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Pengaturan')
                     )
                 )
             );
         };
 
-        // AdminContent Component: Allows admin to edit content and navigation.
-        const AdminContent = ({ siteContent, setSiteContent }) => {
-            const [activeTab, setActiveTab] = useState('utama'); // 'utama', 'gambar', 'navigasi'
 
-            // --- Handlers for Content Editing ---
-            const handleContentChange = (section, key, value) => {
-                setSiteContent(prev => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
-            };
-            const handleHeroImageChange = (index, file) => {
-                if (file) {
-                    const fileUrl = URL.createObjectURL(file);
-                    setSiteContent(prev => {
-                        const newHeroSlides = [...prev.heroSlides];
-                        newHeroSlides[index] = { ...newHeroSlides[index], img: fileUrl };
-                        return { ...prev, heroSlides: newHeroSlides };
-                    });
-                }
-            };
-            const handleCollectionImageChange = (collectionKey, file) => {
-                if (file) {
-                    const fileUrl = URL.createObjectURL(file);
-                    setSiteContent(prev => ({ ...prev, specialCollections: { ...prev.specialCollections, [collectionKey]: { ...prev.specialCollections[collectionKey], img: fileUrl } } }));
-                }
-            };
-
-            // --- Handlers for Menu Navigation ---
+        // AdminMenuLayout Component: A dedicated component for managing the main menu layout.
+        const AdminMenuLayout = ({ siteContent, setSiteContent }) => {
             const dragItem = useRef(null);
             const dragOverItem = useRef(null);
             const [dragging, setDragging] = useState(false);
@@ -2428,55 +2446,78 @@
                 newMainMenu[index] = { ...newMainMenu[index], [key]: value };
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const handleSubMenuItemChange = (parentIndex, childIndex, key, value) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
-                if (!parentItem.children) parentItem.children = [];
-                if (parentItem.children[childIndex]) parentItem.children[childIndex] = { ...parentItem.children[childIndex], [key]: value };
+                if (!parentItem.children) {
+                    parentItem.children = [];
+                }
+                if (parentItem.children[childIndex]) {
+                    parentItem.children[childIndex] = { ...parentItem.children[childIndex], [key]: value };
+                }
                 newMainMenu[parentIndex] = parentItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const removeSubMenuItem = (parentIndex, childIndex) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const newChildren = newMainMenu[parentIndex].children.filter((_, i) => i !== childIndex);
                 newMainMenu[parentIndex] = { ...newMainMenu[parentIndex], children: newChildren };
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const addMenuItem = () => {
-                setSiteContent(prev => ({ ...prev, mainMenu: [...prev.mainMenu, { id: `new-${Date.now()}`, label: 'New Item', type: 'internal', target: 'home', isVisible: true, icon: null }] }));
+                setSiteContent(prev => ({
+                    ...prev,
+                    mainMenu: [...prev.mainMenu, { id: `new-${Date.now()}`, label: 'New Item', type: 'internal', target: 'home', isVisible: true, icon: null }]
+                }));
             };
+
             const removeMenuItem = (index) => {
                 const newMainMenu = siteContent.mainMenu.filter((_, i) => i !== index);
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const addSubMenuItem = (parentIndex) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
-                if (!parentItem.children) parentItem.children = [];
+                if (!parentItem.children) {
+                    parentItem.children = [];
+                }
                 parentItem.children.push({ id: `sub-${Date.now()}`, label: 'New Sub-Item', type: 'internal', target: 'home', isVisible: true });
                 newMainMenu[parentIndex] = parentItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const handleNestedSubMenuItemChange = (parentIndex, subIndex, nestedSubIndex, key, value) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
                 const subItem = { ...parentItem.children[subIndex] };
-                if (!subItem.children) subItem.children = [];
-                if (subItem.children[nestedSubIndex]) subItem.children[nestedSubIndex] = { ...subItem.children[nestedSubIndex], [key]: value };
+                if (!subItem.children) {
+                    subItem.children = [];
+                }
+                if (subItem.children[nestedSubIndex]) {
+                    subItem.children[nestedSubIndex] = { ...subItem.children[nestedSubIndex], [key]: value };
+                }
                 parentItem.children[subIndex] = subItem;
                 newMainMenu[parentIndex] = parentItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const addNestedSubMenuItem = (parentIndex, subIndex) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
                 const subItem = { ...parentItem.children[subIndex] };
-                if (!subItem.children) subItem.children = [];
+                if (!subItem.children) {
+                    subItem.children = [];
+                }
                 subItem.children.push({ id: `nested-sub-${Date.now()}`, label: 'New Nested Sub-Item', type: 'internal', target: 'home', isVisible: true });
                 parentItem.children[subIndex] = subItem;
                 newMainMenu[parentIndex] = parentItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
+
             const removeNestedSubMenuItem = (parentIndex, subIndex, nestedSubIndex) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
@@ -2488,44 +2529,22 @@
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
-            // --- Render Functions ---
-            const renderTabs = () => {
-                const tabs = [
-                    { id: 'utama', label: 'Konten Utama' },
-                    { id: 'gambar', label: 'Gambar & Slideshow' },
-                    { id: 'navigasi', label: 'Navigasi Menu' }
-                ];
-                return (
-                    React.createElement('div', { className: 'mb-6 border-b' },
-                        React.createElement('div', { className: 'flex -mb-px' },
-                            tabs.map(tab => (
-                                React.createElement('button', {
-                                    key: tab.id,
-                                    onClick: () => setActiveTab(tab.id),
-                                    className: `px-4 py-2 text-sm font-medium border-b-2 ${activeTab === tab.id ? 'border-[#6D4C41] text-[#6D4C41]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`
-                                }, tab.label)
-                            ))
-                        )
-                    )
-                );
-            };
-
-            const renderMenuLayout = () => (
+            return (
                 React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-2' }, 'Navigasi Menu'),
-                    React.createElement('p', { className: 'text-sm text-gray-500 mb-6' }, 'Seret dan lepas item menu untuk mengubah urutannya.'),
-                    React.createElement('div', { className: 'space-y-4' },
-                        siteContent.mainMenu.map((item, index) => (
-                            React.createElement('div', {
-                                key: item.id,
-                                draggable: true,
-                                onDragStart: () => { dragItem.current = index; setDragging(true); },
-                                onDragEnter: () => { dragOverItem.current = index; },
-                                onDragEnd: handleMenuSort,
-                                onDragOver: (e) => e.preventDefault(),
-                                className: `p-4 border rounded-lg bg-gray-50 cursor-move transition-all ${dragging && dragItem.current === index ? 'opacity-40 scale-95' : 'opacity-100 scale-100'}`
-                            },
-                                React.createElement('div', { className: 'last:border-b-0' },
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Tata Letak Menu Utama'),
+                     React.createElement('div', { className: 'space-y-6' },
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Pengelolaan Menu Utama'),
+                            siteContent.mainMenu.map((item, index) => (
+                                React.createElement('div', {
+                                    key: item.id,
+                                    className: `p-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0 bg-gray-50 rounded-lg cursor-move transition-all ${dragging && dragItem.current === index ? 'opacity-40 scale-95' : 'opacity-100 scale-100'}`,
+                                    draggable: true,
+                                    onDragStart: () => { dragItem.current = index; setDragging(true); },
+                                    onDragEnter: () => { dragOverItem.current = index; },
+                                    onDragEnd: handleMenuSort,
+                                    onDragOver: (e) => e.preventDefault(),
+                                },
                                     React.createElement('div', { className: 'flex justify-between items-center mb-2' },
                                         React.createElement('h4', { className: 'font-semibold' }, 'Item Menu: ', item.label),
                                         React.createElement('button', { type: 'button', onClick: () => removeMenuItem(index), className: 'text-red-500 hover:text-red-700 text-sm' }, 'Hapus Item')
@@ -2548,8 +2567,18 @@
                                                 React.createElement('div', null,
                                                     React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
                                                     React.createElement('select', { value: item.target, onChange: (e) => handleMenuItemChange(index, 'target', e.target.value), className: 'form-input' },
-                                                        React.createElement('option', { value: 'home' }, 'Home'), React.createElement('option', { value: 'category' }, 'Kategori Produk'), React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'), React.createElement('option', { value: 'product' }, 'Detail Produk (membutuhkan ID)'),
-                                                        React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'), React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'), React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'), React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'), React.createElement('option', { value: 'login' }, 'Login'), React.createElement('option', { value: 'cart' }, 'Keranjang'), React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'), React.createElement('option', { value: 'profile' }, 'Profil Saya')
+                                                        React.createElement('option', { value: 'home' }, 'Home'),
+                                                        React.createElement('option', { value: 'category' }, 'Kategori Produk'),
+                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
+                                                        React.createElement('option', { value: 'product' }, 'Detail Produk (membutuhkan ID)'),
+                                                        React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
+                                                        React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
+                                                        React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
+                                                        React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
+                                                        React.createElement('option', { value: 'login' }, 'Login'),
+                                                        React.createElement('option', { value: 'cart' }, 'Keranjang'),
+                                                        React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
+                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
                                                     )
                                                 ),
                                                 item.target === 'category' && (
@@ -2584,7 +2613,7 @@
                                         )
                                     ),
                                     item.type === 'dropdown' && (
-                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-100 rounded-md' },
+                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-50 rounded-md' },
                                             React.createElement('h5', { className: 'font-semibold mb-2' }, 'Sub-Menu'),
                                             item.children && item.children.map((subItem, subIndex) => (
                                                 React.createElement('div', { key: subItem.id, className: 'border-b pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0' },
@@ -2608,7 +2637,17 @@
                                                             React.createElement('div', null,
                                                                 React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
                                                                 React.createElement('select', { value: subItem.target, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'target', e.target.value), className: 'form-input !py-1 !text-sm' },
-                                                                    React.createElement('option', { value: 'home' }, 'Home'), React.createElement('option', { value: 'category' }, 'Kategori Produk'), React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'), React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'), React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'), React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'), React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'), React.createElement('option', { value: 'login' }, 'Login'), React.createElement('option', { value: 'cart' }, 'Keranjang'), React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'), React.createElement('option', { value: 'profile' }, 'Profil Saya')
+                                                                    React.createElement('option', { value: 'home' }, 'Home'),
+                                                                    React.createElement('option', { value: 'category' }, 'Kategori Produk'),
+                                                                    React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
+                                                                    React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
+                                                                    React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
+                                                                    React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
+                                                                    React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
+                                                                    React.createElement('option', { value: 'login' }, 'Login'),
+                                                                    React.createElement('option', { value: 'cart' }, 'Keranjang'),
+                                                                    React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
+                                                                    React.createElement('option', { value: 'profile' }, 'Profil Saya')
                                                                 )
                                                             )
                                                         ),
@@ -2632,25 +2671,53 @@
                                                         )
                                                     ),
                                                     subItem.type === 'nested-dropdown' && (
-                                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-200 rounded-md' },
+                                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-100 rounded-md' },
                                                             React.createElement('h6', { className: 'font-semibold mb-2' }, 'Nested Sub-Menu'),
                                                             subItem.children && subItem.children.map((nestedSubItem, nestedSubIndex) => (
                                                                 React.createElement('div', { key: nestedSubItem.id, className: 'border-b pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0' },
                                                                     React.createElement('div', { className: 'flex justify-between items-center mb-1' },
                                                                         React.createElement('p', { className: 'text-xs font-medium' }, 'Nested Item: ', nestedSubItem.label),
-                                                                        React.createElement('button', { type: 'button', onClick: () => removeNestedSubMenuItem(index, subIndex, nestedSubIndex), className: 'text-red-400 hover:text-red-600 text-xs' }, 'Hapus')
+                                                                        React.createElement('button', { type: 'button', onClick: () => removeNestedSubMenuItem(index, subIndex, nestedSubIndex), className: 'text-red-300 hover:text-red-500 text-xs' }, 'Hapus')
                                                                     ),
                                                                     React.createElement('div', { className: 'grid grid-cols-2 gap-2 text-xs' },
-                                                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Label'), React.createElement('input', { type: 'text', value: nestedSubItem.label, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'label', e.target.value), className: 'form-input !py-1 !text-xs' })),
+                                                                        React.createElement('div', null,
+                                                                            React.createElement('label', { className: 'form-label' }, 'Label'),
+                                                                            React.createElement('input', { type: 'text', value: nestedSubItem.label, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'label', e.target.value), className: 'form-input !py-1 !text-xs' })
+                                                                        ),
                                                                         React.createElement('div', null,
                                                                             React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
                                                                             React.createElement('select', { value: nestedSubItem.target, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'target', e.target.value), className: 'form-input !py-1 !text-xs' },
-                                                                                React.createElement('option', { value: 'home' }, 'Home'), React.createElement('option', { value: 'category' }, 'Kategori Produk'), React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'), React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'), React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'), React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'), React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'), React.createElement('option', { value: 'login' }, 'Login'), React.createElement('option', { value: 'cart' }, 'Keranjang'), React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'), React.createElement('option', { value: 'profile' }, 'Profil Saya')
+                                                                                React.createElement('option', { value: 'home' }, 'Home'),
+                                                                                React.createElement('option', { value: 'category' }, 'Kategori Produk'),
+                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
+                                                                                React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
+                                                                                React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
+                                                                                React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
+                                                                                React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
+                                                                                React.createElement('option', { value: 'login' }, 'Login'),
+                                                                                React.createElement('option', { value: 'cart' }, 'Keranjang'),
+                                                                                React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
+                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
                                                                             )
                                                                         ),
-                                                                        nestedSubItem.target === 'category' && (React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Parameter Kategori'), React.createElement('select', { value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs' }, CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))))),
-                                                                        nestedSubItem.target === 'sub-category' && (React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'), React.createElement('input', { type: 'text', value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs', placeholder: 'cth: Regular Fit' }))),
-                                                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Terlihat'), React.createElement('input', { type: 'checkbox', checked: nestedSubItem.isVisible, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'isVisible', e.target.checked), className: 'ml-2' }))
+                                                                        nestedSubItem.target === 'category' && (
+                                                                            React.createElement('div', null,
+                                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Kategori'),
+                                                                                React.createElement('select', { value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs' },
+                                                                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
+                                                                                )
+                                                                            )
+                                                                        ),
+                                                                        nestedSubItem.target === 'sub-category' && (
+                                                                            React.createElement('div', null,
+                                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
+                                                                                React.createElement('input', { type: 'text', value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs', placeholder: 'cth: Regular Fit' })
+                                                                            )
+                                                                        ),
+                                                                        React.createElement('div', null,
+                                                                            React.createElement('label', { className: 'form-label' }, 'Terlihat'),
+                                                                            React.createElement('input', { type: 'checkbox', checked: nestedSubItem.isVisible, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'isVisible', e.target.checked), className: 'ml-2' })
+                                                                        )
                                                                     )
                                                                 )
                                                             )),
@@ -2663,31 +2730,107 @@
                                         )
                                     )
                                 )
-                            )
-                        )),
-                        React.createElement('button', { type: 'button', onClick: addMenuItem, className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm mt-4' }, 'Tambah Item Menu Baru')
+                            )),
+                            React.createElement('button', { type: 'button', onClick: addMenuItem, className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm mt-4' }, 'Tambah Item Menu Baru')
+                        )
                     )
                 )
             );
+        };
+
+        // AdminContent Component: Allows admin to edit various text content on the website.
+        const AdminContent = ({ siteContent, setSiteContent }) => {
+            const [activeTab, setActiveTab] = useState('utama'); // 'utama', 'gambar'
+
+            const handleContentChange = (section, key, value) => {
+                setSiteContent(prev => ({
+                    ...prev,
+                    [section]: {
+                        ...prev[section],
+                        [key]: value
+                    }
+                }));
+            };
+
+            // New handler for hero slide image changes
+            const handleHeroImageChange = (index, file) => {
+                if (file) {
+                    const fileUrl = URL.createObjectURL(file);
+                    setSiteContent(prev => {
+                        const newHeroSlides = [...prev.heroSlides]; // Assuming heroSlides is now part of siteContent
+                        newHeroSlides[index] = { ...newHeroSlides[index], img: fileUrl };
+                        return { ...prev, heroSlides: newHeroSlides };
+                    });
+                }
+            };
+
+            // **NEW HANDLER FOR SPECIAL COLLECTION IMAGE CHANGES**
+            const handleCollectionImageChange = (collectionKey, file) => {
+                if (file) {
+                    const fileUrl = URL.createObjectURL(file);
+                    setSiteContent(prev => ({
+                        ...prev,
+                        specialCollections: { // Assuming SPECIAL_COLLECTIONS is now part of siteContent
+                            ...prev.specialCollections,
+                            [collectionKey]: {
+                                ...prev.specialCollections[collectionKey],
+                                img: fileUrl
+                            }
+                        }
+                    }));
+                }
+            };
+
+            const renderTabs = () => {
+                const tabs = [
+                    { id: 'utama', label: 'Konten Utama' },
+                    { id: 'gambar', label: 'Gambar & Slideshow' }
+                ];
+                return (
+                    React.createElement('div', { className: 'mb-6 border-b' },
+                        React.createElement('div', { className: 'flex -mb-px' },
+                            tabs.map(tab => (
+                                React.createElement('button', {
+                                    key: tab.id,
+                                    onClick: () => setActiveTab(tab.id),
+                                    className: `px-4 py-2 text-sm font-medium border-b-2 ${activeTab === tab.id ? 'border-[#6D4C41] text-[#6D4C41]' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`
+                                }, tab.label)
+                            ))
+                        )
+                    )
+                );
+            };
 
             return (
                 React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Konten & Navigasi'),
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Konten Website'),
                     renderTabs(),
                     React.createElement('div', { className: 'space-y-6' },
                         activeTab === 'utama' && React.createElement(React.Fragment, null,
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Hero Section (Slide Pertama)'),
                                 React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Judul Utama'), React.createElement('input', { type: 'text', value: siteContent.hero.title, onChange: (e) => handleContentChange('hero', 'title', e.target.value), className: 'form-input' })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Subjudul'), React.createElement('textarea', { value: siteContent.hero.subtitle, onChange: (e) => handleContentChange('hero', 'subtitle', e.target.value), className: 'form-input', rows: '2' }))
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Judul Utama'),
+                                        React.createElement('input', { type: 'text', value: siteContent.hero.title, onChange: (e) => handleContentChange('hero', 'title', e.target.value), className: 'form-input' })
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Subjudul'),
+                                        React.createElement('textarea', { value: siteContent.hero.subtitle, onChange: (e) => handleContentChange('hero', 'subtitle', e.target.value), className: 'form-input', rows: '2' })
+                                    )
                                 )
                             ),
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Judul Section'),
                                 React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Judul Produk Terlaris'), React.createElement('input', { type: 'text', value: siteContent.sections.popularTitle, onChange: (e) => handleContentChange('sections', 'popularTitle', e.target.value), className: 'form-input' })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Judul Koleksi Spesial'), React.createElement('input', { type: 'text', value: siteContent.sections.collectionsTitle, onChange: (e) => handleContentChange('sections', 'collectionsTitle', e.target.value), className: 'form-input' }))
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Judul Produk Terlaris'),
+                                        React.createElement('input', { type: 'text', value: siteContent.sections.popularTitle, onChange: (e) => handleContentChange('sections', 'popularTitle', e.target.value), className: 'form-input' })
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Judul Koleksi Spesial'),
+                                        React.createElement('input', { type: 'text', value: siteContent.sections.collectionsTitle, onChange: (e) => handleContentChange('sections', 'collectionsTitle', e.target.value), className: 'form-input' })
+                                    )
                                 )
                             ),
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
@@ -2707,9 +2850,29 @@
                                     siteContent.heroSlides.map((slide, index) => (
                                         React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-full space-y-2' },
                                             React.createElement('h4', { className: 'font-semibold' }, `Slide ${index + 1}`),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Judul Slide'), React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => { const newSlides = [...siteContent.heroSlides]; newSlides[index].title = e.target.value; setSiteContent(p => ({...p, heroSlides: newSlides})); }, className: 'form-input' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Subjudul Slide'), React.createElement('textarea', { value: slide.subtitle, onChange: (e) => { const newSlides = [...siteContent.heroSlides]; newSlides[index].subtitle = e.target.value; setSiteContent(p => ({...p, heroSlides: newSlides})); }, className: 'form-input', rows: '2' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Gambar Slide'), React.createElement('div', { className: 'flex items-center gap-2' }, slide.img && React.createElement('img', { src: slide.img, alt: `Slide ${index + 1} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }), React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleHeroImageChange(index, e.target.files[0]), className: 'form-input !p-1 !text-xs' })))
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Judul Slide'),
+                                                React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => {
+                                                    const newHeroSlides = [...siteContent.heroSlides];
+                                                    newHeroSlides[index] = { ...newHeroSlides[index], title: e.target.value };
+                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
+                                                }, className: 'form-input' })
+                                            ),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Subjudul Slide'),
+                                                React.createElement('textarea', { value: slide.subtitle, onChange: (e) => {
+                                                    const newHeroSlides = [...siteContent.heroSlides];
+                                                    newHeroSlides[index] = { ...newHeroSlides[index], subtitle: e.target.value };
+                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
+                                                }, className: 'form-input', rows: '2' })
+                                            ),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Gambar Slide'),
+                                                React.createElement('div', { className: 'flex items-center gap-2' },
+                                                    slide.img && React.createElement('img', { src: slide.img, alt: `Slide ${index + 1} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
+                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleHeroImageChange(index, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
+                                                )
+                                            )
                                         )
                                     ))
                                 )
@@ -2720,13 +2883,70 @@
                                     Object.entries(siteContent.specialCollections).map(([key, collection]) => (
                                         React.createElement('div', { key: key, className: 'p-2 border rounded-md w-full space-y-2' },
                                             React.createElement('h4', { className: 'font-semibold' }, collection.name),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'), React.createElement('div', { className: 'flex items-center gap-2' }, collection.img && React.createElement('img', { src: collection.img, alt: `${collection.name} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }), React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleCollectionImageChange(key, e.target.files[0]), className: 'form-input !p-1 !text-xs' })))
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'),
+                                                React.createElement('div', { className: 'flex items-center gap-2' },
+                                                    collection.img && React.createElement('img', { src: collection.img, alt: `${collection.name} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
+                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleCollectionImageChange(key, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
+                                                )
+                                            )
                                         )
                                     ))
                                 )
                             )
                         ),
-                        activeTab === 'navigasi' && renderMenuLayout()
+                        activeTab === 'gambar' && React.createElement(React.Fragment, null,
+                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Slide Hero'),
+                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
+                                    siteContent.heroSlides.map((slide, index) => (
+                                        React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-full space-y-2' },
+                                            React.createElement('h4', { className: 'font-semibold' }, `Slide ${index + 1}`),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Judul Slide'),
+                                                React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => {
+                                                    const newHeroSlides = [...siteContent.heroSlides];
+                                                    newHeroSlides[index] = { ...newHeroSlides[index], title: e.target.value };
+                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
+                                                }, className: 'form-input' })
+                                            ),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Subjudul Slide'),
+                                                React.createElement('textarea', { value: slide.subtitle, onChange: (e) => {
+                                                    const newHeroSlides = [...siteContent.heroSlides];
+                                                    newHeroSlides[index] = { ...newHeroSlides[index], subtitle: e.target.value };
+                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
+                                                }, className: 'form-input', rows: '2' })
+                                            ),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Gambar Slide'),
+                                                React.createElement('div', { className: 'flex items-center gap-2' },
+                                                    slide.img && React.createElement('img', { src: slide.img, alt: `Slide ${index + 1} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
+                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleHeroImageChange(index, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
+                                                )
+                                            )
+                                        )
+                                    ))
+                                )
+                            ),
+                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Gambar Koleksi Spesial'),
+                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
+                                    Object.entries(siteContent.specialCollections).map(([key, collection]) => (
+                                        React.createElement('div', { key: key, className: 'p-2 border rounded-md w-full space-y-2' },
+                                            React.createElement('h4', { className: 'font-semibold' }, collection.name),
+                                            React.createElement('div', null,
+                                                React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'),
+                                                React.createElement('div', { className: 'flex items-center gap-2' },
+                                                    collection.img && React.createElement('img', { src: collection.img, alt: `${collection.name} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
+                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleCollectionImageChange(key, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
+                                                )
+                                            )
+                                        )
+                                    ))
+                                )
+                            )
+                        )
                     )
                 )
             );
@@ -2908,8 +3128,4 @@
                             { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'sub-category', param: 'Regular', isVisible: true },
                             { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
                             { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'sub-category', param: 'Oversized', isVisible: true },
-                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'sub-category', param: 'Oversize Box', isVisible: true },
-                        ]},
-                        { id: 'shirt', label: 'Shirt', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'sub-category', param: 'Slim Fit', isVisible: true },
-                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
+                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'sub-category',
