@@ -3276,12 +3276,12 @@
                     case 'home':
                         return React.createElement(React.Fragment, null,
                             React.createElement(Hero, { setView: handleSetView, siteContent }),
+                            React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
                             React.createElement(PopularCategories, { products, setView: handleSetView, siteContent }),
                             React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent }),
                             React.createElement(OrderPreviews, { setView: handleSetView }),
                             React.createElement(Promo, { siteContent }),
                             React.createElement(FeaturedCategory, { categoryName: "T-Shirt", products, siteContent, setView: handleSetView }),
-                            React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
                             React.createElement(FeaturedCategory, { categoryName: "Pants", products, siteContent, setView: handleSetView }),
                             React.createElement(DownloadApp, null)
                         );
