@@ -1512,7 +1512,14 @@
                     departmentDropdown = `<span class="text-sm text-gray-500">${formatDepartment(user.department) || ''}</span>`;
                 }
                 let deleteButton = '';
-                if (appState.userRole === 'super_admin' && user.uid !== appState.userId) {
+                const currentUserRole = appState.userRole;
+                const targetUserRole = user.role;
+
+                const canDelete =
+                    (currentUserRole === 'super_admin' && user.uid !== appState.userId) ||
+                    (currentUserRole === 'admin' && targetUserRole === 'member');
+
+                if (canDelete) {
                     deleteButton = `<button class="delete-user-btn text-red-500 hover:text-red-700" title="Hapus pengguna" data-uid="${user.uid}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>`;
                 }
                 return `<div class="p-4 bg-gray-50 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div class="flex-1"><p class="font-semibold text-gray-800">${user.username}</p><p class="text-sm text-gray-600">Peran: <span class="font-medium">${roleDisplay}</span> ${user.department ? `| Departemen: ${departmentDropdown}` : ''}</p><p class="text-xs text-gray-400">UID: ${user.uid}</p></div><div class="flex items-center gap-2 self-end sm:self-center">${deleteButton}</div></div>`;
@@ -3258,6 +3265,13 @@
                 showCustomMessage('Anda tidak dapat menghapus akun sendiri.', 'error');
                 return;
             }
+
+            const userToDelete = appState.allUsers.find(u => u.uid === uid);
+            if (userToDelete && appState.userRole === 'admin' && (userToDelete.role === 'admin' || userToDelete.role === 'super_admin')) {
+                showCustomMessage('Anda tidak dapat menghapus sesama admin atau super admin.', 'error');
+                return;
+            }
+
             showCustomConfirmation('Apakah Anda yakin ingin menolak dan menghapus akun ini?', () => {
                 const rejectedUser = appState.allUsers.find(u => u.uid === uid);
                 const updatedUsers = appState.allUsers.filter(u => u.uid !== uid);
