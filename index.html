@@ -2264,7 +2264,7 @@
         };
 
         // AdminSettings Component: Placeholder for general settings.
-        const AdminCategoryShowcase = ({ siteContent, setSiteContent }) => {
+        const AdminCategoryShowcase = ({ siteContent, setSiteContent, products }) => {
             const handleShowcaseChange = (index, key, value) => {
                 const newShowcase = [...siteContent.categoryShowcase];
                 newShowcase[index] = { ...newShowcase[index], [key]: value };
