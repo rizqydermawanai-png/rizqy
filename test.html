@@ -2578,9 +2578,9 @@
                         activeTab === 'gambar' && React.createElement(React.Fragment, null,
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Slide Hero'),
-                                React.createElement('div', { className: 'flex flex-wrap gap-4' },
+                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
                                     siteContent.heroSlides.map((slide, index) => (
-                                        React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-64 space-y-2' },
+                                        React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-full space-y-2' },
                                             React.createElement('h4', { className: 'font-semibold' }, `Slide ${index + 1}`),
                                             React.createElement('div', null,
                                                 React.createElement('label', { className: 'form-label' }, 'Judul Slide'),
@@ -2611,9 +2611,9 @@
                             ),
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Gambar Koleksi Spesial'),
-                                React.createElement('div', { className: 'flex flex-wrap gap-4' },
+                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
                                     Object.entries(siteContent.specialCollections).map(([key, collection]) => (
-                                        React.createElement('div', { key: key, className: 'p-2 border rounded-md w-64 space-y-2' },
+                                        React.createElement('div', { key: key, className: 'p-2 border rounded-md w-full space-y-2' },
                                             React.createElement('h4', { className: 'font-semibold' }, collection.name),
                                             React.createElement('div', null,
                                                 React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'),
