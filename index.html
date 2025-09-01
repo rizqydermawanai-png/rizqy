@@ -323,6 +323,45 @@
             )
         );
 
+        // ProductCard Component: Reusable component for displaying a product.
+        const ProductCard = ({ product, setView }) => (
+            React.createElement('div', { key: product.id, onClick: () => setView('product', product.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
+                React.createElement('img', { src: product.img, alt: product.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
+                React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
+                React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
+                    React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, product.name),
+                    React.createElement('p', { className: 'text-sm' }, 'IDR ', product.price.toLocaleString())
+                )
+            )
+        );
+
+        // AdminModal Component: Reusable modal for the admin panel.
+        const AdminModal = ({ isOpen, onClose, title, children }) => {
+            if (!isOpen) return null;
+
+            return (
+                React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' },
+                    React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' },
+                        React.createElement('div', { className: 'flex justify-between items-center mb-4' },
+                            React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, title),
+                            React.createElement('button', { onClick: onClose }, React.createElement(IconX, null))
+                        ),
+                        children
+                    )
+                )
+            );
+        };
+
+        // PageLayout Component: Provides a consistent layout for main pages.
+        const PageLayout = ({ title, children }) => (
+            React.createElement('div', { className: 'py-20 bg-white' },
+                React.createElement('div', { className: 'container mx-auto px-5' },
+                    React.createElement(SectionTitle, null, title),
+                    children
+                )
+            )
+        );
+
         // --- HOME PAGE COMPONENTS ---
 
         const FeaturedCategory = ({ categoryName, products, siteContent, setView }) => {
@@ -339,16 +378,7 @@
                     // Product grid with a standard container to keep it centered.
                     React.createElement('div', { className: 'container mx-auto px-5 mt-8' },
                         React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
-                            categoryProducts.map(prod => (
-                                React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-xl group cursor-pointer' },
-                                    React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
-                                    React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
-                                    React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
-                                        React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
-                                        React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
-                                    )
-                                )
-                            ))
+                            categoryProducts.map(prod => React.createElement(ProductCard, { key: prod.id, product: prod, setView: setView }))
                         )
                     )
                 )
@@ -449,16 +479,7 @@
                 React.createElement('section', { id: 'categories', className: 'py-20 bg-[#F5F5F5]' },
                     React.createElement('div', { className: 'container mx-auto px-5' },
                         React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
-                            products.slice(0, 4).map(prod => (
-                                React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
-                                    React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
-                                    React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
-                                    React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
-                                        React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
-                                        React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
-                                    )
-                                )
-                            ))
+                            products.slice(0, 4).map(prod => React.createElement(ProductCard, { key: prod.id, product: prod, setView: setView }))
                         )
                     )
                 )
@@ -564,25 +585,13 @@
             const title = subCategory;
 
             return (
-                React.createElement('div', { className: 'py-20 bg-white' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, title),
-                        filteredProducts.length > 0 ? (
-                            React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
-                                filteredProducts.map(prod => (
-                                    React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
-                                        React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
-                                        React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
-                                        React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
-                                            React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
-                                            React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
-                                        )
-                                    )
-                                ))
-                            )
-                        ) : (
-                            React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam sub-kategori ini belum tersedia.')
+                React.createElement(PageLayout, { title: title },
+                    filteredProducts.length > 0 ? (
+                        React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
+                            filteredProducts.map(prod => React.createElement(ProductCard, { key: prod.id, product: prod, setView: setView }))
                         )
+                    ) : (
+                        React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam sub-kategori ini belum tersedia.')
                     )
                 )
             );
@@ -610,38 +619,25 @@
                 : products.filter(p => p.category === category && p.subCategory === activeSubCategory);
 
             return (
-                React.createElement('div', { className: 'py-20 bg-white' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, category),
+                React.createElement(PageLayout, { title: category },
+                    // Filter UI
+                    subCategories.length > 1 && React.createElement('div', { className: 'flex justify-center flex-wrap gap-2 mb-12' },
+                        subCategories.map(sub => (
+                            React.createElement('button', {
+                                key: sub,
+                                onClick: () => setActiveSubCategory(sub),
+                                className: `px-4 py-2 text-sm font-medium rounded-full transition-colors ${activeSubCategory === sub ? 'bg-[#6D4C41] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`
+                            }, sub)
+                        ))
+                    ),
 
-                        // Filter UI
-                        subCategories.length > 1 && React.createElement('div', { className: 'flex justify-center flex-wrap gap-2 mb-12' },
-                            subCategories.map(sub => (
-                                React.createElement('button', {
-                                    key: sub,
-                                    onClick: () => setActiveSubCategory(sub),
-                                    className: `px-4 py-2 text-sm font-medium rounded-full transition-colors ${activeSubCategory === sub ? 'bg-[#6D4C41] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`
-                                }, sub)
-                            ))
-                        ),
-
-                        // Product Grid
-                        filteredProducts.length > 0 ? (
-                            React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
-                                filteredProducts.map(prod => (
-                                    React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
-                                        React.createElement('img', { src: prod.img, alt: prod.name, className: 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-105' }),
-                                        React.createElement('div', { className: 'absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300' }),
-                                        React.createElement('div', { className: 'absolute bottom-0 left-0 right-0 bg-[rgba(109,76,65,0.85)] text-white p-4 text-center' },
-                                            React.createElement('p', { className: 'uppercase font-medium tracking-wider' }, prod.name),
-                                            React.createElement('p', { className: 'text-sm' }, 'IDR ', prod.price.toLocaleString())
-                                        )
-                                    )
-                                ))
-                            )
-                        ) : (
-                            React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam kategori ini belum tersedia.')
+                    // Product Grid
+                    filteredProducts.length > 0 ? (
+                        React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
+                            filteredProducts.map(prod => React.createElement(ProductCard, { key: prod.id, product: prod, setView: setView }))
                         )
+                    ) : (
+                        React.createElement('p', { className: 'text-center text-gray-500' }, 'Produk dalam kategori ini belum tersedia.')
                     )
                 )
             );
@@ -714,41 +710,38 @@
         // SpecialCollectionsPage Component: Displays all special collections with their products.
         const SpecialCollectionsPage = ({ products, siteContent }) => {
             return (
-                React.createElement('div', { className: 'py-20 bg-white' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Koleksi Spesial Kami'),
-                        React.createElement('div', { className: 'space-y-16' },
-                            Object.entries(siteContent.specialCollections).map(([key, collection], index) => {
-                                const collectionProducts = products.filter(p => p.specialCollection === key);
-                                return (
-                                    React.createElement('div', { key: key },
-                                        React.createElement('div', { className: `grid md:grid-cols-2 gap-10 items-center ${index % 2 !== 0 ? 'md:grid-flow-col-dense' : ''}` },
-                                            React.createElement('div', { className: `relative rounded-lg overflow-hidden shadow-lg h-96 ${index % 2 !== 0 ? 'md:col-start-2' : ''}` },
-                                                React.createElement('img', { src: collection.img, alt: collection.name, className: 'w-full h-full object-cover' })
-                                            ),
-                                            React.createElement('div', { className: 'text-center md:text-left' },
-                                                React.createElement('span', { className: 'bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2' }, collection.tag),
-                                                React.createElement('h3', { className: 'font-serif text-3xl font-bold my-2 text-[#4E342E]' }, collection.name),
-                                                React.createElement('p', { className: 'text-gray-600' }, collection.description)
-                                            )
+                React.createElement(PageLayout, { title: 'Koleksi Spesial Kami' },
+                    React.createElement('div', { className: 'space-y-16' },
+                        Object.entries(siteContent.specialCollections).map(([key, collection], index) => {
+                            const collectionProducts = products.filter(p => p.specialCollection === key);
+                            return (
+                                React.createElement('div', { key: key },
+                                    React.createElement('div', { className: `grid md:grid-cols-2 gap-10 items-center ${index % 2 !== 0 ? 'md:grid-flow-col-dense' : ''}` },
+                                        React.createElement('div', { className: `relative rounded-lg overflow-hidden shadow-lg h-96 ${index % 2 !== 0 ? 'md:col-start-2' : ''}` },
+                                            React.createElement('img', { src: collection.img, alt: collection.name, className: 'w-full h-full object-cover' })
                                         ),
-                                        React.createElement('div', { className: 'mt-8' },
-                                            React.createElement('h4', { className: 'font-semibold text-xl mb-4' }, 'Produk di Koleksi Ini:'),
-                                            collectionProducts.length > 0 ? (
-                                                React.createElement('div', { className: 'grid grid-cols-2 md:grid-cols-4 gap-4' },
-                                                    collectionProducts.map(p => (
-                                                        React.createElement('div', { key: p.id, className: 'text-center text-sm' },
-                                                            React.createElement('img', { src: p.img, alt: p.name, className: 'w-full h-48 object-cover rounded-md mb-2' }),
-                                                            React.createElement('p', { className: 'font-semibold' }, p.name)
-                                                        )
-                                                    ))
-                                                )
-                                            ) : React.createElement('p', { className: 'text-gray-500' }, 'Belum ada produk untuk koleksi ini.')
+                                        React.createElement('div', { className: 'text-center md:text-left' },
+                                            React.createElement('span', { className: 'bg-[#C9B037] text-[#4E342E] text-xs font-bold uppercase px-2 py-1 rounded-sm self-start mb-2' }, collection.tag),
+                                            React.createElement('h3', { className: 'font-serif text-3xl font-bold my-2 text-[#4E342E]' }, collection.name),
+                                            React.createElement('p', { className: 'text-gray-600' }, collection.description)
                                         )
+                                    ),
+                                    React.createElement('div', { className: 'mt-8' },
+                                        React.createElement('h4', { className: 'font-semibold text-xl mb-4' }, 'Produk di Koleksi Ini:'),
+                                        collectionProducts.length > 0 ? (
+                                            React.createElement('div', { className: 'grid grid-cols-2 md:grid-cols-4 gap-4' },
+                                                collectionProducts.map(p => (
+                                                    React.createElement('div', { key: p.id, className: 'text-center text-sm' },
+                                                        React.createElement('img', { src: p.img, alt: p.name, className: 'w-full h-48 object-cover rounded-md mb-2' }),
+                                                        React.createElement('p', { className: 'font-semibold' }, p.name)
+                                                    )
+                                                ))
+                                            )
+                                        ) : React.createElement('p', { className: 'text-gray-500' }, 'Belum ada produk untuk koleksi ini.')
                                     )
-                                );
-                            })
-                        )
+                                )
+                            );
+                        })
                     )
                 )
             );
@@ -807,55 +800,52 @@
             const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
             return (
-                React.createElement('div', { className: 'py-20 bg-[#F5F5F5]' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Buat Pesanan Kustom Anda'),
-                        React.createElement('p', { className: 'text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Isi formulir di bawah ini dengan detail selengkap mungkin. Tim kami akan meninjau dan menghubungi Anda untuk konsultasi lebih lanjut.'),
-                        React.createElement('form', { onSubmit: handleSubmit, className: 'max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg space-y-6' },
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Kontak'),
-                                React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Lengkap'), React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleInfoChange, className: 'form-input', required: true })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Email'), React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleInfoChange, className: 'form-input', required: true })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'No. Telepon'), React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleInfoChange, className: 'form-input', required: true }))
-                                )
-                            ),
+                React.createElement(PageLayout, { title: 'Buat Pesanan Kustom Anda' },
+                    React.createElement('p', { className: 'text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Isi formulir di bawah ini dengan detail selengkap mungkin. Tim kami akan meninjau dan menghubungi Anda untuk konsultasi lebih lanjut.'),
+                    React.createElement('form', { onSubmit: handleSubmit, className: 'max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg space-y-6' },
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Kontak'),
+                            React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Lengkap'), React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleInfoChange, className: 'form-input', required: true })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Email'), React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleInfoChange, className: 'form-input', required: true })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'No. Telepon'), React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleInfoChange, className: 'form-input', required: true }))
+                            )
+                        ),
 
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Detail Kebutuhan Pakaian Kustom'),
-                                formData.items.map((item, index) => (
-                                    React.createElement('div', { key: index, className: 'space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0' },
-                                        React.createElement('div', { className: 'flex justify-between items-center' },
-                                            React.createElement('h4', { className: 'font-semibold' }, 'Item Kustom #', index + 1),
-                                            formData.items.length > 1 && (
-                                                React.createElement('button', { type: 'button', onClick: () => removeItem(index), className: 'text-red-500 hover:text-red-700 font-bold text-sm' }, 'HAPUS')
-                                            )
-                                        ),
-                                        React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jenis Produk'), React.createElement('select', { name: 'productType', value: item.productType, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, productTypes.map(type => React.createElement('option', { key: type, value: type }, type)))),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Ukuran'), React.createElement('select', { name: 'size', value: item.size, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Ukuran'), sizes.map(s => React.createElement('option', { key: s, value: s }, s)))),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Preferensi Material'), React.createElement('input', { type: 'text', name: 'material', value: item.material, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Katun Jepang, Sutra', className: 'form-input' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Warna'), React.createElement('input', { type: 'text', name: 'color', value: item.color, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Biru Navy, Hitam', className: 'form-input' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jumlah'), React.createElement('input', { type: 'number', name: 'quantity', value: item.quantity, onChange: (e) => handleItemChange(index, e), className: 'form-input', min: '1', required: true })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Upload Desain/Referensi (Opsional)'), React.createElement('input', { type: 'file', name: 'designFile', onChange: (e) => handleFileChange(index, e), className: 'form-input' }))
-                                        ),
-                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Catatan Tambahan (Detail kerah, potongan, fitur khusus, dll.)'), React.createElement('textarea', { name: 'notes', value: item.notes, onChange: (e) => handleItemChange(index, e), rows: '2', className: 'form-input' }))
-                                    )
-                                )),
-                                React.createElement('button', { type: 'button', onClick: addItem, className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4 flex items-center gap-2' },
-                                    React.createElement(IconPlus, null), ' Tambah Item Kustom'
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Detail Kebutuhan Pakaian Kustom'),
+                            formData.items.map((item, index) => (
+                                React.createElement('div', { key: index, className: 'space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0' },
+                                    React.createElement('div', { className: 'flex justify-between items-center' },
+                                        React.createElement('h4', { className: 'font-semibold' }, 'Item Kustom #', index + 1),
+                                        formData.items.length > 1 && (
+                                            React.createElement('button', { type: 'button', onClick: () => removeItem(index), className: 'text-red-500 hover:text-red-700 font-bold text-sm' }, 'HAPUS')
+                                        )
+                                    ),
+                                    React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jenis Produk'), React.createElement('select', { name: 'productType', value: item.productType, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, productTypes.map(type => React.createElement('option', { key: type, value: type }, type)))),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Ukuran'), React.createElement('select', { name: 'size', value: item.size, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Ukuran'), sizes.map(s => React.createElement('option', { key: s, value: s }, s)))),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Preferensi Material'), React.createElement('input', { type: 'text', name: 'material', value: item.material, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Katun Jepang, Sutra', className: 'form-input' })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Warna'), React.createElement('input', { type: 'text', name: 'color', value: item.color, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Biru Navy, Hitam', className: 'form-input' })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jumlah'), React.createElement('input', { type: 'number', name: 'quantity', value: item.quantity, onChange: (e) => handleItemChange(index, e), className: 'form-input', min: '1', required: true })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Upload Desain/Referensi (Opsional)'), React.createElement('input', { type: 'file', name: 'designFile', onChange: (e) => handleFileChange(index, e), className: 'form-input' }))
+                                    ),
+                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Catatan Tambahan (Detail kerah, potongan, fitur khusus, dll.)'), React.createElement('textarea', { name: 'notes', value: item.notes, onChange: (e) => handleItemChange(index, e), rows: '2', className: 'form-input' }))
                                 )
-                            ),
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Tambahan'),
-                                React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Target Tanggal Dibutuhkan'), React.createElement('input', { type: 'date', name: 'deliveryDate', value: formData.deliveryDate, onChange: handleInfoChange, className: 'form-input' })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Anggaran (Opsional, IDR)'), React.createElement('input', { type: 'number', name: 'budget', value: formData.budget, onChange: handleInfoChange, className: 'form-input', placeholder: 'cth: 5000000' }))
-                                )
-                            ),
+                            )),
+                            React.createElement('button', { type: 'button', onClick: addItem, className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4 flex items-center gap-2' },
+                                React.createElement(IconPlus, null), ' Tambah Item Kustom'
+                            )
+                        ),
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Tambahan'),
+                            React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Target Tanggal Dibutuhkan'), React.createElement('input', { type: 'date', name: 'deliveryDate', value: formData.deliveryDate, onChange: handleInfoChange, className: 'form-input' })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Anggaran (Opsional, IDR)'), React.createElement('input', { type: 'number', name: 'budget', value: formData.budget, onChange: handleInfoChange, className: 'form-input', placeholder: 'cth: 5000000' }))
+                            )
+                        ),
 
-                            React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, 'Kirim Permintaan Kustom ', React.createElement(IconSend, null))
-                        )
+                        React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, 'Kirim Permintaan Kustom ', React.createElement(IconSend, null))
                     )
                 )
             );
@@ -914,50 +904,47 @@
             const shippingMethods = ['Reguler', 'Ekspres', 'Kargo', 'Ambil Sendiri'];
 
             return (
-                React.createElement('div', { className: 'py-20 bg-white' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Pemesanan Jumlah Besar & Bisnis'),
-                        React.createElement('p', { className: 'text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Kami adalah mitra terpercaya untuk kebutuhan pakaian perusahaan, acara, atau komunitas Anda. Isi formulir di bawah untuk mendapatkan penawaran harga terbaik.'),
-                        React.createElement('form', { onSubmit: handleSubmit, className: 'max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg space-y-6 border' },
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Perusahaan & PIC'),
-                                React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Perusahaan/Instansi'), React.createElement('input', { type: 'text', name: 'company', value: formData.company, onChange: handleInfoChange, className: 'form-input', required: true })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Anda (PIC)'), React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleInfoChange, className: 'form-input', required: true })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Email'), React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleInfoChange, className: 'form-input', required: true })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'No. Telepon'), React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleInfoChange, className: 'form-input', required: true }))
-                                )
-                            ),
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Detail Pesanan Jumlah Besar'),
-                                formData.items.map((item, index) => (
-                                    React.createElement('div', { key: index, className: 'space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0' },
-                                        React.createElement('div', { className: 'flex justify-between items-center' },
-                                            React.createElement('h4', { className: 'font-semibold' }, 'Item Pesanan #', index + 1),
-                                            formData.items.length > 1 && (
-                                                React.createElement('button', { type: 'button', onClick: () => removeItem(index), className: 'text-red-500 hover:text-red-700 font-bold text-sm' }, 'HAPUS')
-                                            )
-                                        ),
-                                        React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jenis Produk'), React.createElement('select', { name: 'productType', value: item.productType, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, productTypes.map(type => React.createElement('option', { key: type, value: type }, type)))),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Ukuran'), React.createElement('select', { name: 'size', value: item.size, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Ukuran'), sizes.map(s => React.createElement('option', { key: s, value: s }, s)))),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jumlah (pcs)'), React.createElement('input', { type: 'number', name: 'quantity', value: item.quantity, onChange: (e) => handleItemChange(index, e), className: 'form-input', min: '1', required: true })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Warna'), React.createElement('input', { type: 'text', name: 'color', value: item.color, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Merah, Biru', className: 'form-input' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Kustomisasi (Logo/Branding)'), React.createElement('input', { type: 'text', name: 'customization', value: item.customization, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Bordir logo di dada kiri', className: 'form-input' })),
-                                            React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Upload Desain/Referensi (Opsional)'), React.createElement('input', { type: 'file', name: 'designFile', onChange: (e) => handleFileChange(index, e), className: 'form-input' }))
+                React.createElement(PageLayout, { title: 'Pemesanan Jumlah Besar & Bisnis' },
+                    React.createElement('p', { className: 'text-center max-w-3xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Kami adalah mitra terpercaya untuk kebutuhan pakaian perusahaan, acara, atau komunitas Anda. Isi formulir di bawah untuk mendapatkan penawaran harga terbaik.'),
+                    React.createElement('form', { onSubmit: handleSubmit, className: 'max-w-4xl mx-auto bg-gray-50 p-8 rounded-lg shadow-lg space-y-6 border' },
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Informasi Perusahaan & PIC'),
+                            React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Perusahaan/Instansi'), React.createElement('input', { type: 'text', name: 'company', value: formData.company, onChange: handleInfoChange, className: 'form-input', required: true })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Nama Anda (PIC)'), React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleInfoChange, className: 'form-input', required: true })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Email'), React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleInfoChange, className: 'form-input', required: true })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'No. Telepon'), React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleInfoChange, className: 'form-input', required: true }))
+                            )
+                        ),
+                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Detail Pesanan Jumlah Besar'),
+                            formData.items.map((item, index) => (
+                                React.createElement('div', { key: index, className: 'space-y-4 border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0' },
+                                    React.createElement('div', { className: 'flex justify-between items-center' },
+                                        React.createElement('h4', { className: 'font-semibold' }, 'Item Pesanan #', index + 1),
+                                        formData.items.length > 1 && (
+                                            React.createElement('button', { type: 'button', onClick: () => removeItem(index), className: 'text-red-500 hover:text-red-700 font-bold text-sm' }, 'HAPUS')
                                         )
+                                    ),
+                                    React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jenis Produk'), React.createElement('select', { name: 'productType', value: item.productType, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, productTypes.map(type => React.createElement('option', { key: type, value: type }, type)))),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Ukuran'), React.createElement('select', { name: 'size', value: item.size, onChange: (e) => handleItemChange(index, e), className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Ukuran'), sizes.map(s => React.createElement('option', { key: s, value: s }, s)))),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Jumlah (pcs)'), React.createElement('input', { type: 'number', name: 'quantity', value: item.quantity, onChange: (e) => handleItemChange(index, e), className: 'form-input', min: '1', required: true })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Warna'), React.createElement('input', { type: 'text', name: 'color', value: item.color, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Merah, Biru', className: 'form-input' })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Kustomisasi (Logo/Branding)'), React.createElement('input', { type: 'text', name: 'customization', value: item.customization, onChange: (e) => handleItemChange(index, e), placeholder: 'cth: Bordir logo di dada kiri', className: 'form-input' })),
+                                        React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Upload Desain/Referensi (Opsional)'), React.createElement('input', { type: 'file', name: 'designFile', onChange: (e) => handleFileChange(index, e), className: 'form-input' }))
                                     )
-                                )),
-                                React.createElement('button', { type: 'button', onClick: addItem, className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4 flex items-center gap-2' },
-                                    React.createElement(IconPlus, null), ' Tambah Item Pesanan'
-                                ),
-                                React.createElement('div', { className: 'grid md:grid-cols-2 gap-4 mt-4' },
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Target Tanggal Pengiriman'), React.createElement('input', { type: 'date', name: 'deliveryDate', value: formData.deliveryDate, onChange: handleInfoChange, className: 'form-input' })),
-                                    React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Metode Pengiriman yang Diinginkan'), React.createElement('select', { name: 'shippingMethod', value: formData.shippingMethod, onChange: handleInfoChange, className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Metode'), shippingMethods.map(method => React.createElement('option', { key: method, value: method }, method))))
                                 )
+                            )),
+                            React.createElement('button', { type: 'button', onClick: addItem, className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4 flex items-center gap-2' },
+                                React.createElement(IconPlus, null), ' Tambah Item Pesanan'
                             ),
-                            React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, 'Minta Penawaran ', React.createElement(IconSend, null))
-                        )
+                            React.createElement('div', { className: 'grid md:grid-cols-2 gap-4 mt-4' },
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Target Tanggal Pengiriman'), React.createElement('input', { type: 'date', name: 'deliveryDate', value: formData.deliveryDate, onChange: handleInfoChange, className: 'form-input' })),
+                                React.createElement('div', null, React.createElement('label', { className: 'form-label' }, 'Metode Pengiriman yang Diinginkan'), React.createElement('select', { name: 'shippingMethod', value: formData.shippingMethod, onChange: handleInfoChange, className: 'form-input' }, React.createElement('option', { value: '' }, 'Pilih Metode'), shippingMethods.map(method => React.createElement('option', { key: method, value: method }, method))))
+                            )
+                        ),
+                        React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, 'Minta Penawaran ', React.createElement(IconSend, null))
                     )
                 )
             );
@@ -1148,48 +1135,45 @@
             };
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50 min-h-[60vh]' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Keranjang Belanja'),
-                        cart.length > 0 ? (
-                            React.createElement('div', { className: 'grid lg:grid-cols-3 gap-8' },
-                                React.createElement('div', { className: 'lg:col-span-2 bg-white p-6 rounded-lg shadow-md space-y-4' },
-                                    cart.map(item => (
-                                        React.createElement('div', { key: item.id, className: 'flex gap-4 items-center border-b pb-4' },
-                                            React.createElement('img', { src: item.img, alt: item.name, className: 'w-24 h-24 object-cover rounded-md' }),
-                                            React.createElement('div', { className: 'flex-1' },
-                                                React.createElement('p', { className: 'font-semibold' }, item.name),
-                                                React.createElement('p', { className: 'text-sm text-gray-500' }, 'Ukuran: ', item.selectedSize),
-                                                React.createElement('p', { className: 'text-sm text-[#6D4C41]' }, 'IDR ', item.price.toLocaleString())
-                                            ),
-                                            React.createElement('div', { className: 'flex items-center gap-2' },
-                                                React.createElement('button', { onClick: () => updateQuantity(item.id, item.quantity - 1), className: 'border w-8 h-8 rounded' }, '-'),
-                                                React.createElement('span', { className: 'w-8 text-center' }, item.quantity),
-                                                React.createElement('button', { onClick: () => updateQuantity(item.id, item.quantity + 1), className: 'border w-8 h-8 rounded' }, '+')
-                                            ),
-                                            React.createElement('p', { className: 'font-semibold w-24 text-right' }, 'IDR ', (item.price * item.quantity).toLocaleString()),
-                                            React.createElement('button', { onClick: () => updateQuantity(item.id, 0), className: 'text-gray-400 hover:text-red-500' }, React.createElement(IconTrash, null))
-                                        )
-                                    ))
+                React.createElement(PageLayout, { title: 'Keranjang Belanja' },
+                    cart.length > 0 ? (
+                        React.createElement('div', { className: 'grid lg:grid-cols-3 gap-8' },
+                            React.createElement('div', { className: 'lg:col-span-2 bg-white p-6 rounded-lg shadow-md space-y-4' },
+                                cart.map(item => (
+                                    React.createElement('div', { key: item.id, className: 'flex gap-4 items-center border-b pb-4' },
+                                        React.createElement('img', { src: item.img, alt: item.name, className: 'w-24 h-24 object-cover rounded-md' }),
+                                        React.createElement('div', { className: 'flex-1' },
+                                            React.createElement('p', { className: 'font-semibold' }, item.name),
+                                            React.createElement('p', { className: 'text-sm text-gray-500' }, 'Ukuran: ', item.selectedSize),
+                                            React.createElement('p', { className: 'text-sm text-[#6D4C41]' }, 'IDR ', item.price.toLocaleString())
+                                        ),
+                                        React.createElement('div', { className: 'flex items-center gap-2' },
+                                            React.createElement('button', { onClick: () => updateQuantity(item.id, item.quantity - 1), className: 'border w-8 h-8 rounded' }, '-'),
+                                            React.createElement('span', { className: 'w-8 text-center' }, item.quantity),
+                                            React.createElement('button', { onClick: () => updateQuantity(item.id, item.quantity + 1), className: 'border w-8 h-8 rounded' }, '+')
+                                        ),
+                                        React.createElement('p', { className: 'font-semibold w-24 text-right' }, 'IDR ', (item.price * item.quantity).toLocaleString()),
+                                        React.createElement('button', { onClick: () => updateQuantity(item.id, 0), className: 'text-gray-400 hover:text-red-500' }, React.createElement(IconTrash, null))
+                                    )
+                                ))
+                            ),
+                            React.createElement('div', { className: 'bg-white p-6 rounded-lg shadow-md h-fit' },
+                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Ringkasan Pesanan'),
+                                React.createElement('div', { className: 'space-y-2 text-gray-600' },
+                                    React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Subtotal'), React.createElement('span', null, 'IDR ', totalPrice.toLocaleString())),
+                                    React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Pengiriman'), React.createElement('span', null, 'Akan dihitung'))
                                 ),
-                                React.createElement('div', { className: 'bg-white p-6 rounded-lg shadow-md h-fit' },
-                                    React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Ringkasan Pesanan'),
-                                    React.createElement('div', { className: 'space-y-2 text-gray-600' },
-                                        React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Subtotal'), React.createElement('span', null, 'IDR ', totalPrice.toLocaleString())),
-                                        React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Pengiriman'), React.createElement('span', null, 'Akan dihitung'))
-                                    ),
-                                    React.createElement('div', { className: 'flex justify-between font-bold text-lg my-4 pt-4 border-t' },
-                                        React.createElement('span', null, 'Total'),
-                                        React.createElement('span', null, 'IDR ', totalPrice.toLocaleString())
-                                    ),
-                                    React.createElement('button', { onClick: () => setView('checkout'), className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Lanjut ke Checkout')
-                                )
+                                React.createElement('div', { className: 'flex justify-between font-bold text-lg my-4 pt-4 border-t' },
+                                    React.createElement('span', null, 'Total'),
+                                    React.createElement('span', null, 'IDR ', totalPrice.toLocaleString())
+                                ),
+                                React.createElement('button', { onClick: () => setView('checkout'), className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Lanjut ke Checkout')
                             )
-                        ) : (
-                            React.createElement('div', { className: 'text-center py-10 bg-white rounded-lg shadow-md' },
-                                React.createElement('p', { className: 'text-gray-500 mb-4' }, 'Keranjang Anda masih kosong.'),
-                                React.createElement('button', { onClick: () => setView('home'), className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Mulai Belanja')
-                            )
+                        )
+                    ) : (
+                        React.createElement('div', { className: 'text-center py-10 bg-white rounded-lg shadow-md' },
+                            React.createElement('p', { className: 'text-gray-500 mb-4' }, 'Keranjang Anda masih kosong.'),
+                            React.createElement('button', { onClick: () => setView('home'), className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Mulai Belanja')
                         )
                     )
                 )
@@ -1248,90 +1232,87 @@
             };
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50 min-h-[60vh]' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Checkout'),
-                        React.createElement('div', { className: 'grid lg:grid-cols-3 gap-8' },
-                            React.createElement('div', { className: 'lg:col-span-2 bg-white p-6 rounded-lg shadow-md space-y-6' },
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Detail Pengiriman'),
-                                React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Alamat Pengiriman Lengkap'),
-                                        React.createElement('textarea', { value: address, onChange: (e) => setAddress(e.target.value), className: 'form-input', rows: '3', placeholder: 'Jl. Contoh No. 123, Kota, Provinsi, Kode Pos', required: true })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Nomor Telepon'),
-                                        React.createElement('input', { type: 'tel', value: phoneNumber, onChange: (e) => setPhoneNumber(e.target.value), className: 'form-input', placeholder: '081234567890', required: true })
-                                    )
+                React.createElement(PageLayout, { title: 'Checkout' },
+                    React.createElement('div', { className: 'grid lg:grid-cols-3 gap-8' },
+                        React.createElement('div', { className: 'lg:col-span-2 bg-white p-6 rounded-lg shadow-md space-y-6' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Detail Pengiriman'),
+                            React.createElement('div', { className: 'space-y-4' },
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'form-label' }, 'Alamat Pengiriman Lengkap'),
+                                    React.createElement('textarea', { value: address, onChange: (e) => setAddress(e.target.value), className: 'form-input', rows: '3', placeholder: 'Jl. Contoh No. 123, Kota, Provinsi, Kode Pos', required: true })
                                 ),
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'form-label' }, 'Nomor Telepon'),
+                                    React.createElement('input', { type: 'tel', value: phoneNumber, onChange: (e) => setPhoneNumber(e.target.value), className: 'form-input', placeholder: '081234567890', required: true })
+                                )
+                            ),
 
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2 mt-8' }, 'Pilih Metode Pengiriman'),
-                                React.createElement('div', { className: 'space-y-4' },
-                                    availableShippingOptions.map(courier => (
-                                        React.createElement('div', { key: courier.name, className: 'border p-4 rounded-md' },
-                                            React.createElement('label', { className: 'flex items-center gap-3 cursor-pointer' },
-                                                React.createElement('input', { type: 'radio', name: 'courier', value: courier.name, checked: selectedCourier === courier.name, onChange: (e) => { setSelectedCourier(e.target.value); setSelectedPackage(null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
-                                                React.createElement('span', { className: 'font-semibold text-lg' }, courier.name)
-                                            ),
-                                            selectedCourier === courier.name && (
-                                                React.createElement('div', { className: 'mt-4 pl-8 space-y-2' },
-                                                    courier.packages.map(pkg => (
-                                                        React.createElement('label', { key: pkg.name, className: 'flex items-center gap-2 cursor-pointer' },
-                                                            React.createElement('input', { type: 'radio', name: 'shippingPackage', value: pkg.name, checked: selectedPackage === pkg.name, onChange: (e) => setSelectedPackage(e.target.value), className: 'form-radio h-4 w-4 text-[#6D4C41]' }),
-                                                            React.createElement('span', null, pkg.name, ' (', 'IDR ', pkg.cost.toLocaleString(), ')')
-                                                        )
-                                                    ))
-                                                )
-                                            )
-                                        )
-                                    ))
-                                ),
-
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2 mt-8' }, 'Pilih Metode Pembayaran'),
-                                React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', { className: 'border p-4 rounded-md' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2 mt-8' }, 'Pilih Metode Pengiriman'),
+                            React.createElement('div', { className: 'space-y-4' },
+                                availableShippingOptions.map(courier => (
+                                    React.createElement('div', { key: courier.name, className: 'border p-4 rounded-md' },
                                         React.createElement('label', { className: 'flex items-center gap-3 cursor-pointer' },
-                                            React.createElement('input', { type: 'radio', name: 'paymentMethod', value: 'Bank Transfer/Virtual Account', checked: selectedPaymentMethod === 'Bank Transfer/Virtual Account', onChange: (e) => { setSelectedPaymentMethod(e.target.value); setSelectedBank(availableBanks[0]?.name || null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
-                                            React.createElement('span', { className: 'font-semibold text-lg' }, 'Bank Transfer / Virtual Account')
+                                            React.createElement('input', { type: 'radio', name: 'courier', value: courier.name, checked: selectedCourier === courier.name, onChange: (e) => { setSelectedCourier(e.target.value); setSelectedPackage(null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
+                                            React.createElement('span', { className: 'font-semibold text-lg' }, courier.name)
                                         ),
-                                        selectedPaymentMethod === 'Bank Transfer/Virtual Account' && (
+                                        selectedCourier === courier.name && (
                                             React.createElement('div', { className: 'mt-4 pl-8 space-y-2' },
-                                                availableBanks.map(bank => (
-                                                    React.createElement('label', { key: bank.id, className: 'flex items-center gap-2 cursor-pointer' },
-                                                        React.createElement('input', { type: 'radio', name: 'selectedBank', value: bank.name, checked: selectedBank === bank.name, onChange: (e) => setSelectedBank(e.target.value), className: 'form-radio h-4 w-4 text-[#6D4C41]' }),
-                                                        React.createElement('span', null, bank.name)
+                                                courier.packages.map(pkg => (
+                                                    React.createElement('label', { key: pkg.name, className: 'flex items-center gap-2 cursor-pointer' },
+                                                        React.createElement('input', { type: 'radio', name: 'shippingPackage', value: pkg.name, checked: selectedPackage === pkg.name, onChange: (e) => setSelectedPackage(e.target.value), className: 'form-radio h-4 w-4 text-[#6D4C41]' }),
+                                                        React.createElement('span', null, pkg.name, ' (', 'IDR ', pkg.cost.toLocaleString(), ')')
                                                     )
                                                 ))
                                             )
                                         )
-                                    ),
-                                    React.createElement('div', { className: 'border p-4 rounded-md' },
-                                        React.createElement('label', { className: 'flex items-center gap-3 cursor-pointer' },
-                                            React.createElement('input', { type: 'radio', name: 'paymentMethod', value: 'Credit Card', checked: selectedPaymentMethod === 'Credit Card', onChange: (e) => { setSelectedPaymentMethod(e.target.value); setSelectedBank(null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
-                                            React.createElement('span', { className: 'font-semibold text-lg' }, 'Credit Card (Coming Soon)')
-                                        )
                                     )
-                                )
+                                ))
                             ),
 
-                            React.createElement('div', { className: 'bg-white p-6 rounded-lg shadow-md h-fit' },
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Ringkasan Pesanan'),
-                                React.createElement('div', { className: 'space-y-2 text-gray-600' },
-                                    cart.map(item => (
-                                        React.createElement('div', { key: item.id, className: 'flex justify-between text-sm' },
-                                            React.createElement('span', null, item.name, ' (', item.selectedSize, ') x ', item.quantity),
-                                            React.createElement('span', null, 'IDR ', (item.price * item.quantity).toLocaleString())
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2 mt-8' }, 'Pilih Metode Pembayaran'),
+                            React.createElement('div', { className: 'space-y-4' },
+                                React.createElement('div', { className: 'border p-4 rounded-md' },
+                                    React.createElement('label', { className: 'flex items-center gap-3 cursor-pointer' },
+                                        React.createElement('input', { type: 'radio', name: 'paymentMethod', value: 'Bank Transfer/Virtual Account', checked: selectedPaymentMethod === 'Bank Transfer/Virtual Account', onChange: (e) => { setSelectedPaymentMethod(e.target.value); setSelectedBank(availableBanks[0]?.name || null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
+                                        React.createElement('span', { className: 'font-semibold text-lg' }, 'Bank Transfer / Virtual Account')
+                                    ),
+                                    selectedPaymentMethod === 'Bank Transfer/Virtual Account' && (
+                                        React.createElement('div', { className: 'mt-4 pl-8 space-y-2' },
+                                            availableBanks.map(bank => (
+                                                React.createElement('label', { key: bank.id, className: 'flex items-center gap-2 cursor-pointer' },
+                                                    React.createElement('input', { type: 'radio', name: 'selectedBank', value: bank.name, checked: selectedBank === bank.name, onChange: (e) => setSelectedBank(e.target.value), className: 'form-radio h-4 w-4 text-[#6D4C41]' }),
+                                                    React.createElement('span', null, bank.name)
+                                                )
+                                            ))
                                         )
-                                    )),
-                                    React.createElement('div', { className: 'flex justify-between pt-2 border-t' }, React.createElement('span', null, 'Subtotal'), React.createElement('span', null, 'IDR ', subtotal.toLocaleString())),
-                                    React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Biaya Pengiriman'), React.createElement('span', null, 'IDR ', shippingCost.toLocaleString()))
+                                    )
                                 ),
-                                React.createElement('div', { className: 'flex justify-between font-bold text-lg my-4 pt-4 border-t' },
-                                    React.createElement('span', null, 'Total'),
-                                    React.createElement('span', null, 'IDR ', total.toLocaleString())
-                                ),
-                                React.createElement('button', { onClick: handlePlaceOrder, className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Bayar Sekarang')
+                                React.createElement('div', { className: 'border p-4 rounded-md' },
+                                    React.createElement('label', { className: 'flex items-center gap-3 cursor-pointer' },
+                                        React.createElement('input', { type: 'radio', name: 'paymentMethod', value: 'Credit Card', checked: selectedPaymentMethod === 'Credit Card', onChange: (e) => { setSelectedPaymentMethod(e.target.value); setSelectedBank(null); }, className: 'form-radio h-5 w-5 text-[#6D4C41]' }),
+                                        React.createElement('span', { className: 'font-semibold text-lg' }, 'Credit Card (Coming Soon)')
+                                    )
+                                )
                             )
+                        ),
+
+                        React.createElement('div', { className: 'bg-white p-6 rounded-lg shadow-md h-fit' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4 border-b pb-2' }, 'Ringkasan Pesanan'),
+                            React.createElement('div', { className: 'space-y-2 text-gray-600' },
+                                cart.map(item => (
+                                    React.createElement('div', { key: item.id, className: 'flex justify-between text-sm' },
+                                        React.createElement('span', null, item.name, ' (', item.selectedSize, ') x ', item.quantity),
+                                        React.createElement('span', null, 'IDR ', (item.price * item.quantity).toLocaleString())
+                                    )
+                                )),
+                                React.createElement('div', { className: 'flex justify-between pt-2 border-t' }, React.createElement('span', null, 'Subtotal'), React.createElement('span', null, 'IDR ', subtotal.toLocaleString())),
+                                React.createElement('div', { className: 'flex justify-between' }, React.createElement('span', null, 'Biaya Pengiriman'), React.createElement('span', null, 'IDR ', shippingCost.toLocaleString()))
+                            ),
+                            React.createElement('div', { className: 'flex justify-between font-bold text-lg my-4 pt-4 border-t' },
+                                React.createElement('span', null, 'Total'),
+                                React.createElement('span', null, 'IDR ', total.toLocaleString())
+                            ),
+                            React.createElement('button', { onClick: handlePlaceOrder, className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Bayar Sekarang')
                         )
                     )
                 )
@@ -1344,10 +1325,9 @@
             const selectedBankDetails = INITIAL_BANKS.find(b => b.name === bank);
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50 min-h-[60vh] flex items-center justify-center' },
+                React.createElement(PageLayout, { title: 'Pesanan Berhasil Dibuat!' },
                     React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl text-center' },
                         React.createElement(IconCheckCircle, { className: 'text-green-500 mx-auto mb-4' }),
-                        React.createElement('h3', { className: 'text-2xl font-bold font-serif text-gray-800 mb-2' }, 'Pesanan Berhasil Dibuat!'),
                         React.createElement('p', { className: 'text-gray-600 mb-6' }, 'Terima kasih atas pesanan Anda. Mohon selesaikan pembayaran untuk melanjutkan.'),
 
                         React.createElement('div', { className: 'border border-dashed border-gray-300 p-6 rounded-lg mb-6 text-left' },
@@ -1393,52 +1373,49 @@
             };
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50 min-h-[60vh]' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Lacak Pesanan Anda'),
-                        React.createElement('form', { onSubmit: handleTrackOrder, className: 'max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg space-y-4' },
-                            React.createElement('div', null,
-                                React.createElement('label', { className: 'form-label' }, 'Masukkan Nomor Resi'),
-                                React.createElement('input', { type: 'text', value: trackingNumberInput, onChange: (e) => setTrackingNumberInput(e.target.value), className: 'form-input', placeholder: 'Contoh: JNE123456789', required: true })
-                            ),
-                            React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, React.createElement(IconSearch, null), ' Lacak Pesanan')
+                React.createElement(PageLayout, { title: 'Lacak Pesanan Anda' },
+                    React.createElement('form', { onSubmit: handleTrackOrder, className: 'max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg space-y-4' },
+                        React.createElement('div', null,
+                            React.createElement('label', { className: 'form-label' }, 'Masukkan Nomor Resi'),
+                            React.createElement('input', { type: 'text', value: trackingNumberInput, onChange: (e) => setTrackingNumberInput(e.target.value), className: 'form-input', placeholder: 'Contoh: JNE123456789', required: true })
                         ),
+                        React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white flex items-center justify-center gap-2' }, React.createElement(IconSearch, null), ' Lacak Pesanan')
+                    ),
 
-                        trackedOrder && (
-                            React.createElement('div', { className: 'mt-8 bg-white p-8 rounded-lg shadow-lg' },
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Status Pesanan: ', trackedOrder.status),
-                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700' },
-                                    React.createElement('div', null,
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Nomor Pesanan: '), trackedOrder.orderId),
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Nomor Resi: '), trackedOrder.trackingNumber),
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Kurir: '), trackedOrder.courier),
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Paket Pengiriman: '), trackedOrder.shippingPackage)
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Alamat Pengiriman: '), trackedOrder.address),
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Total Pembayaran: '), 'IDR ', trackedOrder.total.toLocaleString()),
-                                        React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Tanggal Pesanan: '), new Date(trackedOrder.orderDate).toLocaleDateString())
-                                    )
+                    trackedOrder && (
+                        React.createElement('div', { className: 'mt-8 bg-white p-8 rounded-lg shadow-lg' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Status Pesanan: ', trackedOrder.status),
+                            React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700' },
+                                React.createElement('div', null,
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Nomor Pesanan: '), trackedOrder.orderId),
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Nomor Resi: '), trackedOrder.trackingNumber),
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Kurir: '), trackedOrder.courier),
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Paket Pengiriman: '), trackedOrder.shippingPackage)
                                 ),
-                                React.createElement('div', { className: 'mt-6 border-t pt-4' },
-                                    React.createElement('h4', { className: 'font-semibold mb-2' }, 'Riwayat Pengiriman:'),
-                                    trackedOrder.deliveryHistory && trackedOrder.deliveryHistory.length > 0 ? (
-                                        React.createElement('ul', { className: 'list-disc list-inside space-y-1' },
-                                            trackedOrder.deliveryHistory.map((event, index) => (
-                                                React.createElement('li', { key: index }, React.createElement('span', { className: 'font-medium' }, event.timestamp, ': '), event.status)
-                                            ))
-                                        )
-                                    ) : (
-                                        React.createElement('p', { className: 'text-gray-500' }, 'Belum ada pembaruan pengiriman.')
+                                React.createElement('div', null,
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Alamat Pengiriman: '), trackedOrder.address),
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Total Pembayaran: '), 'IDR ', trackedOrder.total.toLocaleString()),
+                                    React.createElement('p', null, React.createElement('span', { className: 'font-semibold' }, 'Tanggal Pesanan: '), new Date(trackedOrder.orderDate).toLocaleDateString())
+                                )
+                            ),
+                            React.createElement('div', { className: 'mt-6 border-t pt-4' },
+                                React.createElement('h4', { className: 'font-semibold mb-2' }, 'Riwayat Pengiriman:'),
+                                trackedOrder.deliveryHistory && trackedOrder.deliveryHistory.length > 0 ? (
+                                    React.createElement('ul', { className: 'list-disc list-inside space-y-1' },
+                                        trackedOrder.deliveryHistory.map((event, index) => (
+                                            React.createElement('li', { key: index }, React.createElement('span', { className: 'font-medium' }, event.timestamp, ': '), event.status)
+                                        ))
                                     )
+                                ) : (
+                                    React.createElement('p', { className: 'text-gray-500' }, 'Belum ada pembaruan pengiriman.')
                                 )
                             )
-                        ),
-                        trackingError && (
-                            React.createElement('div', { className: 'mt-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative', role: 'alert' },
-                                React.createElement('strong', { className: 'font-bold' }, 'Error! '),
-                                React.createElement('span', { className: 'block sm:inline' }, trackingError)
-                            )
+                        )
+                    ),
+                    trackingError && (
+                        React.createElement('div', { className: 'mt-8 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative', role: 'alert' },
+                            React.createElement('strong', { className: 'font-bold' }, 'Error! '),
+                            React.createElement('span', { className: 'block sm:inline' }, trackingError)
                         )
                     )
                 )
@@ -1489,26 +1466,23 @@
             }
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50 min-h-[60vh]' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Profil Saya'),
-                        React.createElement('div', { className: 'max-w-xl mx-auto bg-white p-8 rounded-lg shadow-lg' },
-                            showSuccess && React.createElement('div', { className: 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' }, 'Profil berhasil diperbarui!'),
-                            React.createElement('form', { onSubmit: handleSubmit, className: 'space-y-4' },
-                                React.createElement('div', null,
-                                    React.createElement('label', { className: 'form-label' }, 'Nama Lengkap'),
-                                    React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleChange, className: 'form-input', required: true })
-                                ),
-                                React.createElement('div', null,
-                                    React.createElement('label', { className: 'form-label' }, 'Alamat Email'),
-                                    React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleChange, className: 'form-input', required: true, disabled: true }) // Email biasanya tidak bisa diubah
-                                ),
-                                React.createElement('div', null,
-                                    React.createElement('label', { className: 'form-label' }, 'Nomor Telepon'),
-                                    React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleChange, className: 'form-input', placeholder: 'cth: 081234567890' })
-                                ),
-                                React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Perubahan')
-                            )
+                React.createElement(PageLayout, { title: 'Profil Saya' },
+                    React.createElement('div', { className: 'max-w-xl mx-auto bg-white p-8 rounded-lg shadow-lg' },
+                        showSuccess && React.createElement('div', { className: 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4' }, 'Profil berhasil diperbarui!'),
+                        React.createElement('form', { onSubmit: handleSubmit, className: 'space-y-4' },
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'form-label' }, 'Nama Lengkap'),
+                                React.createElement('input', { type: 'text', name: 'name', value: formData.name, onChange: handleChange, className: 'form-input', required: true })
+                            ),
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'form-label' }, 'Alamat Email'),
+                                React.createElement('input', { type: 'email', name: 'email', value: formData.email, onChange: handleChange, className: 'form-input', required: true, disabled: true }) // Email biasanya tidak bisa diubah
+                            ),
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'form-label' }, 'Nomor Telepon'),
+                                React.createElement('input', { type: 'tel', name: 'phone', value: formData.phone, onChange: handleChange, className: 'form-input', placeholder: 'cth: 081234567890' })
+                            ),
+                            React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Perubahan')
                         )
                     )
                 )
@@ -1717,7 +1691,11 @@
                         )
                     ),
                     // Product Add/Edit Modal
-                    modalOpen && (React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' }, React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' }, React.createElement('div', { className: 'flex justify-between items-center mb-4' }, React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, productToEdit ? 'Edit Produk' : 'Tambah Produk Baru'), React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))), React.createElement(ProductForm, { onSubmit: handleProductSubmit, product: productToEdit, allProducts: products, siteContent: siteContent, setSiteContent: setSiteContent }))))
+                    React.createElement(AdminModal, {
+                        isOpen: modalOpen,
+                        onClose: () => setModalOpen(false),
+                        title: productToEdit ? 'Edit Produk' : 'Tambah Produk Baru'
+                    }, React.createElement(ProductForm, { onSubmit: handleProductSubmit, product: productToEdit, allProducts: products, siteContent: siteContent, setSiteContent: setSiteContent }))
                 )
             );
         };
@@ -1799,17 +1777,11 @@
                             )
                         )
                     ),
-                    modalOpen && (
-                        React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' },
-                            React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' },
-                                React.createElement('div', { className: 'flex justify-between items-center mb-4' },
-                                    React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, promoToEdit ? 'Edit Promo' : 'Tambah Promo Baru'),
-                                    React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))
-                                ),
-                                React.createElement(PromoForm, { onSubmit: handlePromoSubmit, promo: promoToEdit })
-                            )
-                        )
-                    )
+                    React.createElement(AdminModal, {
+                        isOpen: modalOpen,
+                        onClose: () => setModalOpen(false),
+                        title: promoToEdit ? 'Edit Promo' : 'Tambah Promo Baru'
+                    }, React.createElement(PromoForm, { onSubmit: handlePromoSubmit, promo: promoToEdit }))
                 )
             );
         };
@@ -2030,17 +2002,11 @@
                             )
                         )
                     ),
-                    modalOpen && (
-                        React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' },
-                            React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' },
-                                React.createElement('div', { className: 'flex justify-between items-center mb-4' },
-                                    React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, bankToEdit ? 'Edit Bank' : 'Tambah Bank Baru'),
-                                    React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))
-                                ),
-                                React.createElement(BankForm, { onSubmit: handleBankSubmit, bank: bankToEdit })
-                            )
-                        )
-                    )
+                    React.createElement(AdminModal, {
+                        isOpen: modalOpen,
+                        onClose: () => setModalOpen(false),
+                        title: bankToEdit ? 'Edit Bank' : 'Tambah Bank Baru'
+                    }, React.createElement(BankForm, { onSubmit: handleBankSubmit, bank: bankToEdit }))
                 )
             );
         };
@@ -2155,17 +2121,11 @@
                             )
                         ))
                     ),
-                    modalOpen && (
-                        React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[70] flex items-center justify-center' },
-                            React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-black' },
-                                React.createElement('div', { className: 'flex justify-between items-center mb-4' },
-                                    React.createElement('h3', { className: 'text-2xl font-bold font-serif' }, courierToEdit ? 'Edit Kurir' : 'Tambah Kurir Baru'),
-                                    React.createElement('button', { onClick: () => setModalOpen(false) }, React.createElement(IconX, null))
-                                ),
-                                React.createElement(CourierForm, { onSubmit: handleCourierSubmit, courier: courierToEdit })
-                            )
-                        )
-                    )
+                    React.createElement(AdminModal, {
+                        isOpen: modalOpen,
+                        onClose: () => setModalOpen(false),
+                        title: courierToEdit ? 'Edit Kurir' : 'Tambah Kurir Baru'
+                    }, React.createElement(CourierForm, { onSubmit: handleCourierSubmit, courier: courierToEdit }))
                 )
             );
         };
@@ -2440,43 +2400,88 @@
 
         // AdminMenuLayout Component: A dedicated component for managing the main menu layout.
         const AdminMenuLayout = ({ siteContent, setSiteContent }) => {
+            // Refs to store the index of the item being dragged and the item it's dragged over.
             const dragItem = useRef(null);
             const dragOverItem = useRef(null);
+            // State to apply visual styles during drag-and-drop.
             const [dragging, setDragging] = useState(false);
 
+            // Function to handle the reordering of main menu items.
             const handleMenuSort = () => {
+                // Prevent reordering if the item is dropped in the same position.
                 if (dragItem.current === null || dragOverItem.current === null || dragItem.current === dragOverItem.current) {
                     setDragging(false);
                     return;
                 }
+                // Create a new array from the current menu state.
                 const newMainMenu = [...siteContent.mainMenu];
+                // Remove the dragged item from its original position.
                 const draggedItemContent = newMainMenu.splice(dragItem.current, 1)[0];
+                // Insert the dragged item into the new position.
                 newMainMenu.splice(dragOverItem.current, 0, draggedItemContent);
+                // Reset refs and state.
                 dragItem.current = null;
                 dragOverItem.current = null;
                 setDragging(false);
+                // Update the site content with the new menu order.
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
             const handleMenuItemChange = (index, key, value) => {
                 const newMainMenu = [...siteContent.mainMenu];
-                newMainMenu[index] = { ...newMainMenu[index], [key]: value };
+                const updatedItem = { ...newMainMenu[index], [key]: value };
+
+                if (key === 'type') {
+                    // Reset properties when type changes to avoid data inconsistencies
+                    if (value === 'internal') {
+                        delete updatedItem.url;
+                        updatedItem.target = 'home'; // Default to home
+                        updatedItem.param = null;
+                    } else if (value === 'external') {
+                        delete updatedItem.target;
+                        delete updatedItem.param;
+                        updatedItem.url = '#'; // Default to #
+                    } else if (value === 'dropdown') {
+                        delete updatedItem.target;
+                        delete updatedItem.param;
+                        delete updatedItem.url;
+                        if (!updatedItem.children) {
+                            updatedItem.children = []; // Ensure children array exists
+                        }
+                    }
+                }
+
+                newMainMenu[index] = updatedItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
             const handleSubMenuItemChange = (parentIndex, childIndex, key, value) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 const parentItem = { ...newMainMenu[parentIndex] };
-                if (!parentItem.children) {
-                    parentItem.children = [];
+                if (!parentItem.children || !parentItem.children[childIndex]) return;
+
+                const updatedSubItem = { ...parentItem.children[childIndex], [key]: value };
+
+                if (key === 'type') {
+                    if (value === 'internal') {
+                        delete updatedSubItem.children; // Remove children if changing to internal link
+                        updatedSubItem.target = 'home';
+                        updatedSubItem.param = null;
+                    } else if (value === 'nested-dropdown') {
+                        delete updatedSubItem.target;
+                        delete updatedSubItem.param;
+                        if (!updatedSubItem.children) {
+                            updatedSubItem.children = [];
+                        }
+                    }
                 }
-                if (parentItem.children[childIndex]) {
-                    parentItem.children[childIndex] = { ...parentItem.children[childIndex], [key]: value };
-                }
+
+                parentItem.children[childIndex] = updatedSubItem;
                 newMainMenu[parentIndex] = parentItem;
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
+            // This function is similar to handleMenuSort but operates on a nested `children` array for sub-menus.
             const handleSubMenuSort = (parentIndex) => {
                 if (dragItem.current === null || dragOverItem.current === null || dragItem.current === dragOverItem.current) {
                     setDragging(false);
@@ -3037,60 +3042,57 @@
             };
 
             return (
-                React.createElement('div', { className: 'py-20 bg-gray-50' },
-                    React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, 'Ruang Coba Virtual'),
-                        React.createElement('p', { className: 'text-center max-w-2xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Tidak yakin dengan ukuran Anda? Masukkan data tubuh Anda di bawah ini dan kami akan memberikan rekomendasi ukuran yang paling sesuai.'),
-                        React.createElement('div', { className: 'grid md:grid-cols-2 gap-8' },
-                            React.createElement('div', { className: 'bg-white p-8 rounded-lg shadow-lg' },
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Masukkan Ukuran Anda'),
-                                React.createElement('form', { onSubmit: handleCalculate, className: 'space-y-4' },
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconRulerCombined, null), ' Tinggi Badan (cm)'),
-                                        React.createElement('input', { type: 'number', value: measurements.height, onChange: (e) => setMeasurements({ ...measurements, height: e.target.value }), className: 'form-input', placeholder: 'cth: 175', required: true })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconWeight, null), ' Berat Badan (kg)'),
-                                        React.createElement('input', { type: 'number', value: measurements.weight, onChange: (e) => setMeasurements({ ...measurements, weight: e.target.value }), className: 'form-input', placeholder: 'cth: 70', required: true })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconBody, null), ' Bentuk Tubuh'),
-                                        React.createElement('select', { value: measurements.bodyShape, onChange: (e) => setMeasurements({ ...measurements, bodyShape: e.target.value }), className: 'form-input' },
-                                            React.createElement('option', null, 'Rata-rata'),
-                                            React.createElement('option', null, 'Kurus'),
-                                            React.createElement('option', null, 'Atletis'),
-                                            React.createElement('option', null, 'Berisi')
-                                        )
-                                    ),
-                                    React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Dapatkan Rekomendasi')
-                                )
-                            ),
-                            React.createElement('div', { className: 'bg-white p-8 rounded-lg shadow-lg' },
-                                React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Rekomendasi Ukuran Kami'),
-                                recommendations ? (
-                                    React.createElement('div', { className: 'grid grid-cols-2 gap-4' },
-                                        React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
-                                            React.createElement('p', { className: 'font-semibold' }, 'T-Shirt'),
-                                            React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.tShirt)
-                                        ),
-                                        React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
-                                            React.createElement('p', { className: 'font-semibold' }, 'Kemeja'),
-                                            React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.shirt)
-                                        ),
-                                        React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
-                                            React.createElement('p', { className: 'font-semibold' }, 'Celana'),
-                                            React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.pants)
-                                        ),
-                                        React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
-                                            React.createElement('p', { className: 'font-semibold' }, 'Jaket'),
-                                            React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.jacket)
-                                        )
-                                    )
-                                ) : (
-                                    React.createElement('p', { className: 'text-center text-gray-500 pt-10' }, 'Hasil rekomendasi akan muncul di sini.')
+                React.createElement(PageLayout, { title: 'Ruang Coba Virtual' },
+                    React.createElement('p', { className: 'text-center max-w-2xl mx-auto text-gray-600 -mt-8 mb-12' }, 'Tidak yakin dengan ukuran Anda? Masukkan data tubuh Anda di bawah ini dan kami akan memberikan rekomendasi ukuran yang paling sesuai.'),
+                    React.createElement('div', { className: 'grid md:grid-cols-2 gap-8' },
+                        React.createElement('div', { className: 'bg-white p-8 rounded-lg shadow-lg' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Masukkan Ukuran Anda'),
+                            React.createElement('form', { onSubmit: handleCalculate, className: 'space-y-4' },
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconRulerCombined, null), ' Tinggi Badan (cm)'),
+                                    React.createElement('input', { type: 'number', value: measurements.height, onChange: (e) => setMeasurements({ ...measurements, height: e.target.value }), className: 'form-input', placeholder: 'cth: 175', required: true })
                                 ),
-                                recommendations && React.createElement('p', { className: 'text-xs text-gray-400 mt-4 text-center' }, '*Rekomendasi ini adalah perkiraan. Ukuran dapat bervariasi tergantung potongan produk.')
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconWeight, null), ' Berat Badan (kg)'),
+                                    React.createElement('input', { type: 'number', value: measurements.weight, onChange: (e) => setMeasurements({ ...measurements, weight: e.target.value }), className: 'form-input', placeholder: 'cth: 70', required: true })
+                                ),
+                                React.createElement('div', null,
+                                    React.createElement('label', { className: 'form-label flex items-center gap-2' }, React.createElement(IconBody, null), ' Bentuk Tubuh'),
+                                    React.createElement('select', { value: measurements.bodyShape, onChange: (e) => setMeasurements({ ...measurements, bodyShape: e.target.value }), className: 'form-input' },
+                                        React.createElement('option', null, 'Rata-rata'),
+                                        React.createElement('option', null, 'Kurus'),
+                                        React.createElement('option', null, 'Atletis'),
+                                        React.createElement('option', null, 'Berisi')
+                                    )
+                                ),
+                                React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Dapatkan Rekomendasi')
                             )
+                        ),
+                        React.createElement('div', { className: 'bg-white p-8 rounded-lg shadow-lg' },
+                            React.createElement('h3', { className: 'font-serif text-xl font-bold mb-4' }, 'Rekomendasi Ukuran Kami'),
+                            recommendations ? (
+                                React.createElement('div', { className: 'grid grid-cols-2 gap-4' },
+                                    React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
+                                        React.createElement('p', { className: 'font-semibold' }, 'T-Shirt'),
+                                        React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.tShirt)
+                                    ),
+                                    React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
+                                        React.createElement('p', { className: 'font-semibold' }, 'Kemeja'),
+                                        React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.shirt)
+                                    ),
+                                    React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
+                                        React.createElement('p', { className: 'font-semibold' }, 'Celana'),
+                                        React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.pants)
+                                    ),
+                                    React.createElement('div', { className: 'bg-gray-100 p-4 rounded-md text-center' },
+                                        React.createElement('p', { className: 'font-semibold' }, 'Jaket'),
+                                        React.createElement('p', { className: 'text-3xl font-bold text-[#6D4C41]' }, recommendations.jacket)
+                                    )
+                                )
+                            ) : (
+                                React.createElement('p', { className: 'text-center text-gray-500 pt-10' }, 'Hasil rekomendasi akan muncul di sini.')
+                            ),
+                            recommendations && React.createElement('p', { className: 'text-xs text-gray-400 mt-4 text-center' }, '*Rekomendasi ini adalah perkiraan. Ukuran dapat bervariasi tergantung potongan produk.')
                         )
                     )
                 )
@@ -3113,11 +3115,14 @@
         // --- MAIN APP COMPONENT ---
         // The main application component that manages state and renders different pages.
         function App() {
+            // --- STATE MANAGEMENT ---
+            // View state determines which page or component is currently visible to the user.
             const [view, setView] = useState({ page: 'home', param: null }); // Manages current page view
             const [adminView, setAdminView] = useState('dashboard'); // Manages current admin panel view
             const [modalView, setModalView] = useState(null); // Manages active modal ('search', etc.)
             const [showSuccessMessage, setShowSuccessMessage] = useState(false); // Controls success message visibility
 
+            // Data state holds all the application's data, persisted to localStorage.
             const [products, setProducts] = usePersistentState('kazumi-products', INITIAL_PRODUCTS);
             const [cart, setCart] = usePersistentState('kazumi-cart', []);
             const [currentUser, setCurrentUser] = usePersistentState('kazumi-currentUser', null);
@@ -3195,48 +3200,52 @@
             };
 
             const [siteContent, setSiteContent] = usePersistentState('kazumi-siteContent', initialSiteContent);
-            // Draft content for admin panel
+            // --- DRAFT CONTENT SYSTEM for Admin Panel ---
+            // To allow admins to make changes without affecting the live site immediately,
+            // we maintain a separate 'draft' copy of the site content.
             const [draftSiteContent, setDraftSiteContent] = usePersistentState('kazumi-draftSiteContent', siteContent);
 
-            // Track if there are unsaved changes
+            // `hasUnsavedChanges` is a boolean that checks if the draft is different from the live content.
+            // This is used to show the 'Save/Discard' bar in the admin panel.
             const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(draftSiteContent);
 
-            // Effect to sync draft content when an admin logs in
+            // This effect synchronizes the draft content with the live content when an admin logs in.
+            // This prevents an admin from accidentally editing a stale draft from a previous session.
             useEffect(() => {
                 if (currentUser && currentUser.role === 'admin') {
-                    // When an admin logs in, reset their draft to match the live site.
-                    // This ensures they don't accidentally edit a stale draft.
                     setDraftSiteContent(siteContent);
                 }
             }, [currentUser]); // This effect runs whenever the user logs in or out.
 
-            // Function to save changes
+            // `handleSaveChanges` publishes the draft content to the live site.
             const handleSaveChanges = () => {
                 setSiteContent(draftSiteContent);
                 alert('Perubahan telah disimpan dan dipublikasikan!');
             };
 
-            // Function to discard changes
+            // `handleDiscardChanges` reverts any changes made in the draft.
             const handleDiscardChanges = () => {
                 setDraftSiteContent(siteContent);
                 alert('Perubahan yang belum disimpan telah dibatalkan.');
             };
 
-            // Handles changing the main view of the application
+            // --- CORE APP FUNCTIONS ---
+
+            // `handleSetView` is the main navigation function for the app.
             const handleSetView = (page, param = null) => {
                 setView({ page, param });
                 window.scrollTo(0, 0); // Scroll to top on page change
             };
 
-            // Handles changing the view within the admin panel
+            // `handleSetAdminView` handles navigation within the admin panel.
             const handleSetAdminView = (page) => {
                 setAdminView(page);
             };
 
-            // Callback for form submissions that should show a success message
+            // `handleOrderSubmit` is a callback for form submissions that should show a success message.
             const handleOrderSubmit = () => { setShowSuccessMessage(true); };
 
-            // Handles user login
+            // `handleLogin` manages user authentication and registration.
             const handleLogin = (user) => {
                 const existingUser = users.find(u => u.email === user.email);
                 if (existingUser) {
