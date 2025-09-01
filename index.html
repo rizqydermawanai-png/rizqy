@@ -3128,4 +3128,206 @@
                             { id: 'tshirt-regular', label: 'Regular', type: 'internal', target: 'sub-category', param: 'Regular', isVisible: true },
                             { id: 'tshirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
                             { id: 'tshirt-oversized', label: 'Oversized', type: 'internal', target: 'sub-category', param: 'Oversized', isVisible: true },
-                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'sub-category',
+                            { id: 'tshirt-oversize-box', label: 'Oversize Box', type: 'internal', target: 'sub-category', param: 'Oversize Box', isVisible: true },
+                        ]},
+                        { id: 'shirt', label: 'Shirt', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'sub-category', param: 'Slim Fit', isVisible: true },
+                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
+                            { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'sub-category', param: 'Flannel', isVisible: true },
+                        ]},
+                        { id: 'pants', label: 'Pants', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'sub-category', param: 'Chino', isVisible: true },
+                            { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'sub-category', param: 'Jeans', isVisible: true },
+                            { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'sub-category', param: 'Formal', isVisible: true },
+                        ]},
+                        { id: 'jacket', label: 'Jacket', type: 'nested-dropdown', isVisible: true, children: [
+                            { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'sub-category', param: 'Bomber', isVisible: true },
+                            { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'sub-category', param: 'Denim', isVisible: true },
+                            { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'sub-category', param: 'Leather', isVisible: true },
+                        ]},
+                        { id: 'accessories', label: 'Accessories', type: 'internal', target: 'category', param: 'Accessories', isVisible: true, icon: null },
+                    ]},
+                    { id: 'collections', label: 'Collections', type: 'internal', target: 'special-collections', isVisible: true, icon: null },
+                    { id: 'fitting-room', label: 'Fitting Room', type: 'internal', target: 'fitting-room', isVisible: true, icon: null },
+                    { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: false, icon: null },
+                    { id: 'order-tracking', label: 'Lacak Pesanan', type: 'internal', target: 'order-tracking', isVisible: true, icon: null },
+                ],
+            };
+
+            // Live site content
+            const [siteContent, setSiteContent] = usePersistentState('kazumi-siteContent', initialSiteContent);
+            // Draft content for admin panel
+            const [draftSiteContent, setDraftSiteContent] = usePersistentState('kazumi-draftSiteContent', siteContent);
+
+            // Track if there are unsaved changes
+            const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(draftSiteContent);
+
+            // Effect to sync draft content when an admin logs in
+            useEffect(() => {
+                if (currentUser && currentUser.role === 'admin') {
+                    // When an admin logs in, reset their draft to match the live site.
+                    // This ensures they don't accidentally edit a stale draft.
+                    setDraftSiteContent(siteContent);
+                }
+            }, [currentUser]); // This effect runs whenever the user logs in or out.
+
+            // Function to save changes
+            const handleSaveChanges = () => {
+                setSiteContent(draftSiteContent);
+                alert('Perubahan telah disimpan dan dipublikasikan!');
+            };
+
+            // Function to discard changes
+            const handleDiscardChanges = () => {
+                setDraftSiteContent(siteContent);
+                alert('Perubahan yang belum disimpan telah dibatalkan.');
+            };
+
+            // Handles changing the main view of the application
+            const handleSetView = (page, param = null) => {
+                setView({ page, param });
+                window.scrollTo(0, 0); // Scroll to top on page change
+            };
+
+            // Handles changing the view within the admin panel
+            const handleSetAdminView = (page) => {
+                setAdminView(page);
+            };
+
+            // Callback for form submissions that should show a success message
+            const handleOrderSubmit = () => { setShowSuccessMessage(true); };
+
+            // Handles user login
+            const handleLogin = (user) => {
+                const existingUser = users.find(u => u.email === user.email);
+                if (existingUser) {
+                    // Secure password check for all users
+                    if (existingUser.password === user.password) {
+                        setCurrentUser(existingUser);
+                        handleSetView('home');
+                    } else {
+                        alert('Email atau password salah.');
+                    }
+                } else {
+                    // This is the registration case
+                    const newUser = { id: Date.now(), name: user.name, email: user.email, phone: user.phone, password: user.password, isActive: true, role: 'customer' };
+                    setUsers(prevUsers => [...prevUsers, newUser]);
+                    setCurrentUser(newUser);
+                    handleSetView('home');
+                }
+            };
+            // Handles user logout
+            const handleLogout = () => { setCurrentUser(null); };
+
+            // Adds a product to the cart or updates its quantity if already present
+            const addToCart = (product, selectedSize) => {
+                setCart(prevCart => {
+                    const existingItem = prevCart.find(item => item.id === product.id && item.selectedSize === selectedSize);
+                    if (existingItem) {
+                        return prevCart.map(item =>
+                            item.id === product.id && item.selectedSize === selectedSize
+                                ? { ...item, quantity: item.quantity + 1 }
+                                : item
+                        );
+                    }
+                    return [...prevCart, { ...product, selectedSize, quantity: 1 }];
+                });
+                handleSetView('cart'); // Navigate to cart page after adding
+            };
+
+            // Handles placing an order from the checkout page
+            const handleOrderPlaced = (orderDetails) => {
+                setOrders(prevOrders => [...prevOrders, orderDetails]);
+                setCart([]); // Clear cart after order is placed
+            };
+
+            // Renders the appropriate page component based on the current 'view' state
+            const renderPage = () => {
+                const page = view.page;
+                // Admin panel routing
+                if (page.startsWith('admin')) {
+                    if (!currentUser || currentUser.role !== 'admin') {
+                        return React.createElement('div', { className: 'py-20 text-center' }, 'Akses ditolak. Anda tidak memiliki izin untuk melihat halaman ini.', React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); handleSetView('home'); }, className: 'text-blue-600' }, 'Kembali ke beranda.'));
+                    }
+                    return React.createElement(AdminLayout, {
+                        adminView,
+                        setAdminView: handleSetAdminView,
+                        hasUnsavedChanges,
+                        onSave: handleSaveChanges,
+                        onDiscard: handleDiscardChanges
+                    },
+                        adminView === 'dashboard' && React.createElement(AdminDashboard, { products, promos, users, orders }),
+                        adminView === 'products' && React.createElement(AdminProducts, { products, setProducts, siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
+                        adminView === 'collections' && React.createElement(AdminCollections, { products, setProducts }),
+                        adminView === 'content' && React.createElement(AdminContent, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
+                        adminView === 'menu-layout' && React.createElement(AdminMenuLayout, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
+                        adminView === 'category-display' && React.createElement(AdminCategoryShowcase, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
+                        adminView === 'featured-categories' && React.createElement(AdminFeaturedCategories, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
+                        adminView === 'promos' && React.createElement(AdminPromos, { promos, setPromos }),
+                        adminView === 'orders' && React.createElement(AdminOrders, { orders, setOrders }),
+                        adminView === 'payments' && React.createElement(AdminPayments, { availableBanks, setAvailableBanks }),
+                        adminView === 'shipping' && React.createElement(AdminShipping, { availableShippingOptions, setAvailableShippingOptions }),
+                        adminView === 'users' && React.createElement(AdminUsers, { users, setUsers }),
+                        adminView === 'settings' && React.createElement(AdminSettings, null)
+                    );
+                }
+                // Public page routing
+                switch (page) {
+                    case 'home':
+                        return React.createElement(React.Fragment, null,
+                            React.createElement(Hero, { setView: handleSetView, siteContent }),
+                            React.createElement(PopularCategories, { products, setView: handleSetView, siteContent }),
+                            React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent }),
+                            React.createElement(OrderPreviews, { setView: handleSetView }),
+                            React.createElement(Promo, { siteContent }),
+                            React.createElement(FeaturedCategory, { categoryName: "T-Shirt", products, siteContent, setView: handleSetView }),
+                            React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
+                            React.createElement(FeaturedCategory, { categoryName: "Pants", products, siteContent, setView: handleSetView }),
+                            React.createElement(DownloadApp, null)
+                        );
+                    case 'category':
+                        return React.createElement(CategoryPage, { category: view.param, products, setView: handleSetView, siteContent });
+                    case 'sub-category':
+                        return React.createElement(SubCategoryPage, { pageParams: view.param, products, setView: handleSetView });
+                    case 'product':
+                        return React.createElement(ProductDetailPage, { productId: view.param, products, setView: handleSetView, addToCart });
+                    case 'special-collections':
+                        return React.createElement(SpecialCollectionsPage, { products, siteContent });
+                    case 'custom-order':
+                        return React.createElement(CustomOrderPage, { onOrderSubmit: handleOrderSubmit });
+                    case 'bulk-purchase':
+                        return React.createElement(BulkPurchasePage, { onOrderSubmit: handleOrderSubmit });
+                    case 'fitting-room':
+                        return React.createElement(FittingRoomPage, null);
+                    case 'login':
+                        return React.createElement(LoginPage, { setView: handleSetView, handleLogin });
+                    case 'cart':
+                        return React.createElement(CartPage, { cart, setCart, setView: handleSetView });
+                    case 'checkout':
+                        return React.createElement(CheckoutPage, { cart, setView: handleSetView, onOrderPlaced: handleOrderPlaced, availableBanks, availableShippingOptions });
+                    case 'order-success':
+                        return React.createElement(OrderSuccessPage, { orderDetails: view.param, setView: handleSetView });
+                    case 'order-tracking':
+                        return React.createElement(OrderTrackingPage, { orders });
+                    case 'profile':
+                        return React.createElement(ProfilePage, { currentUser, setCurrentUser, setView: handleSetView });
+                    default:
+                        return React.createElement('div', { className: 'py-20 text-center' }, 'Halaman tidak ditemukan.');
+                }
+            };
+
+            return (
+                React.createElement('div', null,
+                    React.createElement(Header, { setView: handleSetView, setModalView, cart, currentUser, handleLogout, siteContent }),
+                    React.createElement('main', null, renderPage()),
+                    React.createElement(Footer, null),
+                    showSuccessMessage && React.createElement(FormSuccessMessage, { onClose: () => setShowSuccessMessage(false) })
+                )
+            );
+        }
+
+        // Render the main App component into the root element
+        ReactDOM.render(React.createElement(App), document.getElementById('root'));
+    </script>
+</body>
+</html>
