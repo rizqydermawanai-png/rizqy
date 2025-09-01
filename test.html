@@ -33,6 +33,9 @@
         // Import React hooks from ESM CDN
         import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
+        import { DndContext, PointerSensor, useSensor, useSensors, closestCenter } from 'https://esm.sh/@dnd-kit/core@6.1.0';
+        import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from 'https://esm.sh/@dnd-kit/sortable@7.0.2';
+        import { CSS } from 'https://esm.sh/@dnd-kit/utilities@3.2.2';
 
         // --- CUSTOM HOOKS ---
         // Hook to persist state in localStorage
@@ -114,6 +117,7 @@
         const IconClipboardCheck = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2' }), React.createElement('path', { d: 'M12 2v4' }), React.createElement('path', { d: 'M12 18v-4' }), React.createElement('path', { d: 'm9 10 2 2 4-4' }));
         const IconScissors = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '40', height: '40', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('circle', { cx: '6', cy: '6', r: '3' }), React.createElement('circle', { cx: '6', cy: '18', r: '3' }), React.createElement('line', { x1: '20', y1: '4', x2: '8.12', y2: '15.88' }), React.createElement('line', { x1: '14.47', y1: '14.47', x2: '20', y2: '20' }), React.createElement('line', { x1: '8.12', y1: '8.12', x2: '12', y2: '12' }));
         const IconBoxes = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '40', height: '40', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round' }, React.createElement('path', { d: 'M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z' }), React.createElement('path', { d: 'm3.3 7 8.7 5 8.7-5' }), React.createElement('path', { d: 'M12 22V12' }), React.createElement('path', { d: 'M16 6.53v-2.53a2 2 0 0 0-1-1.73l-3-1.74a2 2 0 0 0-2 0l-3 1.74A2 2 0 0 0 6 4v2.53' }), React.createElement('path', { d: 'M16.5 10.76 21 8' }));
+        const IconGripVertical = () => React.createElement('svg', { xmlns: 'http://www.w3.org/2000/svg', width: '16', height: '16', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2', strokeLinecap: 'round', strokeLinejoin: 'round', className: 'cursor-move' }, React.createElement('circle', { cx: '9', cy: '12', r: '1' }), React.createElement('circle', { cx: '9', cy: '5', r: '1' }), React.createElement('circle', { cx: '9', cy: '19', r: '1' }), React.createElement('circle', { cx: '15', cy: '12', r: '1' }), React.createElement('circle', { cx: '15', cy: '5', r: '1' }), React.createElement('circle', { cx: '15', cy: '19', r: '1' }));
 
         // --- DATA ---
         // Initial product data
@@ -1532,8 +1536,7 @@
                 { id: 'dashboard', icon: React.createElement(IconChartBar, null), text: "Dashboard" },
                 { id: 'products', icon: React.createElement(IconBox, null), text: "Kelola Produk" },
                 { id: 'collections', icon: React.createElement(IconCollection, null), text: "Kelola Koleksi" },
-                { id: 'content', icon: React.createElement(IconFileText, null), text: "Kelola Konten" },
-                { id: 'menu-layout', icon: React.createElement(IconImage, null), text: "Tata Letak Menu" },
+                { id: 'content', icon: React.createElement(IconFileText, null), text: "Kelola Konten & Tata Letak" },
                 { id: 'category-display', icon: React.createElement(IconImage, null), text: "Kelola Tampilan Kategori" },
                 { id: 'featured-categories', icon: React.createElement(IconCollection, null), text: "Kelola Kategori Unggulan" },
                 { id: 'promos', icon: React.createElement(IconTags, null), text: "Kelola Promo" },
@@ -2374,38 +2377,96 @@
                             React.createElement('label', { className: 'form-label' }, 'Biaya Pengiriman Default (IDR)'),
                             React.createElement('input', { type: 'number', name: 'shippingCost', value: settings.shippingCost, onChange: handleChange, className: 'form-input' })
                         ),
-                        React.createElement('button', { type: 'submit', className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Pengaturan')
+                        React.createElement('button', { type: 'submit', className: 'w-full btn bg-[#6D4C41] hover:bg-[#4E342E] text-white' }, 'Simpan Pengaturan')
                     )
                 )
             );
         };
 
 
-        // AdminMenuLayout Component: A dedicated component for managing the main menu layout.
-        const AdminMenuLayout = ({ siteContent, setSiteContent }) => {
+        // const SortableItem = ({ item, children }) => {
+        //     const {
+        //         attributes,
+        //         listeners,
+        //         setNodeRef,
+        //         transform,
+        //         transition,
+        //     } = useSortable({ id: item.id });
+
+        //     const style = {
+        //         transform: CSS.Transform.toString(transform),
+        //         transition,
+        //     };
+
+        //     return (
+        //         React.createElement('div', { ref: setNodeRef, style: style, ...attributes, ...listeners },
+        //             children
+        //         )
+        //     );
+        // };
+
+        const ImageUploadField = ({ label, imageUrl, onImageChange }) => {
+            const inputRef = useRef(null);
+
+            const handleContainerClick = () => {
+                inputRef.current.click();
+            };
+
+            const handleFileChange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    onImageChange(file);
+                }
+            };
+
+            return (
+                React.createElement('div', { className: 'space-y-1' },
+                    React.createElement('label', { className: 'form-label' }, label),
+                    React.createElement('div', {
+                        onClick: handleContainerClick,
+                        className: 'mt-1 flex justify-center items-center h-48 px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-gray-400 bg-gray-50'
+                    },
+                        imageUrl ?
+                            React.createElement('img', { src: imageUrl, alt: 'Preview', className: 'max-h-full rounded-md object-contain' }) :
+                            React.createElement('div', { className: 'space-y-1 text-center' },
+                                React.createElement(IconImage, { className: 'mx-auto h-12 w-12 text-gray-400' }),
+                                React.createElement('p', { className: 'text-sm text-gray-600' }, 'Klik untuk mengunggah'),
+                                React.createElement('p', { className: 'text-xs text-gray-500' }, 'PNG, JPG, GIF')
+                            )
+                    ),
+                    React.createElement('input', {
+                        ref: inputRef,
+                        type: 'file',
+                        accept: 'image/*',
+                        onChange: handleFileChange,
+                        className: 'hidden'
+                    })
+                )
+            );
+        };
+
+        const MenuLayoutTab = ({ siteContent, setSiteContent }) => {
+            // const sensors = useSensors(useSensor(PointerSensor));
+
+            const handleDragEnd = (event) => {
+                const {active, over} = event;
+                if (active.id !== over.id) {
+                    setSiteContent((prev) => {
+                        const oldIndex = prev.mainMenu.findIndex(item => item.id === active.id);
+                        const newIndex = prev.mainMenu.findIndex(item => item.id === over.id);
+                        return { ...prev, mainMenu: arrayMove(prev.mainMenu, oldIndex, newIndex) };
+                    });
+                }
+            };
+
             const handleMenuItemChange = (index, key, value) => {
                 const newMainMenu = [...siteContent.mainMenu];
                 newMainMenu[index] = { ...newMainMenu[index], [key]: value };
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
-            const handleSubMenuItemChange = (parentIndex, childIndex, key, value) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const parentItem = { ...newMainMenu[parentIndex] };
-                if (!parentItem.children) {
-                    parentItem.children = [];
-                }
-                if (parentItem.children[childIndex]) {
-                    parentItem.children[childIndex] = { ...parentItem.children[childIndex], [key]: value };
-                }
-                newMainMenu[parentIndex] = parentItem;
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
-            };
-
-            const removeSubMenuItem = (parentIndex, childIndex) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const newChildren = newMainMenu[parentIndex].children.filter((_, i) => i !== childIndex);
-                newMainMenu[parentIndex] = { ...newMainMenu[parentIndex], children: newChildren };
+            const removeMenuItem = (index) => {
+                const newMainMenu = siteContent.mainMenu.filter((_, i) => i !== index);
                 setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
@@ -2416,257 +2477,50 @@
                 }));
             };
 
-            const removeMenuItem = (index) => {
-                const newMainMenu = siteContent.mainMenu.filter((_, i) => i !== index);
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
-            };
+            return (
+                React.createElement('div', null,
+                    React.createElement('p', {className: 'text-sm text-gray-600 mb-4'}, 'Seret dan lepas item untuk mengubah urutan menu utama (Drag and drop disabled for debugging).'),
+                    React.createElement('div', { className: 'space-y-2' },
+                        siteContent.mainMenu.map((item, index) => (
+                            React.createElement('div', { key: item.id, className: 'flex items-center gap-2 p-2 border rounded-md bg-white shadow-sm' },
+                                React.createElement(IconGripVertical, null),
+                                React.createElement('span', { className: 'font-medium flex-grow' }, item.label),
+                                React.createElement('span', { className: 'text-xs text-gray-500' }, `(${item.type})`),
+                                React.createElement('input', { type: 'checkbox', checked: item.isVisible, onChange: (e) => handleMenuItemChange(index, 'isVisible', e.target.checked), className: 'ml-2' }),
+                                React.createElement('label', { className: 'text-xs' }, 'Visible'),
+                                React.createElement('button', { type: 'button', onClick: () => removeMenuItem(index), className: 'text-red-500 hover:text-red-700 ml-2' }, React.createElement(IconTrash, null))
+                            )
+                        ))
+                    ),
+                    React.createElement('button', { type: 'button', onClick: addMenuItem, className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4' }, 'Tambah Item Menu Baru')
+                )
+            );
+        };
 
-            const addSubMenuItem = (parentIndex) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const parentItem = { ...newMainMenu[parentIndex] };
-                if (!parentItem.children) {
-                    parentItem.children = [];
-                }
-                parentItem.children.push({ id: `sub-${Date.now()}`, label: 'New Sub-Item', type: 'internal', target: 'home', isVisible: true });
-                newMainMenu[parentIndex] = parentItem;
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
-            };
+        const HomepageLayoutTab = ({ siteContent, setSiteContent }) => {
+            // const sensors = useSensors(useSensor(PointerSensor));
 
-            const handleNestedSubMenuItemChange = (parentIndex, subIndex, nestedSubIndex, key, value) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const parentItem = { ...newMainMenu[parentIndex] };
-                const subItem = { ...parentItem.children[subIndex] };
-                if (!subItem.children) {
-                    subItem.children = [];
+            const handleHomepageDragEnd = (event) => {
+                const {active, over} = event;
+                if (active.id !== over.id) {
+                    setSiteContent((prev) => {
+                        const oldIndex = prev.homepageSections.findIndex(section => section.id === active.id);
+                        const newIndex = prev.homepageSections.findIndex(section => section.id === over.id);
+                        return { ...prev, homepageSections: arrayMove(prev.homepageSections, oldIndex, newIndex) };
+                    });
                 }
-                if (subItem.children[nestedSubIndex]) {
-                    subItem.children[nestedSubIndex] = { ...subItem.children[nestedSubIndex], [key]: value };
-                }
-                parentItem.children[subIndex] = subItem;
-                newMainMenu[parentIndex] = parentItem;
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
-            };
-
-            const addNestedSubMenuItem = (parentIndex, subIndex) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const parentItem = { ...newMainMenu[parentIndex] };
-                const subItem = { ...parentItem.children[subIndex] };
-                if (!subItem.children) {
-                    subItem.children = [];
-                }
-                subItem.children.push({ id: `nested-sub-${Date.now()}`, label: 'New Nested Sub-Item', type: 'internal', target: 'home', isVisible: true });
-                parentItem.children[subIndex] = subItem;
-                newMainMenu[parentIndex] = parentItem;
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
-            };
-
-            const removeNestedSubMenuItem = (parentIndex, subIndex, nestedSubIndex) => {
-                const newMainMenu = [...siteContent.mainMenu];
-                const parentItem = { ...newMainMenu[parentIndex] };
-                const subItem = { ...parentItem.children[subIndex] };
-                const newNestedChildren = subItem.children.filter((_, i) => i !== nestedSubIndex);
-                subItem.children = newNestedChildren;
-                parentItem.children[subIndex] = subItem;
-                newMainMenu[parentIndex] = parentItem;
-                setSiteContent(prev => ({ ...prev, mainMenu: newMainMenu }));
             };
 
             return (
                 React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Tata Letak Menu Utama'),
-                     React.createElement('div', { className: 'space-y-6' },
-                        React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                            React.createElement('legend', { className: 'px-2 font-semibold' }, 'Pengelolaan Menu Utama'),
-                            siteContent.mainMenu.map((item, index) => (
-                                React.createElement('div', { key: item.id, className: 'border-b pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0' },
-                                    React.createElement('div', { className: 'flex justify-between items-center mb-2' },
-                                        React.createElement('h4', { className: 'font-semibold' }, 'Item Menu: ', item.label),
-                                        React.createElement('button', { type: 'button', onClick: () => removeMenuItem(index), className: 'text-red-500 hover:text-red-700 text-sm' }, 'Hapus Item')
-                                    ),
-                                    React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-4' },
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Label Menu'),
-                                            React.createElement('input', { type: 'text', value: item.label, onChange: (e) => handleMenuItemChange(index, 'label', e.target.value), className: 'form-input' })
-                                        ),
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Tipe Menu'),
-                                            React.createElement('select', { value: item.type, onChange: (e) => handleMenuItemChange(index, 'type', e.target.value), className: 'form-input' },
-                                                React.createElement('option', { value: 'internal' }, 'Halaman Internal'),
-                                                React.createElement('option', { value: 'external' }, 'Link Eksternal'),
-                                                React.createElement('option', { value: 'dropdown' }, 'Dropdown')
-                                            )
-                                        ),
-                                        item.type === 'internal' && (
-                                            React.createElement(React.Fragment, null,
-                                                React.createElement('div', null,
-                                                    React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
-                                                    React.createElement('select', { value: item.target, onChange: (e) => handleMenuItemChange(index, 'target', e.target.value), className: 'form-input' },
-                                                        React.createElement('option', { value: 'home' }, 'Home'),
-                                                        React.createElement('option', { value: 'category' }, 'Kategori Produk'),
-                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
-                                                        React.createElement('option', { value: 'product' }, 'Detail Produk (membutuhkan ID)'),
-                                                        React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
-                                                        React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
-                                                        React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
-                                                        React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
-                                                        React.createElement('option', { value: 'login' }, 'Login'),
-                                                        React.createElement('option', { value: 'cart' }, 'Keranjang'),
-                                                        React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
-                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
-                                                    )
-                                                ),
-                                                item.target === 'category' && (
-                                                    React.createElement('div', null,
-                                                        React.createElement('label', { className: 'form-label' }, 'Parameter Kategori'),
-                                                        React.createElement('select', { value: item.param || '', onChange: (e) => handleMenuItemChange(index, 'param', e.target.value), className: 'form-input' },
-                                                            CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
-                                                        )
-                                                    )
-                                                ),
-                                                item.target === 'sub-category' && (
-                                                    React.createElement('div', null,
-                                                        React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
-                                                        React.createElement('input', { type: 'text', value: item.param || '', onChange: (e) => handleMenuItemChange(index, 'param', e.target.value), className: 'form-input', placeholder: 'cth: Regular Fit' })
-                                                    )
-                                                )
-                                            )
-                                        ),
-                                        item.type === 'external' && (
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'URL Eksternal'),
-                                                React.createElement('input', { type: 'text', value: item.url || '', onChange: (e) => handleMenuItemChange(index, 'url', e.target.value), className: 'form-input', placeholder: 'https://example.com' })
-                                            )
-                                        ),
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Terlihat'),
-                                            React.createElement('input', { type: 'checkbox', checked: item.isVisible, onChange: (e) => handleMenuItemChange(index, 'isVisible', e.target.checked), className: 'ml-2' })
-                                        ),
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Nama Ikon (opsional)'),
-                                            React.createElement('input', { type: 'text', value: item.icon || '', onChange: (e) => handleMenuItemChange(index, 'icon', e.target.value), className: 'form-input', placeholder: 'misal: IconShirt' })
-                                        )
-                                    ),
-                                    item.type === 'dropdown' && (
-                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-50 rounded-md' },
-                                            React.createElement('h5', { className: 'font-semibold mb-2' }, 'Sub-Menu'),
-                                            item.children && item.children.map((subItem, subIndex) => (
-                                                React.createElement('div', { key: subItem.id, className: 'border-b pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0' },
-                                                    React.createElement('div', { className: 'flex justify-between items-center mb-1' },
-                                                        React.createElement('h6', { className: 'text-sm font-medium' }, 'Sub-Item: ', subItem.label),
-                                                        React.createElement('button', { type: 'button', onClick: () => removeSubMenuItem(index, subIndex), className: 'text-red-400 hover:text-red-600 text-xs' }, 'Hapus')
-                                                    ),
-                                                    React.createElement('div', { className: 'grid grid-cols-2 gap-2 text-sm' },
-                                                        React.createElement('div', null,
-                                                            React.createElement('label', { className: 'form-label' }, 'Label'),
-                                                            React.createElement('input', { type: 'text', value: subItem.label, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'label', e.target.value), className: 'form-input !py-1 !text-sm' })
-                                                        ),
-                                                        React.createElement('div', null,
-                                                            React.createElement('label', { className: 'form-label' }, 'Tipe'),
-                                                            React.createElement('select', { value: subItem.type, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'type', e.target.value), className: 'form-input !py-1 !text-sm' },
-                                                                React.createElement('option', { value: 'internal' }, 'Halaman Internal'),
-                                                                React.createElement('option', { value: 'nested-dropdown' }, 'Nested Dropdown')
-                                                            )
-                                                        ),
-                                                        subItem.type === 'internal' && (
-                                                            React.createElement('div', null,
-                                                                React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
-                                                                React.createElement('select', { value: subItem.target, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'target', e.target.value), className: 'form-input !py-1 !text-sm' },
-                                                                    React.createElement('option', { value: 'home' }, 'Home'),
-                                                                    React.createElement('option', { value: 'category' }, 'Kategori Produk'),
-                                                                    React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
-                                                                    React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
-                                                                    React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
-                                                                    React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
-                                                                    React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
-                                                                    React.createElement('option', { value: 'login' }, 'Login'),
-                                                                    React.createElement('option', { value: 'cart' }, 'Keranjang'),
-                                                                    React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
-                                                                    React.createElement('option', { value: 'profile' }, 'Profil Saya')
-                                                                )
-                                                            )
-                                                        ),
-                                                        subItem.target === 'category' && (
-                                                            React.createElement('div', null,
-                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Kategori'),
-                                                                React.createElement('select', { value: subItem.param || '', onChange: (e) => handleSubMenuItemChange(index, subIndex, 'param', e.target.value), className: 'form-input !py-1 !text-sm' },
-                                                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
-                                                                )
-                                                            )
-                                                        ),
-                                                        subItem.target === 'sub-category' && (
-                                                            React.createElement('div', null,
-                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
-                                                                React.createElement('input', { type: 'text', value: subItem.param || '', onChange: (e) => handleSubMenuItemChange(index, subIndex, 'param', e.target.value), className: 'form-input !py-1 !text-sm', placeholder: 'cth: Regular Fit' })
-                                                            )
-                                                        ),
-                                                        React.createElement('div', null,
-                                                            React.createElement('label', { className: 'form-label' }, 'Terlihat'),
-                                                            React.createElement('input', { type: 'checkbox', checked: subItem.isVisible, onChange: (e) => handleSubMenuItemChange(index, subIndex, 'isVisible', e.target.checked), className: 'ml-2' })
-                                                        )
-                                                    ),
-                                                    subItem.type === 'nested-dropdown' && (
-                                                        React.createElement('div', { className: 'mt-4 p-3 bg-gray-100 rounded-md' },
-                                                            React.createElement('h6', { className: 'font-semibold mb-2' }, 'Nested Sub-Menu'),
-                                                            subItem.children && subItem.children.map((nestedSubItem, nestedSubIndex) => (
-                                                                React.createElement('div', { key: nestedSubItem.id, className: 'border-b pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0' },
-                                                                    React.createElement('div', { className: 'flex justify-between items-center mb-1' },
-                                                                        React.createElement('p', { className: 'text-xs font-medium' }, 'Nested Item: ', nestedSubItem.label),
-                                                                        React.createElement('button', { type: 'button', onClick: () => removeNestedSubMenuItem(index, subIndex, nestedSubIndex), className: 'text-red-300 hover:text-red-500 text-xs' }, 'Hapus')
-                                                                    ),
-                                                                    React.createElement('div', { className: 'grid grid-cols-2 gap-2 text-xs' },
-                                                                        React.createElement('div', null,
-                                                                            React.createElement('label', { className: 'form-label' }, 'Label'),
-                                                                            React.createElement('input', { type: 'text', value: nestedSubItem.label, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'label', e.target.value), className: 'form-input !py-1 !text-xs' })
-                                                                        ),
-                                                                        React.createElement('div', null,
-                                                                            React.createElement('label', { className: 'form-label' }, 'Target Halaman'),
-                                                                            React.createElement('select', { value: nestedSubItem.target, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'target', e.target.value), className: 'form-input !py-1 !text-xs' },
-                                                                                React.createElement('option', { value: 'home' }, 'Home'),
-                                                                                React.createElement('option', { value: 'category' }, 'Kategori Produk'),
-                                                                                React.createElement('option', { value: 'sub-category' }, 'Sub-Kategori Produk'),
-                                                                                React.createElement('option', { value: 'special-collections' }, 'Koleksi Spesial'),
-                                                                                React.createElement('option', { value: 'custom-order' }, 'Pesanan Kustom'),
-                                                                                React.createElement('option', { value: 'bulk-purchase' }, 'Pembelian Jumlah Besar'),
-                                                                                React.createElement('option', { value: 'fitting-room' }, 'Fitting Room'),
-                                                                                React.createElement('option', { value: 'login' }, 'Login'),
-                                                                                React.createElement('option', { value: 'cart' }, 'Keranjang'),
-                                                                                React.createElement('option', { value: 'order-tracking' }, 'Lacak Pesanan'),
-                                                                                React.createElement('option', { value: 'profile' }, 'Profil Saya')
-                                                                            )
-                                                                        ),
-                                                                        nestedSubItem.target === 'category' && (
-                                                                            React.createElement('div', null,
-                                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Kategori'),
-                                                                                React.createElement('select', { value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs' },
-                                                                                    CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat))
-                                                                                )
-                                                                            )
-                                                                        ),
-                                                                        nestedSubItem.target === 'sub-category' && (
-                                                                            React.createElement('div', null,
-                                                                                React.createElement('label', { className: 'form-label' }, 'Parameter Sub-Kategori'),
-                                                                                React.createElement('input', { type: 'text', value: nestedSubItem.param || '', onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'param', e.target.value), className: 'form-input !py-1 !text-xs', placeholder: 'cth: Regular Fit' })
-                                                                            )
-                                                                        ),
-                                                                        React.createElement('div', null,
-                                                                            React.createElement('label', { className: 'form-label' }, 'Terlihat'),
-                                                                            React.createElement('input', { type: 'checkbox', checked: nestedSubItem.isVisible, onChange: (e) => handleNestedSubMenuItemChange(index, subIndex, nestedSubIndex, 'isVisible', e.target.checked), className: 'ml-2' })
-                                                                        )
-                                                                    )
-                                                                )
-                                                            )),
-                                                            React.createElement('button', { type: 'button', onClick: () => addNestedSubMenuItem(index, subIndex), className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-1 !px-3 !text-xs mt-2' }, 'Tambah Nested Sub-Item')
-                                                        )
-                                                    )
-                                                )
-                                            )),
-                                            React.createElement('button', { type: 'button', onClick: () => addSubMenuItem(index), className: 'btn bg-gray-200 hover:bg-gray-300 text-black !py-2 !px-4 !text-sm mt-4' }, 'Tambah Sub-Item')
-                                        )
-                                    )
-                                )
-                            )),
-                            React.createElement('button', { type: 'button', onClick: addMenuItem, className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm mt-4' }, 'Tambah Item Menu Baru')
-                        )
+                    React.createElement('p', {className: 'text-sm text-gray-600 mb-4'}, 'Seret dan lepas untuk mengubah urutan section di beranda (Drag and drop disabled for debugging).'),
+                    React.createElement('div', { className: 'space-y-2' },
+                        siteContent.homepageSections.map(section => (
+                            React.createElement('div', { key: section.id, className: 'flex items-center gap-2 p-3 border rounded-md bg-white shadow-sm' },
+                                React.createElement(IconGripVertical, null),
+                                React.createElement('span', { className: 'font-medium' }, section.name)
+                            )
+                        ))
                     )
                 )
             );
@@ -2674,51 +2528,50 @@
 
         // AdminContent Component: Allows admin to edit various text content on the website.
         const AdminContent = ({ siteContent, setSiteContent }) => {
-            const [activeTab, setActiveTab] = useState('utama'); // 'utama', 'gambar'
+            const [activeTab, setActiveTab] = useState('utama'); // 'utama', 'gambar', 'menu', 'homepage'
 
+            // --- Handlers from original AdminContent ---
             const handleContentChange = (section, key, value) => {
                 setSiteContent(prev => ({
                     ...prev,
-                    [section]: {
-                        ...prev[section],
-                        [key]: value
-                    }
+                    [section]: { ...prev[section], [key]: value }
                 }));
             };
-
-            // New handler for hero slide image changes
             const handleHeroImageChange = (index, file) => {
                 if (file) {
                     const fileUrl = URL.createObjectURL(file);
                     setSiteContent(prev => {
-                        const newHeroSlides = [...prev.heroSlides]; // Assuming heroSlides is now part of siteContent
+                        const newHeroSlides = [...prev.heroSlides];
                         newHeroSlides[index] = { ...newHeroSlides[index], img: fileUrl };
                         return { ...prev, heroSlides: newHeroSlides };
                     });
                 }
             };
-
-            // **NEW HANDLER FOR SPECIAL COLLECTION IMAGE CHANGES**
             const handleCollectionImageChange = (collectionKey, file) => {
                 if (file) {
                     const fileUrl = URL.createObjectURL(file);
                     setSiteContent(prev => ({
                         ...prev,
-                        specialCollections: { // Assuming SPECIAL_COLLECTIONS is now part of siteContent
+                        specialCollections: {
                             ...prev.specialCollections,
-                            [collectionKey]: {
-                                ...prev.specialCollections[collectionKey],
-                                img: fileUrl
-                            }
+                            [collectionKey]: { ...prev.specialCollections[collectionKey], img: fileUrl }
                         }
                     }));
                 }
             };
+            const handleHeroSlideContentChange = (index, key, value) => {
+                 const newHeroSlides = [...siteContent.heroSlides];
+                newHeroSlides[index] = { ...newHeroSlides[index], [key]: value };
+                setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
+            };
 
+            // --- Combined Rendering ---
             const renderTabs = () => {
                 const tabs = [
                     { id: 'utama', label: 'Konten Utama' },
-                    { id: 'gambar', label: 'Gambar & Slideshow' }
+                    { id: 'gambar', label: 'Gambar & Slideshow' },
+                    { id: 'menu', label: 'Tata Letak Menu' },
+                    { id: 'homepage', label: 'Tata Letak Homepage' }
                 ];
                 return (
                     React.createElement('div', { className: 'mb-6 border-b' },
@@ -2737,23 +2590,10 @@
 
             return (
                 React.createElement('div', null,
-                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Konten Website'),
+                    React.createElement('h3', { className: 'font-serif text-2xl font-bold mb-6' }, 'Kelola Konten & Tata Letak'),
                     renderTabs(),
                     React.createElement('div', { className: 'space-y-6' },
                         activeTab === 'utama' && React.createElement(React.Fragment, null,
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Hero Section (Slide Pertama)'),
-                                React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Judul Utama'),
-                                        React.createElement('input', { type: 'text', value: siteContent.hero.title, onChange: (e) => handleContentChange('hero', 'title', e.target.value), className: 'form-input' })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Subjudul'),
-                                        React.createElement('textarea', { value: siteContent.hero.subtitle, onChange: (e) => handleContentChange('hero', 'subtitle', e.target.value), className: 'form-input', rows: '2' })
-                                    )
-                                )
-                            ),
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Judul Section'),
                                 React.createElement('div', { className: 'grid md:grid-cols-2 gap-4' },
@@ -2778,109 +2618,47 @@
                             )
                         ),
                         activeTab === 'gambar' && React.createElement(React.Fragment, null,
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
+                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Slide Hero'),
-                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
+                                React.createElement('div', { className: 'space-y-8' },
                                     siteContent.heroSlides.map((slide, index) => (
-                                        React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-full space-y-2' },
-                                            React.createElement('h4', { className: 'font-semibold' }, `Slide ${index + 1}`),
+                                        React.createElement('div', { key: slide.id, className: 'p-4 border rounded-lg w-full space-y-4 bg-gray-50' },
+                                            React.createElement('h4', { className: 'font-semibold text-lg' }, `Slide ${index + 1}`),
                                             React.createElement('div', null,
                                                 React.createElement('label', { className: 'form-label' }, 'Judul Slide'),
-                                                React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => {
-                                                    const newHeroSlides = [...siteContent.heroSlides];
-                                                    newHeroSlides[index] = { ...newHeroSlides[index], title: e.target.value };
-                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
-                                                }, className: 'form-input' })
+                                                React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => handleHeroSlideContentChange(index, 'title', e.target.value), className: 'form-input' })
                                             ),
                                             React.createElement('div', null,
                                                 React.createElement('label', { className: 'form-label' }, 'Subjudul Slide'),
-                                                React.createElement('textarea', { value: slide.subtitle, onChange: (e) => {
-                                                    const newHeroSlides = [...siteContent.heroSlides];
-                                                    newHeroSlides[index] = { ...newHeroSlides[index], subtitle: e.target.value };
-                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
-                                                }, className: 'form-input', rows: '2' })
+                                                React.createElement('textarea', { value: slide.subtitle, onChange: (e) => handleHeroSlideContentChange(index, 'subtitle', e.target.value), className: 'form-input', rows: '2' })
                                             ),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Gambar Slide'),
-                                                React.createElement('div', { className: 'flex items-center gap-2' },
-                                                    slide.img && React.createElement('img', { src: slide.img, alt: `Slide ${index + 1} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
-                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleHeroImageChange(index, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
-                                                )
-                                            )
+                                            React.createElement(ImageUploadField, {
+                                                label: 'Gambar Slide',
+                                                imageUrl: slide.img,
+                                                onImageChange: (file) => handleHeroImageChange(index, file)
+                                            })
                                         )
                                     ))
                                 )
                             ),
                             React.createElement('fieldset', { className: 'border p-4 rounded-md' },
                                 React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Gambar Koleksi Spesial'),
-                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
+                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
                                     Object.entries(siteContent.specialCollections).map(([key, collection]) => (
-                                        React.createElement('div', { key: key, className: 'p-2 border rounded-md w-full space-y-2' },
-                                            React.createElement('h4', { className: 'font-semibold' }, collection.name),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'),
-                                                React.createElement('div', { className: 'flex items-center gap-2' },
-                                                    collection.img && React.createElement('img', { src: collection.img, alt: `${collection.name} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
-                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleCollectionImageChange(key, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
-                                                )
-                                            )
+                                        React.createElement('div', { key: key, className: 'p-4 border rounded-lg w-full space-y-2 bg-gray-50' },
+                                            React.createElement('h4', { className: 'font-semibold text-lg' }, collection.name),
+                                            React.createElement(ImageUploadField, {
+                                                label: 'Gambar Koleksi',
+                                                imageUrl: collection.img,
+                                                onImageChange: (file) => handleCollectionImageChange(key, file)
+                                            })
                                         )
                                     ))
                                 )
                             )
                         ),
-                        activeTab === 'gambar' && React.createElement(React.Fragment, null,
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Slide Hero'),
-                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
-                                    siteContent.heroSlides.map((slide, index) => (
-                                        React.createElement('div', { key: slide.id, className: 'p-2 border rounded-md w-full space-y-2' },
-                                            React.createElement('h4', { className: 'font-semibold' }, `Slide ${index + 1}`),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Judul Slide'),
-                                                React.createElement('input', { type: 'text', value: slide.title, onChange: (e) => {
-                                                    const newHeroSlides = [...siteContent.heroSlides];
-                                                    newHeroSlides[index] = { ...newHeroSlides[index], title: e.target.value };
-                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
-                                                }, className: 'form-input' })
-                                            ),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Subjudul Slide'),
-                                                React.createElement('textarea', { value: slide.subtitle, onChange: (e) => {
-                                                    const newHeroSlides = [...siteContent.heroSlides];
-                                                    newHeroSlides[index] = { ...newHeroSlides[index], subtitle: e.target.value };
-                                                    setSiteContent(prev => ({ ...prev, heroSlides: newHeroSlides }));
-                                                }, className: 'form-input', rows: '2' })
-                                            ),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Gambar Slide'),
-                                                React.createElement('div', { className: 'flex items-center gap-2' },
-                                                    slide.img && React.createElement('img', { src: slide.img, alt: `Slide ${index + 1} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
-                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleHeroImageChange(index, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
-                                                )
-                                            )
-                                        )
-                                    ))
-                                )
-                            ),
-                            React.createElement('fieldset', { className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold' }, 'Manajemen Gambar Koleksi Spesial'),
-                                React.createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' },
-                                    Object.entries(siteContent.specialCollections).map(([key, collection]) => (
-                                        React.createElement('div', { key: key, className: 'p-2 border rounded-md w-full space-y-2' },
-                                            React.createElement('h4', { className: 'font-semibold' }, collection.name),
-                                            React.createElement('div', null,
-                                                React.createElement('label', { className: 'form-label' }, 'Gambar Koleksi'),
-                                                React.createElement('div', { className: 'flex items-center gap-2' },
-                                                    collection.img && React.createElement('img', { src: collection.img, alt: `${collection.name} Preview`, className: 'w-16 h-12 object-cover rounded shrink-0 border' }),
-                                                    React.createElement('input', { type: 'file', accept: 'image/*', onChange: (e) => handleCollectionImageChange(key, e.target.files[0]), className: 'form-input !p-1 !text-xs' })
-                                                )
-                                            )
-                                        )
-                                    ))
-                                )
-                            )
-                        )
+                        activeTab === 'menu' && React.createElement(MenuLayoutTab, { siteContent, setSiteContent }),
+                        activeTab === 'homepage' && React.createElement(HomepageLayoutTab, { siteContent, setSiteContent })
                     )
                 )
             );
@@ -3055,6 +2833,15 @@
                     { categoryName: 'Pants' },
                     { categoryName: 'Jacket' },
                 ],
+                homepageSections: [
+                    { id: 'popular', name: 'Produk Terlaris' },
+                    { id: 'orders', name: 'Layanan Pesanan' },
+                    { id: 'collections', name: 'Koleksi Spesial' },
+                    { id: 'featured-categories', name: 'Kategori Unggulan' },
+                    { id: 'category-slider', name: 'Slider Kategori' },
+                    { id: 'promo', name: 'Banner Promo' },
+                    { id: 'download', name: 'Download Aplikasi' }
+                ],
                 mainMenu: [
                     { id: 'home', label: 'Home', type: 'internal', target: 'home', isVisible: true, icon: null },
                     { id: 'shop', label: 'Shop', type: 'dropdown', isVisible: true, icon: null, children: [
@@ -3066,94 +2853,68 @@
                         ]},
                         { id: 'shirt', label: 'Shirt', type: 'nested-dropdown', isVisible: true, children: [
                             { id: 'shirt-slim-fit', label: 'Slim Fit', type: 'internal', target: 'sub-category', param: 'Slim Fit', isVisible: true },
-                            { id: 'shirt-regular-fit', label: 'Regular Fit', type: 'internal', target: 'sub-category', param: 'Regular Fit', isVisible: true },
                             { id: 'shirt-flannel', label: 'Flannel', type: 'internal', target: 'sub-category', param: 'Flannel', isVisible: true },
                         ]},
                         { id: 'pants', label: 'Pants', type: 'nested-dropdown', isVisible: true, children: [
                             { id: 'pants-chino', label: 'Chino', type: 'internal', target: 'sub-category', param: 'Chino', isVisible: true },
-                            { id: 'pants-jeans', label: 'Jeans', type: 'internal', target: 'sub-category', param: 'Jeans', isVisible: true },
-                            { id: 'pants-formal', label: 'Formal', type: 'internal', target: 'sub-category', param: 'Formal', isVisible: true },
                         ]},
                         { id: 'jacket', label: 'Jacket', type: 'nested-dropdown', isVisible: true, children: [
-                            { id: 'jacket-bomber', label: 'Bomber', type: 'internal', target: 'sub-category', param: 'Bomber', isVisible: true },
                             { id: 'jacket-denim', label: 'Denim', type: 'internal', target: 'sub-category', param: 'Denim', isVisible: true },
-                            { id: 'jacket-leather', label: 'Leather', type: 'internal', target: 'sub-category', param: 'Leather', isVisible: true },
                         ]},
-                        { id: 'accessories', label: 'Accessories', type: 'internal', target: 'category', param: 'Accessories', isVisible: true, icon: null },
                     ]},
-                    { id: 'collections', label: 'Collections', type: 'internal', target: 'special-collections', isVisible: true, icon: null },
-                    { id: 'fitting-room', label: 'Fitting Room', type: 'internal', target: 'fitting-room', isVisible: true, icon: null },
-                    { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: false, icon: null },
-                    { id: 'order-tracking', label: 'Lacak Pesanan', type: 'internal', target: 'order-tracking', isVisible: true, icon: null },
-                ],
+                    { id: 'collections-menu', label: 'Collections', type: 'internal', target: 'special-collections', isVisible: true, icon: null },
+                    { id: 'services', label: 'Services', type: 'dropdown', isVisible: true, icon: null, children: [
+                        { id: 'custom-order', label: 'Custom Order', type: 'internal', target: 'custom-order', isVisible: true },
+                        { id: 'bulk-purchase', label: 'Bulk Purchase', type: 'internal', target: 'bulk-purchase', isVisible: true },
+                        { id: 'fitting-room', label: 'Virtual Fitting Room', type: 'internal', target: 'fitting-room', isVisible: true },
+                    ]},
+                    { id: 'contact-us', label: 'Contact Us', type: 'external', url: '#contact', isVisible: true, icon: null }
+                ]
             };
 
-            // Live site content
             const [siteContent, setSiteContent] = usePersistentState('kazumi-siteContent', initialSiteContent);
-            // Draft content for admin panel
-            const [draftSiteContent, setDraftSiteContent] = usePersistentState('kazumi-draftSiteContent', siteContent);
 
-            // Track if there are unsaved changes
-            const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(draftSiteContent);
 
-            // Effect to sync draft content when an admin logs in
-            useEffect(() => {
-                if (currentUser && currentUser.role === 'admin') {
-                    // When an admin logs in, reset their draft to match the live site.
-                    // This ensures they don't accidentally edit a stale draft.
-                    setDraftSiteContent(siteContent);
-                }
-            }, [currentUser]); // This effect runs whenever the user logs in or out.
-
-            // Function to save changes
-            const handleSaveChanges = () => {
-                setSiteContent(draftSiteContent);
-                alert('Perubahan telah disimpan dan dipublikasikan!');
-            };
-
-            // Function to discard changes
-            const handleDiscardChanges = () => {
-                setDraftSiteContent(siteContent);
-                alert('Perubahan yang belum disimpan telah dibatalkan.');
-            };
-
-            // Handles changing the main view of the application
-            const handleSetView = (page, param = null) => {
+            // --- GLOBAL FUNCTIONS ---
+            const changeView = (page, param = null) => {
                 setView({ page, param });
                 window.scrollTo(0, 0); // Scroll to top on page change
             };
 
-            // Handles changing the view within the admin panel
-            const handleSetAdminView = (page) => {
-                setAdminView(page);
-            };
-
-            // Callback for form submissions that should show a success message
-            const handleOrderSubmit = () => { setShowSuccessMessage(true); };
-
-            // Handles user login
-            const handleLogin = (user) => {
-                const existingUser = users.find(u => u.email === user.email);
-                if (existingUser) {
-                    // Secure password check for all users
-                    if (existingUser.password === user.password) {
-                        setCurrentUser(existingUser);
-                        handleSetView('home');
-                    } else {
-                        alert('Email atau password salah.');
-                    }
+            const handleLogin = (credentials) => {
+                const user = users.find(u => u.email === credentials.email && u.password === credentials.password);
+                if (user && user.isActive) {
+                    setCurrentUser(user);
+                    changeView('home');
+                } else if (user && !user.isActive) {
+                    alert('Akun Anda tidak aktif. Silakan hubungi administrator.');
                 } else {
-                    // This is the registration case
-                    const newUser = { id: Date.now(), name: user.name, email: user.email, phone: user.phone, password: user.password, isActive: true, role: 'customer' };
-                    setUsers(prevUsers => [...prevUsers, newUser]);
-                    setCurrentUser(newUser);
-                    handleSetView('home');
+                    // Check if it's a registration attempt
+                    const isRegistering = !users.some(u => u.email === credentials.email);
+                    if (isRegistering) {
+                        const newUser = {
+                            id: Date.now(),
+                            name: credentials.name,
+                            email: credentials.email,
+                            password: credentials.password, // In a real app, hash this!
+                            phone: credentials.phone,
+                            role: 'customer',
+                            isActive: true
+                        };
+                        setUsers([...users, newUser]);
+                        setCurrentUser(newUser);
+                        changeView('home');
+                    } else {
+                        alert('Email atau kata sandi salah.');
+                    }
                 }
             };
-            // Handles user logout
-            const handleLogout = () => { setCurrentUser(null); };
 
-            // Adds a product to the cart or updates its quantity if already present
+            const handleLogout = () => {
+                setCurrentUser(null);
+                changeView('home');
+            };
+
             const addToCart = (product, selectedSize) => {
                 setCart(prevCart => {
                     const existingItem = prevCart.find(item => item.id === product.id && item.selectedSize === selectedSize);
@@ -3163,104 +2924,129 @@
                                 ? { ...item, quantity: item.quantity + 1 }
                                 : item
                         );
+                    } else {
+                        return [...prevCart, { ...product, selectedSize, quantity: 1 }];
                     }
-                    return [...prevCart, { ...product, selectedSize, quantity: 1 }];
                 });
-                handleSetView('cart'); // Navigate to cart page after adding
+                alert(`${product.name} (${selectedSize}) telah ditambahkan ke keranjang!`);
             };
 
-            // Handles placing an order from the checkout page
-            const handleOrderPlaced = (orderDetails) => {
+            const onOrderPlaced = (orderDetails) => {
                 setOrders(prevOrders => [...prevOrders, orderDetails]);
                 setCart([]); // Clear cart after order is placed
             };
 
-            // Renders the appropriate page component based on the current 'view' state
+            const onOrderSubmit = () => {
+                setShowSuccessMessage(true);
+            };
+
+            // --- UNSAVED CHANGES LOGIC ---
+            const [savedSiteContent, setSavedSiteContent] = useState(JSON.parse(JSON.stringify(siteContent)));
+            const hasUnsavedChanges = JSON.stringify(siteContent) !== JSON.stringify(savedSiteContent);
+
+            const handleSaveChanges = () => {
+                setSavedSiteContent(JSON.parse(JSON.stringify(siteContent)));
+                alert('Perubahan telah disimpan dan dipublikasikan!');
+            };
+
+            const handleDiscardChanges = () => {
+                setSiteContent(JSON.parse(JSON.stringify(savedSiteContent)));
+            };
+
             const renderPage = () => {
-                const page = view.page;
-                // Admin panel routing
-                if (page.startsWith('admin')) {
-                    if (!currentUser || currentUser.role !== 'admin') {
-                        return React.createElement('div', { className: 'py-20 text-center' }, 'Akses ditolak. Anda tidak memiliki izin untuk melihat halaman ini.', React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); handleSetView('home'); }, className: 'text-blue-600' }, 'Kembali ke beranda.'));
-                    }
-                    return React.createElement(AdminLayout, {
-                        adminView,
-                        setAdminView: handleSetAdminView,
-                        hasUnsavedChanges,
-                        onSave: handleSaveChanges,
-                        onDiscard: handleDiscardChanges
-                    },
-                        adminView === 'dashboard' && React.createElement(AdminDashboard, { products, promos, users, orders }),
-                        adminView === 'products' && React.createElement(AdminProducts, { products, setProducts, siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
-                        adminView === 'collections' && React.createElement(AdminCollections, { products, setProducts }),
-                        adminView === 'content' && React.createElement(AdminContent, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
-                        adminView === 'menu-layout' && React.createElement(AdminMenuLayout, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
-                        adminView === 'category-display' && React.createElement(AdminCategoryShowcase, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
-                        adminView === 'featured-categories' && React.createElement(AdminFeaturedCategories, { siteContent: draftSiteContent, setSiteContent: setDraftSiteContent }),
-                        adminView === 'promos' && React.createElement(AdminPromos, { promos, setPromos }),
-                        adminView === 'orders' && React.createElement(AdminOrders, { orders, setOrders }),
-                        adminView === 'payments' && React.createElement(AdminPayments, { availableBanks, setAvailableBanks }),
-                        adminView === 'shipping' && React.createElement(AdminShipping, { availableShippingOptions, setAvailableShippingOptions }),
-                        adminView === 'users' && React.createElement(AdminUsers, { users, setUsers }),
-                        adminView === 'settings' && React.createElement(AdminSettings, null)
-                    );
-                }
-                // Public page routing
-                switch (page) {
+                switch (view.page) {
                     case 'home':
-                        return React.createElement(React.Fragment, null,
-                            React.createElement(Hero, { setView: handleSetView, siteContent }),
-                            React.createElement(PopularCategories, { products, setView: handleSetView, siteContent }),
-                            React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent }),
-                            React.createElement(OrderPreviews, { setView: handleSetView }),
-                            React.createElement(Promo, { siteContent }),
-                            React.createElement(FeaturedCategory, { categoryName: "T-Shirt", products, siteContent, setView: handleSetView }),
-                            React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
-                            React.createElement(FeaturedCategory, { categoryName: "Pants", products, siteContent, setView: handleSetView }),
-                            React.createElement(DownloadApp, null)
+                        return (
+                            React.createElement('main', null,
+                                React.createElement(Hero, { setView: changeView, siteContent: siteContent }),
+                                siteContent.homepageSections.map(section => {
+                                    switch (section.id) {
+                                        case 'popular':
+                                            return React.createElement(PopularCategories, { key: section.id, products: products, setView: changeView, siteContent: siteContent });
+                                        case 'collections':
+                                            return React.createElement(SpecialCollectionsPreview, { key: section.id, setView: changeView, siteContent: siteContent });
+                                        case 'orders':
+                                            return React.createElement(OrderPreviews, { key: section.id, setView: changeView });
+                                        case 'featured-categories':
+                                            return React.createElement(React.Fragment, { key: section.id },
+                                                siteContent.featuredCategories.map(fc =>
+                                                    React.createElement(FeaturedCategory, { key: fc.categoryName, categoryName: fc.categoryName, products: products, siteContent: siteContent, setView: changeView })
+                                                )
+                                            );
+                                        case 'category-slider':
+                                            return React.createElement(CategorySlider, { key: section.id, categories: siteContent.categoryShowcase });
+                                        case 'promo':
+                                            return React.createElement(Promo, { key: section.id, siteContent: siteContent });
+                                        case 'download':
+                                            return React.createElement(DownloadApp, { key: section.id });
+                                        default:
+                                            return null;
+                                    }
+                                })
+                            )
                         );
                     case 'category':
-                        return React.createElement(CategoryPage, { category: view.param, products, setView: handleSetView, siteContent });
+                        return React.createElement(CategoryPage, { category: view.param, products: products, setView: changeView, siteContent: siteContent });
                     case 'sub-category':
-                        return React.createElement(SubCategoryPage, { pageParams: view.param, products, setView: handleSetView });
+                        return React.createElement(SubCategoryPage, { pageParams: view.param, products: products, setView: changeView });
                     case 'product':
-                        return React.createElement(ProductDetailPage, { productId: view.param, products, setView: handleSetView, addToCart });
+                        return React.createElement(ProductDetailPage, { productId: view.param, products, setView: changeView, addToCart });
                     case 'special-collections':
                         return React.createElement(SpecialCollectionsPage, { products, siteContent });
                     case 'custom-order':
-                        return React.createElement(CustomOrderPage, { onOrderSubmit: handleOrderSubmit });
+                        return React.createElement(CustomOrderPage, { onOrderSubmit });
                     case 'bulk-purchase':
-                        return React.createElement(BulkPurchasePage, { onOrderSubmit: handleOrderSubmit });
-                    case 'fitting-room':
-                        return React.createElement(FittingRoomPage, null);
+                        return React.createElement(BulkPurchasePage, { onOrderSubmit });
                     case 'login':
-                        return React.createElement(LoginPage, { setView: handleSetView, handleLogin });
+                        return React.createElement(LoginPage, { setView: changeView, handleLogin });
                     case 'cart':
-                        return React.createElement(CartPage, { cart, setCart, setView: handleSetView });
+                        return React.createElement(CartPage, { cart, setCart, setView: changeView });
                     case 'checkout':
-                        return React.createElement(CheckoutPage, { cart, setView: handleSetView, onOrderPlaced: handleOrderPlaced, availableBanks, availableShippingOptions });
+                        return React.createElement(CheckoutPage, { cart, setView: changeView, onOrderPlaced, availableBanks, availableShippingOptions });
                     case 'order-success':
-                        return React.createElement(OrderSuccessPage, { orderDetails: view.param, setView: handleSetView });
+                        return React.createElement(OrderSuccessPage, { orderDetails: view.param, setView: changeView });
                     case 'order-tracking':
                         return React.createElement(OrderTrackingPage, { orders });
                     case 'profile':
-                        return React.createElement(ProfilePage, { currentUser, setCurrentUser, setView: handleSetView });
+                        return React.createElement(ProfilePage, { currentUser, setCurrentUser, setView: changeView });
+                    case 'fitting-room':
+                        return React.createElement(FittingRoomPage, null);
+                    case 'admin':
+                        if (!currentUser || currentUser.role !== 'admin') {
+                            return React.createElement('div', { className: 'py-20 text-center text-red-500' }, 'Akses Ditolak. Anda harus menjadi admin untuk melihat halaman ini.');
+                        }
+                        return (
+                            React.createElement(AdminLayout, { adminView, setAdminView, hasUnsavedChanges, onSave: handleSaveChanges, onDiscard: handleDiscardChanges },
+                                adminView === 'dashboard' && React.createElement(AdminDashboard, { products, promos, users, orders }),
+                                adminView === 'products' && React.createElement(AdminProducts, { products, setProducts, siteContent, setSiteContent }),
+                                adminView === 'collections' && React.createElement(AdminCollections, { products, setProducts }),
+                                adminView === 'promos' && React.createElement(AdminPromos, { promos, setPromos }),
+                                adminView === 'users' && React.createElement(AdminUsers, { users, setUsers }),
+                                adminView === 'content' && React.createElement(AdminContent, { siteContent, setSiteContent }),
+                                adminView === 'category-display' && React.createElement(AdminCategoryShowcase, { siteContent, setSiteContent }),
+                                adminView === 'featured-categories' && React.createElement(AdminFeaturedCategories, { siteContent, setSiteContent }),
+                                adminView === 'orders' && React.createElement(AdminOrders, { orders, setOrders }),
+                                adminView === 'payments' && React.createElement(AdminPayments, { availableBanks, setAvailableBanks }),
+                                adminView === 'shipping' && React.createElement(AdminShipping, { availableShippingOptions, setAvailableShippingOptions }),
+                                adminView === 'settings' && React.createElement(AdminSettings, null)
+                            )
+                        );
                     default:
                         return React.createElement('div', { className: 'py-20 text-center' }, 'Halaman tidak ditemukan.');
                 }
             };
 
             return (
-                React.createElement('div', null,
-                    React.createElement(Header, { setView: handleSetView, setModalView, cart, currentUser, handleLogout, siteContent }),
-                    React.createElement('main', null, renderPage()),
+                React.createElement('div', { className: 'app' },
+                    React.createElement(Header, { setView: changeView, setModalView, cart, currentUser, handleLogout, siteContent }),
+                    renderPage(),
                     React.createElement(Footer, null),
+                    modalView === 'search' && (React.createElement('div', { className: 'fixed inset-0 bg-black/50 z-[80] flex items-start justify-center pt-20' }, React.createElement('div', { className: 'bg-white rounded-lg shadow-xl p-8 w-full max-w-lg' }, React.createElement('h3', { className: 'text-2xl font-bold font-serif mb-4' }, 'Cari Produk'), React.createElement('input', { type: 'text', placeholder: 'Ketik untuk mencari...', className: 'form-input' }), React.createElement('button', { onClick: () => setModalView(null), className: 'absolute top-4 right-4 text-2xl' }, '×')))),
                     showSuccessMessage && React.createElement(FormSuccessMessage, { onClose: () => setShowSuccessMessage(false) })
                 )
             );
         }
 
-        // Render the main App component into the root element
         ReactDOM.render(React.createElement(App), document.getElementById('root'));
     </script>
 </body>
