@@ -398,7 +398,6 @@
 
             return React.createElement('section', { className: 'py-12 bg-gray-50' },
                 React.createElement('div', { className: 'container mx-auto px-5' },
-                    React.createElement(SectionTitle, null, 'Jelajahi Kategori'),
                     React.createElement('div', { className: 'relative' },
                         React.createElement('div', { className: 'overflow-hidden rounded-lg' },
                             React.createElement('div', {
@@ -3324,9 +3323,15 @@
                     case 'home':
                         return React.createElement(React.Fragment, null,
                             React.createElement(Hero, { setView: handleSetView, siteContent }),
-                            React.createElement(FeaturedCategory, { categoryName: "T-Shirt", products, siteContent, setView: handleSetView }),
-                            React.createElement(FeaturedCategory, { categoryName: "Pants", products, siteContent, setView: handleSetView }),
-                            React.createElement(FeaturedCategory, { categoryName: "Jacket", products, siteContent, setView: handleSetView }),
+                            siteContent.featuredCategories.map(featured =>
+                                React.createElement(FeaturedCategory, {
+                                    key: featured.categoryName,
+                                    categoryName: featured.categoryName,
+                                    products: products,
+                                    siteContent: siteContent,
+                                    setView: handleSetView
+                                })
+                            ),
                             React.createElement(CategorySlider, { categories: siteContent.categoryShowcase }),
                             React.createElement(PopularCategories, { products, setView: handleSetView, siteContent }),
                             React.createElement(SpecialCollectionsPreview, { setView: handleSetView, siteContent }),
