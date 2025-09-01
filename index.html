@@ -332,18 +332,10 @@
                 return null;
             }
 
-            const categoryProducts = products.filter(p => p.subCategory === categoryData.subCategory).slice(0, categoryData.displayCount);
+            const categoryProducts = products.filter(p => categoryData.selectedProducts.includes(p.id));
 
             return (
                 React.createElement('section', { className: 'my-16' },
-                    // Full-width wallpaper section. It's a direct child of 'main' so it won't be constrained by the .container class.
-                    React.createElement('div', {
-                        className: 'w-full h-[60vh] bg-cover',
-                        style: {
-                            backgroundImage: `url('${categoryData.wallpaperImage}')`,
-                            backgroundPosition: categoryData.wallpaperPosition || 'center'
-                        }
-                    }),
                     // Product grid with a standard container to keep it centered.
                     React.createElement('div', { className: 'container mx-auto px-5 mt-8' },
                         React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
@@ -456,7 +448,6 @@
             return (
                 React.createElement('section', { id: 'categories', className: 'py-20 bg-[#F5F5F5]' },
                     React.createElement('div', { className: 'container mx-auto px-5' },
-                        React.createElement(SectionTitle, null, siteContent.sections.popularTitle),
                         React.createElement('div', { className: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6' },
                             products.slice(0, 4).map(prod => (
                                 React.createElement('div', { key: prod.id, onClick: () => setView('product', prod.id), className: 'relative h-72 rounded-lg overflow-hidden shadow-lg group cursor-pointer' },
@@ -2293,6 +2284,11 @@
                 setSiteContent(prev => ({ ...prev, categoryShowcase: newShowcase }));
             };
 
+            const removeShowcase = (index) => {
+                const newShowcase = siteContent.categoryShowcase.filter((_, i) => i !== index);
+                setSiteContent(prev => ({ ...prev, categoryShowcase: newShowcase }));
+            };
+
             const getSubcategoriesFromMenu = (menu, category) => {
                 if (!menu || !category) return [];
                 const shopMenu = menu.find(item => item.id === 'shop');
@@ -2311,57 +2307,56 @@
                         React.createElement('button', { onClick: addShowcase, className: 'btn bg-[#6D4C41] hover:bg-[#4E342E] text-white !py-2 !px-4 !text-sm' }, 'Tambah Tampilan')
                     ),
                     React.createElement('div', { className: 'space-y-8' },
-                        siteContent.categoryShowcase.map((item, index) => (
-                            React.createElement('fieldset', { key: index, className: 'border p-4 rounded-md' },
-                                React.createElement('legend', { className: 'px-2 font-semibold text-lg' }, item.name),
+                        siteContent.categoryShowcase.map((item, index) => {
+                            const productsInCategory = products.filter(p => p.category === item.name);
+                            return React.createElement('fieldset', { key: index, className: 'border p-4 rounded-md' },
+                                React.createElement('div', { className: 'flex justify-between items-start' },
+                                    React.createElement('legend', { className: 'px-2 font-semibold text-lg' }, item.name),
+                                    React.createElement('button', { onClick: () => removeShowcase(index), className: 'text-red-500 hover:text-red-700' }, React.createElement(IconTrash, null))
+                                ),
                                 React.createElement('div', { className: 'space-y-4' },
-                                    React.createElement('div', { className: 'grid grid-cols-2 gap-4' },
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Kategori Utama'),
-                                            React.createElement('select', {
-                                                value: item.name,
-                                                onChange: (e) => handleShowcaseChange(index, 'name', e.target.value),
-                                                className: 'form-input'
-                                            }, CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat)))
-                                        ),
-                                        React.createElement('div', null,
-                                            React.createElement('label', { className: 'form-label' }, 'Sub-Kategori'),
-                                            React.createElement('select', {
-                                                value: item.subCategory,
-                                                onChange: (e) => handleShowcaseChange(index, 'subCategory', e.target.value),
-                                                className: 'form-input'
-                                            },
-                                                React.createElement('option', { value: '' }, 'Pilih Sub-Kategori...'),
-                                                getSubcategoriesFromMenu(siteContent.mainMenu, item.name).map(sc => React.createElement('option', { key: sc, value: sc }, sc))
-                                            )
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Kategori Utama'),
+                                        React.createElement('select', {
+                                            value: item.name,
+                                            onChange: (e) => handleShowcaseChange(index, 'name', e.target.value),
+                                            className: 'form-input'
+                                        }, CATEGORIES.map(cat => React.createElement('option', { key: cat, value: cat }, cat)))
+                                    ),
+                                    React.createElement('div', null,
+                                        React.createElement('label', { className: 'form-label' }, 'Pilih Produk untuk Ditampilkan (Maks. 4)'),
+                                        React.createElement('div', { className: 'grid grid-cols-2 gap-2 p-2 border rounded-md max-h-48 overflow-y-auto' },
+                                            productsInCategory.map(product => (
+                                                React.createElement('label', { key: product.id, className: 'flex items-center gap-2 text-sm' },
+                                                    React.createElement('input', {
+                                                        type: 'checkbox',
+                                                        checked: item.selectedProducts.includes(product.id),
+                                                        onChange: (e) => {
+                                                            const newSelectedProducts = [...item.selectedProducts];
+                                                            if (e.target.checked) {
+                                                                if (newSelectedProducts.length < 4) {
+                                                                    newSelectedProducts.push(product.id);
+                                                                } else {
+                                                                    alert('Anda hanya dapat memilih maksimal 4 produk.');
+                                                                    e.target.checked = false;
+                                                                }
+                                                            } else {
+                                                                const productIndex = newSelectedProducts.indexOf(product.id);
+                                                                if (productIndex > -1) {
+                                                                    newSelectedProducts.splice(productIndex, 1);
+                                                                }
+                                                            }
+                                                            handleShowcaseChange(index, 'selectedProducts', newSelectedProducts);
+                                                        }
+                                                    }),
+                                                    product.name
+                                                )
+                                            ))
                                         )
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Jumlah Produk Ditampilkan'),
-                                        React.createElement('input', {
-                                            type: 'number',
-                                            value: item.displayCount,
-                                            onChange: (e) => handleShowcaseChange(index, 'displayCount', parseInt(e.target.value)),
-                                            className: 'form-input'
-                                        })
-                                    ),
-                                    React.createElement('div', null,
-                                        React.createElement('label', { className: 'form-label' }, 'Gambar Wallpaper'),
-                                        React.createElement('input', {
-                                            type: 'file',
-                                            accept: 'image/*',
-                                            onChange: (e) => handleImageChange(index, e.target.files[0]),
-                                            className: 'form-input'
-                                        }),
-                                        item.wallpaperImage && React.createElement('img', {
-                                            src: item.wallpaperImage,
-                                            alt: `${item.name} Preview`,
-                                            className: 'mt-2 w-48 h-28 object-cover rounded-md border'
-                                        })
                                     )
                                 )
                             )
-                        ))
+                        })
                     )
                 )
             );
@@ -3154,9 +3149,9 @@
                 },
                 specialCollections: SPECIAL_COLLECTIONS,
                 categoryShowcase: [
-                    { name: 'T-Shirt', subCategory: 'Regular', displayCount: 4, wallpaperImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The T-Shirt Collection', subtitle: 'Versatile and comfortable for every occasion.', externalUrl: '#' },
-                    { name: 'Pants', subCategory: 'Chino', displayCount: 4, wallpaperImage: 'https://images.unsplash.com/photo-1602293589922-152d31b15468?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The Pants Collection', subtitle: 'From casual chinos to formal trousers.', externalUrl: '#' },
-                    { name: 'Jacket', subCategory: 'Denim', displayCount: 4, wallpaperImage: 'https://images.unsplash.com/photo-1591047139829-d919b5ca2373?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80', title: 'The Jacket Collection', subtitle: 'The perfect outer layer for any weather.', externalUrl: '#' },
+                    { name: 'T-Shirt', selectedProducts: [1, 5], wallpaperImage: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The T-Shirt Collection', subtitle: 'Versatile and comfortable for every occasion.', externalUrl: '#' },
+                    { name: 'Pants', selectedProducts: [3], wallpaperImage: 'https://images.unsplash.com/photo-1602293589922-152d31b15468?ixlib=rb-4.0.3&auto=format&fit=crop&w=1287&q=80', title: 'The Pants Collection', subtitle: 'From casual chinos to formal trousers.', externalUrl: '#' },
+                    { name: 'Jacket', selectedProducts: [4], wallpaperImage: 'https://images.unsplash.com/photo-1591047139829-d919b5ca2373?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80', title: 'The Jacket Collection', subtitle: 'The perfect outer layer for any weather.', externalUrl: '#' },
                 ],
                 featuredCategories: [
                     { categoryName: 'T-Shirt' },
