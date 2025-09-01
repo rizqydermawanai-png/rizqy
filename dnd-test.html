@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dnd-Kit Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="module">
+        import React, { useState } from 'https://esm.sh/react@18.2.0';
+        import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
+        import {
+            DndContext,
+            PointerSensor,
+            useSensor,
+            useSensors
+        } from 'https://unpkg.com/@dnd-kit/core@6.1.0';
+        import {
+            arrayMove,
+            SortableContext,
+            useSortable,
+            verticalListSortingStrategy,
+        } from 'https://unpkg.com/@dnd-kit/sortable@7.0.2';
+        import { CSS } from 'https://unpkg.com/@dnd-kit/utilities@3.2.2';
+
+        const SortableItem = ({ id }) => {
+            const {
+                attributes,
+                listeners,
+                setNodeRef,
+                transform,
+                transition,
+            } = useSortable({ id });
+
+            const style = {
+                transform: CSS.Transform.toString(transform),
+                transition,
+                width: '100px',
+                height: '50px',
+                border: '1px solid black',
+                marginBottom: '10px',
+                backgroundColor: 'lightgrey',
+                padding: '10px',
+            };
+
+            return (
+                <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+                    {id}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [items, setItems] = useState(['item-1', 'item-2', 'item-3']);
+            const sensors = useSensors(useSensor(PointerSensor));
+
+            const handleDragEnd = (event) => {
+                const { active, over } = event;
+                if (active.id !== over.id) {
+                    setItems((prevItems) => {
+                        const oldIndex = prevItems.indexOf(active.id);
+                        const newIndex = prevItems.indexOf(over.id);
+                        return arrayMove(prevItems, oldIndex, newIndex);
+                    });
+                }
+            };
+
+            return (
+                <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+                    <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                        {items.map(id => <SortableItem key={id} id={id} />)}
+                    </SortableContext>
+                </DndContext>
+            );
+        };
+
+        ReactDOM.render(React.createElement(App), document.getElementById('root'));
+    </script>
+</body>
+</html>
