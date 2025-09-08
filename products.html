@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - KAZUMI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #fafafa;
+        }
+
+        /* Header (Copied from test.html) */
+        .header {
+            position: sticky; /* Changed to sticky for products page */
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #e8e8e8;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: #666;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-actions i {
+            font-size: 1.1rem;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-actions i:hover {
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            flex: 0 0 250px;
+        }
+
+        .filter-group {
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e8e8e8;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-group ul {
+            list-style: none;
+        }
+
+        .filter-group li {
+            margin-bottom: 0.75rem;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+            accent-color: #000;
+        }
+
+        /* Product Grid */
+        .product-grid-container {
+            flex: 1;
+        }
+
+        .product-grid-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-grid-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Footer (Copied from test.html) */
+        .footer {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #fff;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="index.html" class="logo">KAZUMI</a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="products.html">Produk</a></li>
+                <li class="dropdown">
+                    <a href="index.html#categories" class="dropbtn">Kategori <i class="fas fa-caret-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="products.html?category=t-shirt">T-Shirt</a>
+                        <a href="products.html?category=shirt">Shirt</a>
+                        <a href="products.html?category=jaket">Jaket</a>
+                        <a href="products.html?category=celana">Celana</a>
+                        <a href="products.html?category=aksesoris">Aksesoris</a>
+                    </div>
+                </li>
+                <li><a href="index.html#collections">Koleksi</a></li>
+                <li><a href="index.html#services">Layanan</a></li>
+                <li><a href="index.html#contact">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <i class="fas fa-search"></i>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Sidebar for Filters -->
+        <aside class="sidebar">
+            <div class="filter-group">
+                <h3 class="filter-title">Collections</h3>
+                <ul id="collections-filter">
+                    <li><label><input type="checkbox" name="collection" value="signature"> Signature Black</label></li>
+                    <li><label><input type="checkbox" name="collection" value="executive"> Executive Active</label></li>
+                    <li><label><input type="checkbox" name="collection" value="essentials"> Everyday Essentials</label></li>
+                </ul>
+            </div>
+            <div class="filter-group">
+                <h3 class="filter-title">Size</h3>
+                <ul id="size-filter">
+                    <li><label><input type="checkbox" name="size" value="s"> S</label></li>
+                    <li><label><input type="checkbox" name="size" value="m"> M</label></li>
+                    <li><label><input type="checkbox" name="size" value="l"> L</label></li>
+                    <li><label><input type="checkbox" name="size" value="xl"> XL</label></li>
+                    <li><label><input type="checkbox" name="size" value="xxl"> XXL</label></li>
+                    <li><label><input type="checkbox" name="size" value="one size"> One Size</label></li>
+                </ul>
+            </div>
+            <div class="filter-group">
+                <h3 class="filter-title">Color</h3>
+                <ul id="color-filter">
+                    <!-- Colors will be populated by JS -->
+                </ul>
+            </div>
+            <div class="filter-group">
+                <h3 class="filter-title">Price Range</h3>
+                <div id="price-filter">
+                    <input type="range" id="price-range" class="w-full" style="width: 100%;">
+                    <p class="text-sm mt-2">Up to: <span id="price-value" class="font-semibold"></span></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <section class="product-grid-container">
+            <div class="product-grid-header">
+                <h2 class="product-grid-title">All Products</h2>
+                <span id="product-count"></span>
+            </div>
+            <div class="product-grid" id="product-grid">
+                <!-- Products will be populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>KAZUMI</h4>
+                    <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6; margin-bottom: 1.5rem;">
+                        Brand fashion pria premium yang menghadirkan koleksi berkualitas tinggi dengan desain timeless dan elegant.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Informasi</h4>
+                    <ul>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="#">Kebijakan Privasi</a></li>
+                        <li><a href="#">Syarat & Ketentuan</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">Care Instructions</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Layanan</h4>
+                    <ul>
+                        <li><a href="#">Customer Service</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Return & Exchange</a></li>
+                        <li><a href="#">Store Locator</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Kontak</h4>
+                    <ul>
+                        <li><a href="tel:+6221-12345678">+62 21-1234-5678</a></li>
+                        <li><a href="mailto:info@kazumi.co.id">info@kazumi.co.id</a></li>
+                        <li><span style="color: rgba(255, 255, 255, 0.7);">Jakarta, Indonesia</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 KAZUMI. All rights reserved. Designed with elegance and sophistication.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                {
+                    id: 1,
+                    name: 'Signature Black Blazer',
+                    price: 2500000,
+                    color: 'Black',
+                    sizes: ['M', 'L', 'XL'],
+                    collection: 'signature',
+                    imageUrl: 'https://placehold.co/400x500/000000/ffffff?text=Blazer'
+                },
+                {
+                    id: 2,
+                    name: 'Executive Active T-Shirt',
+                    price: 500000,
+                    color: 'White',
+                    sizes: ['S', 'M', 'L'],
+                    collection: 'executive',
+                    imageUrl: 'https://placehold.co/400x500/ffffff/000000?text=T-Shirt'
+                },
+                {
+                    id: 3,
+                    name: 'Everyday Essentials Chinos',
+                    price: 800000,
+                    color: 'Khaki',
+                    sizes: ['M', 'L', 'XL', 'XXL'],
+                    collection: 'essentials',
+                    imageUrl: 'https://placehold.co/400x500/D2B48C/ffffff?text=Chinos'
+                },
+                {
+                    id: 4,
+                    name: 'Signature Black Trousers',
+                    price: 1200000,
+                    color: 'Black',
+                    sizes: ['L', 'XL'],
+                    collection: 'signature',
+                    imageUrl: 'https://placehold.co/400x500/000000/ffffff?text=Trousers'
+                },
+                {
+                    id: 5,
+                    name: 'Executive Active Polo',
+                    price: 650000,
+                    color: 'Navy',
+                    sizes: ['S', 'M', 'L', 'XL'],
+                    collection: 'executive',
+                    imageUrl: 'https://placehold.co/400x500/000080/ffffff?text=Polo'
+                },
+                {
+                    id: 6,
+                    name: 'Everyday Essentials Hoodie',
+                    price: 950000,
+                    color: 'Gray',
+                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+                    collection: 'essentials',
+                    imageUrl: 'https://placehold.co/400x500/808080/ffffff?text=Hoodie'
+                },
+                {
+                    id: 7,
+                    name: 'Signature Silk Scarf',
+                    price: 750000,
+                    color: 'Black',
+                    sizes: ['One Size'],
+                    collection: 'signature',
+                    imageUrl: 'https://placehold.co/400x500/000000/ffffff?text=Scarf'
+                },
+                {
+                    id: 8,
+                    name: 'Executive Performance Jacket',
+                    price: 1800000,
+                    color: 'Blue',
+                    sizes: ['M', 'L', 'XL'],
+                    collection: 'executive',
+                    imageUrl: 'https://placehold.co/400x500/0000FF/ffffff?text=Jacket'
+                },
+                {
+                    id: 9,
+                    name: 'Everyday Crewneck Sweater',
+                    price: 700000,
+                    color: 'Beige',
+                    sizes: ['S', 'M', 'L'],
+                    collection: 'essentials',
+                    imageUrl: 'https://placehold.co/400x500/F5F5DC/000000?text=Sweater'
+                },
+                {
+                    id: 10,
+                    name: 'Signature Leather Belt',
+                    price: 900000,
+                    color: 'Black',
+                    sizes: ['One Size'],
+                    collection: 'signature',
+                    imageUrl: 'https://placehold.co/400x500/000000/ffffff?text=Belt'
+                },
+            ];
+
+            const productGrid = document.getElementById('product-grid');
+            const productCount = document.getElementById('product-count');
+
+            function renderProducts(productsToRender) {
+                productGrid.innerHTML = ''; // Clear existing products
+
+                if (productsToRender.length === 0) {
+                    productGrid.innerHTML = '<p>No products found matching your criteria.</p>';
+                    productCount.textContent = '0 Products';
+                    return;
+                }
+
+                productCount.textContent = `${productsToRender.length} Products`;
+
+                productsToRender.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <div class="product-image">
+                            <img src="${product.imageUrl}" alt="${product.name}">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-price">Rp ${product.price.toLocaleString('id-ID')}</p>
+                        </div>
+                    `;
+                    productGrid.appendChild(productCard);
+                });
+            }
+
+            function setupFilters() {
+                // Color Filter
+                const colorFilterContainer = document.getElementById('color-filter');
+                const allColors = [...new Set(products.map(p => p.color))];
+                const colorMap = { 'Black': '#000000', 'White': '#FFFFFF', 'Khaki': '#D2B48C', 'Navy': '#000080', 'Gray': '#808080', 'Blue': '#0000FF', 'Beige': '#F5F5DC' };
+
+                allColors.forEach(color => {
+                    const colorItem = document.createElement('li');
+                    colorItem.innerHTML = `
+                        <label>
+                            <input type="checkbox" name="color" value="${color.toLowerCase()}">
+                            <span style="background-color: ${colorMap[color] || '#ccc'}; width: 16px; height: 16px; border-radius: 50%; display: inline-block; margin-right: 8px; border: 1px solid #ddd;"></span>
+                            ${color}
+                        </label>
+                    `;
+                    colorFilterContainer.appendChild(colorItem);
+                });
+
+                // Price Range Filter
+                const priceSlider = document.getElementById('price-range');
+                const priceValue = document.getElementById('price-value');
+                const prices = products.map(p => p.price);
+                const minPrice = Math.min(...prices);
+                const maxPrice = Math.max(...prices);
+
+                priceSlider.min = minPrice;
+                priceSlider.max = maxPrice;
+                priceSlider.value = maxPrice;
+                priceValue.textContent = `Rp ${maxPrice.toLocaleString('id-ID')}`;
+
+                priceSlider.addEventListener('input', (event) => {
+                    priceValue.textContent = `Rp ${parseInt(event.target.value).toLocaleString('id-ID')}`;
+                });
+            }
+
+            // Initially render all products
+            renderProducts(products);
+            let activeFilters = {
+                collections: [],
+                sizes: [],
+                colors: [],
+                maxPrice: null
+            };
+
+            function applyFilters() {
+                let filteredProducts = [...products];
+
+                // Filter by collections
+                if (activeFilters.collections.length > 0) {
+                    filteredProducts = filteredProducts.filter(p => activeFilters.collections.includes(p.collection));
+                }
+
+                // Filter by sizes
+                if (activeFilters.sizes.length > 0) {
+                    filteredProducts = filteredProducts.filter(p => p.sizes.some(size => activeFilters.sizes.includes(size.toLowerCase())));
+                }
+
+                // Filter by colors
+                if (activeFilters.colors.length > 0) {
+                    filteredProducts = filteredProducts.filter(p => activeFilters.colors.includes(p.color.toLowerCase()));
+                }
+
+                // Filter by price
+                if (activeFilters.maxPrice !== null) {
+                    filteredProducts = filteredProducts.filter(p => p.price <= activeFilters.maxPrice);
+                }
+
+                renderProducts(filteredProducts);
+            }
+
+            function setupEventListeners() {
+                const filterCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+                filterCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', (event) => {
+                        const filterType = event.target.name; // 'collection', 'size', or 'color'
+                        const filterValue = event.target.value;
+
+                        const filterArray = activeFilters[filterType + 's'];
+
+                        if (event.target.checked) {
+                            if (!filterArray.includes(filterValue)) {
+                                filterArray.push(filterValue);
+                            }
+                        } else {
+                            activeFilters[filterType + 's'] = filterArray.filter(item => item !== filterValue);
+                        }
+                        applyFilters();
+                    });
+                });
+
+                const priceSlider = document.getElementById('price-range');
+                priceSlider.addEventListener('input', (event) => {
+                    activeFilters.maxPrice = parseInt(event.target.value);
+                    applyFilters();
+                });
+            }
+
+            // Setup filter UI
+            setupFilters();
+            // Initialize maxPrice and setup event listeners
+            activeFilters.maxPrice = parseInt(document.getElementById('price-range').value);
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>
