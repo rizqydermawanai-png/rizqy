@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAZUMI - Premium Pria Fashion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: #e9ecef;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-primary: #1a1a1a;
+            --accent-primary-hover: #333333;
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .font-serif {
+            font-family: var(--font-serif);
+        }
+        .hero-bg {
+            background-image: url('https://placehold.co/1920x1000/1a1a1a/ffffff?text=KAZUMI');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-serif text-2xl font-bold text-gray-900">KAZUMI</a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-900 font-semibold">Home</a>
+                <a href="katalog.html" class="text-gray-600 hover:text-gray-900">Katalog</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Layanan Custom</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Tentang Kami</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </a>
+                 <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog"><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/><path d="M12 15h-1a4 4 0 0 0-4 4v2"/><path d="m21.7 16.4-.9-.3"/><path d="m15.2 13.9-.9-.3"/><path d="m15.2 16.1.9-.3"/><path d="m21.7 13.6.9-.3"/><path d="m19.6 11.1.4-1"/><path d="m16.8 12.3.4-1"/><path d="m19.6 18.9-.4-1"/><path d="m16.8 17.7-.4-1"/></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-bg h-[70vh] text-white flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="font-serif text-4xl md:text-6xl font-bold leading-tight">Keanggunan Abadi, Gaya Modern.</h1>
+                <p class="text-lg md:text-xl mt-4 mb-8 max-w-2xl mx-auto">Temukan koleksi pakaian pria premium yang dirancang dengan presisi untuk gaya hidup Anda.</p>
+                <a href="katalog.html" class="bg-white text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors">Jelajahi Koleksi</a>
+            </div>
+        </section>
+
+        <!-- Featured Categories Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="font-serif text-3xl font-bold text-center text-gray-900 mb-12">Kategori Pilihan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Category 1: Kemeja -->
+                    <div class="group relative">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/e2e8f0/334155?text=Kemeja" alt="Kemeja" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Kemeja</h3>
+                        <a href="katalog.html?category=kemeja" class="absolute inset-0" aria-label="Lihat Kemeja"></a>
+                    </div>
+                    <!-- Category 2: Jaket -->
+                    <div class="group relative">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/d1d5db/1f2937?text=Jaket" alt="Jaket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Jaket</h3>
+                        <a href="katalog.html?category=jaket" class="absolute inset-0" aria-label="Lihat Jaket"></a>
+                    </div>
+                    <!-- Category 3: Celana -->
+                    <div class="group relative">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/9ca3af/111827?text=Celana" alt="Celana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Celana</h3>
+                        <a href="katalog.html?category=celana" class="absolute inset-0" aria-label="Lihat Celana"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brand Promise Section -->
+        <section class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-6 text-center max-w-3xl">
+                <h2 class="font-serif text-3xl font-bold text-gray-900">Kualitas Tanpa Kompromi</h2>
+                <p class="mt-4 text-lg text-gray-600">Setiap helai pakaian KAZUMI dibuat dari bahan terbaik dengan perhatian terhadap detail. Kami percaya pada pakaian yang tidak hanya terlihat bagus, tetapi juga terasa nyaman dan tahan lama.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-serif text-xl font-bold mb-4">KAZUMI</h3>
+                    <p class="text-gray-400">Gaya premium untuk pria modern.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tautan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Katalog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
+                        <a href="#" class="text-gray-400 hover:text-white">X</a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2025 KAZUMI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

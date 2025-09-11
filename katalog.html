@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog - KAZUMI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: #e9ecef;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --accent-primary: #1a1a1a;
+            --accent-primary-hover: #333333;
+            --font-sans: 'Inter', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .font-serif {
+            font-family: var(--font-serif);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="font-serif text-2xl font-bold text-gray-900">KAZUMI</a>
+            <nav class="hidden md:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
+                <a href="katalog.html" class="text-gray-900 font-semibold">Katalog</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Layanan Custom</a>
+                <a href="#" class="text-gray-600 hover:text-gray-900">Tentang Kami</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                </a>
+                 <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog"><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/><path d="M12 15h-1a4 4 0 0 0-4 4v2"/><path d="m21.7 16.4-.9-.3"/><path d="m15.2 13.9-.9-.3"/><path d="m15.2 16.1.9-.3"/><path d="m21.7 13.6.9-.3"/><path d="m19.6 11.1.4-1"/><path d="m16.8 12.3.4-1"/><path d="m19.6 18.9-.4-1"/><path d="m16.8 17.7-.4-1"/></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <div class="mb-12 text-center">
+            <h1 class="font-serif text-4xl md:text-5xl font-bold text-gray-900">Koleksi Kami</h1>
+            <p class="text-lg text-gray-600 mt-2">Jelajahi pilihan produk premium kami.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-12">
+            <!-- Filters Sidebar -->
+            <aside class="w-full md:w-1/4">
+                <h2 class="text-xl font-semibold mb-6">Filter</h2>
+                <div class="space-y-6">
+                    <!-- Kategori Filter -->
+                    <div>
+                        <h3 class="font-semibold mb-2">Kategori</h3>
+                        <ul class="space-y-1 text-gray-600">
+                            <li><a href="#" class="hover:text-gray-900">Semua</a></li>
+                            <li><a href="#" class="hover:text-gray-900">Kemeja</a></li>
+                            <li><a href="#" class="hover:text-gray-900">Jaket</a></li>
+                            <li><a href="#" class="hover:text-gray-900">Celana</a></li>
+                            <li><a href="#" class="hover:text-gray-900">Kaos</a></li>
+                        </ul>
+                    </div>
+                    <!-- Ukuran Filter -->
+                    <div>
+                        <h3 class="font-semibold mb-2">Ukuran</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="w-10 h-10 border rounded-md hover:border-gray-900">S</button>
+                            <button class="w-10 h-10 border rounded-md hover:border-gray-900">M</button>
+                            <button class="w-10 h-10 border rounded-md hover:border-gray-900">L</button>
+                            <button class="w-10 h-10 border rounded-md hover:border-gray-900">XL</button>
+                        </div>
+                    </div>
+                    <!-- Harga Filter -->
+                    <div>
+                        <h3 class="font-semibold mb-2">Harga</h3>
+                        <input type="range" min="0" max="1000000" class="w-full">
+                        <div class="flex justify-between text-sm text-gray-600 mt-1">
+                            <span>Rp 0</span>
+                            <span>Rp 1.000.000</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <section class="w-full md:w-3/4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Product Card Example 1 -->
+                    <div class="group">
+                        <div class="w-full bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/e2e8f0/334155?text=Produk+1" alt="Produk 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Kemeja Linen Premium</h3>
+                        <p class="mt-1 text-md text-gray-600">Rp 499.000</p>
+                    </div>
+                     <!-- Product Card Example 2 -->
+                    <div class="group">
+                        <div class="w-full bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/d1d5db/1f2937?text=Produk+2" alt="Produk 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Jaket Bomber Klasik</h3>
+                        <p class="mt-1 text-md text-gray-600">Rp 799.000</p>
+                    </div>
+                     <!-- Product Card Example 3 -->
+                    <div class="group">
+                        <div class="w-full bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/9ca3af/111827?text=Produk+3" alt="Produk 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Celana Chino Modern</h3>
+                        <p class="mt-1 text-md text-gray-600">Rp 549.000</p>
+                    </div>
+                     <!-- Product Card Example 4 -->
+                    <div class="group">
+                        <div class="w-full bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/600x800/e2e8f0/334155?text=Produk+4" alt="Produk 4" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-900">Kaos Pima Cotton</h3>
+                        <p class="mt-1 text-md text-gray-600">Rp 299.000</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-24">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-serif text-xl font-bold mb-4">KAZUMI</h3>
+                    <p class="text-gray-400">Gaya premium untuk pria modern.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tautan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Katalog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
+                        <a href="#" class="text-gray-400 hover:text-white">X</a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2025 KAZUMI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
