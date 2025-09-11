@@ -33,23 +33,52 @@
 <body class="antialiased">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
             <a href="index.html" class="font-serif text-2xl font-bold text-gray-900">KAZUMI</a>
-            <nav class="hidden md:flex space-x-8 items-center">
-                <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
-                <a href="katalog.html" class="text-gray-900 font-semibold">Katalog</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900">Layanan Custom</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900">Tentang Kami</a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-700 hover:text-gray-900">Home</a>
+                <a href="katalog.html" class="text-gray-700 hover:text-gray-900 font-semibold">Produk</a>
+                <div class="relative group">
+                    <button class="text-gray-700 hover:text-gray-900 flex items-center">Kategori <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m6 9 6 6 6-6"/></svg></button>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Formal Suits</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Casual Shirts</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Premium Trousers</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Knitwear</a>
+                    </div>
+                </div>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Koleksi</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Layanan</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kontak</a>
             </nav>
-            <div class="flex items-center space-x-4">
-                <a href="#" class="text-gray-600 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                </a>
-                 <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog"><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/><path d="M12 15h-1a4 4 0 0 0-4 4v2"/><path d="m21.7 16.4-.9-.3"/><path d="m15.2 13.9-.9-.3"/><path d="m15.2 16.1.9-.3"/><path d="m21.7 13.6.9-.3"/><path d="m19.6 11.1.4-1"/><path d="m16.8 12.3.4-1"/><path d="m19.6 18.9-.4-1"/><path d="m16.8 17.7-.4-1"/></svg>
-                </a>
+
+            <!-- Icons & Mobile Menu Button -->
+            <div class="flex items-center space-x-5">
+                <a href="#" class="text-gray-500 hover:text-gray-900 hidden sm:block"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></a>
+                <a href="dashboard.html" class="text-gray-500 hover:text-gray-900 hidden sm:block"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></a>
+                <!-- Hamburger Button -->
+                <button id="mobile-menu-btn" class="lg:hidden text-gray-500 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
             </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <nav class="flex flex-col space-y-4 px-6 pb-4">
+                <a href="index.html" class="text-gray-700 hover:text-gray-900">Home</a>
+                <a href="katalog.html" class="text-gray-700 hover:text-gray-900 font-semibold">Produk</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kategori</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Koleksi</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Layanan</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kontak</a>
+            </nav>
         </div>
     </header>
 
@@ -139,23 +168,41 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white mt-24">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-6 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <!-- Brand Info -->
                 <div>
                     <h3 class="font-serif text-xl font-bold mb-4">KAZUMI</h3>
-                    <p class="text-gray-400">Gaya premium untuk pria modern.</p>
+                    <p class="text-gray-400">Gaya premium untuk pria modern. Dibuat dengan bahan terbaik untuk kenyamanan dan keawetan.</p>
                 </div>
+                <!-- Informasi Links -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Tautan</h3>
+                    <h3 class="text-lg font-semibold mb-4">Informasi</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Katalog</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tentang Kami</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Syarat & Ketentuan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lokasi Toko</a></li>
                     </ul>
                 </div>
+                <!-- Layanan Links -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
+                    <h3 class="text-lg font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Customer Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+                <!-- Kontak & Social Media -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Telepon: +62 21 1234 5678</li>
+                        <li>Email: support@kazumi.co.id</li>
+                    </ul>
+                    <h3 class="text-lg font-semibold mt-6 mb-4">Ikuti Kami</h3>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
                         <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
@@ -163,11 +210,23 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500">
+            <div class="mt-16 border-t border-gray-800 pt-8 text-center text-gray-500">
                 <p>&copy; 2025 KAZUMI. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile Menu Script
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

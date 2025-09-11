@@ -28,107 +28,258 @@
         .font-serif {
             font-family: var(--font-serif);
         }
-        .hero-bg {
-            background-image: url('https://placehold.co/1920x1000/1a1a1a/ffffff?text=KAZUMI');
-            background-size: cover;
-            background-position: center;
+        .slider-slide {
+            transition: opacity 0.8s ease-in-out;
         }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
             <a href="index.html" class="font-serif text-2xl font-bold text-gray-900">KAZUMI</a>
-            <nav class="hidden md:flex space-x-8 items-center">
-                <a href="index.html" class="text-gray-900 font-semibold">Home</a>
-                <a href="katalog.html" class="text-gray-600 hover:text-gray-900">Katalog</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900">Layanan Custom</a>
-                <a href="#" class="text-gray-600 hover:text-gray-900">Tentang Kami</a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex space-x-8 items-center">
+                <a href="index.html" class="text-gray-700 hover:text-gray-900 font-semibold">Home</a>
+                <a href="katalog.html" class="text-gray-700 hover:text-gray-900">Produk</a>
+                <div class="relative group">
+                    <button class="text-gray-700 hover:text-gray-900 flex items-center">Kategori <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="m6 9 6 6 6-6"/></svg></button>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-md shadow-lg border opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Formal Suits</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Casual Shirts</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Premium Trousers</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Knitwear</a>
+                    </div>
+                </div>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Koleksi</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Layanan</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kontak</a>
             </nav>
-            <div class="flex items-center space-x-4">
-                <a href="#" class="text-gray-600 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                </a>
-                 <a href="dashboard.html" class="text-gray-600 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog"><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/><path d="M12 15h-1a4 4 0 0 0-4 4v2"/><path d="m21.7 16.4-.9-.3"/><path d="m15.2 13.9-.9-.3"/><path d="m15.2 16.1.9-.3"/><path d="m21.7 13.6.9-.3"/><path d="m19.6 11.1.4-1"/><path d="m16.8 12.3.4-1"/><path d="m19.6 18.9-.4-1"/><path d="m16.8 17.7-.4-1"/></svg>
-                </a>
+
+            <!-- Icons & Mobile Menu Button -->
+            <div class="flex items-center space-x-5">
+                <a href="#" class="text-gray-500 hover:text-gray-900 hidden sm:block"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></a>
+                <a href="#" class="text-gray-500 hover:text-gray-900"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></a>
+                <a href="dashboard.html" class="text-gray-500 hover:text-gray-900 hidden sm:block"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg></a>
+                <!-- Hamburger Button -->
+                <button id="mobile-menu-btn" class="lg:hidden text-gray-500 hover:text-gray-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
             </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden">
+            <nav class="flex flex-col space-y-4 px-6 pb-4">
+                <a href="index.html" class="text-gray-700 hover:text-gray-900 font-semibold">Home</a>
+                <a href="katalog.html" class="text-gray-700 hover:text-gray-900">Produk</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kategori</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Koleksi</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Layanan</a>
+                <a href="#" class="text-gray-700 hover:text-gray-900">Kontak</a>
+            </nav>
         </div>
     </header>
 
     <!-- Main Content -->
     <main>
-        <!-- Hero Section -->
-        <section class="hero-bg h-[70vh] text-white flex items-center">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="font-serif text-4xl md:text-6xl font-bold leading-tight">Keanggunan Abadi, Gaya Modern.</h1>
-                <p class="text-lg md:text-xl mt-4 mb-8 max-w-2xl mx-auto">Temukan koleksi pakaian pria premium yang dirancang dengan presisi untuk gaya hidup Anda.</p>
-                <a href="katalog.html" class="bg-white text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors">Jelajahi Koleksi</a>
+        <!-- Hero Slider Section -->
+        <section id="hero-slider" class="relative h-[75vh] w-full overflow-hidden">
+            <!-- Slides -->
+            <div class="slider-slide absolute inset-0 w-full h-full bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/1a1a1a/ffffff?text=Koleksi+Terbaru');">
+                <div class="w-full h-full flex items-center justify-center bg-black/40">
+                    <div class="text-center text-white p-6">
+                        <h1 class="font-serif text-4xl md:text-6xl font-bold leading-tight">Koleksi Musim Gugur</h1>
+                        <p class="text-lg md:text-xl mt-4 mb-8 max-w-2xl mx-auto">Gaya tak lekang oleh waktu, untuk pria modern.</p>
+                        <a href="katalog.html" class="bg-white text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors">Lihat Sekarang</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-slide absolute inset-0 w-full h-full bg-cover bg-center opacity-0" style="background-image: url('https://placehold.co/1920x1080/4a5568/ffffff?text=Jas+Premium');">
+                 <div class="w-full h-full flex items-center justify-center bg-black/40">
+                    <div class="text-center text-white p-6">
+                        <h1 class="font-serif text-4xl md:text-6xl font-bold leading-tight">The Signature Suit</h1>
+                        <p class="text-lg md:text-xl mt-4 mb-8 max-w-2xl mx-auto">Dibuat dengan presisi untuk momen paling penting Anda.</p>
+                        <a href="katalog.html" class="bg-white text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors">Jelajahi Jas</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-slide absolute inset-0 w-full h-full bg-cover bg-center opacity-0" style="background-image: url('https://placehold.co/1920x1080/718096/ffffff?text=Pakaian+Rajut');">
+                 <div class="w-full h-full flex items-center justify-center bg-black/40">
+                    <div class="text-center text-white p-6">
+                        <h1 class="font-serif text-4xl md:text-6xl font-bold leading-tight">Kenyamanan Premium</h1>
+                        <p class="text-lg md:text-xl mt-4 mb-8 max-w-2xl mx-auto">Rasakan kelembutan koleksi pakaian rajut kami.</p>
+                        <a href="katalog.html" class="bg-white text-gray-900 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors">Beli Knitwear</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slider Dots -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
+                <button class="slider-dot w-3 h-3 bg-white/50 rounded-full hover:bg-white transition"></button>
+                <button class="slider-dot w-3 h-3 bg-white/50 rounded-full hover:bg-white transition"></button>
+                <button class="slider-dot w-3 h-3 bg-white/50 rounded-full hover:bg-white transition"></button>
             </div>
         </section>
 
-        <!-- Featured Categories Section -->
-        <section class="py-16 md:py-24 bg-white">
+        <!-- Feature Bar Section -->
+        <section class="bg-white py-8 border-b border-gray-200">
             <div class="container mx-auto px-6">
-                <h2 class="font-serif text-3xl font-bold text-center text-gray-900 mb-12">Kategori Pilihan</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Category 1: Kemeja -->
-                    <div class="group relative">
-                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/600x800/e2e8f0/334155?text=Kemeja" alt="Kemeja" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        </div>
-                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Kemeja</h3>
-                        <a href="katalog.html?category=kemeja" class="absolute inset-0" aria-label="Lihat Kemeja"></a>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck mb-3 text-gray-700"><path d="M5 18H3c0-1.1.9-2 2-2v4c-1.1 0-2-.9-2-2Z"/><path d="M5 14H3v4"/><path d="M12 18h6v4h-6Z"/><path d="m21 12-2.32-3.1a.6.6 0 0 0-.5-.2H15V5a2 2 0 0 0-2-2h-2.31a2 2 0 0 0-1.38.52L5 12v6H3"/><path d="M12 12H5.74"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                        <h3 class="font-semibold text-lg text-gray-900">Gratis Pengiriman</h3>
+                        <p class="text-gray-600 text-sm">Minimal pembelian Rp 2.000.000</p>
                     </div>
-                    <!-- Category 2: Jaket -->
-                    <div class="group relative">
-                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/600x800/d1d5db/1f2937?text=Jaket" alt="Jaket" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        </div>
-                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Jaket</h3>
-                        <a href="katalog.html?category=jaket" class="absolute inset-0" aria-label="Lihat Jaket"></a>
+                    <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw mb-3 text-gray-700"><path d="M3 2v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>
+                        <h3 class="font-semibold text-lg text-gray-900">Pengembalian Mudah</h3>
+                        <p class="text-gray-600 text-sm">Pengembalian dalam 14 hari</p>
                     </div>
-                    <!-- Category 3: Celana -->
-                    <div class="group relative">
-                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/600x800/9ca3af/111827?text=Celana" alt="Celana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        </div>
-                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Celana</h3>
-                        <a href="katalog.html?category=celana" class="absolute inset-0" aria-label="Lihat Celana"></a>
+                    <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store mb-3 text-gray-700"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7"/></svg>
+                        <h3 class="font-semibold text-lg text-gray-900">Ambil di Toko</h3>
+                        <p class="text-gray-600 text-sm">Kunjungi toko fisik kami</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Brand Promise Section -->
+        <!-- Popular Categories Section -->
         <section class="py-16 md:py-24 bg-gray-50">
-            <div class="container mx-auto px-6 text-center max-w-3xl">
-                <h2 class="font-serif text-3xl font-bold text-gray-900">Kualitas Tanpa Kompromi</h2>
-                <p class="mt-4 text-lg text-gray-600">Setiap helai pakaian KAZUMI dibuat dari bahan terbaik dengan perhatian terhadap detail. Kami percaya pada pakaian yang tidak hanya terlihat bagus, tetapi juga terasa nyaman dan tahan lama.</p>
+            <div class="container mx-auto px-6">
+                <h2 class="font-serif text-3xl font-bold text-center text-gray-900 mb-12">Kategori Populer</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="group relative text-center">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                             <img src="https://placehold.co/600x800/e2e8f0/334155?text=Formal+Suits" alt="Formal Suits" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Formal Suits</h3>
+                        <a href="#" class="absolute inset-0" aria-label="Formal Suits"></a>
+                    </div>
+                    <div class="group relative text-center">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                             <img src="https://placehold.co/600x800/d1d5db/1f2937?text=Casual+Shirts" alt="Casual Shirts" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Casual Shirts</h3>
+                        <a href="#" class="absolute inset-0" aria-label="Casual Shirts"></a>
+                    </div>
+                    <div class="group relative text-center">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                             <img src="https://placehold.co/600x800/9ca3af/111827?text=Premium+Trousers" alt="Premium Trousers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Premium Trousers</h3>
+                        <a href="#" class="absolute inset-0" aria-label="Premium Trousers"></a>
+                    </div>
+                    <div class="group relative text-center">
+                        <div class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                             <img src="https://placehold.co/600x800/64748b/f1f5f9?text=Knitwear" alt="Knitwear" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">Knitwear</h3>
+                        <a href="#" class="absolute inset-0" aria-label="Knitwear"></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Collections Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="font-serif text-3xl font-bold text-center text-gray-900 mb-12">Koleksi Spesial</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="group relative rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/800x600/111827/ffffff?text=Signature+Black" alt="Signature Black Collection" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-6 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <h3 class="font-serif text-2xl font-bold">Signature Black</h3>
+                            <p class="mt-2 text-sm">Keanggunan dalam kesederhanaan.</p>
+                            <button class="mt-4 py-2 px-4 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-black transition-colors">Jelajahi</button>
+                        </div>
+                    </div>
+                    <div class="group relative rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/800x600/4a5568/ffffff?text=Executive+Active" alt="Executive Active Collection" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-6 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <h3 class="font-serif text-2xl font-bold">Executive Active</h3>
+                            <p class="mt-2 text-sm">Gaya dan fungsi untuk profesional modern.</p>
+                            <button class="mt-4 py-2 px-4 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-black transition-colors">Jelajahi</button>
+                        </div>
+                    </div>
+                    <div class="group relative rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/800x600/a0aec0/ffffff?text=Everyday+Essentials" alt="Everyday Essentials Collection" class="w-full h-full object-cover">
+                         <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-6 text-white text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <h3 class="font-serif text-2xl font-bold">Everyday Essentials</h3>
+                            <p class="mt-2 text-sm">Kenyamanan premium untuk setiap hari.</p>
+                            <button class="mt-4 py-2 px-4 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-black transition-colors">Jelajahi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Services Section -->
+        <section class="py-16 md:py-24 bg-gray-900 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="font-serif text-3xl font-bold mb-12">Layanan Istimewa Kami</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="flex flex-col items-center">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round mb-4"><path d="M18 21a8 8 0 0 0-12 0"/><circle cx="12" cy="11" r="3"/><path d="M12 3a3 3 0 0 1 3 3v2a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3Z"/><path d="M6 21a2 2 0 0 0 2-2v-1a2 2 0 0 1 4 0v1a2 2 0 0 0 2 2"/><path d="M18 21a2 2 0 0 0 2-2v-1a2 2 0 0 0-4 0v1a2 2 0 0 0 2 2Z"/></svg>
+                        <h3 class="font-semibold text-xl mb-2">Pembelian Korporat</h3>
+                        <p class="text-gray-400">Solusi seragam premium untuk perusahaan Anda.</p>
+                    </div>
+                     <div class="flex flex-col items-center">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scissors-square mb-4"><rect width="20" height="20" x="2" y="2" rx="2"/><circle cx="8" cy="8" r="2"/><path d="m9.4 9.4 5.2 5.2"/><circle cx="16" cy="16" r="2"/><path d="m14.6 9.4-5.2 5.2"/></svg>
+                        <h3 class="font-semibold text-xl mb-2">Custom Tailoring</h3>
+                        <p class="text-gray-400">Wujudkan desain impian Anda bersama kami.</p>
+                    </div>
+                     <div class="flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shirt mb-4"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+                        <h3 class="font-semibold text-xl mb-2">Personal Fitting</h3>
+                        <p class="text-gray-400">Konsultasi gaya pribadi dengan stylist kami.</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="container mx-auto px-6 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <!-- Brand Info -->
                 <div>
                     <h3 class="font-serif text-xl font-bold mb-4">KAZUMI</h3>
-                    <p class="text-gray-400">Gaya premium untuk pria modern.</p>
+                    <p class="text-gray-400">Gaya premium untuk pria modern. Dibuat dengan bahan terbaik untuk kenyamanan dan keawetan.</p>
                 </div>
+                <!-- Informasi Links -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Tautan</h3>
+                    <h3 class="text-lg font-semibold mb-4">Informasi</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Katalog</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tentang Kami</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Syarat & Ketentuan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lokasi Toko</a></li>
                     </ul>
                 </div>
+                <!-- Layanan Links -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
+                    <h3 class="text-lg font-semibold mb-4">Layanan</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Customer Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Lacak Pesanan</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                    </ul>
+                </div>
+                <!-- Kontak & Social Media -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Telepon: +62 21 1234 5678</li>
+                        <li>Email: support@kazumi.co.id</li>
+                    </ul>
+                    <h3 class="text-lg font-semibold mt-6 mb-4">Ikuti Kami</h3>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white">Instagram</a>
                         <a href="#" class="text-gray-400 hover:text-white">Facebook</a>
@@ -136,11 +287,97 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-800 pt-8 text-center text-gray-500">
+            <div class="mt-16 border-t border-gray-800 pt-8 text-center text-gray-500">
                 <p>&copy; 2025 KAZUMI. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Promotion Bubble -->
+    <div id="promo-bubble" class="fixed bottom-6 right-6 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg animate-bounce z-40">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-percent"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div id="promo-modal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full relative">
+            <button id="close-modal-btn" class="absolute top-2 right-2 text-gray-400 hover:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div class="p-8 text-center">
+                <h2 class="font-serif text-3xl font-bold text-gray-900">Diskon Spesial!</h2>
+                <p class="text-gray-600 mt-2">Dapatkan diskon 20% untuk semua Kemeja Casual.</p>
+                <p class="text-2xl font-bold text-red-600 my-4">GUNAKAN KODE: <span class="border-2 border-dashed border-red-400 px-2 py-1">KAZUMI20</span></p>
+                <a href="katalog.html" class="mt-4 inline-block bg-gray-900 text-white font-bold py-3 px-8 rounded-full hover:bg-gray-700 transition-colors">Belanja Sekarang</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Slider Script
+            const slides = document.querySelectorAll('.slider-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            if (slides.length > 0) {
+                let currentSlide = 0;
+                let slideInterval;
+
+                function showSlide(index) {
+                    slides.forEach((slide, i) => {
+                        slide.style.opacity = i === index ? '1' : '0';
+                    });
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('bg-white', i === index);
+                        dot.classList.toggle('bg-white/50', i !== index);
+                    });
+                    currentSlide = index;
+                }
+
+                function nextSlide() {
+                    showSlide((currentSlide + 1) % slides.length);
+                }
+
+                function startSlider() {
+                    stopSlider();
+                    showSlide(currentSlide);
+                    slideInterval = setInterval(nextSlide, 5000);
+                }
+
+                function stopSlider() {
+                    clearInterval(slideInterval);
+                }
+
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        showSlide(index);
+                        stopSlider();
+                        startSlider();
+                    });
+                });
+
+                startSlider();
+            }
+
+            // Promotion Modal Script
+            const promoBubble = document.getElementById('promo-bubble');
+            const promoModal = document.getElementById('promo-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            if (promoBubble && promoModal && closeModalBtn) {
+                promoBubble.addEventListener('click', () => { promoModal.classList.remove('hidden'); promoModal.classList.add('flex'); });
+                const closeTheModal = () => { promoModal.classList.add('hidden'); promoModal.classList.remove('flex'); };
+                closeModalBtn.addEventListener('click', closeTheModal);
+                promoModal.addEventListener('click', (e) => { if (e.target === promoModal) { closeTheModal(); } });
+            }
+
+            // Mobile Menu Script
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
