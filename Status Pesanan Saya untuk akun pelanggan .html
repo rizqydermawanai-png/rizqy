@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Pesanan Saya - KAZUMI</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary { background-color: #0a0a0a; }
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .btn-primary {
+            background-color: #D4AF37;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #b89b31;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <!-- Header -->
+    <header class="sticky-header border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="Index.html" class="text-3xl font-bold text-accent">KAZUMI</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="Index.html" class="hover:text-accent">Beranda</a>
+                <a href="Katalog Produk.html" class="hover:text-accent">Katalog</a>
+                <a href="Pembuatan Custom.html" class="hover:text-accent">Custom</a>
+                <a href="Pembelian Jumlah Banyak.html" class="hover:text-accent">Grosir</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="Login.html"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="flex flex-col md:flex-row gap-10">
+            <!-- Customer Account Sidebar -->
+            <aside class="md:w-1/4">
+                <h2 class="text-2xl font-bold mb-6">Akun Saya</h2>
+                <nav class="flex flex-col space-y-2">
+                    <a href="#" class="text-lg text-accent font-bold">Riwayat Pesanan</a>
+                    <a href="#" class="text-lg hover:text-accent">Profil Saya</a>
+                    <a href="#" class="text-lg hover:text-accent">Alamat</a>
+                </nav>
+            </aside>
+
+            <!-- Order History -->
+            <section class="md:w-3/4">
+                <h1 class="text-3xl font-bold mb-8">Riwayat Pesanan Saya</h1>
+                <div class="space-y-6">
+                    <!-- Order 1 -->
+                    <div class="bg-gray-900 border border-gray-800 p-6 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-lg">Order #KZM-00123</p>
+                            <p class="text-sm text-gray-400">Tanggal: 10 Sep 2024</p>
+                            <p class="text-sm text-gray-400">Total: Rp 2.500.000</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge bg-green-500 text-white">Dikirim</span>
+                            <button class="block mt-2 text-accent hover:underline" onclick="openTrackingModal('JP1234567890', 'JNE Express')">Lacak Pesanan</button>
+                        </div>
+                    </div>
+                    <!-- Order 2 -->
+                    <div class="bg-gray-900 border border-gray-800 p-6 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-lg">Order #KZM-00122</p>
+                            <p class="text-sm text-gray-400">Tanggal: 09 Sep 2024</p>
+                            <p class="text-sm text-gray-400">Total: Rp 750.000</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge bg-yellow-500 text-black">Diproses</span>
+                            <button class="block mt-2 text-accent hover:underline" onclick="openTrackingModal('JT9876543210', 'J&T Express')">Lacak Pesanan</button>
+                        </div>
+                    </div>
+                    <!-- Order 3 -->
+                    <div class="bg-gray-900 border border-gray-800 p-6 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-lg">Order #KZM-00121</p>
+                            <p class="text-sm text-gray-400">Tanggal: 05 Sep 2024</p>
+                            <p class="text-sm text-gray-400">Total: Rp 1.200.000</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge bg-gray-500 text-white">Selesai</span>
+                        </div>
+                    </div>
+                     <!-- Order 4 -->
+                    <div class="bg-gray-900 border border-gray-800 p-6 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-lg">Order #KZM-00120</p>
+                            <p class="text-sm text-gray-400">Tanggal: 02 Sep 2024</p>
+                            <p class="text-sm text-gray-400">Total: Rp 800.000</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge bg-red-500 text-white">Dibatalkan</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-10 mt-12">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>&copy; 2024 KAZUMI. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Order Tracking Modal -->
+    <div id="tracking-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-900 p-8 rounded-lg max-w-lg w-full mx-4 relative">
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-white" onclick="closeTrackingModal()">&times;</button>
+            <h3 class="text-2xl font-bold mb-2">Lacak Pengiriman</h3>
+            <p class="text-sm text-gray-400 mb-6">No. Resi: <span id="resi-number" class="font-mono"></span> (<span id="courier-name"></span>)</p>
+
+            <!-- Timeline -->
+            <div id="tracking-timeline" class="space-y-6 border-l-2 border-gray-700 ml-3">
+                <!-- Timeline items will be injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const trackingModal = document.getElementById('tracking-modal');
+        const resiNumberEl = document.getElementById('resi-number');
+        const courierNameEl = document.getElementById('courier-name');
+        const timelineEl = document.getElementById('tracking-timeline');
+
+        const trackingData = {
+            "JP1234567890": [
+                { status: "Pesanan telah diterima oleh kurir", time: "10 Sep 2024, 14:00" },
+                { status: "Paket sedang dalam perjalanan ke pusat sortir", time: "10 Sep 2024, 18:30" },
+                { status: "Paket telah sampai di pusat sortir Jakarta", time: "11 Sep 2024, 08:00" },
+            ],
+            "JT9876543210": [
+                { status: "Penjual telah mengatur pengiriman", time: "09 Sep 2024, 16:00" },
+            ]
+        };
+
+        function createTimelineItem(item, isFirst) {
+            return `
+                <div class="relative">
+                    <div class="absolute -left-[1.1rem] top-1.5 w-5 h-5 ${isFirst ? 'bg-accent' : 'bg-gray-500'} rounded-full"></div>
+                    <div class="ml-8">
+                        <p class="${isFirst ? 'text-white' : 'text-gray-400'}">${item.status}</p>
+                        <p class="text-sm text-gray-500">${item.time}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openTrackingModal(resi, courier) {
+            resiNumberEl.textContent = resi;
+            courierNameEl.textContent = courier;
+            timelineEl.innerHTML = ''; // Clear previous data
+
+            const history = trackingData[resi] || [{ status: "Informasi pelacakan tidak ditemukan.", time: "" }];
+
+            history.reverse().forEach((item, index) => {
+                timelineEl.innerHTML += createTimelineItem(item, index === 0);
+            });
+
+            trackingModal.classList.remove('hidden');
+        }
+
+        function closeTrackingModal() {
+            trackingModal.classList.add('hidden');
+        }
+
+        // Close modal on outside click
+        trackingModal.addEventListener('click', (e) => {
+            if (e.target === trackingModal) {
+                closeTrackingModal();
+            }
+        });
+    </script>
+
+</body>
+</html>

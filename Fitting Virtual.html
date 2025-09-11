@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitting Virtual - Admin Dashboard - KAZUMI</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Darker blue-gray for admin */
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary-admin { background-color: #1f2937; } /* Sidebar/Card background */
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .sidebar-link {
+            display: block;
+            padding: 12px 20px;
+            color: #d1d5db;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #374151;
+            color: #ffffff;
+        }
+        .sidebar-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-primary-admin text-white flex flex-col">
+            <div class="p-6 text-center border-b border-gray-700">
+                <a href="Index.html" class="text-3xl font-bold text-accent">KAZUMI</a>
+                <span class="block text-sm text-gray-400">Admin Panel</span>
+            </div>
+            <nav class="flex-grow">
+                <a href="Dashboard Super Admin.html" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>Dashboard
+                </a>
+                <a href="Dashboard Super Admin.html#orders" class="sidebar-link">
+                    <i class="fas fa-box"></i>Pesanan
+                </a>
+                <a href="Dashboard Super Admin.html#products" class="sidebar-link">
+                    <i class="fas fa-tshirt"></i>Produk
+                </a>
+                <a href="Dashboard Super Admin.html#users" class="sidebar-link">
+                    <i class="fas fa-users"></i>Pengguna
+                </a>
+                 <a href="Fitting Virtual.html" class="sidebar-link active">
+                    <i class="fas fa-vr-cardboard"></i>Fitting Virtual
+                </a>
+                <a href="Dashboard Super Admin.html#settings" class="sidebar-link">
+                    <i class="fas fa-cog"></i>Pengaturan
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <a href="Login.html" class="sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-10 overflow-y-auto">
+            <h1 class="text-3xl font-bold mb-8">Manajemen Fitting Virtual</h1>
+
+            <div class="bg-primary-admin p-6 rounded-lg mb-8">
+                <p class="text-gray-300">
+                    Bagian ini akan digunakan untuk mengelola permintaan fitting virtual dari pelanggan. Admin dapat melihat data pengukuran, preferensi gaya, dan menjadwalkan sesi konsultasi virtual. Integrasi dengan teknologi pemindaian 3D dan augmented reality akan dikelola dari sini.
+                </p>
+            </div>
+
+            <!-- Placeholder for fitting requests -->
+            <div class="bg-primary-admin p-6 rounded-lg">
+                <h2 class="text-2xl font-bold mb-4">Permintaan Fitting Terbaru</h2>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="py-2">ID Pelanggan</th>
+                            <th>Nama</th>
+                            <th>Tanggal Permintaan</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-700">
+                            <td class="py-3">USR-001</td>
+                            <td>Budi Santoso</td>
+                            <td>11 Sep 2024</td>
+                            <td><span class="bg-blue-500 text-white px-2 py-1 text-xs rounded">Baru</span></td>
+                            <td><a href="#" class="text-accent hover:underline">Lihat Detail</a></td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="py-3">USR-002</td>
+                            <td>Citra Lestari</td>
+                            <td>10 Sep 2024</td>
+                            <td><span class="bg-yellow-500 text-black px-2 py-1 text-xs rounded">Menunggu Jadwal</span></td>
+                            <td><a href="#" class="text-accent hover:underline">Lihat Detail</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

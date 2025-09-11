@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KAZUMI</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Darker blue-gray for admin */
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary-admin { background-color: #1f2937; } /* Sidebar/Card background */
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .sidebar-link {
+            display: block;
+            padding: 12px 20px;
+            color: #d1d5db;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #374151;
+            color: #ffffff;
+        }
+        .sidebar-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-primary-admin text-white flex flex-col">
+            <div class="p-6 text-center border-b border-gray-700">
+                <a href="Index.html" class="text-3xl font-bold text-accent">KAZUMI</a>
+                <span class="block text-sm text-gray-400">Admin Panel</span>
+            </div>
+            <nav class="flex-grow">
+                <a href="#dashboard" class="sidebar-link active" data-section="dashboard-content">
+                    <i class="fas fa-tachometer-alt"></i>Dashboard
+                </a>
+                <a href="#orders" class="sidebar-link" data-section="orders-content">
+                    <i class="fas fa-box"></i>Pesanan
+                </a>
+                <a href="#products" class="sidebar-link" data-section="products-content">
+                    <i class="fas fa-tshirt"></i>Produk
+                </a>
+                <a href="#users" class="sidebar-link" data-section="users-content">
+                    <i class="fas fa-users"></i>Pengguna
+                </a>
+                 <a href="Fitting Virtual.html" class="sidebar-link" data-section="fitting-content">
+                    <i class="fas fa-vr-cardboard"></i>Fitting Virtual
+                </a>
+                <a href="#settings" class="sidebar-link" data-section="settings-content">
+                    <i class="fas fa-cog"></i>Pengaturan
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <a href="Login.html" class="sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-10 overflow-y-auto">
+            <!-- Dashboard Content -->
+            <div id="dashboard-content" class="content-section">
+                <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-primary-admin p-6 rounded-lg">
+                        <h3 class="text-lg text-gray-400">Total Penjualan</h3>
+                        <p class="text-3xl font-bold text-accent">Rp 125.500.000</p>
+                    </div>
+                    <div class="bg-primary-admin p-6 rounded-lg">
+                        <h3 class="text-lg text-gray-400">Pesanan Baru</h3>
+                        <p class="text-3xl font-bold">15</p>
+                    </div>
+                    <div class="bg-primary-admin p-6 rounded-lg">
+                        <h3 class="text-lg text-gray-400">Pengguna Terdaftar</h3>
+                        <p class="text-3xl font-bold">350</p>
+                    </div>
+                    <div class="bg-primary-admin p-6 rounded-lg">
+                        <h3 class="text-lg text-gray-400">Produk Tersedia</h3>
+                        <p class="text-3xl font-bold">42</p>
+                    </div>
+                </div>
+                <!-- Recent Orders Table -->
+                <div class="bg-primary-admin p-6 rounded-lg mt-8">
+                    <h2 class="text-2xl font-bold mb-4">Pesanan Terbaru</h2>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="py-2">Order ID</th>
+                                <th>Pelanggan</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-3">#KZM-00123</td>
+                                <td>John Doe</td>
+                                <td>10 Sep 2024</td>
+                                <td><span class="bg-green-500 text-white px-2 py-1 text-xs rounded">Dikirim</span></td>
+                                <td>Rp 2.500.000</td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-3">#KZM-00122</td>
+                                <td>Jane Smith</td>
+                                <td>09 Sep 2024</td>
+                                <td><span class="bg-yellow-500 text-black px-2 py-1 text-xs rounded">Diproses</span></td>
+                                <td>Rp 750.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders Content -->
+            <div id="orders-content" class="content-section hidden">
+                <h1 class="text-3xl font-bold mb-8">Manajemen Pesanan</h1>
+                <p>Konten untuk manajemen pesanan akan ditampilkan di sini.</p>
+            </div>
+
+            <!-- Products Content -->
+            <div id="products-content" class="content-section hidden">
+                <h1 class="text-3xl font-bold mb-8">Manajemen Produk</h1>
+                <p>Konten untuk manajemen produk akan ditampilkan di sini.</p>
+            </div>
+
+            <!-- Users Content -->
+            <div id="users-content" class="content-section hidden">
+                <h1 class="text-3xl font-bold mb-8">Manajemen Pengguna</h1>
+                <p>Konten untuk manajemen pengguna akan ditampilkan di sini.</p>
+            </div>
+
+            <!-- Settings Content -->
+            <div id="settings-content" class="content-section hidden">
+                <h1 class="text-3xl font-bold mb-8">Pengaturan Website</h1>
+                <p>Konten untuk pengaturan pembayaran, pengiriman, dll. akan ditampilkan di sini.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('.sidebar-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // Don't prevent default for external links like Logout or Fitting Virtual
+                    if (link.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+
+                        const sectionId = link.getAttribute('data-section');
+
+                        // Handle active link
+                        links.forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+
+                        // Handle content display
+                        sections.forEach(section => {
+                            if (section.id === sectionId) {
+                                section.classList.remove('hidden');
+                            } else {
+                                section.classList.add('hidden');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

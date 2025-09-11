@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Produk - KAZUMI</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary { background-color: #0a0a0a; }
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .btn-primary {
+            background-color: #D4AF37;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #b89b31;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <!-- Header -->
+    <header class="sticky-header border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="Index.html" class="text-3xl font-bold text-accent">KAZUMI</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="Index.html" class="hover:text-accent">Beranda</a>
+                <a href="Katalog Produk.html" class="hover:text-accent">Katalog</a>
+                <a href="Pembuatan Custom.html" class="hover:text-accent">Custom</a>
+                <a href="Pembelian Jumlah Banyak.html" class="hover:text-accent">Grosir</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block"><i class="fas fa-search"></i></button>
+                <a href="Login.html"><i class="fas fa-user"></i></a>
+                <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                <button class="md:hidden"><i class="fas fa-bars"></i></button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Breadcrumb -->
+        <div class="mb-8 text-sm text-gray-400">
+            <a href="Index.html" class="hover:text-accent">Beranda</a>
+            <span class="mx-2">/</span>
+            <span>Katalog Produk</span>
+        </div>
+
+        <h1 class="text-4xl font-bold text-center mb-12">Koleksi Kami</h1>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Filters -->
+            <aside class="md:w-1/4">
+                <h2 class="text-2xl font-bold mb-6">Filter</h2>
+                <div class="space-y-6">
+                    <!-- Category Filter -->
+                    <div>
+                        <h3 class="font-bold mb-2">Kategori</h3>
+                        <ul class="space-y-1 text-gray-300">
+                            <li><a href="#" class="hover:text-accent">Semua</a></li>
+                            <li><a href="#" class="hover:text-accent">Jas & Tuxedo</a></li>
+                            <li><a href="#" class="hover:text-accent">Kemeja</a></li>
+                            <li><a href="#" class="hover:text-accent">Celana</a></li>
+                            <li><a href="#" class="hover:text-accent">Aksesoris</a></li>
+                        </ul>
+                    </div>
+                    <!-- Size Filter -->
+                    <div>
+                        <h3 class="font-bold mb-2">Ukuran</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="border border-gray-600 px-3 py-1 hover:bg-accent hover:text-black">S</button>
+                            <button class="border border-gray-600 px-3 py-1 hover:bg-accent hover:text-black">M</button>
+                            <button class="border border-gray-600 px-3 py-1 hover:bg-accent hover:text-black">L</button>
+                            <button class="border border-gray-600 px-3 py-1 hover:bg-accent hover:text-black">XL</button>
+                        </div>
+                    </div>
+                    <!-- Color Filter -->
+                    <div>
+                        <h3 class="font-bold mb-2">Warna</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="w-6 h-6 rounded-full bg-black border-2 border-gray-500"></button>
+                            <button class="w-6 h-6 rounded-full bg-white"></button>
+                            <button class="w-6 h-6 rounded-full bg-gray-700"></button>
+                            <button class="w-6 h-6 rounded-full bg-blue-900"></button>
+                        </div>
+                    </div>
+                    <!-- Price Range Filter -->
+                    <div>
+                        <h3 class="font-bold mb-2">Rentang Harga</h3>
+                        <input type="range" min="500000" max="5000000" class="w-full">
+                        <div class="flex justify-between text-sm text-gray-400 mt-1">
+                            <span>Rp 500k</span>
+                            <span>Rp 5M</span>
+                        </div>
+                    </div>
+                    <button class="w-full btn-primary mt-4">Terapkan Filter</button>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <section class="md:w-3/4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Product Card 1 -->
+                    <div class="bg-gray-900 border border-gray-800">
+                        <img src="https://placehold.co/600x800/1a1a1a/ffffff?text=Product+1" alt="Product 1" class="w-full h-auto object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Classic Black Suit</h4>
+                            <p class="text-accent">Rp 2.500.000</p>
+                        </div>
+                    </div>
+                    <!-- Product Card 2 -->
+                    <div class="bg-gray-900 border border-gray-800">
+                        <img src="https://placehold.co/600x800/2a2a2a/ffffff?text=Product+2" alt="Product 2" class="w-full h-auto object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">White Oxford Shirt</h4>
+                            <p class="text-accent">Rp 750.000</p>
+                        </div>
+                    </div>
+                    <!-- Product Card 3 -->
+                    <div class="bg-gray-900 border border-gray-800">
+                        <img src="https://placehold.co/600x800/3a3a3a/ffffff?text=Product+3" alt="Product 3" class="w-full h-auto object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold text-lg">Leather Belt</h4>
+                            <p class="text-accent">Rp 500.000</p>
+                        </div>
+                    </div>
+                    <!-- Add more product cards as needed -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-10 mt-12">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>&copy; 2024 KAZUMI. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

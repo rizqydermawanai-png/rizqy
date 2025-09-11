@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAZUMI - Premium Men's Fashion</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary { background-color: #0a0a0a; }
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .btn-primary {
+            background-color: #D4AF37;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #b89b31;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <!-- Header -->
+    <header class="sticky-header border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="Index.html" class="text-3xl font-bold text-accent">KAZUMI</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="Index.html" class="hover:text-accent">Beranda</a>
+                <a href="Katalog Produk.html" class="hover:text-accent">Katalog</a>
+                <a href="Pembuatan Custom.html" class="hover:text-accent">Custom</a>
+                <a href="Pembelian Jumlah Banyak.html" class="hover:text-accent">Grosir</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block"><i class="fas fa-search"></i></button>
+                <a href="Login.html"><i class="fas fa-user"></i></a>
+                <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                <button class="md:hidden"><i class="fas fa-bars"></i></button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Slider -->
+        <section class="relative w-full h-screen flex items-center justify-center text-center overflow-hidden">
+            <div class="absolute inset-0">
+                <img src="https://placehold.co/1920x1080/0a0a0a/ffffff?text=KAZUMI+Collection" alt="Hero Image" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black opacity-50"></div>
+            </div>
+            <div class="relative z-10 text-white px-6">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4">Elegance in Every Thread</h1>
+                <p class="text-lg md:text-xl mb-8">Discover our new collection of timeless men's fashion.</p>
+                <a href="Katalog Produk.html" class="btn-primary">Shop Now</a>
+            </div>
+        </section>
+
+        <!-- Popular Categories -->
+        <section class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold mb-12">Kategori Populer</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="relative group">
+                        <img src="https://placehold.co/600x800/1a1a1a/ffffff?text=Suits" alt="Suits" class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <h3 class="text-2xl font-bold text-white">Jas & Tuxedo</h3>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <img src="https://placehold.co/600x800/2a2a2a/ffffff?text=Shirts" alt="Shirts" class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <h3 class="text-2xl font-bold text-white">Kemeja</h3>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <img src="https://placehold.co/600x800/3a3a3a/ffffff?text=Accessories" alt="Accessories" class="w-full h-auto object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <h3 class="text-2xl font-bold text-white">Aksesoris</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Special Collection -->
+        <section class="bg-gray-900 py-20">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <img src="https://placehold.co/800x600/0a0a0a/D4AF37?text=Artisan's+Choice" alt="Special Collection" class="w-full h-auto">
+                </div>
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h2 class="text-4xl font-bold mb-4">The Artisan's Choice</h2>
+                    <p class="text-gray-400 mb-6">Koleksi eksklusif yang dibuat dengan bahan terbaik dan perhatian penuh terhadap detail. Setiap bagian menceritakan sebuah kisah keahlian.</p>
+                    <a href="Katalog Produk.html" class="btn-primary">Lihat Koleksi</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold mb-12">Layanan Khusus Kami</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="border border-gray-800 p-8">
+                        <i class="fas fa-ruler-combined text-accent text-4xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">Ukuran Custom</h3>
+                        <p class="text-gray-400">Dapatkan pakaian yang pas sempurna dengan layanan pengukuran custom kami.</p>
+                    </div>
+                    <div class="border border-gray-800 p-8">
+                        <i class="fas fa-gem text-accent text-4xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">Desain Eksklusif</h3>
+                        <p class="text-gray-400">Buat desain unik Anda sendiri bersama dengan desainer kami.</p>
+                    </div>
+                    <div class="border border-gray-800 p-8">
+                        <i class="fas fa-users text-accent text-4xl mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">Pesanan Korporat</h3>
+                        <p class="text-gray-400">Tingkatkan citra perusahaan Anda dengan seragam premium dari KAZUMI.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-10">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>&copy; 2024 KAZUMI. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Promotion Bubble -->
+    <div id="promotion-bubble" class="hidden fixed bottom-5 right-5 bg-accent text-black p-4 rounded-lg shadow-lg cursor-pointer">
+        <p class="font-bold">Diskon 20% Spesial!</p>
+        <p class="text-sm">Gunakan kode: KAZUMI20</p>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div id="promotion-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-900 p-8 rounded-lg text-center max-w-sm w-full mx-4">
+            <h3 class="text-2xl font-bold text-accent mb-4">Penawaran Spesial Terungkap!</h3>
+            <p class="mb-6">Nikmati diskon 20% untuk semua koleksi terbaru kami. Gunakan kode <strong class="text-accent">KAZUMI20</strong> saat checkout.</p>
+            <button id="close-modal-btn" class="btn-primary">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const promotionBubble = document.getElementById('promotion-bubble');
+            const promotionModal = document.getElementById('promotion-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            // Simulate API call to get promotion status and position
+            const fetchPromotion = () => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve({
+                            active: true,
+                            position: 'bottom-right' // 'bottom-right', 'top-left', etc.
+                        });
+                    }, 1000);
+                });
+            };
+
+            fetchPromotion().then(promo => {
+                if (promo.active) {
+                    promotionBubble.classList.remove('hidden');
+                    // Logic to change position based on API would go here
+                    // For now, it's fixed by the bubble's class list
+                }
+            });
+
+            promotionBubble.addEventListener('click', () => {
+                promotionModal.classList.remove('hidden');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                promotionModal.classList.add('hidden');
+            });
+
+            // Close modal on outside click
+            promotionModal.addEventListener('click', (e) => {
+                if (e.target === promotionModal) {
+                    promotionModal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - KAZUMI</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        .bg-primary { background-color: #0a0a0a; }
+        .text-accent { color: #D4AF37; }
+        .border-accent { border-color: #D4AF37; }
+        .btn-primary {
+            background-color: #D4AF37;
+            color: #0a0a0a;
+            padding: 10px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #b89b31;
+        }
+        .form-input {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            width: 100%;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-gray-900 border border-gray-800 p-8 max-w-md w-full">
+            <div class="text-center mb-8">
+                <a href="Index.html" class="text-4xl font-bold text-accent">KAZUMI</a>
+                <h1 class="text-2xl mt-4">Buat Akun Baru</h1>
+            </div>
+
+            <form id="register-form">
+                <div class="mb-4">
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-400">Nama Lengkap</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-400">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-400">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <button type="submit" class="btn-primary w-full">Daftar</button>
+            </form>
+
+            <p class="text-center text-gray-400 text-sm mt-6">
+                Sudah punya akun? <a href="Login.html" class="font-medium text-accent hover:underline">Login di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simulate registration process
+            alert('Pendaftaran berhasil! Silakan login. (Simulasi)');
+            // In a real application, you would handle the registration and then maybe redirect to the login page
+            window.location.href = 'Login.html';
+        });
+    </script>
+
+</body>
+</html>
